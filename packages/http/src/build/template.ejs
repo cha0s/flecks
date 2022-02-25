@@ -1,0 +1,15 @@
+
+<!DOCTYPE html>
+<html lang="<%= htmlWebpackPlugin.options.lang %>">
+  <head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <div id="<%= htmlWebpackPlugin.options.appMountId %>"></div>
+    <script src="/flecks.config.js"></script>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+  </body>
+</html>

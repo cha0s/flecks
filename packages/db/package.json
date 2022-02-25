@@ -1,0 +1,25 @@
+{
+  "name": "@flecks/db",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "debug": "4.3.1",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}

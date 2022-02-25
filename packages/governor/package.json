@@ -1,0 +1,28 @@
+{
+  "name": "@flecks/governor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "client.js",
+    "client.js.map",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "@flecks/db": "^1.0.0",
+    "rate-limiter-flexible": "^2.1.13",
+    "redis": "^3.1.2"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}

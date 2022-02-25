@@ -1,0 +1,27 @@
+{
+  "name": "@flecks/create-fleck",
+  "version": "1.0.0",
+  "bin": {
+    "create-fleck": "./cli.js"
+  },
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "cli.js",
+    "cli.js.map",
+    "src",
+    "template"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "fs-extra": "10.0.0",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}

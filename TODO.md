@@ -1,0 +1,15 @@
+- x multi-build lint is broken
+- x @flecks/db
+- x @flecks/governor
+- x @flecks/react
+    - x Use aliasing for self-referential flecks context
+- x @flecks/redis
+- x @flecks/redux
+- x @flecks/socket
+- x @flecks/user
+- x flecks aliasing must ensure webpack aliasing and de-externalization into bundles
+- x `flecks.invokeMiddleware()` should not build every invocation
+- x `flecks.invokeComposed()` and `flecks.invokeMiddleware()` should not fatal on a missed lookup
+- x flecks should have a `platforms` setting, so auto-lookups of `/client`, `/server` are less
+  magical
+- x `flecks.expandedFlecks()` should use `platforms`

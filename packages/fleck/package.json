@@ -1,0 +1,35 @@
+{
+  "name": "@flecks/fleck",
+  "version": "1.0.0",
+  "author": "cha0s",
+  "license": "MIT",
+  "bin": {
+    "flecks": "./cli.js"
+  },
+  "scripts": {
+    "build": "flecks build",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "server/build/fleck.neutrinorc.js",
+    "server/build/fleck.neutrinorc.js.map",
+    "server.js",
+    "server.js.map",
+    "src",
+    "test.js",
+    "test.js.map"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "@neutrinojs/node": "^9.4.0",
+    "chokidar": "^3.5.3",
+    "debug": "^4.3.3",
+    "glob": "^7.2.0",
+    "mocha": "^8.3.2"
+  },
+  "devDependencies": {
+    "chai": "4.2.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@flecks/docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "debug": "^4.3.3"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}

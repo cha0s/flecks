@@ -1,0 +1,29 @@
+{
+  "name": "@flecks/redis",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "session/server.js",
+    "session/server.js.map",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "@socket.io/redis-adapter": "7.1.0",
+    "connect-redis": "^5.0.0",
+    "debug": "4.3.1",
+    "express-session": "^1.17.1",
+    "redis": "4.0.3"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}

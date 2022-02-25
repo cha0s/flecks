@@ -1,0 +1,13 @@
+{
+  "name": "@flecks/monorepo",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "test": "lerna run test --no-bail -- --silent"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@flecks/user",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "client.js",
+    "client.js.map",
+    "index.js",
+    "index.js.map",
+    "local/client.js",
+    "local/client.js.map",
+    "local/server.js",
+    "local/server.js.map",
+    "server.js",
+    "server.js.map",
+    "session/server.js",
+    "session/server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "@flecks/react": "^1.0.0",
+    "@flecks/redux": "^1.0.0",
+    "bcrypt": "^5.0.0",
+    "debug": "4.3.1",
+    "express": "^4.17.1",
+    "express-session": "1.17.1",
+    "passport": "0.4.1",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.12.10",
+    "@flecks/fleck": "^1.0.0"
+  }
+}

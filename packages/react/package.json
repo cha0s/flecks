@@ -1,0 +1,50 @@
+{
+  "name": "@flecks/react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postinstall": "node src/fake-context.js",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "client.js",
+    "client.js.map",
+    "context.js",
+    "context.js.map",
+    "fake-context.js",
+    "fake-context.js.map",
+    "index.js",
+    "index.js.map",
+    "router/client.js",
+    "router/client.js.map",
+    "router/context.js",
+    "router/context.js.map",
+    "router/index.js",
+    "router/index.js.map",
+    "router/server.js",
+    "router/server.js.map",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.0.0",
+    "@hot-loader/react-dom": "^17.0.1",
+    "@neutrinojs/react": "^9.4.0",
+    "classnames": "^2.3.1",
+    "debug": "4.3.1",
+    "history": "^5.3.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-hot-loader": "^4.13.0",
+    "react-router-dom": "^6.2.1",
+    "redux-first-history": "^5.0.8"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.0"
+  }
+}
