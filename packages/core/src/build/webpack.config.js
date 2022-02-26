@@ -63,6 +63,10 @@ const buildConfigs = async () => {
         return webpackConfig;
       }),
   );
+  if (0 === webpackConfigs.length) {
+    debug('no webpack configuration found! aborting...');
+    await new Promise(() => {});
+  }
   return webpackConfigs;
 };
 
