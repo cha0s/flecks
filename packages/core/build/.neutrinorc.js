@@ -26,7 +26,8 @@ module.exports.use.push((neutrino) => {
 // Tests.
 module.exports.use.push((neutrino) => {
   // Test entrypoint.
-  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
+  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'), {ignore: 'platforms'});
+  testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/server/*.js`)));
   if (testPaths.length > 0) {
     const testEntry = neutrino.config.entry('test').clear();
     testPaths.forEach((path) => testEntry.add(path));

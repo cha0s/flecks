@@ -1,0 +1,3 @@
+'@flecks/core:../src': {}
+'@flecks/core/one:./fleck-one': {}
+'@flecks/core/two:./fleck-two': {}

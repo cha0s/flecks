@@ -222,7 +222,7 @@ export default class ServerFlecks extends Flecks {
       register({
         cache: true,
         configFile,
-        only: [this.sourcepath(resolved)],
+        only: [resolve(join(this.sourcepath(resolved), '..'))],
         // Make webpack goodies exist in node land.
         plugins: [
           [
