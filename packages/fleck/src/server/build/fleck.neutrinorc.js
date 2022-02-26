@@ -19,7 +19,7 @@ const config = require('../../../../core/src/bootstrap/fleck.neutrinorc');
 
 config.use.push((neutrino) => {
   // Test entrypoint.
-  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'), {ignore: 'platforms'});
+  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
   for (let i = 0; i < this.platforms.length; ++i) {
     testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/${this.platforms[i]}/*.js`)));
   }
