@@ -34,6 +34,7 @@
     "src",
     "start.js",
     "start.js.map",
+    "test",
     "test.js",
     "test.js.map"
   ],

@@ -1,8 +1,12 @@
 const {realpathSync} = require('fs');
-const {join} = require('path');
+const {
+  dirname,
+  join,
+} = require('path');
 
 const {Flecks, require: R} = require('@flecks/core/server');
 const D = require('debug');
+const glob = require('glob');
 
 const debug = D('@flecks/http/runtime');
 
@@ -70,17 +74,33 @@ module.exports = (flecks) => (neutrino) => {
       });
   }
   // Tests.
-  const testPaths = paths
-    .map(([path, resolved]) => [path, join(resolved, 'test')])
-    .filter(([, path]) => {
-      try {
-        R.resolve(path);
-        return true;
-      }
-      catch (error) {
-        return false;
-      }
-    });
+  const testRoots = Array.from(new Set(
+    Object.keys(httpFlecks.resolver)
+      .map((fleck) => [fleck, httpFlecks.root(fleck)]),
+  ))
+    .map(([fleck, root]) => (
+      [fleck, dirname(R.resolve(join(root, 'package.json')))]
+    ));
+  const testPaths = [];
+  testRoots.forEach(([fleck, root]) => {
+    testPaths.push(...(
+      glob.sync(join(root, 'test/*.js'))
+        .map((path) => [fleck, path])
+    ));
+    for (let i = 0; i < httpFlecks.platforms.length; ++i) {
+      testPaths.push(
+        ...(
+          glob.sync(join(root, `test/platforms/${httpFlecks.platforms[i]}/*.js`))
+            .map((path) => [fleck, path])
+        ),
+      );
+    }
+  });
+  // Test entrypoint.
+  if (testPaths.length > 0) {
+    const testEntry = neutrino.config.entry('test').clear();
+    testPaths.forEach(([, path]) => testEntry.add(path));
+  }
   const tests = realpathSync(R.resolve(join(flecks.resolve('@flecks/http'), 'tests')));
   neutrino.config.module
     .rule(tests)
@@ -88,8 +108,18 @@ module.exports = (flecks) => (neutrino) => {
     .use('runtime/test')
     .loader(runtime)
     .options({
-      source: testPaths.map(
-        ([original, path]) => `describe('${original}', () => require('${path}'));`,
-      ).join(''),
+      source: Object.entries(
+        testPaths
+          .reduce(
+            (r, [fleck, path]) => ({
+              ...r,
+              [fleck]: [...(r[fleck] || []), `require('${path}');`],
+            }),
+            {},
+          ),
+      )
+        .map(
+          ([original, paths]) => `describe('${original}', () => { ${paths.join(' ')} });`,
+        ).join(''),
     });
 };
