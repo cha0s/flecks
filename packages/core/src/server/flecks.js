@@ -160,28 +160,30 @@ export default class ServerFlecks extends Flecks {
         this.fleckIsAliased(resolver, path) || this.fleckIsSymlinked(resolver, path)
       ));
     // Lookups redirect require() requests.
-    const lookups = {
-      ...Object.fromEntries(
-        needCompilation
-          .map((path) => [
-            R.resolve(this.fleckIsAliased(resolver, path) ? aliased[path] : path),
-            this.fleckIsAliased(resolver, path)
-              ? aliased[path]
-              : this.sourcepath(R.resolve(this.resolve(resolver, path))),
-          ]),
-      ),
-    };
-    debug('lookups: %O', lookups);
-    R('pirates').addHook(
-      (code, path) => `module.exports = require('${lookups[path]}')`,
-      {
-        ignoreNodeModules: false,
-        // eslint-disable-next-line arrow-body-style
-        matcher: (path) => {
-          return !!lookups[path];
+    const symlinked = paths
+      .filter((path) => this.fleckIsSymlinked(resolver, path));
+    if (symlinked.length > 0) {
+      const lookups = {
+        ...Object.fromEntries(
+          symlinked
+            .map((path) => [
+              R.resolve(path),
+              this.sourcepath(R.resolve(this.resolve(resolver, path))),
+            ]),
+        ),
+      };
+      debug('lookups: %O', lookups);
+      R('pirates').addHook(
+        (code, path) => `module.exports = require('${lookups[path]}')`,
+        {
+          ignoreNodeModules: false,
+          // eslint-disable-next-line arrow-body-style
+          matcher: (path) => {
+            return !!lookups[path];
+          },
         },
-      },
-    );
+      );
+    }
     const {Module} = R('module');
     const aliases = this.aliases(rcs);
     debug('aliases: %O', aliases);
