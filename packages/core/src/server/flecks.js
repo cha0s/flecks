@@ -51,12 +51,18 @@ export default class ServerFlecks extends Flecks {
     return aliases;
   }
 
-  static bootstrap({platforms = ['server'], without = []} = {}) {
+  static bootstrap(
+    {
+      platforms = ['server'],
+      root = FLECKS_ROOT,
+      without = [],
+    } = {},
+  ) {
     let initial;
     let configType;
     try {
       const {safeLoad} = R('js-yaml');
-      const filename = join(FLECKS_ROOT, 'build', 'flecks.yml');
+      const filename = join(root, 'build', 'flecks.yml');
       const buffer = readFileSync(filename, 'utf8');
       debug('parsing configuration from YML...');
       initial = safeLoad(buffer, {filename}) || {};
@@ -84,7 +90,7 @@ export default class ServerFlecks extends Flecks {
         continue;
       }
       const aliasPath = '.'.charCodeAt(0) === alias.charCodeAt(0)
-        ? join(FLECKS_ROOT, alias)
+        ? join(root, alias)
         : alias;
       try {
         config[path] = initial[key];
