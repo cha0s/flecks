@@ -1,0 +1,2 @@
+# This isn't a "real" `flecks.yml`. It only exists for testing purposes.
+'@flecks/core:./src': {}

@@ -3,7 +3,7 @@ import {expect} from 'chai';
 // eslint-disable-next-line import/no-unresolved
 import {Flecks} from '@flecks/core';
 
-const testFleckOne = require('./fleck-one');
+const testOne = require('./one');
 
 it('can create an empty instance', () => {
   const flecks = new Flecks();
@@ -20,14 +20,14 @@ it('can create an empty instance', () => {
 it('can gather config', () => {
   let flecks;
   flecks = new Flecks({
-    flecks: {'./fleck-one': testFleckOne},
+    flecks: {'@flecks/core/one': testOne},
   });
-  expect(flecks.get(['./fleck-one']))
+  expect(flecks.get(['@flecks/core/one']))
     .to.contain({foo: 'bar'});
   flecks = new Flecks({
-    config: {'./fleck-one': {foo: 'baz'}},
-    flecks: {'./fleck-one': testFleckOne},
+    config: {'@flecks/core/one': {foo: 'baz'}},
+    flecks: {'@flecks/core/one': testOne},
   });
-  expect(flecks.get(['./fleck-one']))
+  expect(flecks.get(['@flecks/core/one']))
     .to.contain({foo: 'baz'});
 });

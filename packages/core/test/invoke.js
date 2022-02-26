@@ -3,41 +3,41 @@ import {expect} from 'chai';
 // eslint-disable-next-line import/no-unresolved
 import {Flecks} from '@flecks/core';
 
-const testFleckOne = require('./fleck-one');
-const testFleckTwo = require('./fleck-two');
+const testOne = require('./one');
+const testTwo = require('./two');
 
 let flecks;
 
 beforeEach(() => {
   flecks = new Flecks({
     flecks: {
-      './fleck-one': testFleckOne,
-      './fleck-two': testFleckTwo,
+      '@flecks/core/one': testOne,
+      '@flecks/core/two': testTwo,
     },
   });
 });
 
 it('can invoke', () => {
-  expect(flecks.invoke('flecks-test-invoke'))
+  expect(flecks.invoke('@flecks/core/test/invoke'))
     .to.deep.equal({
-      './fleck-one': 69,
-      './fleck-two': 420,
+      '@flecks/core/one': 69,
+      '@flecks/core/two': 420,
     });
 });
 
 it('can invoke parallel', async () => {
   const O = {foo: 3};
-  await Promise.all(flecks.invokeParallel('flecks-test-invoke-parallel', O));
+  await Promise.all(flecks.invokeParallel('@flecks/core/test/invoke-parallel', O));
   expect(O.foo)
     .to.equal(8);
 });
 
 it('can invoke reduced', () => {
-  expect(flecks.invokeReduce('flecks-test-invoke-reduce'))
+  expect(flecks.invokeReduce('@flecks/core/test/invoke-reduce'))
     .to.deep.equal({foo: 69, bar: 420});
 });
 
 it('can invoke reduced async', async () => {
-  expect(await flecks.invokeReduce('flecks-test-invoke-reduce'))
+  expect(await flecks.invokeReduce('@flecks/core/test/invoke-reduce'))
     .to.deep.equal({foo: 69, bar: 420});
 });

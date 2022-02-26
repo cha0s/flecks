@@ -3,17 +3,17 @@ import {expect} from 'chai';
 // eslint-disable-next-line import/no-unresolved
 import {Flecks, ById, ByType} from '@flecks/core';
 
-const testFleckOne = require('./fleck-one');
-const testFleckTwo = require('./fleck-two');
+const testOne = require('./one');
+const testTwo = require('./two');
 
 it('can gather', () => {
   const flecks = new Flecks({
     flecks: {
-      './fleck-one': testFleckOne,
-      './fleck-two': testFleckTwo,
+      '@flecks/core/one': testOne,
+      '@flecks/core/two': testTwo,
     },
   });
-  const Gathered = flecks.gather('./fleck-one/test-gather');
+  const Gathered = flecks.gather('@flecks/core/one/test-gather');
   expect(Object.keys(Gathered[ByType]).length)
     .to.equal(Object.keys(Gathered[ById]).length);
   const typeKeys = Object.keys(Gathered[ByType]);
