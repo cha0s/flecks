@@ -16,16 +16,16 @@ module.exports = {
     copy({
       patterns: [
         {
-          from: 'package.json',
+          from: '.',
           to: '.',
-        },
-        {
-          from: 'build',
-          to: 'build',
-        },
-        {
-          from: 'src',
-          to: 'src',
+          globOptions: {
+            dot: true,
+            ignore: [
+              'dist',
+              'node_modules',
+            ],
+            gitignore: true,
+          },
         },
       ],
       pluginId: '@flecks/core/copy',
