@@ -53,6 +53,15 @@ export const createHttpServer = async (flecks) => {
       res.statusCode = proxyRes.statusCode;
       // HTML.
       if (proxyRes.headers['content-type'].match('text/html')) {
+        // Tests bypass middleware and stream processing.
+        const {pathname} = new URL(req.url, 'https://example.org/');
+        if ('/tests.html' === pathname) {
+          if (!res.headersSent) {
+            res.setHeader('Content-Type', proxyRes.headers['content-type']);
+          }
+          proxyRes.pipe(res);
+          return;
+        }
         routeMiddleware(req, res, (error) => {
           if (error) {
             res.status(error.code || 500).end(error.stack);
@@ -82,6 +91,12 @@ export const createHttpServer = async (flecks) => {
   else {
     // Serve the document root, sans index.
     app.use(express.static(join(FLECKS_ROOT, 'dist', FLECKS_HTTP_OUTPUT), {index: false}));
+    // Tests bypass middleware and stream processing.
+    app.get('/tests.html', (req, res) => {
+      res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+      const stream = createReadStream(join(FLECKS_ROOT, 'dist', FLECKS_HTTP_OUTPUT, 'tests.html'));
+      stream.pipe(res);
+    });
     // Fallback to serving HTML.
     app.get('*', routeMiddleware, async (req, res) => {
       if (req.accepts('text/html')) {
