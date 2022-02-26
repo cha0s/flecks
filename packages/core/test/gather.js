@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 
-import Flecks, {ById, ByType} from '../src/flecks';
+// eslint-disable-next-line import/no-unresolved
+import {Flecks, ById, ByType} from '@flecks/core';
 
 const testFleckOne = require('./fleck-one');
 const testFleckTwo = require('./fleck-two');
