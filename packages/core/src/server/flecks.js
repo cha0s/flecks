@@ -8,6 +8,7 @@ import {
   dirname,
   extname,
   join,
+  resolve,
 } from 'path';
 
 import compileLoader from '@neutrinojs/compile-loader';
@@ -58,11 +59,12 @@ export default class ServerFlecks extends Flecks {
       without = [],
     } = {},
   ) {
+    const resolvedRoot = resolve(FLECKS_ROOT, root);
     let initial;
     let configType;
     try {
       const {safeLoad} = R('js-yaml');
-      const filename = join(root, 'build', 'flecks.yml');
+      const filename = join(resolvedRoot, 'build', 'flecks.yml');
       const buffer = readFileSync(filename, 'utf8');
       debug('parsing configuration from YML...');
       initial = safeLoad(buffer, {filename}) || {};
@@ -90,7 +92,7 @@ export default class ServerFlecks extends Flecks {
         continue;
       }
       const aliasPath = '.'.charCodeAt(0) === alias.charCodeAt(0)
-        ? join(root, alias)
+        ? join(resolvedRoot, alias)
         : alias;
       try {
         config[path] = initial[key];
