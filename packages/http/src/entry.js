@@ -6,25 +6,22 @@ import {Flecks} from '@flecks/core';
 const {version} = require('../package.json');
 
 let finished = 0;
-let progress = 0;
-const setBarStyle = (bar) => {
-  const {style} = bar;
-  style.border = 0;
-  style.display = 'none';
-  style.height = '0.17em';
-  style.left = 0;
-  style.margin = 0;
-  style.padding = 0;
-  style.position = 'absolute';
-  style.top = 0;
-  style.transition = '0.25s width, 0.5s opacity';
-  setTimeout(() => {
-    style.display = 'block';
-  }, 250);
-};
-const $progress = window.document.createElement('progress');
-setBarStyle($progress);
-$progress.style.width = '100%';
+const $progress = window.document.createElement('div');
+const {style} = $progress;
+style.backgroundColor = '#004488';
+style.border = 0;
+style.display = 'none';
+style.height = '0.17em';
+style.left = 0;
+style.margin = 0;
+style.padding = 0;
+style.position = 'absolute';
+style.top = 0;
+style.transition = '1s width, 0.5s opacity';
+setTimeout(() => {
+  style.display = 'block';
+}, 250);
+$progress.style.width = '0%';
 $progress.value = 0;
 window.document.body.prepend($progress);
 
@@ -38,18 +35,11 @@ window.document.body.prepend($progress);
     /* @preserve webpackChunkName: "flecks-runtime" */
     '@flecks/http/runtime',
   );
-  const updater = setInterval(() => {
-    $progress.value += (progress - $progress.value) * 0.5;
-  }, 16);
   const runtime = await loader((total, path) => {
     finished += 1;
     debug('loaded %s (%d/%d)', path, finished, total);
-    progress = finished / total;
+    $progress.style.width = `${100 * (finished / total)}%`;
   });
-  setTimeout(() => {
-    clearInterval(updater);
-  }, 500);
-  // $placeholder.style.opacity = 0;
   $progress.style.opacity = 0;
   debug('starting client...');
   const flecks = new Flecks(runtime);
