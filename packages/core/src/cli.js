@@ -41,7 +41,11 @@ const environmentUpdates = (
 if (environmentUpdates) {
   debug('updating environment, forking with %O...', environmentUpdates);
   const forkOptions = {
-    env: {...process.env, ...environmentUpdates},
+    env: {
+      ...process.env,
+      ...environmentUpdates,
+      DEBUG_COLORS: 'true',
+    },
     stdio: 'inherit',
   };
   fork(__filename, process.argv.slice(2), forkOptions)

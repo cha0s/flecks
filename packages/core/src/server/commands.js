@@ -17,9 +17,11 @@ export const spawnWith = (cmd, localEnv, spawnArgs) => {
   debug('spawning:\n%s %s\nwith local environment: %O', cmd, spawnArgs.join(' '), localEnv);
   const spawnOptions = {
     env: {...localEnv, ...process.env},
-    stdio: 'inherit',
   };
-  return spawn('npx', [cmd, ...spawnArgs], spawnOptions);
+  const child = spawn('npx', [cmd, ...spawnArgs], spawnOptions);
+  child.stderr.pipe(process.stderr);
+  child.stdout.pipe(process.stdout);
+  return child;
 };
 export const targetNeutrino = (target) => (
   `FLECKS_CORE_BUILD_TARGET_${
