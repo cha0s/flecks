@@ -7,6 +7,10 @@ const {
 
 const R = require('./require');
 
+const {
+  FLECKS_ROOT = process.cwd(),
+} = process.env;
+
 const resolver = (source) => (path) => {
   // Does the file resolve as source?
   try {
@@ -27,9 +31,12 @@ const resolver = (source) => (path) => {
 };
 
 module.exports = () => (neutrino) => {
-  const {packageJson: {files = []}, source} = neutrino.options;
+  const {packageJson: {name, files = []}, source} = neutrino.options;
   // index is not taken for granted.
   neutrino.config.entryPoints.delete('index');
+  // Alias this package.
+  neutrino.config.resolve.alias
+    .set(name, join(FLECKS_ROOT, 'src'));
   // Calculate entry points from `files`.
   files
     .filter(resolver(source))
