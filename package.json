@@ -1,6 +1,5 @@
 {
   "name": "@flecks/monorepo",
-  "private": true,
   "scripts": {
     "build": "lerna run build",
     "lint": "lerna run lint",

@@ -1,5 +1,6 @@
 {
   "name": "@flecks/fleck",
+  "private": false,
   "version": "1.0.0",
   "author": "cha0s",
   "license": "MIT",

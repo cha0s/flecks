@@ -1,5 +1,6 @@
 {
   "name": "@flecks/db",
+  "private": false,
   "version": "1.0.0",
   "scripts": {
     "build": "flecks build",

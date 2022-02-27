@@ -1,5 +1,6 @@
 {
   "name": "@flecks/create-app",
+  "private": false,
   "version": "1.0.0",
   "bin": {
     "create-app": "./cli.js"
