@@ -4,6 +4,7 @@
   "scripts": {
     "build": "lerna run build",
     "lint": "lerna run lint",
+    "publish": "lerna publish --registry https://registry.npmjs.org",
     "test": "lerna run test --no-bail -- --silent"
   },
   "dependencies": {},
