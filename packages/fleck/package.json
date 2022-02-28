@@ -12,6 +12,7 @@
   "scripts": {
     "build": "flecks build",
     "lint": "flecks lint",
+    "postversion": "cp package.json dist",
     "test": "flecks test"
   },
   "files": [

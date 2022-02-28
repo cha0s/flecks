@@ -9,6 +9,7 @@
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
+    "postversion": "cp package.json dist",
     "postinstall": "node src/fake-context.js",
     "test": "flecks test"
   },

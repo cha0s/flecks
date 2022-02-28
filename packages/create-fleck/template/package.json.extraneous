@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
+    "postversion": "cp package.json dist",
     "test": "flecks test"
   },
   "files": [
