@@ -10,13 +10,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * CHANGELOG ([3e908bb](https://github.com/cha0s/flecks/commit/3e908bba63abdcba204bafdd2026feef3f010dee))
 
-
-
-
-
-## [](https://github.com/cha0s/flecks/compare/v1.0.1...v) (2022-02-28)
-
-### [1.0.1](https://github.com/cha0s/flecks/compare/v1.0.0...v1.0.1) (2022-02-28)
+## [1.0.1](https://github.com/cha0s/flecks/compare/v1.0.0...v1.0.1) (2022-02-28)
 
 
 ### Bug Fixes
