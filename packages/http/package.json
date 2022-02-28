@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.2",
+  "version": "1.1.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -34,7 +34,7 @@
     "tests.js.map"
   ],
   "dependencies": {
-    "@flecks/core": "^1.0.1",
+    "@flecks/core": "^1.1.0",
     "@neutrinojs/web": "^9.1.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
@@ -50,7 +50,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.2",
+    "@flecks/fleck": "^1.1.0",
     "@neutrinojs/copy": "^9.4.0"
   }
 }
