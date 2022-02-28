@@ -969,10 +969,10 @@
     webpack-cli "^3"
     webpack-node-externals "2.5.2"
 
-"@flecks/fleck@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.1.tgz#ab541d873b8959901943974da23080e1dc8a096b"
-  integrity sha512-ccI1y/UZoIcnUOFARUyd7U8G2FSYTgD9MkFxBT1Ev+SfAPgNZxwZwJ00BSg932eFG9rXyzNPtjXi0Wu//xZp+w==
+"@flecks/fleck@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.2.tgz#7d964c079997bf69f3b4a1d79aa2e97e6ab72f23"
+  integrity sha512-w+U7ihjgRrDNCwN6mhJKGjcaEq62qbKL2QJPKVVf05je5KGkQcol2+Ns9IrCvXGoKCEZ6fKV4774YYl1AiPzmQ==
   dependencies:
     "@flecks/core" "^1.0.1"
     "@neutrinojs/node" "^9.4.0"

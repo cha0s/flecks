@@ -1021,10 +1021,10 @@
     webpack-cli "^3"
     webpack-node-externals "2.5.2"
 
-"@flecks/fleck@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.1.tgz#ab541d873b8959901943974da23080e1dc8a096b"
-  integrity sha512-ccI1y/UZoIcnUOFARUyd7U8G2FSYTgD9MkFxBT1Ev+SfAPgNZxwZwJ00BSg932eFG9rXyzNPtjXi0Wu//xZp+w==
+"@flecks/fleck@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.2.tgz#7d964c079997bf69f3b4a1d79aa2e97e6ab72f23"
+  integrity sha512-w+U7ihjgRrDNCwN6mhJKGjcaEq62qbKL2QJPKVVf05je5KGkQcol2+Ns9IrCvXGoKCEZ6fKV4774YYl1AiPzmQ==
   dependencies:
     "@flecks/core" "^1.0.1"
     "@neutrinojs/node" "^9.4.0"
@@ -1033,10 +1033,10 @@
     glob "^7.2.0"
     mocha "^8.3.2"
 
-"@flecks/react@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@flecks/react/-/react-1.0.1.tgz#6079434df063f620186aa7a2acfe227c6ec1d28d"
-  integrity sha512-tdeEILg6NAyfOoI2auMUlwKhPZO413eGk9PVjmN+pW8x28CjvlHnwppkKkG09JpbMGPgljBrHBd/uQiHF434wA==
+"@flecks/react@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@flecks/react/-/react-1.0.2.tgz#b71ffb7e124548af04dcbee966eee8a4a2e38594"
+  integrity sha512-MuHgfL6z2N9Qaq/LYtK0lYUSUNy4zBmaycFd76/DDBGAScMbwqxqFHgpjvw1cJTga5P6gBtvNXAAdxzf4+8xCg==
   dependencies:
     "@flecks/core" "^1.0.1"
     "@hot-loader/react-dom" "^17.0.1"
@@ -1050,10 +1050,10 @@
     react-router-dom "^6.2.1"
     redux-first-history "^5.0.8"
 
-"@flecks/redux@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@flecks/redux/-/redux-1.0.1.tgz#c032d7b15a3cd3329faed9c0d72201f5832e31ec"
-  integrity sha512-o89FoyDCujIRF5MSoOE9xR8iCFQzO0w/JRws9rMd8swWIdEb8N7mssW8Z/Z96ZvKroH1yqUJPwpPxOl5el+vLg==
+"@flecks/redux@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@flecks/redux/-/redux-1.0.2.tgz#4dbd476cba89ad8c1b6f97a14983a295d83c656b"
+  integrity sha512-cNFQ9AOLNjUpFxRVcM0EfoiBGTczEd4cTBjRA9yaBRDIIxUsYPvaTbelvqCjyoppWClxNOjkvOopyttnmeWcEA==
   dependencies:
     "@flecks/core" "^1.0.1"
     "@hot-loader/react-dom" "^17.0.1"
