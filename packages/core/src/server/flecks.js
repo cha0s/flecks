@@ -282,6 +282,7 @@ export default class ServerFlecks extends Flecks {
           ...babelmerge(...rcBabel.map(([, babel]) => babel)),
           ignore: [resolve(join(sourcepath, '..', 'node_modules'))],
           only: [resolve(join(sourcepath, '..'))],
+          sourceMaps: 'inline',
         };
         debug("require('@babel/register')(%O)", config);
         register({
@@ -327,6 +328,13 @@ export default class ServerFlecks extends Flecks {
                 prepend: 'const __non_webpack_require__ = require;',
               },
               '__non_webpack_require__',
+            ],
+            [
+              'prepend',
+              {
+                prepend: "require('source-map-support/register');",
+              },
+              'source-map-support',
             ],
           ],
         });
