@@ -10,7 +10,8 @@
 
   ## ⚠️ PROCEED AT YOUR OWN RISK ⚠️
 
-  This is alpha software. There are undoubtedly many bugs that haven't yet been found.
+  This is alpha software. There are undoubtedly many bugs that haven't yet been found. I reserve
+  the right to break all semantic versioning guarantees as long as the project is v1.x.x!
   
   **You've been warned!**
 </div>
