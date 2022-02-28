@@ -37,8 +37,8 @@ else {
 config.use.push((neutrino) => {
   // Test entrypoint.
   const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
-  for (let i = 0; i < this.platforms.length; ++i) {
-    testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/${this.platforms[i]}/*.js`)));
+  for (let i = 0; i < flecks.platforms.length; ++i) {
+    testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/${flecks.platforms[i]}/*.js`)));
   }
   if (testPaths.length > 0) {
     const testEntry = neutrino.config.entry('test').clear();
