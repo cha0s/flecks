@@ -936,10 +936,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flecks/core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.0.tgz#4b0bf7ab086ac407fa6f83ad1110a4b6e732a9f0"
-  integrity sha512-/jVPuOa1BOw+Pnci+txWpgtcmRiB4n1Nkmv9N36tlMLEEcNTA11CKukRPy1JSwGlRMlqUmdwVdQht/fMC4h1mA==
+"@flecks/core@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.1.tgz#7af4387097af85f3bb6003686eef607c714c2ce2"
+  integrity sha512-Fl3wUUtXDYzxCnQmDTpwZCs+rrgoRU7MBfEzrMCW/hnTyH48t/9VfF3tspsL6wJHIsKiz57fB/TBwWDhe56jBg==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-proposal-optional-chaining" "^7.12.16"

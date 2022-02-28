@@ -988,10 +988,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flecks/core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.0.tgz#4b0bf7ab086ac407fa6f83ad1110a4b6e732a9f0"
-  integrity sha512-/jVPuOa1BOw+Pnci+txWpgtcmRiB4n1Nkmv9N36tlMLEEcNTA11CKukRPy1JSwGlRMlqUmdwVdQht/fMC4h1mA==
+"@flecks/core@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.1.tgz#7af4387097af85f3bb6003686eef607c714c2ce2"
+  integrity sha512-Fl3wUUtXDYzxCnQmDTpwZCs+rrgoRU7MBfEzrMCW/hnTyH48t/9VfF3tspsL6wJHIsKiz57fB/TBwWDhe56jBg==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-proposal-optional-chaining" "^7.12.16"
@@ -1021,24 +1021,24 @@
     webpack-cli "^3"
     webpack-node-externals "2.5.2"
 
-"@flecks/fleck@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.0.tgz#45dc5eab566cb794fdab185fc8e0c74b97066ad9"
-  integrity sha512-rcCqlysvChvuDg05X8xye5oASIlz00DbTO0AcvK32oEELZ4JofLLszH/VmkxzCyvqSqzBx1U2Vn5MfyM0yAiRw==
+"@flecks/fleck@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.1.tgz#ab541d873b8959901943974da23080e1dc8a096b"
+  integrity sha512-ccI1y/UZoIcnUOFARUyd7U8G2FSYTgD9MkFxBT1Ev+SfAPgNZxwZwJ00BSg932eFG9rXyzNPtjXi0Wu//xZp+w==
   dependencies:
-    "@flecks/core" "^1.0.0"
+    "@flecks/core" "^1.0.1"
     "@neutrinojs/node" "^9.4.0"
     chokidar "^3.5.3"
     debug "^4.3.3"
     glob "^7.2.0"
     mocha "^8.3.2"
 
-"@flecks/react@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/react/-/react-1.0.0.tgz#f7f85f7c57a510b4b6926ad7f750db1cc0a8b5fe"
-  integrity sha512-JVtAVKz/RN/+uy16tLMeEAObkHaYEW4rKDyGh3ESPL3wbxlG+SBPUd/pAuNR1nNxH+NDQ8PZOskWVHrcidVuiA==
+"@flecks/react@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/react/-/react-1.0.1.tgz#6079434df063f620186aa7a2acfe227c6ec1d28d"
+  integrity sha512-tdeEILg6NAyfOoI2auMUlwKhPZO413eGk9PVjmN+pW8x28CjvlHnwppkKkG09JpbMGPgljBrHBd/uQiHF434wA==
   dependencies:
-    "@flecks/core" "^1.0.0"
+    "@flecks/core" "^1.0.1"
     "@hot-loader/react-dom" "^17.0.1"
     "@neutrinojs/react" "^9.4.0"
     classnames "^2.3.1"
@@ -1050,12 +1050,12 @@
     react-router-dom "^6.2.1"
     redux-first-history "^5.0.8"
 
-"@flecks/redux@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/redux/-/redux-1.0.0.tgz#ac503a6cd645e524ecfea9c45b5eabe5397d8e45"
-  integrity sha512-ekkQbpyol2GqT+GvkW1yp9h7ytNLS44jUJAgjVd+8rfQrH1/nvqB9YP8iLx2DgQJ31UoqXtUP0cfXXj7JOVXGw==
+"@flecks/redux@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/redux/-/redux-1.0.1.tgz#c032d7b15a3cd3329faed9c0d72201f5832e31ec"
+  integrity sha512-o89FoyDCujIRF5MSoOE9xR8iCFQzO0w/JRws9rMd8swWIdEb8N7mssW8Z/Z96ZvKroH1yqUJPwpPxOl5el+vLg==
   dependencies:
-    "@flecks/core" "^1.0.0"
+    "@flecks/core" "^1.0.1"
     "@hot-loader/react-dom" "^17.0.1"
     "@reduxjs/toolkit" "^1.5.0"
     debug "^4.3.3"
@@ -1270,9 +1270,9 @@
     deepmerge "^1.5.2"
 
 "@reduxjs/toolkit@^1.5.0":
-  version "1.7.2"
-  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.7.2.tgz#b428aaef92582379464f9de698dbb71957eafb02"
-  integrity sha512-wwr3//Ar8ZhM9bS58O+HCIaMlR4Y6SNHfuszz9hKnQuFIKvwaL3Kmjo6fpDKUOjo4Lv54Yi299ed8rofCJ/Vjw==
+  version "1.8.0"
+  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.8.0.tgz#8ae875e481ed97e4a691aafa034f876bfd0413c4"
+  integrity sha512-cdfHWfcvLyhBUDicoFwG1u32JqvwKDxLxDd7zSmSoFw/RhYLOygIRtmaMjPRUUHmVmmAGAvquLLsKKU/677kSQ==
   dependencies:
     immer "^9.0.7"
     redux "^4.1.2"

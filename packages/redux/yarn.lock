@@ -936,10 +936,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@flecks/core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.0.tgz#4b0bf7ab086ac407fa6f83ad1110a4b6e732a9f0"
-  integrity sha512-/jVPuOa1BOw+Pnci+txWpgtcmRiB4n1Nkmv9N36tlMLEEcNTA11CKukRPy1JSwGlRMlqUmdwVdQht/fMC4h1mA==
+"@flecks/core@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/core/-/core-1.0.1.tgz#7af4387097af85f3bb6003686eef607c714c2ce2"
+  integrity sha512-Fl3wUUtXDYzxCnQmDTpwZCs+rrgoRU7MBfEzrMCW/hnTyH48t/9VfF3tspsL6wJHIsKiz57fB/TBwWDhe56jBg==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-proposal-optional-chaining" "^7.12.16"
@@ -969,12 +969,12 @@
     webpack-cli "^3"
     webpack-node-externals "2.5.2"
 
-"@flecks/fleck@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.0.tgz#45dc5eab566cb794fdab185fc8e0c74b97066ad9"
-  integrity sha512-rcCqlysvChvuDg05X8xye5oASIlz00DbTO0AcvK32oEELZ4JofLLszH/VmkxzCyvqSqzBx1U2Vn5MfyM0yAiRw==
+"@flecks/fleck@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@flecks/fleck/-/fleck-1.0.1.tgz#ab541d873b8959901943974da23080e1dc8a096b"
+  integrity sha512-ccI1y/UZoIcnUOFARUyd7U8G2FSYTgD9MkFxBT1Ev+SfAPgNZxwZwJ00BSg932eFG9rXyzNPtjXi0Wu//xZp+w==
   dependencies:
-    "@flecks/core" "^1.0.0"
+    "@flecks/core" "^1.0.1"
     "@neutrinojs/node" "^9.4.0"
     chokidar "^3.5.3"
     debug "^4.3.3"
@@ -1096,9 +1096,9 @@
     start-server-webpack-plugin "^2.2.5"
 
 "@reduxjs/toolkit@^1.5.0":
-  version "1.7.2"
-  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.7.2.tgz#b428aaef92582379464f9de698dbb71957eafb02"
-  integrity sha512-wwr3//Ar8ZhM9bS58O+HCIaMlR4Y6SNHfuszz9hKnQuFIKvwaL3Kmjo6fpDKUOjo4Lv54Yi299ed8rofCJ/Vjw==
+  version "1.8.0"
+  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.8.0.tgz#8ae875e481ed97e4a691aafa034f876bfd0413c4"
+  integrity sha512-cdfHWfcvLyhBUDicoFwG1u32JqvwKDxLxDd7zSmSoFw/RhYLOygIRtmaMjPRUUHmVmmAGAvquLLsKKU/677kSQ==
   dependencies:
     immer "^9.0.7"
     redux "^4.1.2"
