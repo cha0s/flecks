@@ -32,6 +32,46 @@ export default class ServerFlecks extends Flecks {
       resolver = {},
       rcs = {},
     } = options;
+    const keys = Object.keys(process.env);
+    // Reverse-sorting means e.g. `@flecks/core/server` comes before `@flecks/core`.
+    // We want to select the most specific match.
+    //
+    // `FLECKS_ENV_FLECKS_CORE_SERVER_VARIABLE` is ambiguous as it can equate to both:
+    // - `flecks.set('@flecks/core.server.variable');`
+    // - `flecks.set('@flecks/core/server.variable');`
+    //
+    // The latter will take precedence.
+    const seen = [];
+    Object.keys(resolver)
+      .sort((l, r) => (l < r ? 1 : -1))
+      .forEach((fleck) => {
+        const prefix = `FLECKS_ENV_${
+          fleck
+            // - `@flecks/core` -> `FLECKS_CORE`
+            .replace(/[^a-zA-Z0-9]/g, '_')
+            .replace(/_*(.*)_*/, '$1')
+            .toUpperCase()
+        }`;
+        keys
+          .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
+          .map((key) => {
+            seen.push(key);
+            debug('reading environment from %s...', key);
+            return [key, process.env[key]];
+          })
+          .map(([key, value]) => [key.slice(prefix.length + 1), value])
+          .map(([subkey, value]) => [subkey.split('_'), value])
+          .forEach(([path, jsonOrString]) => {
+            try {
+              this.set([fleck, ...path], JSON.parse(jsonOrString));
+              debug('read (%s) as JSON', jsonOrString);
+            }
+            catch (error) {
+              this.set([fleck, ...path], jsonOrString);
+              debug('read (%s) as string', jsonOrString);
+            }
+          });
+      });
     this.resolver = resolver;
     this.rcs = rcs;
   }
