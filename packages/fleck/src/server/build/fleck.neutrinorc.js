@@ -2,6 +2,7 @@ const {join} = require('path');
 
 const {Flecks} = require('@flecks/core/server');
 const node = require('@neutrinojs/node');
+const babelmerge = require('babel-merge');
 const D = require('debug');
 const glob = require('glob');
 
@@ -33,6 +34,16 @@ else {
     babel: {configFile},
   }));
 }
+
+// Augment the compiler with babel config from flecksrc.
+config.use.push((neutrino) => {
+  const rcBabel = flecks.babel();
+  debug('.flecksrc: babel: %O', rcBabel);
+  neutrino.config.module
+    .rule('compile')
+    .use('babel')
+    .tap((options) => babelmerge(options, ...rcBabel.map(([, babel]) => babel)));
+});
 
 config.use.push((neutrino) => {
   // Test entrypoint.

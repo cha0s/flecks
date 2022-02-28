@@ -11,6 +11,7 @@ import {
   resolve,
 } from 'path';
 
+import babelmerge from 'babel-merge';
 import compileLoader from '@neutrinojs/compile-loader';
 import D from 'debug';
 
@@ -50,6 +51,16 @@ export default class ServerFlecks extends Flecks {
       }
     }
     return aliases;
+  }
+
+  babel() {
+    return this.constructor.babel(this.rcs);
+  }
+
+  static babel(rcs) {
+    return Object.entries(rcs)
+      .filter(([, {babel}]) => babel)
+      .map(([key, {babel}]) => [key, babel]);
   }
 
   static bootstrap(
@@ -140,6 +151,7 @@ export default class ServerFlecks extends Flecks {
         }
       }
     }
+    debug('rcs: %O', rcs);
     // Stub platform-unfriendly modules.
     const stubs = this.stubs(platforms, rcs);
     if (stubs.length > 0) {
@@ -199,89 +211,94 @@ export default class ServerFlecks extends Flecks {
       }
       return Mr.call(this, request, options);
     };
-    // Key flecks needing compilation by their roots, so we can compile all common roots with a
-    // single invocation of `@babel/register`.
-    const compilationRootMap = {};
-    needCompilation.forEach((fleck) => {
-      const root = this.root(resolver, fleck);
-      if (!compilationRootMap[root]) {
-        compilationRootMap[root] = [];
-      }
-      compilationRootMap[root].push(fleck);
-    });
-    debug('compiling: %O', compilationRootMap);
-    // Register a compiler for each root and require() the flecks underneath.
-    Object.entries(compilationRootMap).forEach(([root, compiling]) => {
-      const resolved = dirname(R.resolve(join(root, 'package.json')));
-      const sourcepath = this.sourcepath(resolved);
-      const configFile = this.localConfig(
-        resolver,
-        'babel.config.js',
-        '@flecks/core',
-        {root: join(sourcepath, '..')},
-      );
-      const register = R('@babel/register');
-      const config = {
-        cache: true,
-        configFile,
-        ignore: [resolve(join(sourcepath, '..', 'node_modules'))],
-        only: [resolve(join(sourcepath, '..'))],
-      };
-      debug("require('@babel/register')(%O)", config);
-      register({
-        ...config,
-        // Make webpack goodies exist in nodespace.
-        plugins: [
-          [
-            'prepend',
-            {
-              prepend: [
-                'require.context = (',
-                '  directory,',
-                '  useSubdirectories = true,',
-                '  regExp = /^\\.\\/.*$/,',
-                '  mode = "sync",',
-                ') => {',
-                '  const glob = require("glob");',
-                '  const {resolve, sep} = require("path");',
-                '  const keys = glob.sync(',
-                '    useSubdirectories ? "**/*" : "*",',
-                '    {cwd: resolve(__dirname, directory)},',
-                '  )',
-                '    .filter((key) => key.match(regExp))',
-                '    .map(',
-                '      (key) => (',
-                '        -1 !== [".".charCodeAt(0), "/".charCodeAt(0)].indexOf(key.charCodeAt(0))',
-                '          ? key',
-                '          : ("." + sep + key)',
-                '      ),',
-                '    );',
-                '  const R = (request) => require(keys[request]);',
-                '  R.id = __filename',
-                '  R.keys = () => keys;',
-                '  return R;',
-                '};',
-              ].join('\n'),
-            },
-            'require.context',
-          ],
-          [
-            'prepend',
-            {
-              prepend: 'const __non_webpack_require__ = require;',
-            },
-            '__non_webpack_require__',
-          ],
-        ],
+    if (needCompilation.length > 0) {
+      const rcBabel = this.babel(rcs);
+      debug('.flecksrc: babel: %O', rcBabel);
+      // Key flecks needing compilation by their roots, so we can compile all common roots with a
+      // single invocation of `@babel/register`.
+      const compilationRootMap = {};
+      needCompilation.forEach((fleck) => {
+        const root = this.root(resolver, fleck);
+        if (!compilationRootMap[root]) {
+          compilationRootMap[root] = [];
+        }
+        compilationRootMap[root].push(fleck);
       });
-      compiling.forEach((fleck) => {
-        flecks[fleck] = R(this.resolve(resolver, fleck));
-        // Remove the required fleck from the list still needing require().
-        paths.splice(paths.indexOf(fleck), 1);
+      // Register a compiler for each root and require() the flecks underneath.
+      Object.entries(compilationRootMap).forEach(([root, compiling]) => {
+        debug('compiling: %s', root);
+        const resolved = dirname(R.resolve(join(root, 'package.json')));
+        const sourcepath = this.sourcepath(resolved);
+        const configFile = this.localConfig(
+          resolver,
+          'babel.config.js',
+          '@flecks/core',
+          {root: join(sourcepath, '..')},
+        );
+        const register = R('@babel/register');
+        const config = {
+          configFile,
+          // Augment the compiler with babel config from flecksrc.
+          ...babelmerge(...rcBabel.map(([, babel]) => babel)),
+          ignore: [resolve(join(sourcepath, '..', 'node_modules'))],
+          only: [resolve(join(sourcepath, '..'))],
+        };
+        debug("require('@babel/register')(%O)", config);
+        register({
+          ...config,
+          // Make webpack goodies exist in nodespace.
+          plugins: [
+            [
+              'prepend',
+              {
+                prepend: [
+                  'require.context = (',
+                  '  directory,',
+                  '  useSubdirectories = true,',
+                  '  regExp = /^\\.\\/.*$/,',
+                  '  mode = "sync",',
+                  ') => {',
+                  '  const glob = require("glob");',
+                  '  const {resolve, sep} = require("path");',
+                  '  const keys = glob.sync(',
+                  '    useSubdirectories ? "**/*" : "*",',
+                  '    {cwd: resolve(__dirname, directory)},',
+                  '  )',
+                  '    .filter((key) => key.match(regExp))',
+                  '    .map(',
+                  '      (key) => (',
+                  '        -1 !== [".".charCodeAt(0), "/".charCodeAt(0)].indexOf(key.charCodeAt(0))',
+                  '          ? key',
+                  '          : ("." + sep + key)',
+                  '      ),',
+                  '    );',
+                  '  const R = (request) => require(keys[request]);',
+                  '  R.id = __filename',
+                  '  R.keys = () => keys;',
+                  '  return R;',
+                  '};',
+                ].join('\n'),
+              },
+              'require.context',
+            ],
+            [
+              'prepend',
+              {
+                prepend: 'const __non_webpack_require__ = require;',
+              },
+              '__non_webpack_require__',
+            ],
+          ],
+        });
+        compiling.forEach((fleck) => {
+          flecks[fleck] = R(this.resolve(resolver, fleck));
+          // Remove the required fleck from the list still needing require().
+          paths.splice(paths.indexOf(fleck), 1);
+        });
+        // Don't pollute, kids.
+        register.revert();
       });
-      // Don't pollute, kids.
-      register.revert();
-    });
+    }
     // Load the rest of the flecks.
     paths.forEach((path) => {
       flecks[path] = R(this.resolve(resolver, path));
@@ -421,36 +438,47 @@ export default class ServerFlecks extends Flecks {
     // Flecks that are aliased or symlinked need compilation.
     const needCompilation = Object.entries(this.resolver)
       .filter(([fleck]) => this.fleckIsAliased(fleck) || this.fleckIsSymlinked(fleck));
-    // Alias and de-externalize.
-    needCompilation
-      .forEach(([fleck, resolved]) => {
-        const alias = this.fleckIsAliased(fleck)
-          ? resolved
-          : this.sourcepath(R.resolve(this.resolve(fleck)));
-        allowlist.push(`${fleck}$`);
-        config.resolve.alias
-          .set(`${fleck}$`, alias);
-      });
-    // Set up compilation at each root.
-    Array.from(new Set(
+    if (needCompilation.length > 0) {
+      const rcBabel = this.babel();
+      debug('.flecksrc: babel: %O', rcBabel);
+      // Alias and de-externalize.
       needCompilation
-        .map(([fleck]) => fleck)
-        .map((fleck) => this.root(fleck)),
-    ))
-      .forEach((root) => {
-        const resolved = dirname(R.resolve(join(root, 'package.json')));
-        const sourcepath = this.sourcepath(resolved);
-        const configFile = this.localConfig(
-          'babel.config.js',
-          '@flecks/core',
-          {root: resolved},
-        );
-        compileLoader({
-          include: [sourcepath],
-          babel: {configFile},
-          ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
-        })(neutrino);
-      });
+        .forEach(([fleck, resolved]) => {
+          const alias = this.fleckIsAliased(fleck)
+            ? resolved
+            : this.sourcepath(R.resolve(this.resolve(fleck)));
+          allowlist.push(`${fleck}$`);
+          config.resolve.alias
+            .set(`${fleck}$`, alias);
+          debug('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
+        });
+      // Set up compilation at each root.
+      Array.from(new Set(
+        needCompilation
+          .map(([fleck]) => fleck)
+          .map((fleck) => this.root(fleck)),
+      ))
+        .forEach((root) => {
+          debug('compiling: %s', root);
+          const resolved = dirname(R.resolve(join(root, 'package.json')));
+          const sourcepath = this.sourcepath(resolved);
+          const configFile = this.localConfig(
+            'babel.config.js',
+            '@flecks/core',
+            {root: resolved},
+          );
+          const babel = {
+            configFile,
+            // Augment the compiler with babel config from flecksrc.
+            ...babelmerge(...rcBabel.map(([, babel]) => babel)),
+          };
+          compileLoader({
+            include: [sourcepath],
+            babel,
+            ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
+          })(neutrino);
+        });
+    }
   }
 
   stubs() {

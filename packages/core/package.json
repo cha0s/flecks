@@ -52,6 +52,7 @@
     "@neutrinojs/compile-loader": "^9.5.0",
     "@neutrinojs/copy": "^9.4.0",
     "@neutrinojs/node": "^9.1.0",
+    "babel-merge": "^3.0.0",
     "babel-plugin-prepend": "^1.0.2",
     "chai": "4.2.0",
     "commander": "^8.3.0",
