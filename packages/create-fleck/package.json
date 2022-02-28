@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "bin": {
     "create-fleck": "./cli.js"
   },
@@ -26,6 +26,6 @@
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.1"
+    "@flecks/fleck": "^1.0.2"
   }
 }

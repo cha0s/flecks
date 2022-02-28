@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -49,6 +49,6 @@
     "redux-first-history": "^5.0.8"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.1"
+    "@flecks/fleck": "^1.0.2"
   }
 }

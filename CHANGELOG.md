@@ -1,3 +1,19 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [1.0.2](https://github.com/cha0s/flecks/compare/v1.0.1...v1.0.2) (2022-02-28)
+
+
+### Features
+
+* CHANGELOG ([3e908bb](https://github.com/cha0s/flecks/commit/3e908bba63abdcba204bafdd2026feef3f010dee))
+
+
+
+
+
 ## [](https://github.com/cha0s/flecks/compare/v1.0.1...v) (2022-02-28)
 
 ### [1.0.1](https://github.com/cha0s/flecks/compare/v1.0.0...v1.0.1) (2022-02-28)
@@ -27,4 +43,3 @@
 * resolve from root ([6c705df](https://github.com/cha0s/flecks/commit/6c705df5cd325cdfb25697a07d9acd9930b8884d))
 * test gathering ([308dd1a](https://github.com/cha0s/flecks/commit/308dd1a13d5291b0ca43916425bc05780259a890))
 * tests.html bypasses middleware and stream processing ([04d7094](https://github.com/cha0s/flecks/commit/04d7094cea92a2bb8e2b91b5a111652e682e8da4))
-

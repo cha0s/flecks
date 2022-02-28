@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -37,6 +37,6 @@
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.1"
+    "@flecks/fleck": "^1.0.2"
   }
 }

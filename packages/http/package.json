@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -51,7 +51,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.1",
+    "@flecks/fleck": "^1.0.2",
     "@neutrinojs/copy": "^9.4.0"
   }
 }

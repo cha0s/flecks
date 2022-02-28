@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -22,11 +22,11 @@
   ],
   "dependencies": {
     "@flecks/core": "^1.0.1",
-    "@flecks/db": "^1.0.1",
+    "@flecks/db": "^1.0.2",
     "rate-limiter-flexible": "^2.1.13",
     "redis": "^3.1.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.1"
+    "@flecks/fleck": "^1.0.2"
   }
 }
