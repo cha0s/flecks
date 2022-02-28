@@ -117,3 +117,6 @@ dist
 
 # local
 /build
+
+# package-locals
+/packages/*/yarn.lock
