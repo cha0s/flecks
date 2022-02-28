@@ -102,6 +102,7 @@ export default (program, flecks) => {
           ...(hot ? {FLECKS_HOT: 1} : {}),
         };
         const spawnArgs = [
+          '--colors',
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
           ...(verbose ? ['--stats', 'verbose'] : []),
