@@ -1,4 +1,4 @@
-import D from 'debug';
+import {D} from '@flecks/core';
 import proxyaddr from 'proxy-addr';
 import SocketIoServer from 'socket.io';
 

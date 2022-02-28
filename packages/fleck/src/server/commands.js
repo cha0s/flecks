@@ -1,8 +1,8 @@
 import {stat, unlink} from 'fs/promises';
 import {join} from 'path';
 
+import {D} from '@flecks/core';
 import chokidar from 'chokidar';
-import D from 'debug';
 import glob from 'glob';
 
 import {

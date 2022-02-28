@@ -1,6 +1,5 @@
-import {Hooks} from '@flecks/core';
+import {D, Hooks} from '@flecks/core';
 import {hydrate, render} from '@hot-loader/react-dom';
-import D from 'debug';
 import React from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies

@@ -1,7 +1,6 @@
-import {Hooks} from '@flecks/core';
+import {D, Hooks} from '@flecks/core';
 import redisAdapter from '@socket.io/redis-adapter';
 import ConnectRedis from 'connect-redis';
-import D from 'debug';
 import session from 'express-session';
 
 import createClient from '../create-client';

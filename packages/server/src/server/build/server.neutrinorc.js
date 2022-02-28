@@ -1,10 +1,10 @@
 const {join} = require('path');
 
+const {D} = require('@flecks/core');
 const {Flecks} = require('@flecks/core/server');
 const banner = require('@neutrinojs/banner');
 const node = require('@neutrinojs/node');
 const startServer = require('@neutrinojs/start-server');
-const D = require('debug');
 
 const runtime = require('./runtime');
 

@@ -1,7 +1,6 @@
 import {promisify} from 'util';
 
-import {compose, EventEmitter} from '@flecks/core';
-import D from 'debug';
+import {compose, D, EventEmitter} from '@flecks/core';
 
 import Socket from '../socket';
 

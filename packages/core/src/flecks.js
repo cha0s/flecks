@@ -6,11 +6,11 @@ import {
   join,
 } from 'path';
 
-import D from 'debug';
 import get from 'lodash.get';
 import set from 'lodash.set';
 import without from 'lodash.without';
 
+import D from './debug';
 import Middleware from './middleware';
 
 const debug = D('@flecks/core/flecks');

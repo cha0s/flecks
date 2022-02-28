@@ -3,7 +3,7 @@ import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
 
-import D from 'debug';
+import {D} from '@flecks/core';
 
 const debug = D('@flecks/docker/container');
 

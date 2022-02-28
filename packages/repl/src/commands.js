@@ -3,8 +3,8 @@ import {readdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
 
+import {D} from '@flecks/core';
 import commandExists from 'command-exists';
-import D from 'debug';
 
 const debug = D('@flecks/repl/commands');
 

@@ -40,7 +40,6 @@
     "@hot-loader/react-dom": "^17.0.1",
     "@neutrinojs/react": "^9.4.0",
     "classnames": "^2.3.1",
-    "debug": "4.3.1",
     "history": "^5.3.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",

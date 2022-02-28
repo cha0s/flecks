@@ -1,9 +1,9 @@
 const {join} = require('path');
 
+const {D} = require('@flecks/core');
 const {Flecks} = require('@flecks/core/server');
 const node = require('@neutrinojs/node');
 const babelmerge = require('babel-merge');
-const D = require('debug');
 const glob = require('glob');
 
 const {

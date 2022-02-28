@@ -2,9 +2,10 @@ import {spawn} from 'child_process';
 import {join, normalize} from 'path';
 
 import {Argument} from 'commander';
-import D from 'debug';
 import flatten from 'lodash.flatten';
 import rimraf from 'rimraf';
+
+import D from '../debug';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

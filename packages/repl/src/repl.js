@@ -4,7 +4,7 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {start} from 'repl';
 
-import D from 'debug';
+import {D} from '@flecks/core';
 
 const debug = D('@flecks/repl');
 

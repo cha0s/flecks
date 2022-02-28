@@ -1,6 +1,5 @@
-import {Hooks} from '@flecks/core';
+import {D, Hooks} from '@flecks/core';
 import {Flecks, spawnWith} from '@flecks/core/server';
-import D from 'debug';
 
 import {configSource, inlineConfig} from './config';
 import {createHttpServer} from './http';

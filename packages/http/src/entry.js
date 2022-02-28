@@ -1,5 +1,4 @@
-import D from 'debug';
-import {Flecks} from '@flecks/core';
+import {D, Flecks} from '@flecks/core';
 
 import Progress from './progress';
 

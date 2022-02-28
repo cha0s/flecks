@@ -4,8 +4,8 @@ const {
   join,
 } = require('path');
 
+const {D} = require('@flecks/core');
 const {Flecks, require: R} = require('@flecks/core/server');
-const D = require('debug');
 const glob = require('glob');
 
 const debug = D('@flecks/http/runtime');

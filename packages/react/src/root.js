@@ -1,4 +1,4 @@
-import D from 'debug';
+import {D} from '@flecks/core';
 import React from 'react';
 
 // eslint-disable-next-line import/no-extraneous-dependencies

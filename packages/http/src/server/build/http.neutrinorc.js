@@ -1,6 +1,6 @@
+const {D} = require('@flecks/core');
 const {Flecks} = require('@flecks/core/server');
 const web = require('@neutrinojs/web');
-const D = require('debug');
 const {EnvironmentPlugin} = require('webpack');
 
 const devServer = require('./dev-server');

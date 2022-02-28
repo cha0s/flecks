@@ -13,9 +13,9 @@ import {
 
 import babelmerge from 'babel-merge';
 import compileLoader from '@neutrinojs/compile-loader';
-import D from 'debug';
 
 import R from '../bootstrap/require';
+import D from '../debug';
 import Flecks from '../flecks';
 
 const {

@@ -2,8 +2,8 @@ import {fork} from 'child_process';
 import {join, resolve, sep} from 'path';
 
 import {Command} from 'commander';
-import D from 'debug';
 
+import D from './debug';
 import Flecks from './server/flecks';
 
 const {

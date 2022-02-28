@@ -2,8 +2,8 @@ import {createReadStream} from 'fs';
 import {createServer, ServerResponse} from 'http';
 import {join} from 'path';
 
+import {D} from '@flecks/core';
 import compression from 'compression';
-import D from 'debug';
 import express from 'express';
 import httpProxy from 'http-proxy';
 import flatten from 'lodash.flatten';

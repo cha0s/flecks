@@ -1,5 +1,4 @@
-import {Flecks, Hooks} from '@flecks/core';
-import D from 'debug';
+import {D, Flecks, Hooks} from '@flecks/core';
 import passport from 'passport';
 import LogOps from 'passport/lib/http/request';
 

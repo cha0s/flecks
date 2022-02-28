@@ -1,4 +1,4 @@
-import D from 'debug';
+import {D} from '@flecks/core';
 
 const {
   NODE_ENV,

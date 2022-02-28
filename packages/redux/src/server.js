@@ -1,5 +1,4 @@
-import {ensureUniqueReduction, Hooks} from '@flecks/core';
-import D from 'debug';
+import {D, ensureUniqueReduction, Hooks} from '@flecks/core';
 import {Provider} from 'react-redux';
 
 import {hydrateServer} from './actions';

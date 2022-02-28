@@ -1,5 +1,4 @@
-import {Hooks} from '@flecks/core';
-import D from 'debug';
+import {D, Hooks} from '@flecks/core';
 import express from 'express';
 import expressSession from 'express-session';
 

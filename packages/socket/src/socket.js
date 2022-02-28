@@ -1,5 +1,4 @@
-import {ByType} from '@flecks/core';
-import D from 'debug';
+import {ByType, D} from '@flecks/core';
 
 import normalize from './normalize';
 import acceptor from './packet/acceptor';

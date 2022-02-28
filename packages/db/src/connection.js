@@ -1,5 +1,4 @@
-import {ByType} from '@flecks/core';
-import D from 'debug';
+import {ByType, D} from '@flecks/core';
 import Sequelize from 'sequelize';
 
 const debug = D('@flecks/db/server/connection');
