@@ -46,7 +46,7 @@ export default async (flecks, key, config) => {
     ...Object.entries(config.ports)
       .map(([host, container]) => ['-p', `${host}:${container}`]).flat(),
   ];
-  const datadir = join(tmpdir(), 'flecks', key, 'docker');
+  const datadir = join(tmpdir(), 'flecks', id, key, 'docker');
   debug("creating datadir '%s'", datadir);
   try {
     await mkdir(datadir, {recursive: true});
