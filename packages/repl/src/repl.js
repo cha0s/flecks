@@ -52,14 +52,14 @@ export async function createReplServer(flecks) {
       });
   });
   try {
-    await mkdir(join(tmpdir(), 'flecks', 'repl'));
+    await mkdir(join(tmpdir(), 'flecks', id, 'repl'));
   }
   catch (error) {
     if ('EEXIST' !== error.code) {
       throw error;
     }
   }
-  const socket = join(tmpdir(), 'flecks', 'repl', `${id}-${Date.now()}.sock`);
+  const socket = join(tmpdir(), 'flecks', id, 'repl', `${id}-${Date.now()}.sock`);
   flecks.set('$flecks/repl.socket', socket);
   await new Promise((resolve) => netServer.listen(socket, resolve));
   debug('listening @ %s', socket);
