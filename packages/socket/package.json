@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -23,7 +23,7 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.0.0",
+    "@flecks/core": "^1.0.1",
     "debug": "4.3.1",
     "msgpack-lite": "^0.1.26",
     "proxy-addr": "^2.0.6",
@@ -32,6 +32,6 @@
     "socket.io-client": "^4.1.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.0"
+    "@flecks/fleck": "^1.0.1"
   }
 }
