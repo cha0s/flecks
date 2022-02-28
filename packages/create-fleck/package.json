@@ -1,6 +1,8 @@
 {
   "name": "@flecks/create-fleck",
-  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "bin": {
     "create-fleck": "./cli.js"
