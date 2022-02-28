@@ -1,14 +1,14 @@
 {
   "name": "@flecks/server",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/server"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -33,7 +33,7 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
+    "@flecks/core": "^1.1.1",
     "@neutrinojs/banner": "^9.5.0",
     "@neutrinojs/node": "^9.4.0",
     "@neutrinojs/start-server": "^9.5.0",
@@ -42,6 +42,6 @@
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.1.0"
+    "@flecks/fleck": "^1.1.1"
   }
 }

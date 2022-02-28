@@ -1,14 +1,14 @@
 {
   "name": "@flecks/http",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/http"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -39,7 +39,7 @@
     "tests.js.map"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
+    "@flecks/core": "^1.1.1",
     "@neutrinojs/web": "^9.1.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
@@ -55,7 +55,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.1.0",
+    "@flecks/fleck": "^1.1.1",
     "@neutrinojs/copy": "^9.4.0"
   }
 }

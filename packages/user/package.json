@@ -1,14 +1,14 @@
 {
   "name": "@flecks/user",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/user"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -34,9 +34,9 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
-    "@flecks/react": "^1.1.0",
-    "@flecks/redux": "^1.1.0",
+    "@flecks/core": "^1.1.1",
+    "@flecks/react": "^1.1.1",
+    "@flecks/redux": "^1.1.1",
     "bcrypt": "^5.0.0",
     "express": "^4.17.1",
     "express-session": "1.17.1",
@@ -45,6 +45,6 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.12.10",
-    "@flecks/fleck": "^1.1.0"
+    "@flecks/fleck": "^1.1.1"
   }
 }

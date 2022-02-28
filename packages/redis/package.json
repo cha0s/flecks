@@ -1,14 +1,14 @@
 {
   "name": "@flecks/redis",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/redis"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
@@ -25,13 +25,13 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
+    "@flecks/core": "^1.1.1",
     "@socket.io/redis-adapter": "7.1.0",
     "connect-redis": "^5.0.0",
     "express-session": "^1.17.1",
     "redis": "4.0.3"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.1.0"
+    "@flecks/fleck": "^1.1.1"
   }
 }

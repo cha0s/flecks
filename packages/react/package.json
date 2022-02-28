@@ -1,14 +1,14 @@
 {
   "name": "@flecks/react",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/react"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -41,7 +41,7 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
+    "@flecks/core": "^1.1.1",
     "@hot-loader/react-dom": "^17.0.1",
     "@neutrinojs/react": "^9.4.0",
     "classnames": "^2.3.1",
@@ -53,6 +53,6 @@
     "redux-first-history": "^5.0.8"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.1.0"
+    "@flecks/fleck": "^1.1.1"
   }
 }

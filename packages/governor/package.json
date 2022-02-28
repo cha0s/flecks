@@ -1,14 +1,14 @@
 {
   "name": "@flecks/governor",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git",
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
     "directory": "packages/governor"
   },
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -26,12 +26,12 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.1.0",
-    "@flecks/db": "^1.1.0",
+    "@flecks/core": "^1.1.1",
+    "@flecks/db": "^1.1.1",
     "rate-limiter-flexible": "^2.1.13",
     "redis": "^3.1.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.1.0"
+    "@flecks/fleck": "^1.1.1"
   }
 }
