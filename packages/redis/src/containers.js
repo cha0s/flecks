@@ -4,10 +4,8 @@ const {
 
 export default () => ({
   redis: {
-    args: [
-      '-p', `${REDIS_PORT}:6379`,
-    ],
     image: 'redis',
     mount: '/data',
+    ports: {[REDIS_PORT]: 6379},
   },
 });
