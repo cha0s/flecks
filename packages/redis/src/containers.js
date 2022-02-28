@@ -1,11 +1,7 @@
-const {
-  REDIS_PORT = 6379,
-} = process.env;
-
-export default () => ({
+export default (flecks) => ({
   redis: {
     image: 'redis',
     mount: '/data',
-    ports: {[REDIS_PORT]: 6379},
+    ports: {[flecks.get('@flecks/redis/server.port')]: 6379},
   },
 });

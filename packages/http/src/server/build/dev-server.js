@@ -1,10 +1,8 @@
-const env = require('../environment');
-
-module.exports = () => (neutrino) => {
+module.exports = (flecks) => (neutrino) => {
   if ('production' === neutrino.config.get('mode')) {
     return;
   }
-  const {devHost, devPort, devPublic} = env();
+  const {devHost, devPort, devPublic} = flecks.get('@flecks/http/server');
   neutrino.config.devServer
     .hot(false)
     .host(devHost)

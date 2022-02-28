@@ -12,7 +12,13 @@ export {createDatabaseConnection};
 export default {
   [Hooks]: {
     '@flecks/core/config': () => ({
+      dialect: 'sqlite',
+      username: undefined,
+      password: undefined,
+      host: undefined,
       'models.decorate': ['...'],
+      port: undefined,
+      database: ':memory:',
     }),
     '@flecks/core/starting': (flecks) => {
       flecks.set('$flecks/db.models', flecks.gather(

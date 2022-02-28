@@ -21,10 +21,10 @@ import Flecks from '../server/flecks';
 const debug = D('@flecks/core/build/webpack.config.js');
 
 const {
-  FLECKS_BUILD_LIST = '',
+  FLECKS_CORE_BUILD_LIST = '',
 } = process.env;
 
-const buildList = FLECKS_BUILD_LIST
+const buildList = FLECKS_CORE_BUILD_LIST
   .split(',')
   .map((name) => name.trim())
   .filter((e) => e);

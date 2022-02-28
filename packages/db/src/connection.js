@@ -2,16 +2,38 @@ import {ByType} from '@flecks/core';
 import D from 'debug';
 import Sequelize from 'sequelize';
 
-import environment from './environment';
-
 const debug = D('@flecks/db/server/connection');
 
 export async function createDatabaseConnection(flecks) {
-  const env = environment();
-  debug('environment: %O', {...env, ...(env.password ? {password: '*** REDACTED ***'} : {})});
+  let config = {};
+  const {
+    dialect,
+    username,
+    password,
+    host,
+    port,
+    database,
+  } = flecks.get('@flecks/db/server');
+  if ('sqlite' === dialect) {
+    config = {
+      dialect: 'sqlite',
+      storage: database,
+    };
+  }
+  else {
+    config = {
+      dialect,
+      username,
+      password,
+      host,
+      port,
+      database,
+    };
+  }
+  debug('config: %O', {...config, ...(config.password ? {password: '*** REDACTED ***'} : {})});
   const sequelize = new Sequelize({
     logging: false,
-    ...env,
+    ...config,
   });
   const Models = flecks.get('$flecks/db.models')[ByType];
   Object.values(Models)

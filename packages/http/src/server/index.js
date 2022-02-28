@@ -20,7 +20,7 @@ export default {
       }
       // Otherwise, spawn `webpack-dev-server` (WDS).
       const localEnv = {
-        FLECKS_BUILD_LIST: 'http',
+        FLECKS_CORE_BUILD_LIST: 'http',
       };
       const spawnArgs = [
         '--mode', 'development',
@@ -33,6 +33,12 @@ export default {
       delete neutrinoConfigs.http;
     },
     '@flecks/core/config': () => ({
+      devHost: 'localhost',
+      devPort: 32341,
+      devPublic: undefined,
+      host: '0.0.0.0',
+      output: 'http',
+      port: 32340,
       'stream.html': ['...'],
       'request.route': [],
       'request.socket': [],

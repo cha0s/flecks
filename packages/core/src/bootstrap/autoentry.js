@@ -8,7 +8,7 @@ const {
 const R = require('./require');
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const resolver = (source) => (path) => {
@@ -36,7 +36,7 @@ module.exports = () => (neutrino) => {
   neutrino.config.entryPoints.delete('index');
   // Alias this package.
   neutrino.config.resolve.alias
-    .set(name, join(FLECKS_ROOT, 'src'));
+    .set(name, join(FLECKS_CORE_ROOT, 'src'));
   // Calculate entry points from `files`.
   files
     .filter(resolver(source))

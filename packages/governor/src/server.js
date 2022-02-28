@@ -55,10 +55,13 @@ export default {
     '@flecks/server/up': async (flecks) => {
       if (flecks.fleck('@flecks/http/server')) {
         const {http} = flecks.get('@flecks/governor/server');
-        const limiter = await createLimiter({
-          keyPrefix: '@flecks/governor.http.request.route',
-          ...http,
-        });
+        const limiter = await createLimiter(
+          flecks,
+          {
+            keyPrefix: '@flecks/governor.http.request.route',
+            ...http,
+          },
+        );
         flecks.set('$flecks/governor.http.limiter', limiter);
       }
       if (flecks.fleck('@flecks/socket/server')) {
@@ -70,17 +73,23 @@ export default {
               .map(async ([name, Packet]) => (
                 [
                   name,
-                  await createLimiter({keyPrefix: `@flecks/governor.packet.${name}`, ...Packet.limit}),
+                  await createLimiter(
+                    flecks,
+                    {keyPrefix: `@flecks/governor.packet.${name}`, ...Packet.limit},
+                  ),
                 ]
               )),
           ),
         );
         flecks.set('$flecks/governor.packet.limiters', limiters);
         const {socket} = flecks.get('@flecks/governor/server');
-        const limiter = await createLimiter({
-          keyPrefix: '@flecks/governor.socket.request.socket',
-          ...socket,
-        });
+        const limiter = await createLimiter(
+          flecks,
+          {
+            keyPrefix: '@flecks/governor.socket.request.socket',
+            ...socket,
+          },
+        );
         flecks.set('$flecks/governor.socket.limiter', limiter);
       }
     },

@@ -71,7 +71,7 @@ from the `build` directory. The resolution order is determined by a few variable
   an overridden `server.neutrinorc.js` when building, however `general` is set to `.neutrinorc.js`,
   so it will also accept overrides of that more general configuration file.
 
-- `root` specifies an alternative location to search. Defaults to `FLECKS_ROOT`.
+- `root` specifies an alternative location to search. Defaults to `FLECKS_CORE_ROOT`.
 
 - `fleck` specifies the fleck owning the configuration. `@flecks/core` owns `babel.config.js`,
   `@flecks/server` owns `server.neutrinorc.js`, etc. This only really matters if you are writing a
@@ -90,7 +90,7 @@ We would then expect flecks to search using the following resolution order:
 
 - `/foo/bar/baz/build/server.neutrinorc.js`
 - `/foo/bar/baz/build/.neutrinorc.js`
-- `${FLECKS_ROOT}/build/server.neutrinorc.js`
-- `${FLECKS_ROOT}/build/.neutrinorc.js`
+- `${FLECKS_CORE_ROOT}/build/server.neutrinorc.js`
+- `${FLECKS_CORE_ROOT}/build/.neutrinorc.js`
 - `@flecks/server/build/server.neutrinorc.js`
 - `@flecks/server/build/.neutrinorc.js`

@@ -12,16 +12,16 @@ const RedisStore = ConnectRedis(session);
 
 export default {
   [Hooks]: {
-    '@flecks/user/session': async () => {
-      const client = createClient({legacyMode: true});
+    '@flecks/user/session': async (flecks) => {
+      const client = createClient(flecks, {legacyMode: true});
       await client.connect();
       return {
         store: new RedisStore({client}),
       };
     },
-    '@flecks/socket/server': async () => {
-      const pubClient = createClient();
-      const subClient = createClient();
+    '@flecks/socket/server': async (flecks) => {
+      const pubClient = createClient(flecks);
+      const subClient = createClient(flecks);
       await Promise.all([pubClient.connect(), subClient.connect()]);
       debug('creating adapter');
       return {

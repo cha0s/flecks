@@ -8,7 +8,7 @@ module.exports = (flecks) => (neutrino) => {
   // Inject flecks configuration.
   const paths = Object.keys(resolver);
   const source = [
-    "process.env.FLECKS_BUILD_TARGET = 'server';",
+    "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
     'module.exports = (async () => ({',
     `  config: ${JSON.stringify(config)},`,
     '  flecks: Object.fromEntries(await Promise.all([',

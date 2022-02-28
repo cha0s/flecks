@@ -10,10 +10,10 @@ import {copySync, moveSync} from 'fs-extra';
 import validate from 'validate-npm-package-name';
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const cwd = normalize(FLECKS_ROOT);
+const cwd = normalize(FLECKS_CORE_ROOT);
 
 const forwardProcessCode = (fn) => async (...args) => {
   process.exitCode = await fn(args.slice(0, -2));

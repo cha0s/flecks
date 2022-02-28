@@ -3,7 +3,7 @@ import {expect} from 'chai';
 // eslint-disable-next-line import/no-unresolved
 import {Flecks} from '@flecks/core/server';
 
-it('bootstraps FLECKS_ROOT by default', () => {
+it('bootstraps FLECKS_CORE_ROOT by default', () => {
   const flecks = Flecks.bootstrap();
   expect(flecks.fleck('@flecks/core')).to.not.equal(undefined);
 });

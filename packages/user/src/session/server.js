@@ -5,12 +5,13 @@ import expressSession from 'express-session';
 
 const debug = D('@flecks/user/session');
 
-const {
-  FLECKS_USER_COOKIE_SECRET = 'UNSAFE_DEV_COOKIE',
-} = process.env;
-
 export default {
   [Hooks]: {
+    '@flecks/core/config': () => ({
+      cookieSecret: (
+        'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
+      ),
+    }),
     '@flecks/http/server/request.route': (flecks) => {
       const urle = express.urlencoded({extended: true});
       return (req, res, next) => {
@@ -37,7 +38,7 @@ export default {
         resave: false,
         sameSite: true,
         saveUninitialized: false,
-        secret: FLECKS_USER_COOKIE_SECRET,
+        secret: flecks.get('@flecks/user/session/server.cookieSecret'),
         ...await flecks.invokeReduceAsync('@flecks/user/session'),
       }));
     },

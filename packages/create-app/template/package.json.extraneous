@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "flecks build",
-    "dev": "FLECKS_START_SERVER=1 npm run -- build -h"
+    "dev": "npm run -- build -h"
   },
   "dependencies": {
     "@flecks/core": "^1.0.0",

@@ -8,11 +8,8 @@ import express from 'express';
 import httpProxy from 'http-proxy';
 import flatten from 'lodash.flatten';
 
-import env from './environment';
-
 const {
-  FLECKS_HTTP_OUTPUT = 'http',
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
   NODE_ENV,
 } = process.env;
 
@@ -28,8 +25,9 @@ export const createHttpServer = async (flecks) => {
     devHost,
     devPort,
     host,
+    output,
     port,
-  } = env();
+  } = flecks.get('@flecks/http/server');
   const app = express();
   app.set('trust proxy', trust);
   const httpServer = createServer(app);
@@ -90,18 +88,18 @@ export const createHttpServer = async (flecks) => {
   }
   else {
     // Serve the document root, sans index.
-    app.use(express.static(join(FLECKS_ROOT, 'dist', FLECKS_HTTP_OUTPUT), {index: false}));
+    app.use(express.static(join(FLECKS_CORE_ROOT, 'dist', output), {index: false}));
     // Tests bypass middleware and stream processing.
     app.get('/tests.html', (req, res) => {
       res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-      const stream = createReadStream(join(FLECKS_ROOT, 'dist', FLECKS_HTTP_OUTPUT, 'tests.html'));
+      const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', output, 'tests.html'));
       stream.pipe(res);
     });
     // Fallback to serving HTML.
     app.get('*', routeMiddleware, async (req, res) => {
       if (req.accepts('text/html')) {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-        const stream = createReadStream(join(FLECKS_ROOT, 'dist', FLECKS_HTTP_OUTPUT, 'index.html'));
+        const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', output, 'index.html'));
         deliverHtmlStream(stream, flecks, req, res);
       }
       else {

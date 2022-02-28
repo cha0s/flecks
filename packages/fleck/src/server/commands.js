@@ -13,7 +13,7 @@ import {
 const debug = D('@flecks/core/commands');
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 export default (program, flecks) => {
@@ -29,13 +29,13 @@ export default (program, flecks) => {
       const {
         watch,
       } = opts;
-      const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
+      const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
         console.log('No fleck tests found.');
         return 0;
       }
-      const testLocation = join(FLECKS_ROOT, 'dist', 'test.js');
+      const testLocation = join(FLECKS_CORE_ROOT, 'dist', 'test.js');
       if (watch) {
         await unlink(testLocation);
       }

@@ -7,11 +7,11 @@ import flatten from 'lodash.flatten';
 import rimraf from 'rimraf';
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/core/commands');
-const flecksRoot = normalize(FLECKS_ROOT);
+const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
 export const spawnWith = (cmd, localEnv, spawnArgs) => {
   debug('spawning:\n%s %s\nwith local environment: %O', cmd, spawnArgs.join(' '), localEnv);
@@ -98,8 +98,8 @@ export default (program, flecks) => {
         const webpackConfig = flecks.localConfig('webpack.config.js', '@flecks/core');
         const localEnv = {
           ...targetNeutrinos(flecks),
-          ...(target ? {FLECKS_BUILD_LIST: target} : {}),
-          ...(hot ? {FLECKS_HOT: 1} : {}),
+          ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
+          ...(hot ? {FLECKS_ENV_FLECKS_SERVER_hot: 'true'} : {}),
         };
         const spawnArgs = [
           '--colors',
@@ -124,7 +124,7 @@ export default (program, flecks) => {
             // eslint-disable-next-line no-continue
             continue;
           }
-          process.env.FLECKS_BUILD_TARGET = target;
+          process.env.FLECKS_CORE_BUILD_TARGET = target;
           const spawnArgs = [
             '--config', flecks.localConfig(
               `${target}.eslintrc.js`,
@@ -136,7 +136,7 @@ export default (program, flecks) => {
             '.',
           ];
           const localEnv = {
-            FLECKS_BUILD_TARGET: target,
+            FLECKS_CORE_BUILD_TARGET: target,
             ...targetNeutrinos(flecks),
           };
           promises.push(new Promise((resolve, reject) => {

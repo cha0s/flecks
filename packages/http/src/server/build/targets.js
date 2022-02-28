@@ -5,15 +5,14 @@ const {realpathSync} = require('fs');
 const {require: R} = require('@flecks/core/server');
 
 const {
-  FLECKS_HTTP_OUTPUT = 'http',
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 module.exports = (flecks) => (neutrino) => {
   const {options} = neutrino;
   const {output: originalOutput} = options;
   neutrino.config.resolve.modules.merge([
-    join(FLECKS_ROOT, 'node_modules'),
+    join(FLECKS_CORE_ROOT, 'node_modules'),
     'node_modules',
   ]);
   options.root = realpathSync(dirname(R.resolve(join(flecks.resolve('@flecks/http'), 'entry.js'))));
@@ -23,5 +22,5 @@ module.exports = (flecks) => (neutrino) => {
     entry: './client/tests',
     title: 'Testbed',
   };
-  options.output = join(originalOutput, FLECKS_HTTP_OUTPUT);
+  options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
 };

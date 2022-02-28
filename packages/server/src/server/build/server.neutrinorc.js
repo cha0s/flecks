@@ -9,11 +9,7 @@ const D = require('debug');
 const runtime = require('./runtime');
 
 const {
-  FLECKS_HOT = false,
-  FLECKS_INSPECT = false,
-  FLECKS_PROFILE = false,
-  FLECKS_ROOT = process.cwd(),
-  FLECKS_START_SERVER = false,
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/server/server.neutrino.js');
@@ -22,15 +18,22 @@ debug('bootstrapping flecks...');
 const flecks = Flecks.bootstrap();
 debug('bootstrapped');
 
+const {
+  hot,
+  inspect,
+  profile,
+  start: isStarting,
+} = flecks.get('@flecks/server');
+
 const entry = (neutrino) => {
   const entries = neutrino.config.entry('index');
-  entries.delete(join(FLECKS_ROOT, 'src', 'index'));
+  entries.delete(join(FLECKS_CORE_ROOT, 'src', 'index'));
   entries.add('@flecks/server/entry');
 };
 
 // Augment the application-starting configuration.
 const start = (neutrino) => {
-  if (FLECKS_START_SERVER) {
+  if (isStarting) {
     neutrino.use(startServer({name: 'index.js'}));
   }
   if (!neutrino.config.plugins.has('start-server')) {
@@ -42,13 +45,13 @@ const start = (neutrino) => {
       const options = args[0];
       options.keyboard = false;
       // HMR.
-      options.signal = true;
+      options.signal = !!hot;
       // Debugging.
-      if (FLECKS_INSPECT) {
+      if (inspect) {
         options.nodeArgs.push('--inspect');
       }
       // Profiling.
-      if (FLECKS_PROFILE) {
+      if (profile) {
         options.nodeArgs.push('--prof');
       }
       // Bail hard on unhandled rejections and report.
@@ -66,7 +69,7 @@ const compiler = flecks.invokeFleck(
 const config = {
   options: {
     output: 'dist',
-    root: FLECKS_ROOT,
+    root: FLECKS_CORE_ROOT,
   },
   use: [
     entry,
@@ -84,7 +87,7 @@ else {
   });
   config.use.unshift(node({
     clean: false,
-    hot: FLECKS_HOT,
+    hot,
   }));
 }
 // Stub out non-server-friendly modules on the server.
@@ -123,7 +126,7 @@ config.use.push(runtime(flecks));
 // Give the resolver a helping hand.
 config.use.push((neutrino) => {
   neutrino.config.resolve.modules.merge([
-    join(FLECKS_ROOT, 'node_modules'),
+    join(FLECKS_CORE_ROOT, 'node_modules'),
     'node_modules',
   ]);
 });

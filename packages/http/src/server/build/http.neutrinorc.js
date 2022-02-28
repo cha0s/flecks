@@ -9,7 +9,7 @@ const runtime = require('./runtime');
 const targets = require('./targets');
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/http/http.neutrino.js');
@@ -22,14 +22,14 @@ debug('bootstrapped');
 const config = {
   options: {
     output: 'dist',
-    root: FLECKS_ROOT,
+    root: FLECKS_CORE_ROOT,
   },
   use: [
     ({config}) => {
       config
         .plugin('environment')
         .use(EnvironmentPlugin, [{
-          FLECKS_BUILD_TARGET: 'client',
+          FLECKS_CORE_BUILD_TARGET: 'client',
         }]);
     },
     targets(flecks),
@@ -63,7 +63,7 @@ else {
   }));
 }
 // Configure dev server.
-config.use.push(devServer());
+config.use.push(devServer(flecks));
 // Build the client runtime.
 config.use.push(runtime(flecks));
 // Output configuration.

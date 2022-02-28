@@ -7,7 +7,7 @@ const D = require('debug');
 const glob = require('glob');
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/fleck/fleck.neutrino.js');
@@ -47,9 +47,9 @@ config.use.push((neutrino) => {
 
 config.use.push((neutrino) => {
   // Test entrypoint.
-  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
+  const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
   for (let i = 0; i < flecks.platforms.length; ++i) {
-    testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/${flecks.platforms[i]}/*.js`)));
+    testPaths.push(...glob.sync(join(FLECKS_CORE_ROOT, `test/platforms/${flecks.platforms[i]}/*.js`)));
   }
   if (testPaths.length > 0) {
     const testEntry = neutrino.config.entry('test').clear();

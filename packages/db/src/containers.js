@@ -1,13 +1,11 @@
-import environment from './environment';
-
-export default () => {
+export default (flecks) => {
   const {
     dialect,
     username,
     password,
     port,
     database,
-  } = environment();
+  } = flecks.get('@flecks/db/server');
   let args = [];
   let image;
   let mount;

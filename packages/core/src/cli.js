@@ -7,13 +7,13 @@ import D from 'debug';
 import Flecks from './server/flecks';
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/core/cli');
 
 // Guarantee local node_modules path.
-const defaultNodeModules = resolve(join(FLECKS_ROOT, 'node_modules'));
+const defaultNodeModules = resolve(join(FLECKS_CORE_ROOT, 'node_modules'));
 const nodePathSeparator = '/' === sep ? ':' : ';';
 let updatedNodePath;
 if (!process.env.NODE_PATH) {

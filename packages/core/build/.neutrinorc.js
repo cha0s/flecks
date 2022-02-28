@@ -8,7 +8,7 @@ const node = require('@neutrinojs/node');
 const glob = require('glob');
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 module.exports = require('../src/bootstrap/fleck.neutrinorc');
@@ -26,8 +26,8 @@ module.exports.use.push((neutrino) => {
 // Tests.
 module.exports.use.push((neutrino) => {
   // Test entrypoint.
-  const testPaths = glob.sync(join(FLECKS_ROOT, 'test/*.js'));
-  testPaths.push(...glob.sync(join(FLECKS_ROOT, `test/platforms/server/*.js`)));
+  const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
+  testPaths.push(...glob.sync(join(FLECKS_CORE_ROOT, `test/platforms/server/*.js`)));
   if (testPaths.length > 0) {
     const testEntry = neutrino.config.entry('test').clear();
     testPaths.forEach((path) => testEntry.add(path));

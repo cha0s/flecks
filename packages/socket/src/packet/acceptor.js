@@ -1,5 +1,9 @@
 import D from 'debug';
 
+const {
+  NODE_ENV,
+} = process.env;
+
 const debug = D('@flecks/socket/acceptor');
 
 export default (socket) => async (packet, fn) => {
@@ -17,9 +21,6 @@ export default (socket) => async (packet, fn) => {
       return;
     }
     debug('acceptor error: %O', error);
-    const {
-      NODE_ENV,
-    } = process.env;
     if (error instanceof Error) {
       fn({
         code: error.code || 500,

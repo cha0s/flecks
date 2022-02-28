@@ -19,7 +19,7 @@ import R from '../bootstrap/require';
 import Flecks from '../flecks';
 
 const {
-  FLECKS_ROOT = process.cwd(),
+  FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const debug = D('@flecks/core/flecks/server');
@@ -106,11 +106,11 @@ export default class ServerFlecks extends Flecks {
   static bootstrap(
     {
       platforms = ['server'],
-      root = FLECKS_ROOT,
+      root = FLECKS_CORE_ROOT,
       without = [],
     } = {},
   ) {
-    const resolvedRoot = resolve(FLECKS_ROOT, root);
+    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
     let initial;
     let configType;
     try {
@@ -374,7 +374,7 @@ export default class ServerFlecks extends Flecks {
     return this.constructor.localConfig(this.resolver, path, fleck, options);
   }
 
-  static localConfig(resolver, path, fleck, {general = path, root = FLECKS_ROOT} = {}) {
+  static localConfig(resolver, path, fleck, {general = path, root = FLECKS_CORE_ROOT} = {}) {
     let configFile;
     try {
       const localConfig = join(root, 'build', path);
@@ -389,13 +389,13 @@ export default class ServerFlecks extends Flecks {
       }
       catch (error) {
         try {
-          const localConfig = join(FLECKS_ROOT, 'build', path);
+          const localConfig = join(FLECKS_CORE_ROOT, 'build', path);
           statSync(localConfig);
           configFile = localConfig;
         }
         catch (error) {
           try {
-            const localConfig = join(FLECKS_ROOT, 'build', general);
+            const localConfig = join(FLECKS_CORE_ROOT, 'build', general);
             statSync(localConfig);
             configFile = localConfig;
           }
