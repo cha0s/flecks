@@ -20,7 +20,7 @@ export default class Progress {
     style.transition = '1s width, 0.5s opacity';
     setTimeout(() => {
       style.display = 'block';
-    }, 250);
+    }, 600);
     this.progress.style.width = '0%';
     this.progress.value = 0;
     window.document.body.prepend(this.progress);
