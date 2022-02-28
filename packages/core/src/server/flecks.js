@@ -172,7 +172,7 @@ export default class ServerFlecks extends Flecks {
             ]),
         ),
       };
-      debug('lookups: %O', lookups);
+      debug('symlink lookups: %O', lookups);
       R('pirates').addHook(
         (code, path) => `module.exports = require('${lookups[path]}')`,
         {
@@ -209,21 +209,28 @@ export default class ServerFlecks extends Flecks {
       }
       compilationRootMap[root].push(fleck);
     });
+    debug('compiling: %O', compilationRootMap);
     // Register a compiler for each root and require() the flecks underneath.
     Object.entries(compilationRootMap).forEach(([root, compiling]) => {
       const resolved = dirname(R.resolve(join(root, 'package.json')));
+      const sourcepath = this.sourcepath(resolved);
       const configFile = this.localConfig(
         resolver,
         'babel.config.js',
         '@flecks/core',
-        {root: realpathSync(resolved)},
+        {root: join(sourcepath, '..')},
       );
       const register = R('@babel/register');
-      register({
+      const config = {
         cache: true,
         configFile,
-        only: [resolve(join(this.sourcepath(resolved), '..'))],
-        // Make webpack goodies exist in node land.
+        ignore: [resolve(join(sourcepath, '..', 'node_modules'))],
+        only: [resolve(join(sourcepath, '..'))],
+      };
+      debug("require('@babel/register')(%O)", config);
+      register({
+        ...config,
+        // Make webpack goodies exist in nodespace.
         plugins: [
           [
             'prepend',
