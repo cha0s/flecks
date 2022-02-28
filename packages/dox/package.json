@@ -1,5 +1,6 @@
 {
   "name": "@flecks/dox",
+  "private": true,
   "publishConfig": {
     "access": "public"
   },
