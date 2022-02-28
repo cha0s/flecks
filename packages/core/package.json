@@ -1,5 +1,10 @@
 {
   "name": "@flecks/core",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cha0s/flecks.git",
+    "directory": "packages/core"
+  },
   "publishConfig": {
     "access": "public"
   },

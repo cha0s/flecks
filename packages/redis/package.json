@@ -1,5 +1,10 @@
 {
   "name": "@flecks/redis",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cha0s/flecks.git",
+    "directory": "packages/redis"
+  },
   "publishConfig": {
     "access": "public"
   },

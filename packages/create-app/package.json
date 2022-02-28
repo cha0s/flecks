@@ -1,5 +1,10 @@
 {
   "name": "@flecks/create-app",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cha0s/flecks.git",
+    "directory": "packages/create-app"
+  },
   "publishConfig": {
     "access": "public"
   },

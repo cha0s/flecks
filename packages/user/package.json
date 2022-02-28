@@ -1,5 +1,10 @@
 {
   "name": "@flecks/user",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cha0s/flecks.git",
+    "directory": "packages/user"
+  },
   "publishConfig": {
     "access": "public"
   },

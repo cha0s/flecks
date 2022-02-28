@@ -1,6 +1,9 @@
 {
   "name": "@flecks/monorepo",
-  "repository": "https://github.com/cha0s/flecks",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/cha0s/flecks.git"
+  },
   "scripts": {
     "build": "lerna run build",
     "lint": "lerna run lint",
