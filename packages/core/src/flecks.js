@@ -397,9 +397,9 @@ export default class Flecks {
     // Replace the fleck.
     this.registerFleck(fleck, M);
     // Write config.
-    const defaultConfig = this.invoke('@flecks/core/config');
+    const defaultConfig = this.invokeFleck('@flecks/core/config', fleck);
     this.config[fleck] = {
-      ...defaultConfig[fleck],
+      ...defaultConfig,
       ...this.config[fleck],
     };
     this.invokeFlat('@flecks/core/config/alter', this.config);
