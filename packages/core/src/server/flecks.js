@@ -114,11 +114,11 @@ export default class ServerFlecks extends Flecks {
     let initial;
     let configType;
     try {
-      const {safeLoad} = R('js-yaml');
+      const {load} = R('js-yaml');
       const filename = join(resolvedRoot, 'build', 'flecks.yml');
       const buffer = readFileSync(filename, 'utf8');
       debug('parsing configuration from YML...');
-      initial = safeLoad(buffer, {filename}) || {};
+      initial = load(buffer, {filename}) || {};
       configType = 'YML';
     }
     catch (error) {
