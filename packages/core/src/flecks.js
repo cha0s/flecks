@@ -228,6 +228,19 @@ export default class Flecks {
       .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), arg);
   }
 
+  async invokeComposedAsync(hook, arg, ...args) {
+    if (!this.hooks[hook]) {
+      return arg;
+    }
+    const flecks = this.expandedFlecks(hook);
+    if (0 === flecks.length) {
+      return arg;
+    }
+    return flecks
+      .filter((fleck) => this.fleckImplements(fleck, hook))
+      .reduce(async (r, fleck) => this.invokeFleck(hook, fleck, await r, ...args), arg);
+  }
+
   invokeFlat(hook, ...args) {
     if (!this.hooks[hook]) {
       return [];
