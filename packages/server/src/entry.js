@@ -11,7 +11,7 @@ const {version} = require('../package.json');
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {
-    await mkdir(join(tmpdir(), 'flecks'));
+    await mkdir(join(tmpdir(), 'flecks'), {recursive: true});
   }
   catch (error) {
     if ('EEXIST' !== error.code) {

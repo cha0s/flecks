@@ -52,7 +52,7 @@ export async function createReplServer(flecks) {
       });
   });
   try {
-    await mkdir(join(tmpdir(), 'flecks', id, 'repl'));
+    await mkdir(join(tmpdir(), 'flecks', id, 'repl'), {recursive: true});
   }
   catch (error) {
     if ('EEXIST' !== error.code) {
