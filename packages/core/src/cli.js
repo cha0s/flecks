@@ -79,31 +79,33 @@ else {
   const program = new Command();
   program.enablePositionalOptions();
   // Bootstrap.
-  debug('bootstrapping flecks...');
-  const flecks = Flecks.bootstrap();
-  debug('bootstrapped');
-  // Register commands.
-  const commands = flecks.invokeReduce('@flecks/core/commands', undefined, undefined, program);
-  const keys = Object.keys(commands);
-  for (let i = 0; i < keys.length; ++i) {
-    const {
-      action,
-      args = [],
-      description,
-      name = keys[i],
-      options = [],
-    } = commands[keys[i]];
-    debug('adding command %s...', name);
-    const cmd = program.command(name);
-    cmd.description(description);
-    for (let i = 0; i < args.length; ++i) {
-      cmd.addArgument(args[i]);
+  (async () => {
+    debug('bootstrapping flecks...');
+    const flecks = Flecks.bootstrap();
+    debug('bootstrapped');
+    // Register commands.
+    const commands = flecks.invokeReduce('@flecks/core/commands', undefined, undefined, program);
+    const keys = Object.keys(commands);
+    for (let i = 0; i < keys.length; ++i) {
+      const {
+        action,
+        args = [],
+        description,
+        name = keys[i],
+        options = [],
+      } = commands[keys[i]];
+      debug('adding command %s...', name);
+      const cmd = program.command(name);
+      cmd.description(description);
+      for (let i = 0; i < args.length; ++i) {
+        cmd.addArgument(args[i]);
+      }
+      for (let i = 0; i < options.length; ++i) {
+        cmd.option(...options[i]);
+      }
+      cmd.action(forwardProcessCode(action));
     }
-    for (let i = 0; i < options.length; ++i) {
-      cmd.option(...options[i]);
-    }
-    cmd.action(forwardProcessCode(action));
-  }
-  // Parse commandline.
-  program.parse(process.argv);
+    // Parse commandline.
+    program.parse(process.argv);
+  })();
 }

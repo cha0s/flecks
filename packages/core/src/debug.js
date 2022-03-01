@@ -1,11 +1,11 @@
-import D from 'debug';
+const D = require('debug');
 
 const {
   VSCODE_INSPECTOR_OPTIONS,
 } = process.env;
 
 let hasInitialized;
-export default (name) => {
+module.exports = (name) => {
   if (!hasInitialized) {
     // VSCode has a problem showing colors when formatting objects.
     if (VSCODE_INSPECTOR_OPTIONS) {

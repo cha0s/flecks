@@ -1,4 +1,4 @@
-import {execSync, spawn} from 'child_process';
+import {exec, spawn} from 'child_process';
 import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
@@ -7,23 +7,25 @@ import {D} from '@flecks/core';
 
 const debug = D('@flecks/docker/container');
 
-const containerIsRunning = (name) => {
-  try {
-    const output = execSync(
+const containerIsRunning = async (name) => (
+  new Promise((r, e) => {
+    exec(
       `docker container inspect -f '{{.State.Running}}' ${name}`,
       {stdio: 'pipe'},
-    ).toString();
-    if ('true\n' === output) {
-      return true;
-    }
-  }
-  catch (e) {
-    if (1 !== e.status) {
-      throw e;
-    }
-  }
-  return false;
-};
+      (error, stdout) => {
+        if (error) {
+          if (1 !== e.status) {
+            e(error);
+          }
+          else {
+            r(false);
+          }
+        }
+        r('true\n' === stdout);
+      },
+    );
+  })
+);
 
 export default async (flecks, key, config) => {
   const {id} = flecks.get('@flecks/core');

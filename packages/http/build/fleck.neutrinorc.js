@@ -1,22 +1,22 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const config = require('@flecks/fleck/server/build/fleck.neutrinorc');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const copy = require('@neutrinojs/copy');
-/* eslint-enable import/no-extraneous-dependencies */
 
-config.use.push(({config}) => {
-  config.entryPoints.delete('build/template');
-});
-
-config.use.push(
-  copy({
-    copyUnmodified: true,
-    patterns: [
-      {
-        from: 'src/build/template.ejs',
-        to: 'build/template.ejs',
-      },
-    ],
-  }),
-);
-
-module.exports = config;
+module.exports = (async () => {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const config = await require('@flecks/fleck/server/build/fleck.neutrinorc');
+  config.use.push(({config}) => {
+    config.entryPoints.delete('build/template');
+  });
+  config.use.push(
+    copy({
+      copyUnmodified: true,
+      patterns: [
+        {
+          from: 'src/build/template.ejs',
+          to: 'build/template.ejs',
+        },
+      ],
+    }),
+  );
+  return config;
+})();

@@ -29,9 +29,11 @@ const buildList = FLECKS_CORE_BUILD_LIST
   .map((name) => name.trim())
   .filter((e) => e);
 
-const flecks = Flecks.bootstrap();
+export default (async () => {
+  debug('bootstrapping flecks...');
+  const flecks = Flecks.bootstrap();
+  debug('bootstrapped');
 
-const buildConfigs = async () => {
   debug('gathering configs');
   let targets = flatten(flecks.invokeFlat('@flecks/core/targets'));
   if (buildList.length > 0) {
@@ -68,6 +70,4 @@ const buildConfigs = async () => {
     await new Promise(() => {});
   }
   return webpackConfigs;
-};
-
-export default buildConfigs();
+})();
