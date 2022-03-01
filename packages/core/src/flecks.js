@@ -61,7 +61,23 @@ export default class Flecks {
       const [fleck, M] = entries[i];
       this.registerFleck(fleck, M);
     }
-    this.introduceConfig();
+    this.configureFlecks();
+    debug('config: %O', this.config);
+  }
+
+  configureFleck(fleck) {
+    this.config[fleck] = {
+      ...this.invokeFleck('@flecks/core/config', fleck),
+      ...this.config[fleck],
+    };
+  }
+
+  configureFlecks() {
+    const defaultConfig = this.invoke('@flecks/core/config');
+    const flecks = Object.keys(defaultConfig);
+    for (let i = 0; i < flecks.length; i++) {
+      this.configureFleck(flecks[i]);
+    }
   }
 
   static decorate(
@@ -186,20 +202,6 @@ export default class Flecks {
 
   get(path, defaultValue) {
     return get(this.config, path, defaultValue);
-  }
-
-  introduceConfig() {
-    const defaultConfig = this.invoke('@flecks/core/config');
-    this.invokeFlat('@flecks/core/config/alter', defaultConfig);
-    const flecks = Object.keys(defaultConfig);
-    for (let i = 0; i < flecks.length; i++) {
-      const fleck = flecks[i];
-      this.config[fleck] = {
-        ...defaultConfig[fleck],
-        ...this.config[fleck],
-      };
-    }
-    debug('config: %O', this.config);
   }
 
   invoke(hook, ...args) {
@@ -397,12 +399,7 @@ export default class Flecks {
     // Replace the fleck.
     this.registerFleck(fleck, M);
     // Write config.
-    const defaultConfig = this.invokeFleck('@flecks/core/config', fleck);
-    this.config[fleck] = {
-      ...defaultConfig,
-      ...this.config[fleck],
-    };
-    this.invokeFlat('@flecks/core/config/alter', this.config);
+    this.configureFleck(fleck);
     // HMR.
     this.updateHotGathered(fleck);
   }
