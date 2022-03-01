@@ -19,7 +19,7 @@ const create = async (flecks) => {
     throw new Error(`@flecks/create-app: invalid app name: ${errors.join(', ')}`);
   }
   const destination = join(cwd, name);
-  await move(name, join(__dirname, 'template'), destination, flecks);
+  await move(name, join(__dirname, 'template'), destination, 'app', flecks);
   await build(destination);
 };
 

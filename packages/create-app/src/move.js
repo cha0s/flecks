@@ -20,7 +20,7 @@ const testDestination = async (destination) => {
   }
 };
 
-export default async (name, source, destination, flecks) => {
+export default async (name, source, destination, type, flecks) => {
   if (!await testDestination(destination)) {
     const error = new Error(
       `@flecks/create-fleck: destination '${destination} already exists: aborting`,
@@ -37,9 +37,12 @@ export default async (name, source, destination, flecks) => {
       delete files[path];
     });
   // Defaults.
-  flecks.set('@flecks/create-fleck.packager', flecks.get('@flecks/create-fleck.packager', ['...']));
+  flecks.set(
+    `@flecks/create-${type}.packager`,
+    flecks.get(`@flecks/create-${type}.packager`, ['...']),
+  );
   // Send it out.
-  await flecks.invokeSequentialAsync('@flecks/create-fleck/packager', fileTree);
+  await flecks.invokeSequentialAsync(`@flecks/create-${type}/packager`, fileTree);
   // Add project name to `package.json`.
   fileTree.pipe(
     'package.json',

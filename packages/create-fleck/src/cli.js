@@ -60,7 +60,7 @@ const create = async (flecks) => {
   const path = scope && (await hasPackages(cwd)) ? join(cwd, 'packages') : cwd;
   const name = [scope, pkg].filter((e) => !!e).join('/');
   const destination = join(path, pkg);
-  await move(name, join(__dirname, 'template'), destination, flecks);
+  await move(name, join(__dirname, 'template'), destination, 'fleck', flecks);
   await build(destination);
 };
 
