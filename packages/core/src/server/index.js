@@ -6,6 +6,7 @@ import R from '../bootstrap/require';
 
 export {
   default as commands,
+  processCode,
   spawnWith,
   targetNeutrino,
   targetNeutrinos,
@@ -13,6 +14,7 @@ export {
 
 export {default as Flecks} from './flecks';
 export {default as require} from '../bootstrap/require';
+export {JsonStream, transform} from './stream';
 
 export default {
   [Hooks]: {

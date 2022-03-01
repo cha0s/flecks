@@ -4,6 +4,7 @@ import {join, resolve, sep} from 'path';
 import {Command} from 'commander';
 
 import D from './debug';
+import {processCode} from './server/commands';
 import Flecks from './server/flecks';
 
 const {
@@ -63,17 +64,16 @@ else {
       process.exitCode = child;
       return;
     }
-    const reject = (error) => {
+    try {
+      const code = await processCode(child);
+      debug('action exited with code %d', code);
+      process.exitCode = code;
+    }
+    catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
       process.exitCode = child.exitCode || 1;
-    };
-    child.on('error', reject);
-    child.on('exit', (code) => {
-      child.off('error', reject);
-      debug('action exited with code %d', code);
-      process.exitCode = code;
-    });
+    }
   };
   // Initialize Commander.
   const program = new Command();

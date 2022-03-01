@@ -18,15 +18,20 @@ export default {
         return;
       }
       // Otherwise, spawn `webpack-dev-server` (WDS).
-      const localEnv = {
-        FLECKS_CORE_BUILD_LIST: 'http',
-      };
-      const spawnArgs = [
+      const cmd = [
+        'npx', 'webpack-dev-server',
         '--mode', 'development',
         '--hot',
         '--config', flecks.localConfig('webpack.config.js', '@flecks/core'),
       ];
-      spawnWith('webpack-dev-server', localEnv, spawnArgs);
+      spawnWith(
+        cmd,
+        {
+          env: {
+            FLECKS_CORE_BUILD_LIST: 'http',
+          },
+        },
+      );
       // Remove the build config since we're handing off to WDS.
       // eslint-disable-next-line no-param-reassign
       delete neutrinoConfigs.http;

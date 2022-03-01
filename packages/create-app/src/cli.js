@@ -1,50 +1,36 @@
-import {spawn} from 'child_process';
-import {readFileSync, writeFileSync} from 'fs';
 import {join, normalize} from 'path';
 
-import {
-  copySync,
-  mkdirpSync,
-  moveSync,
-} from 'fs-extra';
+import {Flecks} from '@flecks/core/server';
+import validate from 'validate-npm-package-name';
 
-const cwd = normalize(process.cwd());
+import build from './build';
+import move from './move';
 
-const forwardProcessCode = (fn) => async (...args) => {
-  process.exitCode = await fn(args.slice(0, -2));
-};
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
-const processCode = (child) => new Promise((resolve, reject) => {
-  child.on('error', reject);
-  child.on('exit', (code) => {
-    child.off('error', reject);
-    resolve(code);
-  });
-});
+const cwd = normalize(FLECKS_CORE_ROOT);
 
-const create = () => async () => {
+const create = async (flecks) => {
   const name = process.argv[2];
-  const path = name.split('/').pop();
-  copySync(join(__dirname, 'template'), join(cwd, path), {recursive: true});
-  mkdirpSync(join(cwd, path, 'packages'));
-  moveSync(join(cwd, path, '.gitignore.extraneous'), join(cwd, path, '.gitignore'));
-  moveSync(join(cwd, path, 'package.json.extraneous'), join(cwd, path, 'package.json'));
-  writeFileSync(
-    join(cwd, path, 'package.json'),
-    JSON.stringify(
-      {
-        name: `@${name}/monorepo`,
-        ...JSON.parse(readFileSync(join(cwd, path, 'package.json')).toString()),
-      },
-      null,
-      2,
-    ),
-  );
-  const code = await processCode(spawn('yarn', [], {cwd: join(cwd, path), stdio: 'inherit'}));
-  if (0 !== code) {
-    return code;
+  const {errors} = validate(name);
+  if (errors) {
+    throw new Error(`@flecks/create-app: invalid app name: ${errors.join(', ')}`);
   }
-  return processCode(spawn('yarn', ['build'], {cwd: join(cwd, path), stdio: 'inherit'}));
+  const destination = join(cwd, name);
+  await move(name, join(__dirname, 'template'), destination, flecks);
+  await build(destination);
 };
 
-forwardProcessCode(create())();
+(async () => {
+  const flecks = await Flecks.bootstrap();
+  try {
+    await create(flecks);
+  }
+  catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error.message);
+    process.exitCode = 1;
+  }
+})();

@@ -1,13 +1,8 @@
-import {spawn} from 'child_process';
-import {
-  readFileSync,
-  statSync,
-  writeFileSync,
-} from 'fs';
+import {stat} from 'fs/promises';
 import {join, normalize} from 'path';
 
-import {copySync, moveSync} from 'fs-extra';
-import validate from 'validate-npm-package-name';
+import {build, move, validate} from '@flecks/create-app/server';
+import {Flecks} from '@flecks/core/server';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -15,97 +10,68 @@ const {
 
 const cwd = normalize(FLECKS_CORE_ROOT);
 
-const forwardProcessCode = (fn) => async (...args) => {
-  process.exitCode = await fn(args.slice(0, -2));
+const hasPackages = async (cwd) => {
+  try {
+    await stat(join(cwd, 'packages'));
+    return true;
+  }
+  catch (error) {
+    if ('ENOENT' !== error.code) {
+      throw error;
+    }
+    return false;
+  }
 };
 
-const processCode = (child) => new Promise((resolve, reject) => {
-  child.on('error', reject);
-  child.on('exit', (code) => {
-    child.off('error', reject);
-    resolve(code);
-  });
-});
-
-const monorepoScope = () => {
+const monorepoScope = async (cwd) => {
   try {
-    statSync(join(cwd, 'packages'));
     const {name} = __non_webpack_require__(join(cwd, 'package.json'));
     const [scope] = name.split('/');
     return scope;
   }
   catch (error) {
-    if ('ENOENT' !== error.code) {
+    if ('MODULE_NOT_FOUND' !== error.code) {
       throw error;
     }
     return undefined;
   }
 };
 
-const testDestination = (destination) => {
-  try {
-    statSync(destination);
-    return false;
-  }
-  catch (error) {
-    if ('ENOENT' !== error.code) {
-      throw error;
-    }
-    return true;
-  }
-};
-
-const create = () => async () => {
-  const rawname = process.argv[2];
-  const {errors} = validate(rawname);
+const target = async (name) => {
+  const {errors} = validate(name);
   if (errors) {
-    // eslint-disable-next-line no-console
-    console.error(`@flecks/create-fleck: invalid fleck name: ${errors.join(', ')}`);
-    return 128;
+    throw new Error(`@flecks/create-fleck: invalid fleck name: ${errors.join(', ')}`);
   }
-  const parts = rawname.split('/');
-  let path = cwd;
+  const parts = name.split('/');
   let pkg;
   let scope;
   if (1 === parts.length) {
-    pkg = rawname;
-  }
-  else {
-    [scope, pkg] = parts;
-  }
-  if (!scope) {
-    scope = monorepoScope();
-    if (scope) {
-      path = join(path, 'packages');
+    pkg = name;
+    if (await hasPackages(cwd)) {
+      scope = await monorepoScope(cwd);
     }
+    return [scope, pkg];
   }
-  const name = [scope, pkg].filter((e) => !!e).join('/');
-  const destination = join(path, pkg);
-  if (!testDestination(destination)) {
-    // eslint-disable-next-line no-console
-    console.error(`@flecks/create-fleck: destination '${destination} already exists: aborting`);
-    return 129;
-  }
-  // eslint-disable-next-line no-unreachable
-  copySync(join(__dirname, 'template'), destination, {recursive: true});
-  moveSync(join(destination, '.gitignore.extraneous'), join(destination, '.gitignore'));
-  moveSync(join(destination, 'package.json.extraneous'), join(destination, 'package.json'));
-  writeFileSync(
-    join(destination, 'package.json'),
-    JSON.stringify(
-      {
-        name,
-        ...JSON.parse(readFileSync(join(destination, 'package.json')).toString()),
-      },
-      null,
-      2,
-    ),
-  );
-  const code = await processCode(spawn('yarn', [], {cwd: destination, stdio: 'inherit'}));
-  if (0 !== code) {
-    return code;
-  }
-  return processCode(spawn('yarn', ['build'], {cwd: destination, stdio: 'inherit'}));
+  return parts;
 };
 
-forwardProcessCode(create())();
+const create = async (flecks) => {
+  const [scope, pkg] = await target(process.argv[2]);
+  const path = scope && (await hasPackages(cwd)) ? join(cwd, 'packages') : cwd;
+  const name = [scope, pkg].filter((e) => !!e).join('/');
+  const destination = join(path, pkg);
+  await move(name, join(__dirname, 'template'), destination, flecks);
+  await build(destination);
+};
+
+(async () => {
+  const flecks = await Flecks.bootstrap();
+  try {
+    await create(flecks);
+  }
+  catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error.message);
+    process.exitCode = 1;
+  }
+})();

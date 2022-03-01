@@ -14,12 +14,23 @@ const {
 const debug = D('@flecks/core/commands');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
-export const spawnWith = (cmd, localEnv, spawnArgs) => {
-  debug('spawning:\n%s %s\nwith local environment: %O', cmd, spawnArgs.join(' '), localEnv);
-  const spawnOptions = {
-    env: {...localEnv, ...process.env},
-  };
-  const child = spawn('npx', [cmd, ...spawnArgs], spawnOptions);
+export const processCode = (child) => new Promise((resolve, reject) => {
+  child.on('error', reject);
+  child.on('exit', (code) => {
+    child.off('error', reject);
+    resolve(code);
+  });
+});
+
+export const spawnWith = (cmd, opts = {}) => {
+  debug("spawning: '%s' with options: %O", cmd.join(' '), opts);
+  const child = spawn(cmd[0], cmd.slice(1), {
+    ...opts,
+    env: {
+      ...process.env,
+      ...(opts.env || {}),
+    },
+  });
   child.stderr.pipe(process.stderr);
   child.stdout.pipe(process.stdout);
   return child;
@@ -97,19 +108,24 @@ export default (program, flecks) => {
         } = opts;
         debug('Building...', opts);
         const webpackConfig = flecks.localConfig('webpack.config.js', '@flecks/core');
-        const localEnv = {
-          ...targetNeutrinos(flecks),
-          ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
-          ...(hot ? {FLECKS_ENV_FLECKS_SERVER_hot: 'true'} : {}),
-        };
-        const spawnArgs = [
+        const cmd = [
+          'npx', 'webpack',
           '--colors',
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
           ...(verbose ? ['--stats', 'verbose'] : []),
           ...((watch || hot) ? ['--watch'] : []),
         ];
-        return spawnWith('webpack', localEnv, spawnArgs);
+        return spawnWith(
+          cmd,
+          {
+            env: {
+              ...targetNeutrinos(flecks),
+              ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
+              ...(hot ? {FLECKS_ENV_FLECKS_SERVER_hot: 'true'} : {}),
+            },
+          },
+        );
       },
     };
     commands.lint = {
@@ -126,7 +142,8 @@ export default (program, flecks) => {
             continue;
           }
           process.env.FLECKS_CORE_BUILD_TARGET = target;
-          const spawnArgs = [
+          const cmd = [
+            'npx', 'eslint',
             '--config', flecks.localConfig(
               `${target}.eslintrc.js`,
               '@flecks/core',
@@ -136,12 +153,16 @@ export default (program, flecks) => {
             '--ext', 'js',
             '.',
           ];
-          const localEnv = {
-            FLECKS_CORE_BUILD_TARGET: target,
-            ...targetNeutrinos(flecks),
-          };
           promises.push(new Promise((resolve, reject) => {
-            const child = spawnWith('eslint', localEnv, spawnArgs);
+            const child = spawnWith(
+              cmd,
+              {
+                env: {
+                  FLECKS_CORE_BUILD_TARGET: target,
+                  ...targetNeutrinos(flecks),
+                },
+              },
+            );
             child.on('error', reject);
             child.on('exit', (code) => {
               child.off('error', reject);

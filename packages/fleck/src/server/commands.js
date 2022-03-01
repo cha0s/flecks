@@ -55,13 +55,13 @@ export default (program, flecks) => {
         }
       }
       const spawnMocha = () => {
-        const localEnv = {};
-        const spawnArgs = [
+        const cmd = [
+          'npx', 'mocha',
           '--colors',
           '--reporter', 'min',
           testLocation,
         ];
-        return spawnWith('mocha', localEnv, spawnArgs);
+        return spawnWith(cmd);
       };
       if (!watch) {
         await new Promise((resolve, reject) => {
