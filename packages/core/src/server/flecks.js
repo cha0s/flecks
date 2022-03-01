@@ -426,25 +426,6 @@ export default class ServerFlecks extends Flecks {
     return this.rcs;
   }
 
-  sourcepath(fleck) {
-    return this.constructor.sourcepath(fleck);
-  }
-
-  static sourcepath(path) {
-    let sourcepath = realpathSync(path);
-    const parts = sourcepath.split('/');
-    const indexOf = parts.lastIndexOf('dist');
-    if (-1 !== indexOf) {
-      parts.splice(indexOf, 1, 'src');
-      sourcepath = parts.join('/');
-      sourcepath = join(dirname(sourcepath), basename(sourcepath, extname(sourcepath)));
-    }
-    else {
-      sourcepath = join(sourcepath, 'src');
-    }
-    return sourcepath;
-  }
-
   resolve(path) {
     return this.constructor.resolve(this.resolver, path);
   }
@@ -527,6 +508,25 @@ export default class ServerFlecks extends Flecks {
           })(neutrino);
         });
     }
+  }
+
+  sourcepath(fleck) {
+    return this.constructor.sourcepath(fleck);
+  }
+
+  static sourcepath(path) {
+    let sourcepath = realpathSync(path);
+    const parts = sourcepath.split('/');
+    const indexOf = parts.lastIndexOf('dist');
+    if (-1 !== indexOf) {
+      parts.splice(indexOf, 1, 'src');
+      sourcepath = parts.join('/');
+      sourcepath = join(dirname(sourcepath), basename(sourcepath, extname(sourcepath)));
+    }
+    else {
+      sourcepath = join(sourcepath, 'src');
+    }
+    return sourcepath;
   }
 
   stubs() {
