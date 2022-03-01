@@ -34,6 +34,7 @@ module.exports.use.push(({config}) => {
 
 module.exports.use.push(
   copy({
+    copyUnmodified: true,
     patterns: [
       {
         from: 'template',

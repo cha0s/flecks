@@ -32,6 +32,9 @@ else {
   const configFile = flecks.localConfig('babel.config.js', '@flecks/core');
   config.use.unshift(node({
     babel: {configFile},
+    clean: {
+      cleanStaleWebpackAssets: false,
+    },
   }));
 }
 

@@ -9,6 +9,7 @@ config.use.push(({config}) => {
 
 config.use.push(
   copy({
+    copyUnmodified: true,
     patterns: [
       {
         from: 'src/build/template.ejs',

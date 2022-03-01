@@ -14,6 +14,7 @@ module.exports = {
   },
   use: [
     copy({
+      copyUnmodified: true,
       patterns: [
         {
           from: '.',

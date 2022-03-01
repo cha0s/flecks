@@ -38,7 +38,7 @@ module.exports.use.unshift((neutrino) => {
   neutrino.config.plugins.delete('start-server');
 });
 
-module.exports.use.unshift(node());
+module.exports.use.unshift(node({clean: {cleanStaleWebpackAssets: false}}));
 
 module.exports.use.unshift(
   airbnb({
