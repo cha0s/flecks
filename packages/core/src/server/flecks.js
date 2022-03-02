@@ -489,7 +489,6 @@ export default class ServerFlecks extends Flecks {
           .map((fleck) => this.root(fleck)),
       ))
         .forEach((root) => {
-          debug('compiling: %s', root);
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.sourcepath(resolved);
           const configFile = this.localConfig(
@@ -497,13 +496,15 @@ export default class ServerFlecks extends Flecks {
             '@flecks/core',
             {root: resolved},
           );
+          debug('compiling: %s with %s', root, configFile);
           const babel = {
             configFile,
             // Augment the compiler with babel config from flecksrc.
             ...babelmerge(...rcBabel.map(([, babel]) => babel)),
           };
           compileLoader({
-            include: [sourcepath],
+            ignore: [dirname(sourcepath, '..')],
+            include: [dirname(sourcepath, '..')],
             babel,
             ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
           })(neutrino);
