@@ -49,6 +49,8 @@ npx @flecks/create-fleck my-new-fleck
 
 ## Introduction
 
+### Eeez vereh flecksible 🥴
+
 At its core, flecks is a collection of modules that use [hooks](#hooks) to orchestrate everything
 from building your project to handling the minutia of what happens when your application starts,
 when a client connects, defining database models, and more.
