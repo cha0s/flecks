@@ -6,31 +6,35 @@ export default (flecks) => {
     port,
     database,
   } = flecks.get('@flecks/db/server');
-  let args = [];
+  let environment = {};
   let image;
   let mount;
   let ports = {};
   switch (dialect) {
     case 'mysql': {
-      args = [
-        '-e', `MYSQL_USER=${username}`,
-        '-e', `MYSQL_DATABASE=${database}`,
-        '-e', `MYSQL_ROOT_PASSWORD=${password}`,
-      ];
+      environment = {
+        sequelize: {
+          MYSQL_USER: username,
+          MYSQL_DATABASE: database,
+          MYSQL_ROOT_PASSWORD: password,
+        },
+      };
       image = 'mysql';
       mount = '/var/lib/mysql';
-      ports = {[port]: 3306};
+      ports = {[port || 3306]: 3306};
       break;
     }
     case 'postgres': {
-      args = [
-        '-e', `POSTGRES_USER=${username}`,
-        '-e', `POSTGRES_DB=${database}`,
-        '-e', `POSTGRES_PASSWORD=${password}`,
-      ];
+      environment = {
+        sequelize: {
+          POSTGRES_USER: username,
+          POSTGRES_DB: database,
+          POSTGRES_PASSWORD: password,
+        },
+      };
       image = 'postgres';
       mount = '/var/lib/postgresql/data';
-      ports = {[port]: 5432};
+      ports = {[port || 5432]: 5432};
       break;
     }
     default:
@@ -40,7 +44,7 @@ export default (flecks) => {
   }
   return {
     sequelize: {
-      args,
+      environment,
       image,
       mount,
       ports,
