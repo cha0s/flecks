@@ -74,6 +74,7 @@
     "neutrino": "^9.4.0",
     "rimraf": "^3.0.2",
     "source-map-support": "0.5.19",
+    "supports-color": "9.2.1",
     "webpack": "^4",
     "webpack-cli": "^3",
     "webpack-node-externals": "2.5.2"
