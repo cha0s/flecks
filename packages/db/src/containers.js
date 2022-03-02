@@ -6,13 +6,18 @@ export default (flecks) => {
     port,
     database,
   } = flecks.get('@flecks/db/server');
-  let environment = {};
+  let environment = {
+    app: {
+      host: 'sequelize',
+    },
+  };
   let image;
   let mount;
   let ports = {};
   switch (dialect) {
     case 'mysql': {
       environment = {
+        ...environment,
         sequelize: {
           MYSQL_USER: username,
           MYSQL_DATABASE: database,
@@ -26,6 +31,7 @@ export default (flecks) => {
     }
     case 'postgres': {
       environment = {
+        ...environment,
         sequelize: {
           POSTGRES_USER: username,
           POSTGRES_DB: database,
