@@ -45,13 +45,7 @@ export default class ServerFlecks extends Flecks {
     Object.keys(this.flecks)
       .sort((l, r) => (l < r ? 1 : -1))
       .forEach((fleck) => {
-        const prefix = `FLECKS_ENV_${
-          fleck
-            // - `@flecks/core` -> `FLECKS_CORE`
-            .replace(/[^a-zA-Z0-9]/g, '_')
-            .replace(/_*(.*)_*/, '$1')
-            .toUpperCase()
-        }`;
+        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck).toUpperCase()}`;
         keys
           .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
           .map((key) => {
@@ -358,6 +352,13 @@ export default class ServerFlecks extends Flecks {
       rcs,
       resolver,
     });
+  }
+
+  static environmentalize(key) {
+    return key
+      // - `@flecks/core` -> `FLECKS_CORE`
+      .replace(/[^a-zA-Z0-9]/g, '_')
+      .replace(/_*(.*)_*/, '$1');
   }
 
   fleckIsAliased(fleck) {
