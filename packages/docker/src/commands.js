@@ -12,14 +12,18 @@ const debug = D('@flecks/docker/commands');
 
 export default (program, flecks) => {
   const commands = {};
-  commands.compose = {
+  commands.docker = {
     options: [
-      ['-r, --run', 'run docker-compose'],
+      ['-b, --build', 'build the image from Dockerfile'],
+      ['-c, --compose', 'run docker-compose'],
+      ['-t, --tag <name>', '(implies -b) tag the built image'],
     ],
-    description: 'generate a docker compose file',
+    description: 'generate Dockerfile and docker-compose.yml, optionally with further interaction',
     action: async (opts) => {
       const {
-        run,
+        build,
+        compose,
+        tag,
       } = opts;
       const output = join(FLECKS_CORE_ROOT, 'dist');
       const lines = [
@@ -122,10 +126,17 @@ export default (program, flecks) => {
       console.groupEnd();
       console.log();
       /* eslint-enable no-console */
-      if (run) {
+      if (build || tag) {
+        spawn(
+          'docker',
+          ['build', '-f', join(output, 'Dockerfile')].concat(tag ? ['-t', tag] : []).concat('.'),
+          {stdio: 'inherit'},
+        );
+      }
+      if (compose) {
         spawn(
           'docker-compose',
-          ['-f', 'dist/docker-compose.yml', 'up', '--build'],
+          ['-f', join(output, 'docker-compose.yml'), 'up', '--build'],
           {stdio: 'inherit'},
         );
       }
