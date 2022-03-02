@@ -13,13 +13,9 @@ const containerIsRunning = async (name) => (
       `docker container inspect -f '{{.State.Running}}' ${name}`,
       {stdio: 'pipe'},
       (error, stdout) => {
-        if (error) {
-          if (1 !== e.status) {
-            e(error);
-          }
-          else {
-            r(false);
-          }
+        if (error && 1 !== error.code) {
+          e(error);
+          return;
         }
         r('true\n' === stdout);
       },
@@ -36,17 +32,20 @@ export default async (flecks, key, config) => {
     throw new Error(`@flecks/docker: ${key} container has no mount point specified`);
   }
   const name = `${id}_${key}`;
-  if (containerIsRunning(name)) {
+  if (await containerIsRunning(name)) {
     debug("'%s' already running", key);
     return;
   }
   const args = [
     'run',
     '--name', name,
+    '-d',
     '--rm',
     ...(config.args || []),
     ...Object.entries(config.ports)
       .map(([host, container]) => ['-p', `${host}:${container}`]).flat(),
+    ...Object.entries(config.environment[key])
+      .map(([key, value]) => ['-e', `${key}=${value}`]).flat(),
   ];
   const datadir = join(tmpdir(), 'flecks', id, 'docker', key);
   debug("creating datadir '%s'", datadir);
@@ -61,11 +60,23 @@ export default async (flecks, key, config) => {
   args.push('-v', `${datadir}:${config.mount}`);
   args.push(config.image);
   debug('launching: docker %s', args.join(' '));
-  spawn('docker', args, {
+  const child = spawn('docker', args, {
     detached: true,
     stdio: 'ignore',
-  }).unref();
-  while (!containerIsRunning(name)) {
+  });
+  await new Promise((r, e) => {
+    child.on('error', e);
+    child.on('exit', (code) => {
+      if (0 !== code) {
+        e(new Error(`spawning ${name} failed with error code ${code}`));
+        return;
+      }
+      r();
+    });
+  });
+  child.unref();
+  // eslint-disable-next-line no-await-in-loop
+  while (await !containerIsRunning(name)) {
     debug("waiting for '%s' to start...", key);
     // eslint-disable-next-line no-await-in-loop
     await new Promise((resolve) => setTimeout(resolve, 10));
