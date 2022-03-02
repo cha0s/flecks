@@ -40,6 +40,7 @@ export default {
       devHost: 'localhost',
       devPort: 32341,
       devPublic: undefined,
+      devStats: 'minimal',
       host: '0.0.0.0',
       output: 'http',
       port: 32340,
