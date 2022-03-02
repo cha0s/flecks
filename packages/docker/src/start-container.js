@@ -42,9 +42,9 @@ export default async (flecks, key, config) => {
     '-d',
     '--rm',
     ...(config.args || []),
-    ...Object.entries(config.ports)
+    ...Object.entries(config.ports || {})
       .map(([host, container]) => ['-p', `${host}:${container}`]).flat(),
-    ...Object.entries(config.environment[key])
+    ...Object.entries(config.environment[key] || {})
       .map(([key, value]) => ['-e', `${key}=${value}`]).flat(),
   ];
   const datadir = join(tmpdir(), 'flecks', id, 'docker', key);
