@@ -27,8 +27,9 @@ export default (program, flecks) => {
         'services:',
         '',
       ];
+      const appServiceName = `${flecks.get('@flecks/core.id')}_app`;
       const services = {
-        app: {
+        [appServiceName]: {
           build: {
             context: '..',
             dockerfile: 'dist/Dockerfile',
@@ -65,8 +66,10 @@ export default (program, flecks) => {
                 .forEach(([configService, environment]) => {
                   Object.entries(environment || {})
                     .forEach(([key, value]) => {
-                      const qualified = 'app' === configService ? `${prefix}_${key}` : key;
-                      services[configService].environment[qualified] = value;
+                      const [realKey, realService] = 'app' === configService
+                        ? [`${prefix}_${key}`, appServiceName]
+                        : [key, configService];
+                      services[realService].environment[realKey] = value;
                     });
                 });
             });
