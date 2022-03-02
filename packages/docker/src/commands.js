@@ -31,7 +31,8 @@ export default (program, flecks) => {
         'services:',
         '',
       ];
-      const appServiceName = `${flecks.get('@flecks/core.id')}_app`;
+      const id = flecks.get('@flecks/core.id');
+      const appServiceName = `${id}_app`;
       const services = {
         [appServiceName]: {
           build: {
@@ -136,7 +137,7 @@ export default (program, flecks) => {
       if (compose) {
         spawn(
           'docker-compose',
-          ['-f', join(output, 'docker-compose.yml'), 'up', '--build'],
+          ['-p', id, '-f', join(output, 'docker-compose.yml'), 'up', '--build'],
           {stdio: 'inherit'},
         );
       }
