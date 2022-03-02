@@ -42,7 +42,7 @@ export default class ServerFlecks extends Flecks {
     //
     // The latter will take precedence.
     const seen = [];
-    Object.keys(resolver)
+    Object.keys(this.flecks)
       .sort((l, r) => (l < r ? 1 : -1))
       .forEach((fleck) => {
         const prefix = `FLECKS_ENV_${

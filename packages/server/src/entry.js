@@ -2,7 +2,8 @@ import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
 
-import {D, Flecks} from '@flecks/core';
+import {D} from '@flecks/core';
+import {Flecks} from '@flecks/core/server';
 
 const {version} = require('../package.json');
 
