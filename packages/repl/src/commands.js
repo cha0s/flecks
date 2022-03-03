@@ -34,7 +34,7 @@ export default (program, flecks) => {
         }
       }
       const {id} = flecks.get('@flecks/core');
-      const directory = join(tmpdir(), 'flecks', 'repl');
+      const directory = join(tmpdir(), 'flecks', id, 'repl');
       const filenames = await readdir(directory);
       const sockets = filenames.filter(
         // eslint-disable-next-line no-useless-escape
