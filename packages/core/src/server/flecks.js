@@ -119,7 +119,7 @@ export default class ServerFlecks extends Flecks {
       if ('ENOENT' !== error.code) {
         throw error;
       }
-      initial = {'@flecks/core': {}};
+      initial = {'@flecks/core': {}, '@flecks/fleck': {}};
       configType = 'barebones';
     }
     debug('bootstrap configuration (%s): %O', configType, initial);
