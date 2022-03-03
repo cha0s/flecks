@@ -7,11 +7,12 @@ module.exports = (flecks) => (neutrino) => {
     devPort,
     devPublic,
     devStats,
+    port,
   } = flecks.get('@flecks/http/server');
   neutrino.config.devServer
     .hot(false)
     .host(devHost)
-    .port(devPort)
+    .port(devPort || (port + 1))
     .public(devPublic)
     .stats(devStats);
 };

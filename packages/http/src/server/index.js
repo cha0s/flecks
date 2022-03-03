@@ -38,7 +38,7 @@ export default {
     },
     '@flecks/core/config': () => ({
       devHost: 'localhost',
-      devPort: 32341,
+      devPort: undefined,
       devPublic: undefined,
       devStats: 'minimal',
       host: '0.0.0.0',
