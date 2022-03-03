@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "flecks build",
+    "build": "FLECKS_ENV_FLECKS_SERVER_start=0 npm run build:only",
+    "build:only": "flecks build",
     "debug": "DEBUG=*,-babel* npm run dev",
     "dev": "npm run -- build -h",
     "repl": "npx flecks repl --rlwrap",
