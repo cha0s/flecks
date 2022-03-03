@@ -7,47 +7,22 @@ import LocalStrategy from 'passport-local';
 export default {
   [Hooks]: {
     '@flecks/core/config': () => ({
-      successRedirect: '/',
       failureRedirect: '/',
+      successRedirect: '/',
     }),
     '@flecks/db/server/models.decorate': (
       Flecks.decorate(require.context('./models/decorators', false, /\.js$/))
     ),
-    '@flecks/http/routes': ({
-      config: {
-        '@flecks/user/local/server': {
-          failureRedirect,
-          successRedirect,
+    '@flecks/http/routes': (flecks) => {
+      const {failureRedirect, successRedirect} = flecks.get('@flecks/user/local/server');
+      return [
+        {
+          method: 'post',
+          path: '/auth/local',
+          middleware: passport.authenticate('local', {failureRedirect, successRedirect}),
         },
-      },
-    }) => [
-      {
-        method: 'post',
-        path: '/auth/local',
-        middleware: (req, res, next) => {
-          passport.authenticate(
-            'local',
-            (error, user) => {
-              if (error) {
-                next(error);
-                return;
-              }
-              if (!user) {
-                res.redirect(failureRedirect);
-                return;
-              }
-              req.logIn(user, (error) => {
-                if (error) {
-                  next(error);
-                  return;
-                }
-                res.redirect(successRedirect);
-              });
-            },
-          )(req, res, next);
-        },
-      },
-    ],
+      ];
+    },
     '@flecks/repl/commands': (flecks) => {
       const {User} = flecks.get('$flecks/db.models');
       return {
