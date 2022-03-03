@@ -45,7 +45,7 @@ export const createHttpServer = async (flecks) => {
   if ('production' !== NODE_ENV) {
     const proxy = httpProxy.createProxyServer({
       secure: false,
-      target: `http://${devHost}:${devPort}`,
+      target: `http://${devHost}:${devPort || (port + 1)}`,
     });
     proxy.on('proxyRes', async (proxyRes, req, res) => {
       res.statusCode = proxyRes.statusCode;
