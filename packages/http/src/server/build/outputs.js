@@ -19,5 +19,5 @@ module.exports = () => ({config}) => {
     .chunkFilename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js');
   config
     .plugin('inline-chunks')
-    .use(InlineChunkHtmlPlugin, [HtmlWebpackPlugin, [/^assets\/index[^.]*\.js$/]]);
+    .use(InlineChunkHtmlPlugin, [HtmlWebpackPlugin, [/^assets\/index(\.[^.]*)?\.js$/]]);
 };
