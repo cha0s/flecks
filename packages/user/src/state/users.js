@@ -26,8 +26,8 @@ const slice = createSlice({
       const storage = action.payload;
       state.ids = Array.from(new Set(state.ids.concat(usersIds(storage))));
       state.entities = {
-        ...state.entities,
         ...usersMap(storage),
+        ...state.entities,
       };
     });
     builder.addCase(hydrateServer, (state, action) => {
