@@ -85,7 +85,7 @@ else {
     debug('bootstrapped');
     // Register commands.
     const commands = flecks.invokeReduce('@flecks/core/commands', undefined, undefined, program);
-    const keys = Object.keys(commands);
+    const keys = Object.keys(commands).sort();
     for (let i = 0; i < keys.length; ++i) {
       const {
         action,
