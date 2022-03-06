@@ -43,8 +43,9 @@ module.exports = async (flecks) => {
     source.push('if (module.hot) {');
     paths.forEach(([path]) => {
       source.push(`  module.hot.accept('${path}', async () => {`);
-      source.push(`    window.flecks.refresh('${path}', require('${path}'));`);
-      source.push(`    window.flecks.invoke('@flecks/core/hmr', '${path}');`);
+      source.push(`    const updatedFleck = require('${path}');`);
+      source.push(`    window.flecks.refresh('${path}', updatedFleck);`);
+      source.push(`    window.flecks.invoke('@flecks/core/hmr', '${path}', updatedFleck);`);
       source.push('  });');
     });
     source.push('}');
