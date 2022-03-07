@@ -124,7 +124,7 @@ server application with no interesting work to do.
 
 ### Hooks
 
-Documentation page: (ADDME)
+Documentation page: https://github.com/cha0s/flecks/blob/gh-pages/hooks.md
 
 Hooks are how everything happens in flecks. There are many hooks and they will not be treated
 exhaustively here. See the documentation page above.
