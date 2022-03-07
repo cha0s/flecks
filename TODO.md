@@ -13,3 +13,9 @@
 - [x] flecks should have a `platforms` setting, so auto-lookups of `/client`, `/server` are less
   magical
 - [x] `flecks.expandedFlecks()` should use `platforms`
+- [ ] config validation
+- [ ] hints for hook types
+- [ ] localConfig discovered by hook
+    - [ ] renamed to 'build/config'?
+    - [ ] automatically generated list of build config
+- [ ] static documentation site generator
