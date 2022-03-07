@@ -6,7 +6,7 @@ export default {
   [Hooks]: {
     '@flecks/core/commands': commands,
     '@flecks/core/config': () => ({
-      filenameRewriters: [],
+      filenameRewriters: {},
     }),
   },
 };

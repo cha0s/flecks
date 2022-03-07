@@ -7,7 +7,7 @@ const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => 
 );
 
 export const generateHookPage = (hooks, flecks) => {
-  const {filenameRewriters} = flecks.get('@flecks/dox');
+  const {filenameRewriters} = flecks.get('@flecks/dox/server');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
   source.push('# Hooks');
@@ -79,7 +79,7 @@ export const generateHookPage = (hooks, flecks) => {
 };
 
 export const generateTodoPage = (todos, flecks) => {
-  const {filenameRewriters} = flecks.get('@flecks/dox');
+  const {filenameRewriters} = flecks.get('@flecks/dox/server');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
   source.push('# TODO');
