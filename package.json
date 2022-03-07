@@ -1,17 +1,34 @@
 {
   "name": "@flecks/monorepo",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/cha0s/flecks.git"
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git"
   },
   "scripts": {
     "build": "lerna run build",
+    "dox": "FLECKS_ENV_FLECKS_DOX_SERVER_filenameRewriters=\"{\\\"^@flecks/(.*):([0-9]+):([0-9]+)\\\": \\\"<a href='https://github.com/cha0s/flecks/tree/$(git rev-parse --short HEAD)/packages/\\$1#L\\$2'>@flecks/\\$1:\\$2:\\$3</a>\\\"}\" yarn flecks dox",
     "lint": "lerna run lint",
     "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org",
     "test": "lerna run test --no-bail -- --silent"
   },
   "dependencies": {},
   "devDependencies": {
+    "@flecks/core": "^1.2.0",
+    "@flecks/create-app": "^1.2.0",
+    "@flecks/create-fleck": "^1.2.0",
+    "@flecks/db": "^1.2.0",
+    "@flecks/docker": "^1.2.0",
+    "@flecks/dox": "^1.2.0",
+    "@flecks/fleck": "^1.2.0",
+    "@flecks/governor": "^1.2.0",
+    "@flecks/http": "^1.2.0",
+    "@flecks/react": "^1.2.0",
+    "@flecks/redis": "^1.2.0",
+    "@flecks/redux": "^1.2.0",
+    "@flecks/repl": "^1.2.0",
+    "@flecks/server": "^1.2.0",
+    "@flecks/socket": "^1.2.0",
+    "@flecks/user": "^1.2.0",
     "lerna": "^3.22.1"
   }
 }
