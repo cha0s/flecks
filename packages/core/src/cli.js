@@ -77,7 +77,10 @@ else {
   };
   // Initialize Commander.
   const program = new Command();
-  program.enablePositionalOptions();
+  program
+    .enablePositionalOptions()
+    .name('flecks')
+    .usage('[command] [...]');
   // Bootstrap.
   (async () => {
     debug('bootstrapping flecks...');
