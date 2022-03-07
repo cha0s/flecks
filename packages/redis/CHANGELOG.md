@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/cha0s/flecks/compare/v1.1.1...v1.2.0) (2022-03-07)
+
+
+### Features
+
+* basic auto-dockerization ([3d3181e](https://github.com/cha0s/flecks/commit/3d3181ebf4dcedfdf7fa8409cd02505efc0f3908))
+
+
+
+
+
 ## [1.1.1](https://github.com/cha0s/flecks/compare/v1.1.0...v1.1.1) (2022-02-28)
 
 **Note:** Version bump only for package @flecks/redis

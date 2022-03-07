@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/cha0s/flecks/compare/v1.1.1...v1.2.0) (2022-03-07)
+
+
+### Bug Fixes
+
+* **create-app:** JSON ([f1b0a9c](https://github.com/cha0s/flecks/commit/f1b0a9c5a9b53d13256c3893c32e41a7b3d8dd90))
+* **create-app:** no start on build only ([78e63d6](https://github.com/cha0s/flecks/commit/78e63d6bd0d5549f5a92519f9c0fccf919fa9d44))
+* copy/clean on watch builds ([18bb7b9](https://github.com/cha0s/flecks/commit/18bb7b961ba3bdae60a33fdb7eb94bb7107db687))
+* hook names ([e69e162](https://github.com/cha0s/flecks/commit/e69e162ec690f4cf97367337f1c7348ed9023793))
+
+
+
+
+
 ## [1.1.1](https://github.com/cha0s/flecks/compare/v1.1.0...v1.1.1) (2022-02-28)
 
 **Note:** Version bump only for package @flecks/create-app

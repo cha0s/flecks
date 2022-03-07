@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/cha0s/flecks/compare/v1.1.1...v1.2.0) (2022-03-07)
+
+
+### Bug Fixes
+
+* **create-app:** JSON ([f1b0a9c](https://github.com/cha0s/flecks/commit/f1b0a9c5a9b53d13256c3893c32e41a7b3d8dd90))
+* **create-app:** no start on build only ([78e63d6](https://github.com/cha0s/flecks/commit/78e63d6bd0d5549f5a92519f9c0fccf919fa9d44))
+* **db:** host environment ([a34ec59](https://github.com/cha0s/flecks/commit/a34ec597e191a2dac548faad452d32ed5aceb5ab))
+* **http:** asset inlining matcher was too general ([f5d4103](https://github.com/cha0s/flecks/commit/f5d41034cf7206bbf7381bfceae9aca069fe546b))
+* **http:** default dev port ([b29d13a](https://github.com/cha0s/flecks/commit/b29d13abb62806cd9b7a9653630e313d6e8a0932))
+* **repl:** missed port change ([4e5650b](https://github.com/cha0s/flecks/commit/4e5650b0308dfc81b1944ce49d4938741f8fb834))
+* **user:** redux hydration ([60ab421](https://github.com/cha0s/flecks/commit/60ab4219887daa2efc12ca26e02c76287a4fd779))
+* babel paths for rtc ([8f5ce8f](https://github.com/cha0s/flecks/commit/8f5ce8f9d4377f26230020084496aa705bc2bae8))
+* container launching ([bb81638](https://github.com/cha0s/flecks/commit/bb81638cc33846ab801ec5daa1b95048e3e9f9e9))
+* copy/clean on watch builds ([18bb7b9](https://github.com/cha0s/flecks/commit/18bb7b961ba3bdae60a33fdb7eb94bb7107db687))
+* DB container ([7f25f88](https://github.com/cha0s/flecks/commit/7f25f88506ef2097d20a33a5f9665d4613a3749e))
+* directory creation ([a22ab96](https://github.com/cha0s/flecks/commit/a22ab96b0136bcb78994ad97f7ae11d4eae2d26e))
+* hook names ([e69e162](https://github.com/cha0s/flecks/commit/e69e162ec690f4cf97367337f1c7348ed9023793))
+* old redis ([0a8c66a](https://github.com/cha0s/flecks/commit/0a8c66ad7d6da5d63563c40c509f5a165146d7be))
+* safety ([a3703ed](https://github.com/cha0s/flecks/commit/a3703ede2ebc5c7acf7b1629032b463988a02d56))
+* server runtime environment ([0dc49ec](https://github.com/cha0s/flecks/commit/0dc49ecc8ed7f7d6f4b7276bb3a969d3cd4ffc72))
+* tmpdir structure ([371076b](https://github.com/cha0s/flecks/commit/371076b38eee5dab95c564b001442557936b5874))
+
+
+### Features
+
+* basic auto-dockerization ([3d3181e](https://github.com/cha0s/flecks/commit/3d3181ebf4dcedfdf7fa8409cd02505efc0f3908))
+* docs ([5e2b825](https://github.com/cha0s/flecks/commit/5e2b8256205efc0280c8308cea3e64fa06fe16a9))
+* rewrite filenames ([a210f63](https://github.com/cha0s/flecks/commit/a210f636bcccd9a11f926560774cea8efdb3d983))
+* **api:** invokeComposedAsync ([2636813](https://github.com/cha0s/flecks/commit/263681344a7a292130c42f64ef6bd7da61928267))
+* **http:** stats for dev server ([7e0ab01](https://github.com/cha0s/flecks/commit/7e0ab01b521cc6d7619e44d013cbb7037b14af17))
+
+
+
+
+
 ## [1.1.1](https://github.com/cha0s/flecks/compare/v1.1.0...v1.1.1) (2022-02-28)
 
 **Note:** Version bump only for package @flecks/monorepo

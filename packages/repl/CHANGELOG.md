@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/cha0s/flecks/compare/v1.1.1...v1.2.0) (2022-03-07)
+
+
+### Bug Fixes
+
+* **repl:** missed port change ([4e5650b](https://github.com/cha0s/flecks/commit/4e5650b0308dfc81b1944ce49d4938741f8fb834))
+* directory creation ([a22ab96](https://github.com/cha0s/flecks/commit/a22ab96b0136bcb78994ad97f7ae11d4eae2d26e))
+* tmpdir structure ([371076b](https://github.com/cha0s/flecks/commit/371076b38eee5dab95c564b001442557936b5874))
+
+
+### Features
+
+* docs ([5e2b825](https://github.com/cha0s/flecks/commit/5e2b8256205efc0280c8308cea3e64fa06fe16a9))
+
+
+
+
+
 ## [1.1.1](https://github.com/cha0s/flecks/compare/v1.1.0...v1.1.1) (2022-02-28)
 
 **Note:** Version bump only for package @flecks/repl
