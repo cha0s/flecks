@@ -1,0 +1,31 @@
+{
+  "name": "@flecks/dox",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "server.js",
+    "server.js.map",
+    "src"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.17.2",
+    "@babel/traverse": "^7.17.0",
+    "@babel/types": "^7.17.0",
+    "@flecks/core": "^1.1.1",
+    "comment-parser": "^1.3.0",
+    "glob": "^7.2.0"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.0.1"
+  }
+}
