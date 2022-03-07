@@ -129,7 +129,7 @@ const implementationVisitor = (fn) => {
               properties.forEach((property) => {
                 const {key} = property;
                 if (isLiteral(key)) {
-                  fn(path, property);
+                  fn(property);
                 }
               });
             }
@@ -152,17 +152,17 @@ const implementationVisitor = (fn) => {
 };
 
 const FlecksImplementations = (state, filename) => (
-  implementationVisitor((path, {key}) => {
+  implementationVisitor(({key}) => {
     state.addImplementation(
       key.value,
       filename,
-      path.node.loc,
+      key.loc,
     );
   })
 );
 
 const FlecksSpecifications = (state, source) => (
-  implementationVisitor((path, property) => {
+  implementationVisitor((property) => {
     if (property.leadingComments) {
       const {key, value: example} = property;
       const [{value}] = property.leadingComments;
