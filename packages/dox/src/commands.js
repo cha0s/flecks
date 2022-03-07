@@ -21,10 +21,10 @@ export default (program, flecks) => {
       const state = await parseFlecks(flecks);
       debug('parsed');
       debug('Generating hooks page...');
-      const hookPage = generateHookPage(state.hooks);
+      const hookPage = generateHookPage(state.hooks, flecks);
       debug('generated');
       debug('Generating TODO page...');
-      const todoPage = generateTodoPage(state.todos);
+      const todoPage = generateTodoPage(state.todos, flecks);
       debug('generated');
       const output = join(FLECKS_CORE_ROOT, 'dox');
       await mkdir(output, {recursive: true});

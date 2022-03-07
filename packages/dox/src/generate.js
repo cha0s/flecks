@@ -1,4 +1,14 @@
-export const generateHookPage = (hooks) => {
+const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => (
+  Object.entries(filenameRewriters)
+    .reduce(
+      (filename, [from, to]) => filename.replace(new RegExp(from), to),
+      `${filename}:${line}:${column}`,
+    )
+);
+
+export const generateHookPage = (hooks, flecks) => {
+  const {filenameRewriters} = flecks.get('@flecks/dox');
+  const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
   source.push('# Hooks');
   source.push('');
@@ -35,7 +45,7 @@ export const generateHookPage = (hooks) => {
         source.push('<summary>Implementations</summary>');
         source.push('<ul>');
         implementations.forEach(({filename, loc: {start: {column, line}}}) => {
-          source.push(`<li>${filename}:${line}:${column}</li>`);
+          source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -46,7 +56,7 @@ export const generateHookPage = (hooks) => {
         source.push('<summary>Invocations</summary>');
         source.push('<ul>');
         invocations.forEach(({filename, loc: {start: {column, line}}}) => {
-          source.push(`<li>${filename}:${line}:${column}</li>`);
+          source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -68,7 +78,9 @@ export const generateHookPage = (hooks) => {
   return source.join('\n');
 };
 
-export const generateTodoPage = (todos) => {
+export const generateTodoPage = (todos, flecks) => {
+  const {filenameRewriters} = flecks.get('@flecks/dox');
+  const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
   source.push('# TODO');
   source.push('');
@@ -76,7 +88,7 @@ export const generateTodoPage = (todos) => {
   source.push('');
   if (todos.length > 0) {
     todos.forEach(({filename, loc: {start: {column, line}}, text}) => {
-      source.push(`- ${filename}:${line}:${column}`);
+      source.push(`- ${rewriteFilename(filename, line, column)}`);
       text.split('\n').forEach((line) => {
         source.push(`  > ${line}`);
       });

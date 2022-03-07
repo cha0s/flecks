@@ -225,6 +225,7 @@ export const parseFleckRoot = async (root, state) => {
   const sources = await fleckSources(resolved);
   await Promise.all(
     sources.map(async (source) => {
+      // @todo Aliased fleck paths are gonna be bad.
       await parseFile(source, join(root, source.slice(resolved.length)), state);
     }),
   );

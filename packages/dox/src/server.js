@@ -5,5 +5,8 @@ import commands from './commands';
 export default {
   [Hooks]: {
     '@flecks/core/commands': commands,
+    '@flecks/core/config': () => ({
+      filenameRewriters: [],
+    }),
   },
 };
