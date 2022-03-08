@@ -261,21 +261,6 @@ export default class Flecks {
     return candidate.fn(...(args.concat(this)));
   }
 
-  invokeParallel(hook, ...args) {
-    if (!this.hooks[hook]) {
-      return [];
-    }
-    const flecks = this.flecksImplementing(hook);
-    if (0 === flecks.length) {
-      return [];
-    }
-    const results = [];
-    for (let i = 0; i < flecks.length; ++i) {
-      results.push(this.invokeFleck(hook, flecks[i], ...(args.concat(this))));
-    }
-    return results;
-  }
-
   invokeReduce(hook, initial = {}, reducer = (r, o) => ({...r, ...o}), ...args) {
     if (!this.hooks[hook]) {
       return initial;

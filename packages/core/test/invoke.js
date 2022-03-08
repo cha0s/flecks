@@ -25,13 +25,6 @@ it('can invoke', () => {
     });
 });
 
-it('can invoke parallel', async () => {
-  const O = {foo: 3};
-  await Promise.all(flecks.invokeParallel('@flecks/core/test/invoke-parallel', O));
-  expect(O.foo)
-    .to.equal(8);
-});
-
 it('can invoke reduced', () => {
   expect(flecks.invokeReduce('@flecks/core/test/invoke-reduce'))
     .to.deep.equal({foo: 69, bar: 420});
