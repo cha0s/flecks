@@ -304,6 +304,8 @@ Our `flecks.yml` could be configured like so:
 
 In this application, when `@flecks/http/server.request.route` is invoked, `@flecks/user/session`'s implementation is invoked (which reifies the user's session from cookies), followed by `my-cool-fleck`'s (which, we assume, does some kind of very cool dark mode check).
 
+### Ellipses
+
 It may not always be ergonomic to configure the order of every single implementation, but enough to specify which implementations must run first (or last).
 
 For example, suppose we have multiple implementations that require there to have been a reified user session, but which order those implementations run might not be a concern. For this, flecks provides you with the ellipses entry:
