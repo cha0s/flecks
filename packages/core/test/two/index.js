@@ -14,7 +14,7 @@ export default {
         resolve();
       }, 0);
     }),
-    '@flecks/core/test/invoke-reduce': () => ({bar: 420}),
-    '@flecks/core/test/invoke-reduce-async': () => new Promise((resolve) => resolve({bar: 420})),
+    '@flecks/core/test/invoke-merge': () => ({bar: 420}),
+    '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => resolve({bar: 420})),
   },
 };

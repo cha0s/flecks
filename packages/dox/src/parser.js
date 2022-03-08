@@ -95,7 +95,7 @@ const FlecksInvocations = (state, filename) => ({
               if (isStringLiteral(path.node.arguments[0])) {
                 state.addInvocation(
                   path.node.arguments[0].value,
-                  'invokeReduce',
+                  'invokeMerge',
                   filename,
                   path.node.loc,
                 );

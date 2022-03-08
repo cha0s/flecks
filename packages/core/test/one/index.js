@@ -25,7 +25,7 @@ export default {
       // eslint-disable-next-line no-param-reassign
       O.foo *= 2;
     },
-    '@flecks/core/test/invoke-reduce': () => ({foo: 69}),
-    '@flecks/core/test/invoke-reduce-async': () => new Promise((resolve) => resolve({foo: 69})),
+    '@flecks/core/test/invoke-merge': () => ({foo: 69}),
+    '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => resolve({foo: 69})),
   },
 };

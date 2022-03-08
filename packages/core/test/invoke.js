@@ -25,12 +25,12 @@ it('can invoke', () => {
     });
 });
 
-it('can invoke reduced', () => {
-  expect(flecks.invokeReduce('@flecks/core/test/invoke-reduce'))
+it('can invoke merge', () => {
+  expect(flecks.invokeMerge('@flecks/core/test/invoke-merge'))
     .to.deep.equal({foo: 69, bar: 420});
 });
 
-it('can invoke reduced async', async () => {
-  expect(await flecks.invokeReduce('@flecks/core/test/invoke-reduce'))
+it('can invoke merge async', async () => {
+  expect(await flecks.invokeMergeAsync('@flecks/core/test/invoke-merge-async'))
     .to.deep.equal({foo: 69, bar: 420});
 });

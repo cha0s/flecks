@@ -172,7 +172,7 @@ export default class Flecks {
     if (!hook || 'string' !== typeof hook) {
       throw new TypeError('Flecks.gather(): Expects parameter 1 (hook) to be string');
     }
-    const raw = this.invokeReduce(hook);
+    const raw = this.invokeMerge(hook);
     check(raw, hook);
     const decorated = this.invokeComposed(`${hook}.decorate`, raw);
     check(decorated, `${hook}.decorate`);
@@ -261,7 +261,15 @@ export default class Flecks {
     return candidate.fn(...(args.concat(this)));
   }
 
-  invokeReduce(hook, initial = {}, reducer = (r, o) => ({...r, ...o}), ...args) {
+  invokeMerge(hook, ...args) {
+    return this.invokeReduce(hook, (r, o) => ({...r, ...o}), {}, ...args);
+  }
+
+  async invokeMergeAsync(hook, ...args) {
+    return this.invokeReduceAsync(hook, (r, o) => ({...r, ...o}), {}, ...args);
+  }
+
+  invokeReduce(hook, reducer, initial, ...args) {
     if (!this.hooks[hook]) {
       return initial;
     }
@@ -269,7 +277,7 @@ export default class Flecks {
       .reduce((r, {fleck}) => reducer(r, this.invokeFleck(hook, fleck, ...args)), initial);
   }
 
-  async invokeReduceAsync(hook, initial = {}, reducer = (r, o) => ({...r, ...o}), ...args) {
+  async invokeReduceAsync(hook, reducer, initial, ...args) {
     if (!this.hooks[hook]) {
       return initial;
     }

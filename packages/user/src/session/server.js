@@ -38,7 +38,7 @@ export default {
         sameSite: true,
         saveUninitialized: false,
         secret: flecks.get('@flecks/user/session/server.cookieSecret'),
-        ...await flecks.invokeReduceAsync('@flecks/user/session'),
+        ...await flecks.invokeMergeAsync('@flecks/user/session'),
       }));
     },
     '@flecks/socket/server/request.socket': (flecks) => (socket, next) => {

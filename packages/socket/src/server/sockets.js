@@ -14,7 +14,7 @@ export default class SocketServer {
     this.onConnect = this.onConnect.bind(this);
     this.flecks = flecks;
     this.httpServer = httpServer;
-    const hooks = flecks.invokeReduce('@flecks/socket/intercom');
+    const hooks = flecks.invokeMerge('@flecks/socket/intercom');
     debug('intercom hooks(%O)', hooks);
     this.localIntercom = async ({payload, type}, fn) => {
       debug('customHook: %s(%o)', type, payload);
@@ -31,7 +31,7 @@ export default class SocketServer {
 
   async connect() {
     this.io = SocketIoServer(this.httpServer, {
-      ...await this.flecks.invokeReduceAsync('@flecks/socket/server'),
+      ...await this.flecks.invokeMergeAsync('@flecks/socket/server'),
       serveClient: false,
     });
     this.flecks.set('$flecks/socket.io', this.io);
