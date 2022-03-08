@@ -35,7 +35,7 @@ See: [function composition](https://www.educative.io/edpresso/function-compositi
 
 `initial` is passed to the first implementation, which returns a result which is passed to the second implementation, which returns a result which is passed to the third implementation, etc.
 
-Composed hooks are ordered.
+Composed hooks are [ordered](#ordered-hooks).
 
 &nbsp;
 
@@ -71,7 +71,7 @@ Invokes hook implementations one at a time, their results being passed to the re
 
 Invokes all hook implementations, one after another. In the async variant, each implementation's result is `await`ed before invoking the next implementation.
 
-Sequential hooks are ordered.
+Sequential hooks are [ordered](#ordered-hooks).
 
 &nbsp;
 
@@ -283,7 +283,7 @@ is *exactly equivalent* to the decorator example above.
 }
 ```
 
-Decorator hooks are ordered.
+Decorator hooks are [ordered](#ordered-hooks).
 
 ## Ordered hooks
 

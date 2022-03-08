@@ -10,8 +10,9 @@
 
   ## ⚠️ PROCEED AT YOUR OWN RISK ⚠️
 
-  This is alpha software. There are undoubtedly many bugs that haven't yet been found. I reserve
-  the right to break all semantic versioning guarantees as long as the project is v1.x.x!
+  This is alpha software. There are undoubtedly many bugs that haven't yet been found.
+  
+  I reserve the right to break all semantic versioning guarantees as long as the project is v1.x.x!
   
   **You've been warned!**
 </div>
@@ -88,7 +89,7 @@ configuration in your `build` directory on a case-by-case basis.
 Of course, flecks strives to provide powerful defaults that minimize the need to override
 configuration.
 
-See [the build directory documentation page](packages/core/build/dox/build.md) for more details.
+See the [build directory documentation page](packages/core/build/dox/build.md) for more details.
 
 ---
 
@@ -124,7 +125,7 @@ server application with no interesting work to do.
 
 ### Hooks
 
-Documentation page: https://github.com/cha0s/flecks/blob/gh-pages/hooks.md
+See the [hook documentation page](./packages/core/build/dox/concepts/hooks.md)
 
 Hooks are how everything happens in flecks. There are many hooks and they will not be treated
 exhaustively here. See the documentation page above.
@@ -161,6 +162,7 @@ Just to give you an idea of the power of hooks, some will be listed here:
 
 ...and so many more.
 
-We didn't even touch on [gather hooks](ADDME), [provider hooks](ADDME), [decorator hooks](ADDME),
-and so many more. Please see the [hook documentation page](ADDME) for the full rundown on all of
-the wonderful things hooks can do for you.
+We didn't even touch on gather hooks, provider hooks, decorator hooks,
+and so many more. Please see the
+[hook documentation page](./packages/core/build/dox/concepts/hooks.md) for the full rundown on all
+of the wonderful things hooks can do for you.
