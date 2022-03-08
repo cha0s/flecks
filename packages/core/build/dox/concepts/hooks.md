@@ -1,6 +1,6 @@
 # Hooks
 
-Hooks are how everything happens in flecks. There are many hooks and the hooks provided by flecks are documented at the [hooks reference page](ADDME).
+Hooks are how everything happens in flecks. There are many hooks and the hooks provided by flecks are documented at the [hooks reference page](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md).
 
 To define hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks), you only have to import the `Hooks` symbol and key your default export:
 
@@ -67,7 +67,8 @@ Invokes hook implementations one at a time, their results being passed to the re
 
 &nbsp;
 
-### `invokeSequential(Async)?(hook, ...args)`
+### `invokeSequential(hook, ...args)`
+### `invokeSequentialAsync(hook, ...args)`
 
 Invokes all hook implementations, one after another. In the async variant, each implementation's result is `await`ed before invoking the next implementation.
 
@@ -124,7 +125,7 @@ Following from the example above:
 ```javascript
 const foo = new Gathered.Foo();
 assert(foo.id === 2);
-assert(foo.type === 'Foo);
+assert(foo.type === 'Foo');
 ```
 
 `flecks.gather()` also supports some options:
