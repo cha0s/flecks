@@ -120,3 +120,6 @@ dist
 
 # package-locals
 /packages/*/yarn.lock
+
+# Generated documentation
+/dox
