@@ -24,7 +24,7 @@ module.exports = async (flecks) => {
     const paths = Object.entries(resolver);
     const source = [
       'module.exports = (update) => (async () => ({',
-      "  config: window[Symbol.for('@flecks/http/config')],",
+      "  config: window[Symbol.for('@flecks/http.config')],",
       '  flecks: Object.fromEntries(await Promise.all([',
       paths
         .map(([path]) => [
@@ -45,7 +45,7 @@ module.exports = async (flecks) => {
       source.push(`  module.hot.accept('${path}', async () => {`);
       source.push(`    const updatedFleck = require('${path}');`);
       source.push(`    window.flecks.refresh('${path}', updatedFleck);`);
-      source.push(`    window.flecks.invoke('@flecks/core/hmr', '${path}', updatedFleck);`);
+      source.push(`    window.flecks.invoke('@flecks/core.hmr', '${path}', updatedFleck);`);
       source.push('  });');
     });
     source.push('}');

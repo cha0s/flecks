@@ -37,7 +37,7 @@ module.exports = (async () => {
   };
   // Compile code.
   const compiler = flecks.invokeFleck(
-    '@flecks/http/server/compiler',
+    '@flecks/http/server.compiler',
     flecks.get('@flecks/http/server.compiler'),
   );
   if (compiler) {

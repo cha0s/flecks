@@ -8,7 +8,7 @@ export default {
      * Beware: the user running the server must have Docker privileges.
      * See: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
      */
-    '@flecks/docker/containers': () => ({
+    '@flecks/docker.containers': () => ({
       someContainer: {
         // Environment variables.
         environment: {

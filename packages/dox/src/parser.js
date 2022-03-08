@@ -82,7 +82,7 @@ const FlecksInvocations = (state, filename) => ({
                   path.node.loc,
                 );
                 state.addInvocation(
-                  '@flecks/core/starting',
+                  '@flecks/core.starting',
                   'invokeFlat',
                   filename,
                   path.node.loc,

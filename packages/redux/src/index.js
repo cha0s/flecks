@@ -7,6 +7,6 @@ export * from './actions';
 
 export default {
   [Hooks]: {
-    '@flecks/socket/packets': Flecks.provide(require.context('./packets', false, /\.js$/)),
+    '@flecks/socket.packets': Flecks.provide(require.context('./packets', false, /\.js$/)),
   },
 };

@@ -44,7 +44,7 @@ module.exports = async (flecks) => {
     paths.forEach((path) => {
       source.push(`  module.hot.accept('${path}', async () => {`);
       source.push(`    global.flecks.refresh('${path}', require('${path}'));`);
-      source.push(`    global.flecks.invoke('@flecks/core/hmr', '${path}');`);
+      source.push(`    global.flecks.invoke('@flecks/core.hmr', '${path}');`);
       source.push('  });');
     });
     source.push('}');

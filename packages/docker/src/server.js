@@ -5,15 +5,15 @@ import startContainer from './start-container';
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       enabled: true,
     }),
-    '@flecks/core/commands': commands,
-    '@flecks/server/up': async (flecks) => {
+    '@flecks/core.commands': commands,
+    '@flecks/server.up': async (flecks) => {
       if (!flecks.get('@flecks/docker/server.enabled')) {
         return;
       }
-      const containers = await flecks.invokeMergeAsync('@flecks/docker/containers');
+      const containers = await flecks.invokeMergeAsync('@flecks/docker.containers');
       await Promise.all(
         Object.entries(containers)
           .map(([key, config]) => startContainer(flecks, key, config)),

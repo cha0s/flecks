@@ -9,7 +9,7 @@ export default {
      * defined in its own file.
      * See: https://github.com/cha0s/flecks/tree/master/packages/user/src/server/models
      */
-    '@flecks/db/server/models': Flecks.provide(require.context('./models', false, /\.js$/)),
+    '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
 
     /**
      * Decorate database models.
@@ -20,7 +20,7 @@ export default {
      *
      * @param {constructor} Model The model to decorate.
      */
-    '@flecks/db/server/models.decorate': (
+    '@flecks/db/server.models.decorate': (
       Flecks.decorate(require.context('./models/decorators', false, /\.js$/))
     ),
   },

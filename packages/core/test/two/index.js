@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import {Flecks, Hooks} from '@flecks/core';
 
 export default {

@@ -24,7 +24,7 @@ const {version} = require('../package.json');
   const flecks = new Flecks(runtime);
   global.flecks = flecks;
   try {
-    await flecks.up('@flecks/server/up');
+    await flecks.up('@flecks/server.up');
     debug('up!');
   }
   catch (error) {

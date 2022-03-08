@@ -35,7 +35,7 @@ export default (async () => {
   debug('bootstrapped');
 
   debug('gathering configs');
-  let targets = flatten(flecks.invokeFlat('@flecks/core/targets'));
+  let targets = flatten(flecks.invokeFlat('@flecks/core.targets'));
   if (buildList.length > 0) {
     targets = intersection(targets, buildList);
   }
@@ -52,16 +52,16 @@ export default (async () => {
   ));
   await Promise.all(
     entries.map(async ([target, config]) => (
-      flecks.invokeFlat('@flecks/core/build', target, config)
+      flecks.invokeFlat('@flecks/core.build', target, config)
     )),
   );
   const neutrinoConfigs = Object.fromEntries(entries);
-  await Promise.all(flecks.invokeFlat('@flecks/core/build/alter', neutrinoConfigs));
+  await Promise.all(flecks.invokeFlat('@flecks/core.build.alter', neutrinoConfigs));
   const webpackConfigs = await Promise.all(
     Object.entries(neutrinoConfigs)
       .map(async ([target, config]) => {
         const webpackConfig = neutrino(config).webpack();
-        await flecks.invokeFlat('@flecks/core/webpack', target, webpackConfig);
+        await flecks.invokeFlat('@flecks/core.webpack', target, webpackConfig);
         return webpackConfig;
       }),
   );

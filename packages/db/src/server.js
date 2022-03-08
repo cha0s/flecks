@@ -11,26 +11,25 @@ export {createDatabaseConnection};
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       database: ':memory:',
       dialect: 'sqlite',
       host: undefined,
-      'models.decorate': ['...'],
       password: undefined,
       port: undefined,
       username: undefined,
     }),
-    '@flecks/core/starting': (flecks) => {
+    '@flecks/core.starting': (flecks) => {
       flecks.set('$flecks/db.models', flecks.gather(
-        '@flecks/db/server/models',
+        '@flecks/db/server.models',
         {typeAttribute: 'name'},
       ));
     },
-    '@flecks/docker/containers': containers,
-    '@flecks/server/up': async (flecks) => {
+    '@flecks/docker.containers': containers,
+    '@flecks/server.up': async (flecks) => {
       flecks.set('$flecks/db/sequelize', await createDatabaseConnection(flecks));
     },
-    '@flecks/repl/context': (flecks) => ({
+    '@flecks/repl.context': (flecks) => ({
       Models: flecks.get('$flecks/db.models'),
       sequelize: flecks.get('$flecks/db/sequelize'),
     }),

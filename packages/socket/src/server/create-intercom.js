@@ -7,7 +7,7 @@ export default function createIntercom(sockets, transport) {
     debug('@flecks/socket.s: %s(%o)', transport, type, payload);
     const responses = await new Promise((resolve, reject) => {
       sockets.io.serverSideEmit(
-        '@flecks/socket/intercom',
+        '@flecks/socket.intercom',
         {payload, type},
         (error, responses) => (error ? reject(error) : resolve(responses)),
       );

@@ -64,7 +64,7 @@ module.exports = (async () => {
   };
 
   const compiler = flecks.invokeFleck(
-    '@flecks/server/compiler',
+    '@flecks/server.compiler',
     flecks.get('@flecks/server.compiler'),
   );
 

@@ -15,8 +15,7 @@ export {default as usePrevious} from './hooks/use-previous';
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
-      providers: ['...'],
+    '@flecks/core.config': () => ({
       ssr: true,
     }),
   },

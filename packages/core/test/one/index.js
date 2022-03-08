@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import {Flecks, Hooks} from '@flecks/core';
 
 export const testNodespace = () => [
@@ -10,9 +10,8 @@ export const testNodespace = () => [
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       foo: 'bar',
-      'test-gather.decorate': ['...'],
     }),
     '@flecks/core/one/test-gather': (
       Flecks.provide(require.context('./things', false, /\.js$/))

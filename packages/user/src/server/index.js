@@ -6,11 +6,11 @@ const debug = D('@flecks/user/passport');
 
 export default {
   [Hooks]: {
-    '@flecks/db/server/models': Flecks.provide(require.context('./models', false, /\.js$/)),
-    '@flecks/http/server/request.route': (flecks) => (req, res, next) => {
-      debug('@flecks/http/server/request.route: passport.initialize()');
+    '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
+    '@flecks/http/server.request.route': (flecks) => (req, res, next) => {
+      debug('@flecks/http/server.request.route: passport.initialize()');
       passport.initialize()(req, res, () => {
-        debug('@flecks/http/server/request.route: passport.session()');
+        debug('@flecks/http/server.request.route: passport.session()');
         passport.session()(req, res, () => {
           if (!req.user) {
             const {User} = flecks.get('$flecks/db.models');
@@ -21,7 +21,7 @@ export default {
         });
       });
     },
-    '@flecks/http/routes': () => [
+    '@flecks/http.routes': () => [
       {
         method: 'get',
         path: '/auth/logout',
@@ -31,7 +31,7 @@ export default {
         },
       },
     ],
-    '@flecks/server/up': (flecks) => {
+    '@flecks/server.up': (flecks) => {
       passport.serializeUser((user, fn) => fn(null, user.id));
       passport.deserializeUser(async (id, fn) => {
         const {User} = flecks.get('$flecks/db.models');
@@ -43,7 +43,7 @@ export default {
         }
       });
     },
-    '@flecks/socket/intercom': () => ({
+    '@flecks/socket.intercom': () => ({
       '@flecks/user/users': async (sids, server) => {
         const sockets = await server.sockets();
         return sids
@@ -57,10 +57,10 @@ export default {
           );
       },
     }),
-    '@flecks/socket/server/request.socket': (flecks) => (socket, next) => {
-      debug('@flecks/socket/server/request.socket: passport.initialize()');
+    '@flecks/socket/server.request.socket': (flecks) => (socket, next) => {
+      debug('@flecks/socket/server.request.socket: passport.initialize()');
       passport.initialize()(socket.handshake, undefined, () => {
-        debug('@flecks/socket/server/request.socket: passport.session()');
+        debug('@flecks/socket/server.request.socket: passport.session()');
         passport.session()(socket.handshake, undefined, async () => {
           /* eslint-disable no-param-reassign */
           if (!socket.handshake.user) {

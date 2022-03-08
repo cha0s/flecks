@@ -16,5 +16,5 @@ const flecks = Flecks.bootstrap();
 debug('bootstrapped');
 
 const config = R(process.env[targetNeutrino(FLECKS_CORE_BUILD_TARGET)]);
-flecks.invokeFlat('@flecks/core/build', FLECKS_CORE_BUILD_TARGET, config);
+flecks.invokeFlat('@flecks/core.build', FLECKS_CORE_BUILD_TARGET, config);
 module.exports = neutrino(config).eslintrc();

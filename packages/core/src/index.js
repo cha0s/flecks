@@ -17,7 +17,7 @@ export {
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       'eslint.exclude': [],
       id: 'flecks',
     }),

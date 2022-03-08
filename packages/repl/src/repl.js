@@ -10,7 +10,7 @@ const debug = D('@flecks/repl');
 
 export async function createReplServer(flecks) {
   const {id} = flecks.get('@flecks/core');
-  const context = flecks.invokeFlat('@flecks/repl/context')
+  const context = flecks.invokeFlat('@flecks/repl.context')
     .reduce((r, vars) => ({...r, ...vars}), {flecks});
   debug(
     'context = %O',
@@ -18,7 +18,7 @@ export async function createReplServer(flecks) {
   );
   const commands = {};
   Object.entries(
-    flecks.invokeFlat('@flecks/repl/commands').reduce((r, commands) => ({...r, ...commands}), {}),
+    flecks.invokeFlat('@flecks/repl.commands').reduce((r, commands) => ({...r, ...commands}), {}),
   ).forEach(([key, value]) => {
     commands[key] = value;
     debug('registered command: %s', key);

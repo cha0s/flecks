@@ -7,10 +7,10 @@ export * from 'redux-first-history';
 
 export default {
   [Hooks]: {
-    '@flecks/redux/slices': () => ({
+    '@flecks/redux.slices': () => ({
       router: routerReducer,
     }),
-    '@flecks/redux/store': (options) => {
+    '@flecks/redux.store': (options) => {
       options.middleware.push(routerMiddleware);
     },
   },

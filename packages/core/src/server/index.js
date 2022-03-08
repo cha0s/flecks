@@ -18,7 +18,7 @@ export {JsonStream, transform} from './stream';
 
 export default {
   [Hooks]: {
-    '@flecks/core/build': (target, config, flecks) => {
+    '@flecks/core.build': (target, config, flecks) => {
       const {'eslint.exclude': exclude} = flecks.get('@flecks/core');
       if (-1 !== exclude.indexOf(target)) {
         return;
@@ -43,6 +43,6 @@ export default {
         }),
       );
     },
-    '@flecks/core/commands': commands,
+    '@flecks/core.commands': commands,
   },
 };

@@ -10,7 +10,7 @@ import {
   spawnWith,
 } from '@flecks/core/server';
 
-const debug = D('@flecks/core/commands');
+const debug = D('@flecks/core.commands');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

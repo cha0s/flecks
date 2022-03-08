@@ -7,7 +7,7 @@ export {default as createLimiter} from './limiter';
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       keys: ['ip'],
       http: {
         keys: ['ip'],
@@ -22,8 +22,8 @@ export default {
         ttl: 30,
       },
     }),
-    '@flecks/db/server/models': Flecks.provide(require.context('./models', false, /\.js$/)),
-    '@flecks/http/server/request.route': (flecks) => {
+    '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
+    '@flecks/http/server.request.route': (flecks) => {
       const {http} = flecks.get('@flecks/governor/server');
       const limiter = flecks.get('$flecks/governor.http.limiter');
       return async (req, res, next) => {
@@ -52,7 +52,7 @@ export default {
         }
       };
     },
-    '@flecks/server/up': async (flecks) => {
+    '@flecks/server.up': async (flecks) => {
       if (flecks.fleck('@flecks/http/server')) {
         const {http} = flecks.get('@flecks/governor/server');
         const limiter = await createLimiter(
@@ -93,7 +93,7 @@ export default {
         flecks.set('$flecks/governor.socket.limiter', limiter);
       }
     },
-    '@flecks/socket/server/request.socket': (flecks) => {
+    '@flecks/socket/server.request.socket': (flecks) => {
       const limiter = flecks.get('$flecks/governor.socket.limiter');
       return async (socket, next) => {
         const {handshake: req} = socket;
@@ -120,7 +120,7 @@ export default {
         }
       };
     },
-    '@flecks/socket/packets.decorate': (Packets, flecks) => (
+    '@flecks/socket.packets.decorate': (Packets, flecks) => (
       Object.fromEntries(
         Object.entries(Packets).map(([keyPrefix, Packet]) => [
           keyPrefix,

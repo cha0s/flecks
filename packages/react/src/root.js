@@ -7,9 +7,9 @@ import FlecksContext from '@flecks/react/context';
 const debug = D('@flecks/react/root');
 
 export default async (flecks, req) => {
-  const Roots = flecks.invoke('@flecks/react/roots', req);
+  const Roots = flecks.invoke('@flecks/react.roots', req);
   debug('roots: %O', Object.keys(Roots));
-  const Providers = await flecks.invokeSequentialAsync('@flecks/react/providers', req);
+  const Providers = await flecks.invokeSequentialAsync('@flecks/react.providers', req);
   const FlattenedProviders = [];
   for (let i = 0; i < Providers.length; i++) {
     const Provider = Providers[i];

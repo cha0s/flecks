@@ -20,8 +20,6 @@
   "files": [
     "build",
     "build/template.ejs",
-    "client.js",
-    "client.js.map",
     "client/tests.js",
     "client/tests.js.map",
     "entry.js",

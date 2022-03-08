@@ -5,7 +5,7 @@ import {createReplServer} from './repl';
 
 export default {
   [Hooks]: {
-    '@flecks/core/commands': commands,
-    '@flecks/server/up': (flecks) => createReplServer(flecks),
+    '@flecks/core.commands': commands,
+    '@flecks/server.up': (flecks) => createReplServer(flecks),
   },
 };

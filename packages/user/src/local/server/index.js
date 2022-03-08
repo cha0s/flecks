@@ -6,14 +6,14 @@ import LocalStrategy from 'passport-local';
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       failureRedirect: '/',
       successRedirect: '/',
     }),
-    '@flecks/db/server/models.decorate': (
+    '@flecks/db/server.models.decorate': (
       Flecks.decorate(require.context('./models/decorators', false, /\.js$/))
     ),
-    '@flecks/http/routes': (flecks) => {
+    '@flecks/http.routes': (flecks) => {
       const {failureRedirect, successRedirect} = flecks.get('@flecks/user/local/server');
       return [
         {
@@ -23,7 +23,7 @@ export default {
         },
       ];
     },
-    '@flecks/repl/commands': (flecks) => {
+    '@flecks/repl.commands': (flecks) => {
       const {User} = flecks.get('$flecks/db.models');
       return {
         createUser: async (spec) => {
@@ -45,7 +45,7 @@ export default {
         },
       };
     },
-    '@flecks/server/up': (flecks) => {
+    '@flecks/server.up': (flecks) => {
       passport.use(new LocalStrategy(
         {usernameField: 'email'},
         async (email, password, fn) => {

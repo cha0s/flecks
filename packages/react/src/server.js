@@ -5,7 +5,7 @@ import ssr from './ssr';
 
 export default {
   [Hooks]: {
-    '@flecks/http/server/compiler': (flecks) => (
+    '@flecks/http/server.compiler': (flecks) => (
       react({
         clean: false,
         hot: false,
@@ -23,7 +23,7 @@ export default {
         },
       })
     ),
-    '@flecks/http/server/stream.html': (stream, req, flecks) => (
+    '@flecks/http/server.stream.html': (stream, req, flecks) => (
       flecks.get('@flecks/react.ssr') ? ssr(stream, req, flecks) : stream
     ),
   },

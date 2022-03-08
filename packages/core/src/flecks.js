@@ -15,9 +15,9 @@ import Middleware from './middleware';
 
 const debug = D('@flecks/core/flecks');
 
-export const ById = Symbol.for('@flecks/core/byId');
-export const ByType = Symbol.for('@flecks/core/byType');
-export const Hooks = Symbol.for('@flecks/core/hooks');
+export const ById = Symbol.for('@flecks/core.byId');
+export const ByType = Symbol.for('@flecks/core.byType');
+export const Hooks = Symbol.for('@flecks/core.hooks');
 
 const capitalize = (string) => string.substring(0, 1).toUpperCase() + string.substring(1);
 
@@ -67,13 +67,13 @@ export default class Flecks {
 
   configureFleck(fleck) {
     this.config[fleck] = {
-      ...this.invokeFleck('@flecks/core/config', fleck),
+      ...this.invokeFleck('@flecks/core.config', fleck),
       ...this.config[fleck],
     };
   }
 
   configureFlecks() {
-    const defaultConfig = this.invoke('@flecks/core/config');
+    const defaultConfig = this.invoke('@flecks/core.config');
     const flecks = Object.keys(defaultConfig);
     for (let i = 0; i < flecks.length; i++) {
       this.configureFleck(flecks[i]);
@@ -330,9 +330,11 @@ export default class Flecks {
   }
 
   lookupFlecks(hook) {
-    const parts = hook.split('/');
-    const key = parts.pop();
-    return this.config[parts.join('/')]?.[key]?.concat() || [];
+    const index = hook.indexOf('.');
+    if (-1 === index) {
+      return ['...'];
+    }
+    return this.get([hook.slice(0, index), hook.slice(index + 1)], ['...']);
   }
 
   makeMiddleware(hook) {
@@ -448,7 +450,7 @@ export default class Flecks {
   }
 
   async up(hook) {
-    await Promise.all(this.invokeFlat('@flecks/core/starting'));
+    await Promise.all(this.invokeFlat('@flecks/core.starting'));
     await this.invokeSequentialAsync(hook);
   }
 
@@ -474,7 +476,7 @@ export default class Flecks {
           const Subclass = wrapperClass(Class, id, idAttribute, type, typeAttribute);
           // eslint-disable-next-line no-multi-assign
           gathered[type] = gathered[id] = gathered[ById][id] = gathered[ByType][type] = Subclass;
-          this.invoke('@flecks/core/gathered/hmr', Subclass, hook);
+          this.invoke('@flecks/core.hmr.gathered', Subclass, hook);
         }
       }
     }

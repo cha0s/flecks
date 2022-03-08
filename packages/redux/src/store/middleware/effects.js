@@ -1,5 +1,5 @@
 export default (flecks) => {
-  const effects = flecks.invokeFlat('@flecks/redux/effects');
+  const effects = flecks.invokeFlat('@flecks/redux.effects');
   const effect = (store, action) => {
     effects.forEach((map) => {
       if (map[action.type]) {

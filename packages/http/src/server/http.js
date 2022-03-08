@@ -16,7 +16,7 @@ const {
 const debug = D('@flecks/http/server/http');
 
 const deliverHtmlStream = (stream, flecks, req, res) => {
-  flecks.invokeComposed('@flecks/http/server/stream.html', stream, req).pipe(res);
+  flecks.invokeComposed('@flecks/http/server.stream.html', stream, req).pipe(res);
 };
 
 export const createHttpServer = async (flecks) => {
@@ -36,10 +36,10 @@ export const createHttpServer = async (flecks) => {
   // Compression.                                         heheh
   app.use(compression({level: 'production' === NODE_ENV ? 6 : 9}));
   // Socket connection.
-  app.use(flecks.makeMiddleware('@flecks/http/server/request.socket'));
+  app.use(flecks.makeMiddleware('@flecks/http/server.request.socket'));
   // Routes.
-  const routeMiddleware = flecks.makeMiddleware('@flecks/http/server/request.route');
-  const routes = flatten(flecks.invokeFlat('@flecks/http/routes'));
+  const routeMiddleware = flecks.makeMiddleware('@flecks/http/server.request.route');
+  const routes = flatten(flecks.invokeFlat('@flecks/http.routes'));
   routes.forEach(({method, path, middleware}) => app[method](path, routeMiddleware, middleware));
   // In development mode, create a proxy to the webpack-dev-server.
   if ('production' !== NODE_ENV) {
@@ -117,7 +117,7 @@ export const createHttpServer = async (flecks) => {
         reject(error);
         return;
       }
-      await Promise.all(flecks.invokeFlat('@flecks/http/server/up', httpServer));
+      await Promise.all(flecks.invokeFlat('@flecks/http/server.up', httpServer));
       debug('HTTP server up @ %s!', [host, port].filter((e) => !!e).join(':'));
       resolve();
     });

@@ -137,7 +137,7 @@ import {Hooks} from '@flecks/core';
 
 export default {
   [Hooks]: {
-    '@flecks/core/starting': () => {
+    '@flecks/core.starting': () => {
       console.log('hello, gorgeous');
     },
   },
@@ -149,14 +149,14 @@ you the way you deserve to be treated.
 
 Just to give you an idea of the power of hooks, some will be listed here:
 
-- `@flecks/core/config`:
+- `@flecks/core.config`:
   > Define default configuration.
-- `@flecks/docker/containers`:
+- `@flecks/docker.containers`:
   > Define [Docker](https://www.docker.com/) containers to run alongside your application to
   develop e.g. DB models, redis commands, etc. without having to worry about installing stuff.
-- `@flecks/http/server/request.route`:
+- `@flecks/http/server.request.route`:
   > Define [Express](http://expressjs.com/) middleware that runs when an HTTP route is hit.
-- `@flecks/server/up`:
+- `@flecks/server.up`:
   > Do things when server comes up (e.g. DB connection, HTTP listener, make you coffee, etc).
 
 ...and so many more.

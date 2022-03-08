@@ -5,7 +5,7 @@ export default {
     /**
      * Define side-effects to run against Redux actions.
      */
-    '@flecks/redux/effects': () => ({
+    '@flecks/redux.effects': () => ({
       someActionName: (store, action, flecks) => {
         // Runs when `someActionName` actions are dispatched.
       },
@@ -13,7 +13,7 @@ export default {
     /**
      * Define root-level reducers for the Redux store.
      */
-    '@flecks/redux/reducers': () => {
+    '@flecks/redux.reducers': () => {
       return (state, action) => {
         // Whatever you'd like.
         return state;
@@ -24,7 +24,7 @@ export default {
      *
      * See: https://redux-toolkit.js.org/api/createSlice
      */
-    '@flecks/redux/slices': () => {
+    '@flecks/redux.slices': () => {
       const something = createSlice(
         // ...
       );
@@ -36,7 +36,7 @@ export default {
      * Modify Redux store configuration.
      * @param {Object} options A mutable object with keys for enhancers and middleware.
      */
-    '@flecks/redux/store': (options) => {
+    '@flecks/redux.store': (options) => {
       options.enhancers.splice(someIndex, 1);
       options.middleware.push(mySpecialMiddleware);
     },

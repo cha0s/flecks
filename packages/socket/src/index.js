@@ -10,16 +10,13 @@ export {default as Packet, Packer, ValidationError} from './packet';
 
 export default {
   [Hooks]: {
-    '@flecks/core/config': () => ({
-      'packets.decorate': ['...'],
-    }),
-    '@flecks/core/starting': (flecks) => {
+    '@flecks/core.starting': (flecks) => {
       flecks.set('$flecks/socket.packets', flecks.gather(
-        '@flecks/socket/packets',
+        '@flecks/socket.packets',
         {check: badPacketsCheck},
       ));
     },
-    '@flecks/http/config': async (
+    '@flecks/http.config': async (
       req,
       {config: {'@flecks/socket': {'packets.decorate': decorators}}},
     ) => ({
@@ -29,7 +26,7 @@ export default {
         ),
       },
     }),
-    '@flecks/socket/packets': (flecks) => ({
+    '@flecks/socket.packets': (flecks) => ({
       Bundle: Bundle(flecks),
       Redirect,
       Refresh,

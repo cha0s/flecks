@@ -10,11 +10,11 @@ export * from './state/users';
 
 export default {
   [Hooks]: {
-    '@flecks/redux/slices': () => ({
+    '@flecks/redux.slices': () => ({
       user,
       users,
     }),
-    '@flecks/socket/packets': (flecks) => ({
+    '@flecks/socket.packets': (flecks) => ({
       Logout: Logout(flecks),
     }),
   },

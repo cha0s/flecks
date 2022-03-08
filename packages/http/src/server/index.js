@@ -8,7 +8,7 @@ const debug = D('@flecks/http/server');
 
 export default {
   [Hooks]: {
-    '@flecks/core/build/alter': (neutrinoConfigs, flecks) => {
+    '@flecks/core.build.alter': (neutrinoConfigs, flecks) => {
       // Bail if there's no http build.
       if (!neutrinoConfigs.http) {
         return;
@@ -36,7 +36,7 @@ export default {
       // eslint-disable-next-line no-param-reassign
       delete neutrinoConfigs.http;
     },
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       devHost: 'localhost',
       devPort: undefined,
       devPublic: undefined,
@@ -44,20 +44,18 @@ export default {
       host: '0.0.0.0',
       output: 'http',
       port: 32340,
-      'stream.html': ['...'],
       'request.route': [],
       'request.socket': [],
       trust: false,
-      up: ['...'],
     }),
-    '@flecks/core/starting': (flecks) => {
+    '@flecks/core.starting': (flecks) => {
       debug('bootstrapping flecks...');
       const httpFlecks = Flecks.bootstrap({platforms: ['client'], without: ['server']});
       debug('bootstrapped');
       flecks.set('$flecks/http.flecks', httpFlecks);
     },
-    '@flecks/core/targets': () => ['http'],
-    '@flecks/http/routes': (flecks) => [
+    '@flecks/core.targets': () => ['http'],
+    '@flecks/http.routes': (flecks) => [
       {
         method: 'get',
         path: '/flecks.config.js',
@@ -67,9 +65,9 @@ export default {
         },
       },
     ],
-    '@flecks/http/server/stream.html': inlineConfig,
-    '@flecks/server/up': (flecks) => createHttpServer(flecks),
-    '@flecks/repl/context': (flecks) => ({
+    '@flecks/http/server.stream.html': inlineConfig,
+    '@flecks/server.up': (flecks) => createHttpServer(flecks),
+    '@flecks/repl.context': (flecks) => ({
       httpServer: flecks.get('$flecks/http/server.instance'),
     }),
   },

@@ -29,7 +29,7 @@ module.exports = {
           },
         },
       ],
-      pluginId: '@flecks/core/copy',
+      pluginId: '@flecks/core.copy',
     }),
     autoentry(),
     fleck(),

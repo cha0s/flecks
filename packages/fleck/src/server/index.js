@@ -4,7 +4,7 @@ import commands from './commands';
 
 export default {
   [Hooks]: {
-    '@flecks/core/commands': commands,
-    '@flecks/core/targets': () => ['fleck'],
+    '@flecks/core.commands': commands,
+    '@flecks/core.targets': () => ['fleck'],
   },
 };

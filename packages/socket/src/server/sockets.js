@@ -14,7 +14,7 @@ export default class SocketServer {
     this.onConnect = this.onConnect.bind(this);
     this.flecks = flecks;
     this.httpServer = httpServer;
-    const hooks = flecks.invokeMerge('@flecks/socket/intercom');
+    const hooks = flecks.invokeMerge('@flecks/socket.intercom');
     debug('intercom hooks(%O)', hooks);
     this.localIntercom = async ({payload, type}, fn) => {
       debug('customHook: %s(%o)', type, payload);
@@ -31,13 +31,13 @@ export default class SocketServer {
 
   async connect() {
     this.io = SocketIoServer(this.httpServer, {
-      ...await this.flecks.invokeMergeAsync('@flecks/socket/server'),
+      ...await this.flecks.invokeMergeAsync('@flecks/socket.server'),
       serveClient: false,
     });
     this.flecks.set('$flecks/socket.io', this.io);
     this.io.use(this.makeSocketMiddleware());
-    this.io.on('@flecks/socket/intercom', this.localIntercom);
-    this.flecks.invoke('@flecks/socket/server.io', this);
+    this.io.on('@flecks/socket.intercom', this.localIntercom);
+    this.flecks.invoke('@flecks/socket.server.io', this);
     this.io.on('connect', this.onConnect);
   }
 
@@ -47,7 +47,7 @@ export default class SocketServer {
 
   makeSocketMiddleware() {
     const {app} = this.httpServer;
-    const middleware = this.flecks.makeMiddleware('@flecks/socket/server/request.socket');
+    const middleware = this.flecks.makeMiddleware('@flecks/socket/server.request.socket');
     return async (socket, next) => {
       Object.defineProperty(socket.handshake, 'ip', {
         configurable: true,
@@ -72,7 +72,7 @@ export default class SocketServer {
     req.flecks = this.flecks;
     req.intercom = createIntercom(this, 'socket');
     req.sockets = this;
-    this.flecks.invokeSequentialAsync('@flecks/socket/server/connect', serverSocket);
+    this.flecks.invokeSequentialAsync('@flecks/socket/server.connect', serverSocket);
   }
 
   static send(flecks, nsp, packetOrDehydrated) {

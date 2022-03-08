@@ -7,7 +7,7 @@ export default {
      * @param {string} target The build target; e.g. `server`.
      * @param {Object} config The neutrino configuration.
      */
-    '@flecks/core/build': (target, config) => {
+    '@flecks/core.build': (target, config) => {
       if ('something' === target) {
         config[target].use.push(someNeutrinoMiddleware);
       }
@@ -17,7 +17,7 @@ export default {
       * Alter build configurations after they have been hooked.
       * @param {Object} configs The neutrino configurations.
       */
-    '@flecks/core/build/alter': (configs) => {
+    '@flecks/core.build.alter': (configs) => {
       // Maybe we want to do something if a config exists..?
       if (configs.something) {
         // Do something...
@@ -29,7 +29,7 @@ export default {
     /**
       * Define CLI commands.
       */
-    '@flecks/core/commands': (program) => ({
+    '@flecks/core.commands': (program) => ({
       // So this could be invoked like:
       // npx flecks something -t --blow-up blah
       something: {
@@ -50,7 +50,7 @@ export default {
     /**
       * Define configuration.
       */
-    '@flecks/core/config': () => ({
+    '@flecks/core.config': () => ({
       whatever: 'configuration',
       your: 1337,
       fleck: 'needs',
@@ -58,43 +58,43 @@ export default {
     }),
 
     /**
-      * Invoked when a gathered class is HMR'd.
-      * @param {constructor} Class The class.
-      * @param {string} hook The gather hook; e.g. `@flecks/db/server/models`.
-      */
-    '@flecks/core/gathered/hmr': (Class, hook) => {
-      // Do something with Class...
-    },
-
-      /**
-      * Invoked when a fleck is HMR'd
-      * @param {string} path The path of the fleck
-      * @param {Module} updatedFleck The updated fleck module.
-      */
-    '@flecks/core/hmr': (path, updatedFleck) => {
+    * Invoked when a fleck is HMR'd
+    * @param {string} path The path of the fleck
+    * @param {Module} updatedFleck The updated fleck module.
+    */
+      '@flecks/core.hmr': (path, updatedFleck) => {
       if ('my-fleck' === path) {
         updatedFleck.doSomething();
       }
     },
 
     /**
+      * Invoked when a gathered class is HMR'd.
+      * @param {constructor} Class The class.
+      * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
+      */
+    '@flecks/core.hmr.gathered': (Class, hook) => {
+      // Do something with Class...
+    },
+
+    /**
       * Invoked when the application is starting. Use for order-independent initialization tasks.
       */
-    '@flecks/core/starting': (flecks) => {
+    '@flecks/core.starting': (flecks) => {
       flecks.set('$my-fleck/value', initializeMyValue());
     },
 
     /**
       * Define neutrino build targets.
       */
-    '@flecks/core/targets': () => ['sometarget'],
+    '@flecks/core.targets': () => ['sometarget'],
 
     /**
       * Hook into webpack configuration.
       * @param {string} target The build target; e.g. `server`.
       * @param {Object} config The neutrino configuration.
       */
-    '@flecks/core/webpack': (target, config) => {
+    '@flecks/core.webpack': (target, config) => {
       if ('something' === target) {
         config.stats = 'verbose';
       }

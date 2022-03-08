@@ -44,7 +44,7 @@ export const targetNeutrino = (target) => (
 );
 
 export const targetNeutrinos = (flecks) => {
-  const entries = Object.entries(flecks.invoke('@flecks/core/targets'));
+  const entries = Object.entries(flecks.invoke('@flecks/core.targets'));
   const targetNeutrinos = {};
   for (let i = 0; i < entries.length; ++i) {
     const [fleck, targets] = entries[i];
@@ -86,7 +86,7 @@ export default (program, flecks) => {
       ],
     },
   };
-  const targets = flatten(flecks.invokeFlat('@flecks/core/targets'));
+  const targets = flatten(flecks.invokeFlat('@flecks/core.targets'));
   if (targets.length > 0) {
     commands.build = {
       args: [

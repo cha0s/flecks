@@ -7,7 +7,7 @@ export default {
      *
      * See: https://www.npmjs.com/package/express-session
      */
-    '@flecks/user/session': () => ({
+    '@flecks/user.session': () => ({
       saveUninitialized: true,
     }),
   },

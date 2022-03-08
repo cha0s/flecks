@@ -20,7 +20,7 @@ module.exports = (async () => {
   debug('bootstrapped');
 
   const compiler = flecks.invokeFleck(
-    '@flecks/fleck/compiler',
+    '@flecks/fleck.compiler',
     flecks.get('@flecks/fleck.compiler'),
   );
   if (compiler) {

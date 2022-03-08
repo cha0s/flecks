@@ -47,7 +47,7 @@ export default (program, flecks) => {
           ],
         },
       };
-      const containers = flecks.invoke('@flecks/docker/containers');
+      const containers = flecks.invoke('@flecks/docker.containers');
       (
         await Promise.all(
           Object.entries(containers)

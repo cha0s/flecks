@@ -1,7 +1,7 @@
 import {Transform} from 'stream';
 
 const config = async (flecks, req) => {
-  const httpConfig = await flecks.invokeMergeAsync('@flecks/http/config', req);
+  const httpConfig = await flecks.invokeMergeAsync('@flecks/http.config', req);
   const config = {};
   const {resolver} = flecks.get('$flecks/http.flecks');
   const keys = Object.keys(resolver);
@@ -24,7 +24,7 @@ const config = async (flecks, req) => {
 
 export const configSource = async (flecks, req) => {
   const codedConfig = encodeURIComponent(JSON.stringify(await config(flecks, req)));
-  return `window[Symbol.for('@flecks/http/config')] = JSON.parse(decodeURIComponent("${
+  return `window[Symbol.for('@flecks/http.config')] = JSON.parse(decodeURIComponent("${
     codedConfig
   }"));`;
 };
