@@ -57,8 +57,4 @@ class InlineConfig extends Transform {
 
 }
 
-export const inlineConfig = (stream, req, flecks) => {
-  const inlineConfig = new InlineConfig(flecks, req);
-  stream.pipe(inlineConfig);
-  return inlineConfig;
-};
+export const inlineConfig = (stream, req, flecks) => stream.pipe(new InlineConfig(flecks, req));

@@ -36,8 +36,4 @@ class Ssr extends Transform {
 
 }
 
-export default (stream, req, flecks) => {
-  const ssr = new Ssr(flecks, req);
-  stream.pipe(ssr);
-  return ssr;
-};
+export default (stream, req, flecks) => stream.pipe(new Ssr(flecks, req));
