@@ -19,10 +19,17 @@ This page documents all the hooks in this project.
 </details>
 
 <details>
+<summary>Implementations</summary>
+<ul>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/index.js#L22'>@flecks/core/src/server/index.js:22:4</a></li>
+</ul>
+</details>
+
+<details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/build/eslintrc.js#L19'>@flecks/core/src/build/eslintrc.js:19:0</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/build/webpack.config.js#L55'>@flecks/core/src/build/webpack.config.js:55:6</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/build/eslintrc.js#L19'>@flecks/core/src/server/build/eslintrc.js:19:0</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/build/webpack.config.js#L55'>@flecks/core/src/server/build/webpack.config.js:55:6</a></li>
 </ul>
 </details>
 
@@ -57,14 +64,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L11'>@flecks/http/src/server/index.js:11:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L11'>@flecks/http/src/server/index.js:11:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/build/webpack.config.js#L59'>@flecks/core/src/build/webpack.config.js:59:20</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/build/webpack.config.js#L59'>@flecks/core/src/server/build/webpack.config.js:59:20</a></li>
 </ul>
 </details>
 
@@ -85,6 +92,40 @@ export default {
 };
 ```
 
+## `@flecks/core.build.config`
+
+> 
+> Register build configuration.
+>       
+
+<details>
+<summary>Implementations</summary>
+<ul>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/index.js#L41'>@flecks/core/src/server/index.js:41:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L39'>@flecks/http/src/server/index.js:39:4</a></li>
+</ul>
+</details>
+
+### Example usage
+
+```javascript
+export default {
+  [Hooks]: {
+    '@flecks/core.build.config': () => [
+      /**
+       * If you document your config files like this, documentation will be automatically
+       * generated.
+       */
+      '.myrc.js',
+      /**
+       * Make sure you return them as an array expression, like this.
+       */
+      ['mygeneralrc.js', {specifier: (specific) => `${specific}.mygeneralrc.js`}],
+    ]
+  },
+};
+```
+
 ## `@flecks/core.commands`
 
 > 
@@ -94,17 +135,18 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/docker/src/server.js#L11'>@flecks/docker/src/server.js:11:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/dox/src/server.js#L7'>@flecks/dox/src/server.js:7:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/repl/src/server.js#L8'>@flecks/repl/src/server.js:8:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/fleck/src/server/index.js#L7'>@flecks/fleck/src/server/index.js:7:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/docker/src/server.js#L14'>@flecks/docker/src/server.js:14:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/dox/src/server.js#L7'>@flecks/dox/src/server.js:7:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/repl/src/server.js#L8'>@flecks/repl/src/server.js:8:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/index.js#L64'>@flecks/core/src/server/index.js:64:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/fleck/src/server/index.js#L7'>@flecks/fleck/src/server/index.js:7:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/cli.js#L90'>@flecks/core/src/cli.js:90:21</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/cli.js#L91'>@flecks/core/src/cli.js:91:21</a></li>
 </ul>
 </details>
 
@@ -143,19 +185,18 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L14'>@flecks/db/src/server.js:14:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/docker/src/server.js#L8'>@flecks/docker/src/server.js:8:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/dox/src/server.js#L8'>@flecks/dox/src/server.js:8:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L10'>@flecks/governor/src/server.js:10:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/index.js#L18'>@flecks/react/src/index.js:18:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redis/src/server.js#L32'>@flecks/redis/src/server.js:32:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L13'>@flecks/socket/src/index.js:13:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/index.js#L8'>@flecks/socket/src/server/index.js:8:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/server/src/index.js#L5'>@flecks/server/src/index.js:5:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/client/index.js#L5'>@flecks/http/src/client/index.js:5:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L39'>@flecks/http/src/server/index.js:39:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/local/server/index.js#L9'>@flecks/user/src/local/server/index.js:9:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/session/server.js#L9'>@flecks/user/src/session/server.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L14'>@flecks/db/src/server.js:14:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/docker/src/server.js#L8'>@flecks/docker/src/server.js:8:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/dox/src/server.js#L8'>@flecks/dox/src/server.js:8:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L10'>@flecks/governor/src/server.js:10:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/index.js#L18'>@flecks/react/src/index.js:18:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redis/src/server.js#L32'>@flecks/redis/src/server.js:32:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/index.js#L18'>@flecks/core/src/index.js:18:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/index.js#L65'>@flecks/core/src/server/index.js:65:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L47'>@flecks/http/src/server/index.js:47:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/server/src/index.js#L5'>@flecks/server/src/index.js:5:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/local/server/index.js#L9'>@flecks/user/src/local/server/index.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/session/server.js#L9'>@flecks/user/src/session/server.js:9:4</a></li>
 </ul>
 </details>
 
@@ -241,17 +282,17 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L23'>@flecks/db/src/server.js:23:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L16'>@flecks/socket/src/index.js:16:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L53'>@flecks/http/src/server/index.js:53:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L42'>@flecks/db/src/server.js:42:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/index.js#L13'>@flecks/socket/src/index.js:13:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L83'>@flecks/http/src/server/index.js:83:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/server/src/entry.js#L27'>@flecks/server/src/entry.js:27:10</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/entry.js#L27'>@flecks/http/src/entry.js:27:10</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/entry.js#L27'>@flecks/http/src/entry.js:27:10</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/server/src/entry.js#L27'>@flecks/server/src/entry.js:27:10</a></li>
 </ul>
 </details>
 
@@ -276,18 +317,18 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/fleck/src/server/index.js#L8'>@flecks/fleck/src/server/index.js:8:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/server/src/server/index.js#L5'>@flecks/server/src/server/index.js:5:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L59'>@flecks/http/src/server/index.js:59:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/fleck/src/server/index.js#L8'>@flecks/fleck/src/server/index.js:8:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L89'>@flecks/http/src/server/index.js:89:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/server/src/server/index.js#L5'>@flecks/server/src/server/index.js:5:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/build/webpack.config.js#L38'>@flecks/core/src/build/webpack.config.js:38:24</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/server/commands.js#L47'>@flecks/core/src/server/commands.js:47:33</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/server/commands.js#L89'>@flecks/core/src/server/commands.js:89:26</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/build/webpack.config.js#L38'>@flecks/core/src/server/build/webpack.config.js:38:24</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/commands.js#L47'>@flecks/core/src/server/commands.js:47:33</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/commands.js#L94'>@flecks/core/src/server/commands.js:94:26</a></li>
 </ul>
 </details>
 
@@ -320,7 +361,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/core/src/build/webpack.config.js#L64'>@flecks/core/src/build/webpack.config.js:64:14</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/core/src/server/build/webpack.config.js#L64'>@flecks/core/src/server/build/webpack.config.js:64:14</a></li>
 </ul>
 </details>
 
@@ -351,15 +392,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L25'>@flecks/governor/src/server.js:25:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L9'>@flecks/user/src/server/index.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L28'>@flecks/governor/src/server.js:28:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L9'>@flecks/user/src/server/index.js:9:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L24'>@flecks/db/src/server.js:24:38</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L43'>@flecks/db/src/server.js:43:38</a></li>
 </ul>
 </details>
 
@@ -395,14 +436,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/local/server/index.js#L13'>@flecks/user/src/local/server/index.js:13:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/local/server/index.js#L19'>@flecks/user/src/local/server/index.js:19:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L24'>@flecks/db/src/server.js:24:38</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L43'>@flecks/db/src/server.js:43:38</a></li>
 </ul>
 </details>
 
@@ -428,16 +469,16 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L29'>@flecks/db/src/server.js:29:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redis/src/server.js#L36'>@flecks/redis/src/server.js:36:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L48'>@flecks/db/src/server.js:48:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redis/src/server.js#L42'>@flecks/redis/src/server.js:42:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/docker/src/commands.js#L50'>@flecks/docker/src/commands.js:50:25</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/docker/src/server.js#L16'>@flecks/docker/src/server.js:16:31</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/docker/src/commands.js#L51'>@flecks/docker/src/commands.js:51:25</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/docker/src/server.js#L19'>@flecks/docker/src/server.js:19:31</a></li>
 </ul>
 </details>
 
@@ -469,7 +510,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/fleck/src/server/build/fleck.neutrinorc.js#L22'>@flecks/fleck/src/server/build/fleck.neutrinorc.js:22:19</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/fleck/src/server/build/fleck.neutrinorc.js#L22'>@flecks/fleck/src/server/build/fleck.neutrinorc.js:22:19</a></li>
 </ul>
 </details>
 
@@ -490,15 +531,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L22'>@flecks/socket/src/index.js:22:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/server.js#L24'>@flecks/redux/src/server.js:24:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/index.js#L19'>@flecks/socket/src/index.js:19:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/server.js#L24'>@flecks/redux/src/server.js:24:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/config.js#L4'>@flecks/http/src/server/config.js:4:27</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/config.js#L4'>@flecks/http/src/server/config.js:4:27</a></li>
 </ul>
 </details>
 
@@ -525,16 +566,16 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L60'>@flecks/http/src/server/index.js:60:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/local/server/index.js#L16'>@flecks/user/src/local/server/index.js:16:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L24'>@flecks/user/src/server/index.js:24:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L90'>@flecks/http/src/server/index.js:90:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/local/server/index.js#L22'>@flecks/user/src/local/server/index.js:22:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L24'>@flecks/user/src/server/index.js:24:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/http.js#L42'>@flecks/http/src/server/http.js:42:25</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/http.js#L42'>@flecks/http/src/server/http.js:42:25</a></li>
 </ul>
 </details>
 
@@ -566,15 +607,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/client.js#L15'>@flecks/react/src/client.js:15:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/client/index.js#L7'>@flecks/socket/src/client/index.js:7:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/client.js#L15'>@flecks/react/src/client.js:15:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/client/index.js#L7'>@flecks/socket/src/client/index.js:7:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/entry.js#L27'>@flecks/http/src/entry.js:27:10</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/entry.js#L27'>@flecks/http/src/entry.js:27:10</a></li>
 </ul>
 </details>
 
@@ -599,14 +640,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/server.js#L8'>@flecks/react/src/server.js:8:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/server.js#L8'>@flecks/react/src/server.js:8:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/build/http.neutrinorc.js#L39'>@flecks/http/src/server/build/http.neutrinorc.js:39:19</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/build/http.neutrinorc.js#L39'>@flecks/http/src/server/build/http.neutrinorc.js:39:19</a></li>
 </ul>
 </details>
 
@@ -631,10 +672,10 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L26'>@flecks/governor/src/server.js:26:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/server.js#L12'>@flecks/redux/src/server.js:12:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L10'>@flecks/user/src/server/index.js:10:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/session/server.js#L14'>@flecks/user/src/session/server.js:14:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L29'>@flecks/governor/src/server.js:29:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/server.js#L12'>@flecks/redux/src/server.js:12:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L10'>@flecks/user/src/server/index.js:10:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/session/server.js#L19'>@flecks/user/src/session/server.js:19:4</a></li>
 </ul>
 </details>
 
@@ -660,7 +701,7 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/index.js#L12'>@flecks/socket/src/server/index.js:12:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/server/index.js#L8'>@flecks/socket/src/server/index.js:8:4</a></li>
 </ul>
 </details>
 
@@ -696,15 +737,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/server.js#L26'>@flecks/react/src/server.js:26:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L70'>@flecks/http/src/server/index.js:70:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/server.js#L26'>@flecks/react/src/server.js:26:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L100'>@flecks/http/src/server/index.js:100:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/http.js#L19'>@flecks/http/src/server/http.js:19:2</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/http.js#L19'>@flecks/http/src/server/http.js:19:2</a></li>
 </ul>
 </details>
 
@@ -729,14 +770,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/index.js#L16'>@flecks/socket/src/server/index.js:16:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/server/index.js#L12'>@flecks/socket/src/server/index.js:12:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/http.js#L120'>@flecks/http/src/server/http.js:120:24</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/http.js#L120'>@flecks/http/src/server/http.js:120:24</a></li>
 </ul>
 </details>
 
@@ -771,17 +812,17 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/router/client.js#L9'>@flecks/react/src/router/client.js:9:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/router/server.js#L6'>@flecks/react/src/router/server.js:6:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/client/index.js#L9'>@flecks/redux/src/client/index.js:9:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/server.js#L29'>@flecks/redux/src/server.js:29:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/router/client.js#L9'>@flecks/react/src/router/client.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/router/server.js#L6'>@flecks/react/src/router/server.js:6:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/client/index.js#L9'>@flecks/redux/src/client/index.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/server.js#L29'>@flecks/redux/src/server.js:29:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/root.js#L12'>@flecks/react/src/root.js:12:26</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/root.js#L12'>@flecks/react/src/root.js:12:26</a></li>
 </ul>
 </details>
 
@@ -817,7 +858,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/root.js#L10'>@flecks/react/src/root.js:10:16</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/root.js#L10'>@flecks/react/src/root.js:10:16</a></li>
 </ul>
 </details>
 
@@ -843,7 +884,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/store/middleware/effects.js#L2'>@flecks/redux/src/store/middleware/effects.js:2:18</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/store/middleware/effects.js#L2'>@flecks/redux/src/store/middleware/effects.js:2:18</a></li>
 </ul>
 </details>
 
@@ -870,7 +911,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/store/create-reducer.js#L5'>@flecks/redux/src/store/create-reducer.js:5:17</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/store/create-reducer.js#L5'>@flecks/redux/src/store/create-reducer.js:5:17</a></li>
 </ul>
 </details>
 
@@ -900,8 +941,8 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/router/index.js#L10'>@flecks/react/src/router/index.js:10:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/index.js#L13'>@flecks/user/src/index.js:13:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/router/index.js#L10'>@flecks/react/src/router/index.js:10:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/index.js#L13'>@flecks/user/src/index.js:13:4</a></li>
 </ul>
 </details>
 
@@ -939,15 +980,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/react/src/router/index.js#L13'>@flecks/react/src/router/index.js:13:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/client/index.js#L18'>@flecks/redux/src/client/index.js:18:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/react/src/router/index.js#L13'>@flecks/react/src/router/index.js:13:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/client/index.js#L18'>@flecks/redux/src/client/index.js:18:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/store/index.js#L17'>@flecks/redux/src/store/index.js:17:2</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/store/index.js#L17'>@flecks/redux/src/store/index.js:17:2</a></li>
 </ul>
 </details>
 
@@ -975,14 +1016,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/local/server/index.js#L26'>@flecks/user/src/local/server/index.js:26:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/local/server/index.js#L32'>@flecks/user/src/local/server/index.js:32:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/repl/src/repl.js#L21'>@flecks/repl/src/repl.js:21:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/repl/src/repl.js#L21'>@flecks/repl/src/repl.js:21:4</a></li>
 </ul>
 </details>
 
@@ -1011,17 +1052,17 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L33'>@flecks/db/src/server.js:33:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redis/src/server.js#L37'>@flecks/redis/src/server.js:37:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/index.js#L21'>@flecks/socket/src/server/index.js:21:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L72'>@flecks/http/src/server/index.js:72:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L52'>@flecks/db/src/server.js:52:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redis/src/server.js#L43'>@flecks/redis/src/server.js:43:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/server/index.js#L17'>@flecks/socket/src/server/index.js:17:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L102'>@flecks/http/src/server/index.js:102:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/repl/src/repl.js#L13'>@flecks/repl/src/repl.js:13:18</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/repl/src/repl.js#L13'>@flecks/repl/src/repl.js:13:18</a></li>
 </ul>
 </details>
 
@@ -1051,7 +1092,7 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/server/src/server/build/server.neutrinorc.js#L66'>@flecks/server/src/server/build/server.neutrinorc.js:66:19</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/server/src/server/build/server.neutrinorc.js#L66'>@flecks/server/src/server/build/server.neutrinorc.js:66:19</a></li>
 </ul>
 </details>
 
@@ -1076,21 +1117,21 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/db/src/server.js#L30'>@flecks/db/src/server.js:30:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/docker/src/server.js#L12'>@flecks/docker/src/server.js:12:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/repl/src/server.js#L9'>@flecks/repl/src/server.js:9:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L55'>@flecks/governor/src/server.js:55:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/http/src/server/index.js#L71'>@flecks/http/src/server/index.js:71:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/local/server/index.js#L48'>@flecks/user/src/local/server/index.js:48:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L34'>@flecks/user/src/server/index.js:34:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/session/server.js#L35'>@flecks/user/src/session/server.js:35:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/db/src/server.js#L49'>@flecks/db/src/server.js:49:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/docker/src/server.js#L15'>@flecks/docker/src/server.js:15:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/repl/src/server.js#L9'>@flecks/repl/src/server.js:9:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L58'>@flecks/governor/src/server.js:58:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/http/src/server/index.js#L101'>@flecks/http/src/server/index.js:101:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/local/server/index.js#L54'>@flecks/user/src/local/server/index.js:54:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L34'>@flecks/user/src/server/index.js:34:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/session/server.js#L40'>@flecks/user/src/session/server.js:40:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/server/src/entry.js#L27'>@flecks/server/src/entry.js:27:10</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/server/src/entry.js#L27'>@flecks/server/src/entry.js:27:10</a></li>
 </ul>
 </details>
 
@@ -1117,7 +1158,7 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/client/index.js#L13'>@flecks/socket/src/client/index.js:13:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/client/index.js#L13'>@flecks/socket/src/client/index.js:13:4</a></li>
 </ul>
 </details>
 
@@ -1142,14 +1183,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L46'>@flecks/user/src/server/index.js:46:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L46'>@flecks/user/src/server/index.js:46:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/sockets.js#L17'>@flecks/socket/src/server/sockets.js:17:18</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/server/sockets.js#L17'>@flecks/socket/src/server/sockets.js:17:18</a></li>
 </ul>
 </details>
 
@@ -1188,16 +1229,16 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L32'>@flecks/socket/src/index.js:32:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/index.js#L10'>@flecks/redux/src/index.js:10:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/index.js#L17'>@flecks/user/src/index.js:17:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/index.js#L29'>@flecks/socket/src/index.js:29:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/index.js#L10'>@flecks/redux/src/index.js:10:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/index.js#L17'>@flecks/user/src/index.js:17:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L17'>@flecks/socket/src/index.js:17:43</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/index.js#L14'>@flecks/socket/src/index.js:14:43</a></li>
 </ul>
 </details>
 
@@ -1231,15 +1272,15 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L123'>@flecks/governor/src/server.js:123:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redux/src/client/index.js#L22'>@flecks/redux/src/client/index.js:22:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L126'>@flecks/governor/src/server.js:126:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redux/src/client/index.js#L22'>@flecks/redux/src/client/index.js:22:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/index.js#L17'>@flecks/socket/src/index.js:17:43</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/index.js#L14'>@flecks/socket/src/index.js:14:43</a></li>
 </ul>
 </details>
 
@@ -1264,8 +1305,8 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redis/src/session/server.js#L21'>@flecks/redis/src/session/server.js:21:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/socket/src/server/index.js#L25'>@flecks/socket/src/server/index.js:25:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redis/src/session/server.js#L21'>@flecks/redis/src/session/server.js:21:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/socket/src/server/index.js#L21'>@flecks/socket/src/server/index.js:21:4</a></li>
 </ul>
 </details>
 
@@ -1290,9 +1331,9 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/governor/src/server.js#L96'>@flecks/governor/src/server.js:96:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/server/index.js#L60'>@flecks/user/src/server/index.js:60:4</a></li>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/session/server.js#L44'>@flecks/user/src/session/server.js:44:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/governor/src/server.js#L99'>@flecks/governor/src/server.js:99:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/server/index.js#L60'>@flecks/user/src/server/index.js:60:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/session/server.js#L49'>@flecks/user/src/session/server.js:49:4</a></li>
 </ul>
 </details>
 
@@ -1320,14 +1361,14 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/redis/src/session/server.js#L14'>@flecks/redis/src/session/server.js:14:4</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/redis/src/session/server.js#L14'>@flecks/redis/src/session/server.js:14:4</a></li>
 </ul>
 </details>
 
 <details>
 <summary>Invocations</summary>
 <ul>
-<li><a href='https://github.com/cha0s/flecks/tree/0cb9b77/packages/user/src/session/server.js#L41'>@flecks/user/src/session/server.js:41:17</a></li>
+<li><a href='https://github.com/cha0s/flecks/tree/9317304/packages/user/src/session/server.js#L46'>@flecks/user/src/session/server.js:46:17</a></li>
 </ul>
 </details>
 
