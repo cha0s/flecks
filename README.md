@@ -50,7 +50,12 @@ npx @flecks/create-fleck my-new-fleck
 
 ## Introduction
 
-Modern features you expect &mdash; like lint, test, [HMR](https://v4.webpack.js.org/guides/hot-module-replacement/) (even on server 😳), [SSR](https://reactjs.org/docs/react-dom-server.html).
+Modern features you expect &mdash; like
+
+- linting
+- testing
+- HMR (even on server 😳)
+- SSR
 
 Things you don't expect &mdash; like
 
