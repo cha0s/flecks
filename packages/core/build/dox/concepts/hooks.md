@@ -22,14 +22,14 @@ export default {
 
 &nbsp;
 
-### `invoke(hook, ...args)`
+### `flecks.invoke(hook, ...args)`
 
 Invokes all hook implementations and returns the results keyed by the implementing flecks' paths.
 
 &nbsp;
 
-### `invokeComposed(hook, initial, ...args)`
-### `invokeComposedAsync(hook, initial, ...args)`
+### `flecks.invokeComposed(hook, initial, ...args)`
+### `flecks.invokeComposedAsync(hook, initial, ...args)`
 
 See: [function composition](https://www.educative.io/edpresso/function-composition-in-javascript).
 
@@ -39,27 +39,27 @@ Composed hooks are [ordered](#ordered-hooks).
 
 &nbsp;
 
-### `invokeFlat(hook, ...args)`
+### `flecks.invokeFlat(hook, ...args)`
 
 Invokes all hook implementations and returns the results as an array.
 
 &nbsp;
 
-### `invokeFleck(hook, fleck, ...args)`
+### `flecks.invokeFleck(hook, fleck, ...args)`
 
 Invoke a single fleck's hook implementation and return the result.
 
 &nbsp;
 
-### `invokeMerge(hook, ...args)`
-### `invokeMergeAsync(hook, ...args)`
+### `flecks.invokeMerge(hook, ...args)`
+### `flecks.invokeMergeAsync(hook, ...args)`
 
 Invokes all hook implementations and returns the result of merging all implementations' returned objects together.
 
 &nbsp;
 
-### `invokeReduce(hook, reducer, initial, ...args)`
-### `invokeReduceAsync(hook, reducer, initial, ...args)`
+### `flecks.invokeReduce(hook, reducer, initial, ...args)`
+### `flecks.invokeReduceAsync(hook, reducer, initial, ...args)`
 
 See: [Array.prototype.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
 
@@ -67,8 +67,8 @@ Invokes hook implementations one at a time, their results being passed to the re
 
 &nbsp;
 
-### `invokeSequential(hook, ...args)`
-### `invokeSequentialAsync(hook, ...args)`
+### `flecks.invokeSequential(hook, ...args)`
+### `flecks.invokeSequentialAsync(hook, ...args)`
 
 Invokes all hook implementations, one after another. In the async variant, each implementation's result is `await`ed before invoking the next implementation.
 
