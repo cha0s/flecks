@@ -1,4 +1,4 @@
-const config = require('@flecks/core/build/.eslint.defaults.js');
+const config = require('@flecks/core/server/build/.eslint.defaults.js');
 
 config.globals.window = true;
 
