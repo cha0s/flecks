@@ -4,6 +4,8 @@ import {Hooks} from '../flecks';
 import commands from './commands';
 import R from '../bootstrap/require';
 
+export {dump as dumpYml, load as loadYml} from 'js-yaml';
+
 export {
   default as commands,
   processCode,
@@ -11,7 +13,6 @@ export {
   targetNeutrino,
   targetNeutrinos,
 } from './commands';
-
 export {default as Flecks} from './flecks';
 export {default as require} from '../bootstrap/require';
 export {JsonStream, transform} from './stream';
@@ -19,7 +20,7 @@ export {JsonStream, transform} from './stream';
 export default {
   [Hooks]: {
     '@flecks/core.build': (target, config, flecks) => {
-      const {'eslint.exclude': exclude} = flecks.get('@flecks/core');
+      const {'eslint.exclude': exclude} = flecks.get('@flecks/core/server');
       if (-1 !== exclude.indexOf(target)) {
         return;
       }
@@ -61,5 +62,8 @@ export default {
       'webpack.config.js',
     ],
     '@flecks/core.commands': commands,
+    '@flecks/core.config': () => ({
+      'eslint.exclude': [],
+    }),
   },
 };

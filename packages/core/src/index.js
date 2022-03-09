@@ -1,7 +1,5 @@
 import {Hooks} from './flecks';
 
-export {dump as dumpYml, load as loadYml} from 'js-yaml';
-
 export {default as autoentry} from './bootstrap/autoentry';
 export {default as fleck} from './bootstrap/fleck';
 export {default as compose} from './compose';
@@ -18,7 +16,6 @@ export {
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
-      'eslint.exclude': [],
       id: 'flecks',
     }),
   },

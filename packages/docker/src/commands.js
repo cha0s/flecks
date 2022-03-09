@@ -2,7 +2,8 @@ import {spawn} from 'child_process';
 import {writeFile} from 'fs/promises';
 import {join, relative} from 'path';
 
-import {D, dumpYml} from '@flecks/core';
+import {D} from '@flecks/core';
+import {dumpYml} from '@flecks/core/server';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
