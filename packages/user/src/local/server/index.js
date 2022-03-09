@@ -7,7 +7,13 @@ import LocalStrategy from 'passport-local';
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * Path to redirect to after failed login.
+       */
       failureRedirect: '/',
+      /**
+       * Path to redirect to after successful login.
+       */
       successRedirect: '/',
     }),
     '@flecks/db/server.models.decorate': (

@@ -8,6 +8,9 @@ export {default as createLimiter} from './limiter';
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * All keys used to determine fingerprint.
+       */
       keys: ['ip'],
       http: {
         keys: ['ip'],

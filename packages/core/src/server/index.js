@@ -63,6 +63,9 @@ export default {
     ],
     '@flecks/core.commands': commands,
     '@flecks/core.config': () => ({
+      /**
+       * Build targets to exclude from ESLint.
+       */
       'eslint.exclude': [],
     }),
   },

@@ -16,6 +16,9 @@ export {default as usePrevious} from './hooks/use-previous';
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * Whether to enable server-side rendering.
+       */
       ssr: true,
     }),
   },

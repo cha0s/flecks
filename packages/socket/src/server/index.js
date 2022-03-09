@@ -5,10 +5,6 @@ import Sockets from './sockets';
 
 export default {
   [Hooks]: {
-    '@flecks/core.config': () => ({
-      connect: [],
-      'request.socket': [],
-    }),
     '@flecks/http/server.request.socket': ({config: {'$flecks/socket.sockets': sockets}}) => (req, res, next) => {
       req.intercom = createIntercom(sockets, 'http');
       next();

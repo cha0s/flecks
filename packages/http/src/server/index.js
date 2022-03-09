@@ -45,15 +45,39 @@ export default {
       'template.ejs',
     ],
     '@flecks/core.config': () => ({
+      /**
+       * (webpack-dev-server) Host to bind.
+       */
       devHost: 'localhost',
+      /**
+       * (webpack-dev-server) Port to bind.
+       */
       devPort: undefined,
+      /**
+       * (webpack-dev-server) Public path to serve.
+       */
       devPublic: undefined,
+      /**
+       * (webpack-dev-server) Webpack stats output.
+       */
       devStats: 'minimal',
+      /**
+       * Host to bind.
+       */
       host: '0.0.0.0',
+      /**
+       * Build path.
+       */
       output: 'http',
+      /**
+       * Port to bind.
+       */
       port: 32340,
-      'request.route': [],
-      'request.socket': [],
+      /**
+       * Proxies to trust.
+       *
+       * See: https://www.npmjs.com/package/proxy-addr
+       */
       trust: false,
     }),
     '@flecks/core.starting': (flecks) => {

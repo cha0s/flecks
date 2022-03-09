@@ -6,6 +6,9 @@ import startContainer from './start-container';
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * Whether to run docker containers.
+       */
       enabled: true,
     }),
     '@flecks/core.commands': commands,

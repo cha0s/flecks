@@ -1,5 +1,10 @@
 import {readFile} from 'fs/promises';
-import {dirname, join} from 'path';
+import {
+  basename,
+  dirname,
+  extname,
+  join,
+} from 'path';
 
 import {transformAsync} from '@babel/core';
 import traverse from '@babel/traverse';
@@ -23,12 +28,27 @@ class ParserState {
 
   constructor() {
     this.buildConfigs = [];
+    this.configs = {};
     this.hooks = {};
     this.todos = [];
   }
 
   addBuildConfig(config, comment) {
     this.buildConfigs.push({comment, config});
+  }
+
+  addConfig(config, comment, filename, defaultValue) {
+    const ext = extname(filename);
+    const trimmed = join(dirname(filename), basename(filename, ext)).replace('/src', '');
+    const fleck = 'index' === basename(trimmed) ? dirname(trimmed) : trimmed;
+    if (!this.configs[fleck]) {
+      this.configs[fleck] = [];
+    }
+    this.configs[fleck].push({
+      comment,
+      config,
+      defaultValue,
+    });
   }
 
   addImplementation(hook, filename, loc) {
@@ -92,16 +112,47 @@ const FlecksBuildConfigs = (state) => (
                 config = element.elements[0].value;
               }
             }
-            if (config && element.leadingComments.length > 0) {
+            if (config) {
               state.addBuildConfig(
                 config,
-                element.leadingComments.pop().value.split('\n')
-                  .map((line) => line.trim())
-                  .map((line) => line.replace(/^\*/, ''))
-                  .map((line) => line.trim())
-                  .filter((line) => !!line)
-                  .join(' ')
-                  .trim(),
+                (element.leadingComments?.length > 0)
+                  ? element.leadingComments.pop().value.split('\n')
+                    .map((line) => line.trim())
+                    .map((line) => line.replace(/^\*/, ''))
+                    .map((line) => line.trim())
+                    .filter((line) => !!line)
+                    .join(' ')
+                    .trim()
+                  : '*No description provided.*',
+              );
+            }
+          });
+        }
+      }
+    }
+  })
+);
+
+const FlecksConfigs = (state, filename, source) => (
+  implementationVisitor((property) => {
+    if ('@flecks/core.config' === property.key.value) {
+      if (isArrowFunctionExpression(property.value)) {
+        if (isObjectExpression(property.value.body)) {
+          property.value.body.properties.forEach((property) => {
+            if (isIdentifier(property.key) || isStringLiteral(property.key)) {
+              state.addConfig(
+                property.key.name || property.key.value,
+                (property.leadingComments?.length > 0)
+                  ? property.leadingComments.pop().value.split('\n')
+                    .map((line) => line.trim())
+                    .map((line) => line.replace(/^\*/, ''))
+                    .map((line) => line.trim())
+                    .filter((line) => !!line)
+                    .join(' ')
+                    .trim()
+                  : '*No description provided.*',
+                filename,
+                source.slice(property.value.start, property.value.end),
               );
             }
           });
@@ -232,8 +283,10 @@ export const parseCode = async (code) => {
 
 export const parseFile = async (filename, resolved, state) => {
   const buffer = await readFile(filename);
-  const ast = await parseCode(buffer.toString('utf8'));
+  const source = buffer.toString('utf8');
+  const ast = await parseCode(source);
   traverse(ast, FlecksBuildConfigs(state, resolved));
+  traverse(ast, FlecksConfigs(state, resolved, source));
   traverse(ast, FlecksInvocations(state, resolved));
   traverse(ast, FlecksImplementations(state, resolved));
   traverse(ast, FlecksTodos(state, resolved));

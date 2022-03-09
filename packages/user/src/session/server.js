@@ -7,6 +7,11 @@ const debug = D('@flecks/user/session');
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * Set the cookie secret for session encryption.
+       *
+       * See: http://expressjs.com/en/resources/middleware/cookie-parser.html
+       */
       cookieSecret: (
         'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
       ),

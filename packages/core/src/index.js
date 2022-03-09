@@ -16,6 +16,9 @@ export {
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * The ID of your application.
+       */
       id: 'flecks',
     }),
   },

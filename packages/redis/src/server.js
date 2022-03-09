@@ -30,7 +30,13 @@ export const keys = (client, pattern) => safeKeys(client, pattern, 0);
 export default {
   [Hooks]: {
     '@flecks/core.config': () => ({
+      /**
+       * Redis server host.
+       */
       host: 'localhost',
+      /**
+       * Redis server port.
+       */
       port: 6379,
     }),
     '@flecks/docker.containers': containers,

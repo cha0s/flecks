@@ -69,6 +69,9 @@ export default {
       whatever: 'configuration',
       your: 1337,
       fleck: 'needs',
+      /**
+       * Also, comments like this will be used to automatically generate documentation.
+       */
       though: 'you should keep the values serializable',
     }),
 

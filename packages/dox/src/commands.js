@@ -5,6 +5,7 @@ import {D} from '@flecks/core';
 
 import {
   generateBuildConfigsPage,
+  generateConfigPage,
   generateHookPage,
   generateTodoPage,
 } from './generate';
@@ -33,6 +34,9 @@ export default (program, flecks) => {
       debug('Generating build configs page...');
       const buildConfigsPage = generateBuildConfigsPage(state.buildConfigs);
       debug('generated');
+      debug('Generating config page...');
+      const configPage = generateConfigPage(state.configs);
+      debug('generated');
       const output = join(FLECKS_CORE_ROOT, 'dox');
       await mkdir(output, {recursive: true});
       /* eslint-disable no-console */
@@ -47,6 +51,9 @@ export default (program, flecks) => {
       debug('Writing build configs page...');
       await writeFile(join(output, 'build-configs.md'), buildConfigsPage);
       console.log('build-configs.md');
+      debug('Writing config page...');
+      await writeFile(join(output, 'config.md'), configPage);
+      console.log('config.md');
       console.groupEnd();
       console.log('');
       /* eslint-enable no-console */

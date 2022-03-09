@@ -25,6 +25,31 @@ export const generateBuildConfigsPage = (buildConfigs) => {
   return source.join('\n');
 };
 
+export const generateConfigPage = (configs) => {
+  const source = [];
+  source.push('# Configuration');
+  source.push('');
+  source.push('This page documents all the configuration in this project.');
+  source.push('');
+  Object.entries(configs)
+    .sort(([l], [r]) => (l < r ? -1 : 1))
+    .forEach(([fleck, configs]) => {
+      source.push(`## \`${fleck}\``);
+      source.push('');
+      configs.forEach(({comment, config, defaultValue}) => {
+        comment.split('\n').forEach((line) => {
+          source.push(`> ${line}`);
+        });
+        source.push('');
+        source.push('```javascript');
+        source.push(`${config}: ${defaultValue}`);
+        source.push('```');
+        source.push('');
+      });
+    });
+  return source.join('\n');
+};
+
 export const generateHookPage = (hooks, flecks) => {
   const {filenameRewriters} = flecks.get('@flecks/dox/server');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
