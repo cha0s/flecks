@@ -47,6 +47,29 @@ class ParserState {
 
 }
 
+const implementationVisitor = (fn) => ({
+  ExportDefaultDeclaration(path) {
+    const {declaration} = path.node;
+    if (isObjectExpression(declaration)) {
+      const {properties} = declaration;
+      properties.forEach((property) => {
+        const {key, value} = property;
+        if (isIdentifier(key) && key.name === 'Hooks') {
+          if (isObjectExpression(value)) {
+            const {properties} = value;
+            properties.forEach((property) => {
+              const {key} = property;
+              if (isLiteral(key)) {
+                fn(property);
+              }
+            });
+          }
+        }
+      });
+    }
+  },
+});
+
 const FlecksInvocations = (state, filename) => ({
   CallExpression(path) {
     if (isMemberExpression(path.node.callee)) {
@@ -113,43 +136,6 @@ const FlecksInvocations = (state, filename) => ({
     }
   },
 });
-
-const implementationVisitor = (fn) => {
-  let hooksSymbol;
-  return {
-    ExportDefaultDeclaration(path) {
-      const {declaration} = path.node;
-      if (isObjectExpression(declaration)) {
-        const {properties} = declaration;
-        properties.forEach((property) => {
-          const {key, value} = property;
-          if (isIdentifier(key) && key.name === hooksSymbol) {
-            if (isObjectExpression(value)) {
-              const {properties} = value;
-              properties.forEach((property) => {
-                const {key} = property;
-                if (isLiteral(key)) {
-                  fn(property);
-                }
-              });
-            }
-          }
-        });
-      }
-    },
-    ImportDeclaration(path) {
-      const {source, specifiers} = path.node;
-      if ('@flecks/core' === source.value) {
-        specifiers.forEach((specifier) => {
-          const {imported, local} = specifier;
-          if ('Hooks' === imported.name) {
-            hooksSymbol = local.name;
-          }
-        });
-      }
-    },
-  };
-};
 
 const FlecksImplementations = (state, filename) => (
   implementationVisitor(({key}) => {
