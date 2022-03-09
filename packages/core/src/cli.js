@@ -60,8 +60,9 @@ else {
   const forwardProcessCode = (fn) => async (...args) => {
     const child = await fn(...args);
     if ('object' !== typeof child) {
-      debug('action returned code %d', child);
-      process.exitCode = child;
+      const code = 'undefined' !== typeof child ? child : 0;
+      debug('action returned code %d', code);
+      process.exitCode = code;
       return;
     }
     try {
