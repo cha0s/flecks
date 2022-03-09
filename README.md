@@ -84,7 +84,7 @@ Flecks applications contain a `build` directory with a `flecks.yml` that defines
 
 Flecks strives to provide powerful defaults that minimize the need to override configuration.
 
-[Learn more about the build directory](packages/core/build/dox/build.md).
+[Learn more about the build directory](packages/core/build/dox/concepts/build.md).
 
 The simplest example of a flecks server application:
 

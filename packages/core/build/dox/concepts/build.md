@@ -5,6 +5,9 @@ The `build` directory is where build-time configuration is specified.
 The prime example of this for Flecks is `flecks.yml`, but it extends to other more general
 configuration such as `.eslintrc.js`, `babel.config.js`, etc.
 
+For a list of all build configuration, see the
+[build configuration page](https://github.com/cha0s/flecks/blob/gh-pages/build-configs.md)
+
 ## `flecks.yml` ⛏️
 
 `flecks.yml` specifies the flecks that compose your project.
@@ -29,6 +32,9 @@ ID to, say, `'example'`, would look like this:
   id: 'example'
 '@flecks/fleck': {}
 ```
+
+See [the generated configuration page](https://github.com/cha0s/flecks/blob/gh-pages/config.md)
+for a list of all configuration.
 
 ### Aliasing 🕵️‍♂️
 
