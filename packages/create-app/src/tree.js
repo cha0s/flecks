@@ -56,7 +56,7 @@ export default class FileTree {
       Object.entries(this.files)
         .map(async ([path, stream]) => {
           if (null === stream) {
-            return mkdir(path, {recursive: true});
+            return mkdir(join(destination, path), {recursive: true});
           }
           await mkdir(dirname(join(destination, path)), {recursive: true});
           return new Promise((resolve, reject) => {
