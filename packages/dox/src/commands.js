@@ -3,7 +3,11 @@ import {join} from 'path';
 
 import {D} from '@flecks/core';
 
-import {generateHookPage, generateTodoPage} from './generate';
+import {
+  generateBuildConfigsPage,
+  generateHookPage,
+  generateTodoPage,
+} from './generate';
 import {parseFlecks} from './parser';
 
 const {
@@ -26,6 +30,9 @@ export default (program, flecks) => {
       debug('Generating TODO page...');
       const todoPage = generateTodoPage(state.todos, flecks);
       debug('generated');
+      debug('Generating build configs page...');
+      const buildConfigsPage = generateBuildConfigsPage(state.buildConfigs);
+      debug('generated');
       const output = join(FLECKS_CORE_ROOT, 'dox');
       await mkdir(output, {recursive: true});
       /* eslint-disable no-console */
@@ -37,6 +44,9 @@ export default (program, flecks) => {
       debug('Writing TODO page...');
       await writeFile(join(output, 'TODO.md'), todoPage);
       console.log('TODO.md');
+      debug('Writing build configs page...');
+      await writeFile(join(output, 'build-configs.md'), buildConfigsPage);
+      console.log('build-configs.md');
       console.groupEnd();
       console.log('');
       /* eslint-enable no-console */

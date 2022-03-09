@@ -4,6 +4,8 @@ import {dirname, join} from 'path';
 import {transformAsync} from '@babel/core';
 import traverse from '@babel/traverse';
 import {
+  isArrayExpression,
+  isArrowFunctionExpression,
   isIdentifier,
   isLiteral,
   isMemberExpression,
@@ -20,8 +22,13 @@ const flecksCorePath = dirname(__non_webpack_require__.resolve('@flecks/core/pac
 class ParserState {
 
   constructor() {
+    this.buildConfigs = [];
     this.hooks = {};
     this.todos = [];
+  }
+
+  addBuildConfig(config, comment) {
+    this.buildConfigs.push({comment, config});
   }
 
   addImplementation(hook, filename, loc) {
@@ -69,6 +76,40 @@ const implementationVisitor = (fn) => ({
     }
   },
 });
+
+const FlecksBuildConfigs = (state, filename) => (
+  implementationVisitor((property) => {
+    if ('@flecks/core.build.config' === property.key.value) {
+      if (isArrowFunctionExpression(property.value)) {
+        if (isArrayExpression(property.value.body)) {
+          property.value.body.elements.forEach((element) => {
+            let config;
+            if (isStringLiteral(element)) {
+              config = element.value;
+            }
+            if (isArrayExpression(element)) {
+              if (element.elements.length > 0 && isStringLiteral(element.elements[0])) {
+                config = element.elements[0].value;
+              }
+            }
+            if (config && element.leadingComments.length > 0) {
+              state.addBuildConfig(
+                config,
+                element.leadingComments.pop().value.split('\n')
+                  .map((line) => line.trim())
+                  .map((line) => line.replace(/^\*/, ''))
+                  .map((line) => line.trim())
+                  .filter((line) => !!line)
+                  .join(' ')
+                  .trim(),
+              );
+            }
+          });
+        }
+      }
+    }
+  })
+);
 
 const FlecksInvocations = (state, filename) => ({
   CallExpression(path) {
@@ -192,6 +233,7 @@ export const parseCode = async (code) => {
 export const parseFile = async (filename, resolved, state) => {
   const buffer = await readFile(filename);
   const ast = await parseCode(buffer.toString('utf8'));
+  traverse(ast, FlecksBuildConfigs(state, resolved));
   traverse(ast, FlecksInvocations(state, resolved));
   traverse(ast, FlecksImplementations(state, resolved));
   traverse(ast, FlecksTodos(state, resolved));

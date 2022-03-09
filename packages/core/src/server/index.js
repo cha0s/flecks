@@ -38,10 +38,26 @@ export default {
       );
     },
     '@flecks/core.build.config': () => [
+      /**
+       * Babel configuration. See: https://babeljs.io/docs/en/config-files
+       */
       'babel.config.js',
+      /**
+       * ESLint defaults. The default .eslintrc.js just reads from this file so that the build
+       * process can dynamically configure parts of ESLint.
+       */
       ['.eslint.defaults.js', {specifier: (specific) => `${specific}.eslint.defaults.js`}],
+      /**
+       * ESLint configuration. See: https://eslint.org/docs/user-guide/configuring/
+       */
       ['.eslintrc.js', {specifier: (specific) => `${specific}.eslintrc.js`}],
+      /**
+       * Neutrino build configuration. See: https://neutrinojs.org/usage/
+       */
       ['.neutrinorc.js', {specifier: (specific) => `${specific}.neutrinorc.js`}],
+      /**
+       * Webpack (v4) configuration. See: https://v4.webpack.js.org/configuration/
+       */
       'webpack.config.js',
     ],
     '@flecks/core.commands': commands,

@@ -37,6 +37,11 @@ export default {
       delete neutrinoConfigs.http;
     },
     '@flecks/core.build.config': () => [
+      /**
+       * Template file used to generate the client HTML.
+       *
+       * See: https://github.com/jantimon/html-webpack-plugin/blob/main/docs/template-option.md
+       */
       'template.ejs',
     ],
     '@flecks/core.config': () => ({

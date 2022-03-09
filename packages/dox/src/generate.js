@@ -6,6 +6,25 @@ const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => 
     )
 );
 
+export const generateBuildConfigsPage = (buildConfigs) => {
+  const source = [];
+  source.push('# Build configuration files');
+  source.push('');
+  source.push('This page documents all the build configuration files in this project.');
+  source.push('');
+  if (buildConfigs.length > 0) {
+    buildConfigs
+      .sort(({config: l}, {config: r}) => (l < r ? -1 : 1))
+      .forEach(({config, comment}) => {
+        source.push(`## \`${config}\``);
+        source.push('');
+        source.push(comment);
+        source.push('');
+      });
+  }
+  return source.join('\n');
+};
+
 export const generateHookPage = (hooks, flecks) => {
   const {filenameRewriters} = flecks.get('@flecks/dox/server');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
