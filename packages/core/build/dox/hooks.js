@@ -30,7 +30,14 @@ export default {
       * Register build configuration.
       */
     '@flecks/core.build.config': () => [
+      /**
+       * If you document your config files like this, documentation will be automatically
+       * generated.
+       */
       '.myrc.js',
+      /**
+       * Make sure you return them as an array expression, like this.
+       */
       ['mygeneralrc.js', {specifier: (specific) => `${specific}.mygeneralrc.js`}],
     ],
 
