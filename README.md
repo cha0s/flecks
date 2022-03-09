@@ -6,7 +6,7 @@
     a highly dynamic structure encourage consistency while allowing you to easily express your own
     opinions.
   </p>
-  <p>For documentation, see <a href="ADDME">the documentation page</a>.</p>
+  <!-- <p>For documentation, see <a href="ADDME">the documentation page</a>.</p> -->
 
   ## ✴️ BE WARY ✴️
 
