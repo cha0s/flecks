@@ -33,8 +33,8 @@ ID to, say, `'example'`, would look like this:
 '@flecks/fleck': {}
 ```
 
-See [the generated configuration page](https://github.com/cha0s/flecks/blob/gh-pages/config.md)
-for a list of all configuration.
+See [the configuration page](https://github.com/cha0s/flecks/blob/gh-pages/config.md) for a list of
+all configuration.
 
 ### Aliasing 🕵️‍♂️
 
