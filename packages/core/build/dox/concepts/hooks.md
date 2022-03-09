@@ -35,7 +35,7 @@ See: [function composition](https://www.educative.io/edpresso/function-compositi
 
 `initial` is passed to the first implementation, which returns a result which is passed to the second implementation, which returns a result which is passed to the third implementation, etc.
 
-Composed hooks are [ordered](#ordered-hooks).
+Composed hooks are [orderable](#orderable-hooks).
 
 &nbsp;
 
@@ -72,7 +72,7 @@ Invokes hook implementations one at a time, their results being passed to the re
 
 Invokes all hook implementations, one after another. In the async variant, each implementation's result is `await`ed before invoking the next implementation.
 
-Sequential hooks are [ordered](#ordered-hooks).
+Sequential hooks are [orderable](#orderable-hooks).
 
 &nbsp;
 
@@ -284,13 +284,13 @@ is *exactly equivalent* to the decorator example above.
 }
 ```
 
-Decorator hooks are [ordered](#ordered-hooks).
+Decorator hooks are [orderable](#orderable-hooks).
 
-## Ordered hooks
+## Orderable hooks
 
-In many of the instances above, reference was made to the fact that certain hook types are "ordered".
+In many of the instances above, reference was made to the fact that certain hook types are "orderable".
 
-Suppose we are composing an application and we have HTTP session state using cookies. When a user hits a route, we need to load their session and subsequently read a value from said session to determine if the user prefers dark mode. Clearly, we will have to ensure that the session reification happens first. This is one function of ordered hooks.
+Suppose we are composing an application and we have HTTP session state using cookies. When a user hits a route, we need to load their session and subsequently read a value from said session to determine if the user prefers dark mode. Clearly, we will have to ensure that the session reification happens first. This is one function of orderable hooks.
 
 Flecks uses the name of the hook as a configuration key in order to determine the ordering of a hook. Let's take the hook we alluded to earlier as an example, `@flecks/http/server.request.route`:
 
@@ -325,4 +325,4 @@ Ellipses essentially translate to: "every implementing fleck which has not alrea
 
 Using more than one ellipses entry in an ordering configuration is ambiguous and will throw an error.
 
-The default ordering configuration for any ordered hook is: `['...']` which translates to all implementations in an undefined order.
+The default ordering configuration for any orderable hook is: `['...']` which translates to all implementations in an undefined order.
