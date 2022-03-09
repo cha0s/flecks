@@ -23,3 +23,4 @@
 - [x] remove `invokeParallel()`
 - [x] Specialize `invokeReduce()` with `invokeMerge()`.
 - [x] Rename all hooks to dot-first notation; rewrite `lookupFlecks()`.
+- [ ] ensureUniqueReduction moved into invokeMerge
