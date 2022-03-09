@@ -22,7 +22,7 @@ export default {
         'npx', 'webpack-dev-server',
         '--mode', 'development',
         '--hot',
-        '--config', flecks.localConfig('webpack.config.js', '@flecks/core'),
+        '--config', flecks.buildConfig('webpack.config.js'),
       ];
       spawnWith(
         cmd,
@@ -36,6 +36,9 @@ export default {
       // eslint-disable-next-line no-param-reassign
       delete neutrinoConfigs.http;
     },
+    '@flecks/core.build.config': () => [
+      'template.ejs',
+    ],
     '@flecks/core.config': () => ({
       devHost: 'localhost',
       devPort: undefined,

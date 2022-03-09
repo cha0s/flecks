@@ -14,9 +14,9 @@ import flatten from 'lodash.flatten';
 import intersection from 'lodash.intersection';
 import neutrino from 'neutrino';
 
-import {targetNeutrino} from '../server/commands';
-import Flecks from '../server/flecks';
-import D from '../debug';
+import D from '../../debug';
+import {targetNeutrino} from '../commands';
+import Flecks from '../flecks';
 
 const debug = D('@flecks/core/build/webpack.config.js');
 

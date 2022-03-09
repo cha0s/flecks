@@ -19,7 +19,6 @@
   },
   "files": [
     "build",
-    "build/template.ejs",
     "client/tests.js",
     "client/tests.js.map",
     "entry.js",
@@ -30,6 +29,7 @@
     "runtime.js.map",
     "server.js",
     "server.js.map",
+    "server/build/template.ejs",
     "server/build/http.neutrinorc.js",
     "server/build/http.neutrinorc.js.map",
     "src",

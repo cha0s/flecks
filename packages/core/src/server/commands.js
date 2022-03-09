@@ -50,10 +50,15 @@ export const targetNeutrinos = (flecks) => {
     const [fleck, targets] = entries[i];
     targets
       .forEach((target) => {
-        targetNeutrinos[targetNeutrino(target)] = flecks.localConfig(
-          `${target}.neutrinorc.js`,
-          fleck,
-          {general: '.neutrinorc.js'},
+        targetNeutrinos[targetNeutrino(target)] = flecks.resolveBuildConfig(
+          [
+            FLECKS_CORE_ROOT,
+            flecks.resolvePath(fleck),
+          ],
+          [
+            `${target}.neutrinorc.js`,
+            '.neutrinorc.js',
+          ],
         );
       });
   }
@@ -107,7 +112,7 @@ export default (program, flecks) => {
           verbose,
         } = opts;
         debug('Building...', opts);
-        const webpackConfig = flecks.localConfig('webpack.config.js', '@flecks/core');
+        const webpackConfig = flecks.buildConfig('webpack.config.js');
         const cmd = [
           'npx', 'webpack',
           '--colors',
@@ -144,11 +149,7 @@ export default (program, flecks) => {
           process.env.FLECKS_CORE_BUILD_TARGET = target;
           const cmd = [
             'npx', 'eslint',
-            '--config', flecks.localConfig(
-              `${target}.eslintrc.js`,
-              '@flecks/core',
-              {general: '.eslintrc.js'},
-            ),
+            '--config', flecks.buildConfig('.eslintrc.js', target),
             '--format', 'codeframe',
             '--ext', 'js',
             '.',

@@ -5,15 +5,15 @@ module.exports = (async () => {
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
   const config = await require('@flecks/fleck/server/build/fleck.neutrinorc');
   config.use.push(({config}) => {
-    config.entryPoints.delete('build/template');
+    config.entryPoints.delete('server/build/template');
   });
   config.use.push(
     copy({
       copyUnmodified: true,
       patterns: [
         {
-          from: 'src/build/template.ejs',
-          to: 'build/template.ejs',
+          from: 'src/server/build/template.ejs',
+          to: 'server/build/template.ejs',
         },
       ],
     }),

@@ -30,7 +30,7 @@ module.exports = (async () => {
     config.use.unshift((neutrino) => {
       neutrino.config.plugins.delete('start-server');
     });
-    const configFile = flecks.localConfig('babel.config.js', '@flecks/core');
+    const configFile = flecks.buildConfig('babel.config.js');
     config.use.unshift(node({
       babel: {configFile},
       clean: {

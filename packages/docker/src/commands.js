@@ -57,7 +57,7 @@ export default (program, flecks) => {
                   services[key] = {image: config.image, environment: {}};
                 });
               return [
-                `FLECKS_ENV_${flecks.constructor.environmentalize(fleck).toUpperCase()}`,
+                `FLECKS_ENV_${flecks.constructor.environmentalize(fleck)}`,
                 config,
               ];
             }),

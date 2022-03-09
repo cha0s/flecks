@@ -1,9 +1,9 @@
 const neutrino = require('neutrino');
 
-const R = require('../bootstrap/require');
-const {targetNeutrino} = require('../server/commands');
-const D = require('../debug');
-const {default: Flecks} = require('../server/flecks');
+const R = require('../../bootstrap/require');
+const D = require('../../debug');
+const {targetNeutrino} = require('../commands');
+const {default: Flecks} = require('../flecks');
 
 const debug = D('@flecks/core/.eslintrc.js');
 

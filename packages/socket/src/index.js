@@ -18,7 +18,7 @@ export default {
     },
     '@flecks/http.config': async (
       req,
-      {config: {'@flecks/socket': {'packets.decorate': decorators}}},
+      {config: {'@flecks/socket': {'packets.decorate': decorators = ['...']}}},
     ) => ({
       '@flecks/socket': {
         'packets.decorate': decorators.filter(

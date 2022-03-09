@@ -50,7 +50,7 @@ module.exports = (async () => {
       hot: false,
       html: {
         inject: false,
-        template: flecks.localConfig('template.ejs', '@flecks/http'),
+        template: flecks.buildConfig('template.ejs'),
       },
       style: {
         extract: {

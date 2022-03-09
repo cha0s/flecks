@@ -23,13 +23,7 @@ export default {
       if (-1 !== exclude.indexOf(target)) {
         return;
       }
-      const baseConfig = R(
-        flecks.localConfig(
-          `${target}.eslint.defaults.js`,
-          '@flecks/core',
-          {general: '.eslint.defaults.js'},
-        ),
-      );
+      const baseConfig = R(flecks.buildConfig('.eslint.defaults.js', target));
       config.use.unshift(
         airbnb({
           eslint: {
@@ -43,6 +37,13 @@ export default {
         }),
       );
     },
+    '@flecks/core.build.config': () => [
+      'babel.config.js',
+      ['.eslint.defaults.js', {specifier: (specific) => `${specific}.eslint.defaults.js`}],
+      ['.eslintrc.js', {specifier: (specific) => `${specific}.eslintrc.js`}],
+      ['.neutrinorc.js', {specifier: (specific) => `${specific}.neutrinorc.js`}],
+      'webpack.config.js',
+    ],
     '@flecks/core.commands': commands,
   },
 };

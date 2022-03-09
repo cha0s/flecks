@@ -62,20 +62,16 @@ Have fun!
 
 ## Resolution order 🤔
 
-The flecks server provides an interface (`flecks.localConfig()`) for gathering configuration files
+The flecks server provides an interface (`flecks.buildConfig()`) for gathering configuration files
 from the `build` directory. The resolution order is determined by a few variables:
 
-- `filename` specifies the name of the configuration file, e.g. `babel.config.js`.
+- `filename` specifies the name of the configuration file, e.g. `server.neutrinorc.js`.
 
-- `general` specifies a general variation of the given configuration. `@flecks/server` looks for
-  an overridden `server.neutrinorc.js` when building, however `general` is set to `.neutrinorc.js`,
-  so it will also accept overrides of that more general configuration file.
+- `general` specifies a general variation of the given configuration. The general form of `server.neutrinorc.js` is `.neutrinorc.js`.
 
 - `root` specifies an alternative location to search. Defaults to `FLECKS_CORE_ROOT`.
 
-- `fleck` specifies the fleck owning the configuration. `@flecks/core` owns `babel.config.js`,
-  `@flecks/server` owns `server.neutrinorc.js`, etc. This only really matters if you are writing a
-  fleck that owns its configuration.
+- `fleck` specifies the fleck owning the configuration. `@flecks/server` owns `server.neutrinorc.js`.
 
 Given these considerations, and supposing we had the above variables set like:
 
@@ -86,7 +82,7 @@ const root = '/foo/bar/baz';
 const fleck = '@flecks/server';
 ```
 
-We would then expect flecks to search using the following resolution order:
+Flecks will then search the following paths top-down until it finds the build configuration:
 
 - `/foo/bar/baz/build/server.neutrinorc.js`
 - `/foo/bar/baz/build/.neutrinorc.js`

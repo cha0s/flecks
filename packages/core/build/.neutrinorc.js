@@ -17,9 +17,9 @@ module.exports = require('../src/bootstrap/fleck.neutrinorc');
 module.exports.use.push((neutrino) => {
   ['eslintrc', 'eslint.defaults'].forEach((filename) => {
     neutrino.config
-      .entry(`build/.${filename}`)
+      .entry(`server/build/.${filename}`)
       .clear()
-      .add(`./src/build/${filename}`);
+      .add(`./src/server/build/${filename}`);
   })
 });
 
@@ -44,7 +44,7 @@ module.exports.use.unshift(
   airbnb({
     eslint: {
       baseConfig: {
-        ...require('../src/build/eslint.defaults'),
+        ...require('../src/server/build/eslint.defaults'),
         env: {
           mocha: true,
         },

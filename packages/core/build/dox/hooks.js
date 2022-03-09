@@ -27,6 +27,14 @@ export default {
     },
 
     /**
+      * Register build configuration.
+      */
+    '@flecks/core.build.config': () => [
+      '.myrc.js',
+      ['mygeneralrc.js', {specifier: (specific) => `${specific}.mygeneralrc.js`}],
+    ],
+
+    /**
       * Define CLI commands.
       */
     '@flecks/core.commands': (program) => ({

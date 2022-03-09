@@ -45,7 +45,7 @@ export default class ServerFlecks extends Flecks {
     Object.keys(this.flecks)
       .sort((l, r) => (l < r ? 1 : -1))
       .forEach((fleck) => {
-        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck).toUpperCase()}`;
+        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck)}`;
         keys
           .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
           .map((key) => {
@@ -66,6 +66,22 @@ export default class ServerFlecks extends Flecks {
             }
           });
       });
+    this.buildConfigs = Object.fromEntries(
+      Object.entries(this.invoke('@flecks/core.build.config'))
+        .map(([fleck, configs]) => (
+          configs.map((config) => {
+            const defaults = {
+              fleck,
+              root: FLECKS_CORE_ROOT,
+            };
+            if (Array.isArray(config)) {
+              return [config[0], {...defaults, ...config[1]}];
+            }
+            return [config, defaults];
+          })
+        ))
+        .flat(),
+    );
     this.resolver = resolver;
     this.rcs = rcs;
   }
@@ -263,11 +279,16 @@ export default class ServerFlecks extends Flecks {
         debug('compiling: %s', root);
         const resolved = dirname(R.resolve(join(root, 'package.json')));
         const sourcepath = this.sourcepath(resolved);
-        const configFile = this.localConfig(
+        const configFile = this.resolveBuildConfig(
           resolver,
-          'babel.config.js',
-          '@flecks/core',
-          {root: join(sourcepath, '..')},
+          [
+            resolved,
+            FLECKS_CORE_ROOT,
+            this.resolvePath(resolver, '@flecks/core/server'),
+          ],
+          [
+            'babel.config.js',
+          ],
         );
         const register = R('@babel/register');
         const config = {
@@ -354,11 +375,30 @@ export default class ServerFlecks extends Flecks {
     });
   }
 
+  buildConfig(path, specific) {
+    const config = this.buildConfigs[path];
+    if (!config) {
+      throw new Error(`Unknown build config '${path}'`);
+    }
+    const paths = [];
+    if (config.specifier) {
+      paths.push(config.specifier(specific));
+    }
+    paths.push(path);
+    const roots = [config.root];
+    if (config.root !== FLECKS_CORE_ROOT) {
+      roots.push(FLECKS_CORE_ROOT);
+    }
+    roots.push(this.resolvePath(this.resolve(config.fleck)));
+    return this.constructor.resolveBuildConfig(this.resolver, roots, paths);
+  }
+
   static environmentalize(key) {
     return key
       // - `@flecks/core` -> `FLECKS_CORE`
       .replace(/[^a-zA-Z0-9]/g, '_')
-      .replace(/_*(.*)_*/, '$1');
+      .replace(/_*(.*)_*/, '$1')
+      .toUpperCase();
   }
 
   fleckIsAliased(fleck) {
@@ -379,50 +419,6 @@ export default class ServerFlecks extends Flecks {
     return realpath !== resolved;
   }
 
-  localConfig(path, fleck, options) {
-    return this.constructor.localConfig(this.resolver, path, fleck, options);
-  }
-
-  static localConfig(resolver, path, fleck, {general = path, root = FLECKS_CORE_ROOT} = {}) {
-    let configFile;
-    try {
-      const localConfig = join(root, 'build', path);
-      statSync(localConfig);
-      configFile = localConfig;
-    }
-    catch (error) {
-      try {
-        const localConfig = join(root, 'build', general);
-        statSync(localConfig);
-        configFile = localConfig;
-      }
-      catch (error) {
-        try {
-          const localConfig = join(FLECKS_CORE_ROOT, 'build', path);
-          statSync(localConfig);
-          configFile = localConfig;
-        }
-        catch (error) {
-          try {
-            const localConfig = join(FLECKS_CORE_ROOT, 'build', general);
-            statSync(localConfig);
-            configFile = localConfig;
-          }
-          catch (error) {
-            const resolved = this.resolve(resolver, fleck);
-            try {
-              configFile = R.resolve(join(resolved, 'build', path));
-            }
-            catch (error) {
-              configFile = R.resolve(join(resolved, 'build', general));
-            }
-          }
-        }
-      }
-    }
-    return configFile;
-  }
-
   rcs() {
     return this.rcs;
   }
@@ -433,6 +429,38 @@ export default class ServerFlecks extends Flecks {
 
   static resolve(resolver, fleck) {
     return resolver[fleck] || fleck;
+  }
+
+  resolveBuildConfig(roots, paths) {
+    return this.constructor.resolveBuildConfig(this.resolver, roots, paths);
+  }
+
+  static resolveBuildConfig(resolver, roots, paths) {
+    for (let i = 0; i < roots.length; ++i) {
+      const root = roots[i];
+      for (let j = 0; j < paths.length; ++j) {
+        const path = paths[j];
+        const resolved = join(root, 'build', path);
+        try {
+          statSync(resolved);
+          return resolved;
+        }
+        // eslint-disable-next-line no-empty
+        catch (error) {}
+      }
+    }
+    throw new Error(`Couldn't resolve build file '${paths.pop()}'`);
+  }
+
+  resolvePath(path) {
+    return this.constructor.resolvePath(this.resolver, path);
+  }
+
+  static resolvePath(resolver, path) {
+    const resolved = R.resolve(this.resolve(resolver, path));
+    const ext = extname(resolved);
+    const base = basename(resolved, ext);
+    return join(dirname(resolved), 'index' === base ? '' : base);
   }
 
   root(fleck) {
@@ -491,11 +519,7 @@ export default class ServerFlecks extends Flecks {
         .forEach((root) => {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.sourcepath(resolved);
-          const configFile = this.localConfig(
-            'babel.config.js',
-            '@flecks/core',
-            {root: resolved},
-          );
+          const configFile = this.buildConfig('babel.config.js');
           debug('compiling: %s with %s', root, configFile);
           const babel = {
             configFile,
@@ -503,8 +527,8 @@ export default class ServerFlecks extends Flecks {
             ...babelmerge(...rcBabel.map(([, babel]) => babel)),
           };
           compileLoader({
-            ignore: [dirname(sourcepath, '..')],
-            include: [dirname(sourcepath, '..')],
+            ignore: [join(sourcepath, '..')],
+            include: [join(sourcepath, '..')],
             babel,
             ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
           })(neutrino);
