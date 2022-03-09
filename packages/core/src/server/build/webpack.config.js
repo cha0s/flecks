@@ -69,5 +69,6 @@ export default (async () => {
     debug('no webpack configuration found! aborting...');
     await new Promise(() => {});
   }
+  debug('webpack configurations %O', webpackConfigs);
   return webpackConfigs;
 })();
