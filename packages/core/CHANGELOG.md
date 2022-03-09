@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
+
+
+### Bug Fixes
+
+* return code ([23d6ba9](https://github.com/cha0s/flecks/commit/23d6ba9aa38e4b590a04a242d5cb208d4b13709f))
+
+
+### Features
+
+* autodoc for build config ([fd4050e](https://github.com/cha0s/flecks/commit/fd4050e0e91a8c285bbe085d4b1acb04cdd4eac8))
+
+
+
+
+
 ## [1.2.1](https://github.com/cha0s/flecks/compare/v1.2.0...v1.2.1) (2022-03-08)
 
 
