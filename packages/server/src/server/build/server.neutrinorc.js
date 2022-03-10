@@ -107,9 +107,13 @@ module.exports = (async () => {
   if (Object.keys(aliases).length > 0) {
     const code = [
       `const aliases = ${JSON.stringify(aliases)};`,
+      `const stubs = ${JSON.stringify(stubs)};`,
       'const {Module} = require("module");',
       'const {require: Mr} = Module.prototype;',
       'Module.prototype.require = function hackedRequire(request, options) {',
+      '  if (-1 !== stubs.indexOf(request)) {',
+      '    return undefined;',
+      '  }',
       '  if (aliases[request]) {',
       '    return Mr.call(this, aliases[request], options);',
       '  }',
