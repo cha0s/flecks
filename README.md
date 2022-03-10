@@ -6,7 +6,7 @@
     a highly dynamic structure encourage consistency while allowing you to easily express your own
     opinions.
   </p>
-  <!-- <p>For documentation, see <a href="ADDME">the documentation page</a>.</p> -->
+  <!-- <p>For documentation, see <a href="ADDME">the documentation site</a>.</p> -->
 
   ## ✴️ BE WARY ✴️
 
@@ -15,6 +15,8 @@
   I reserve the right to break all semantic versioning guarantees as long as the project is v1.x.x! 😈
   
   **You've been warned!**
+
+  Have fun! ☺️
 </div>
 
 
@@ -63,7 +65,7 @@ Things you don't expect &mdash; like
 - Dynamic REPL (hooks)
 - Dynamic build (include `@flecks/react` into your fleck and watch it learn to compile JSX, even on the server side)
 - Freedom to split up e.g. Redux applications into discrete slices while relying on flecks to automatically handle things like middleware, reducer composition, server/localStorage hydration, etc.
-- Basically your imagination. [Write a hook](packages/core/build/dox/concepts/hooks.md).
+- [Write a hook](packages/core/build/dox/concepts/hooks.md) and surprise someone else.
 
 ## Concepts
 
@@ -81,15 +83,11 @@ Just to give you an idea of the power of hooks, some will be listed here:
   > Define [Express](http://expressjs.com/) middleware that runs when an HTTP route is hit.
 - [... and many more on the hook reference page](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md)
 
-There are many hooks and they will not be treated exhaustively here. See the documentation page above.
-    
 ### The `build` directory
 
 Flecks applications contain a `build` directory with a `flecks.yml` that defines the flecks use to compose the project, as well as build-time configuration.
 
 Flecks strives to provide powerful defaults that minimize the need to override configuration.
-
-[Learn more about the build directory](packages/core/build/dox/concepts/build.md).
 
 The simplest example of a flecks server application:
 
@@ -100,8 +98,12 @@ The simplest example of a flecks server application:
 
 Yes, that's it! In fact, when you use `yarn create @flecks/app`, that's what is generated for you by default.
 
-Obviously, this doesn't do much on its own. It simply bootstraps flecks and runs a server application with no interesting work to do.
+Obviously, this doesn't do much on its own. It simply bootstraps flecks and runs a server application with no interesting work to do. It's just a jumping-off point.
+
+![Can I offer you a nice egg in this trying time?](https://user-images.githubusercontent.com/298123/157753299-20264271-fd36-4f50-9b5c-8649bcd42f5a.png)
+
+[Learn even more about the build directory](packages/core/build/dox/concepts/build.md).
 
 ---
 
-Documentation is a work in progress <3
+Documentation is a work in progress ❤️
