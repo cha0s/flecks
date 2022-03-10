@@ -8,11 +8,11 @@ export default {
        */
       hot: false,
       /**
-       * Whether the Node inspector is enabled.
+       * Whether the Node.js inspector is enabled.
        */
       inspect: false,
       /**
-       * Whether node profiling is enabled.
+       * Whether Node.js profiling is enabled.
        */
       profile: false,
       /**
