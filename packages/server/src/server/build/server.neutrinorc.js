@@ -94,9 +94,9 @@ module.exports = (async () => {
   }
   // Stub out non-server-friendly modules on the server.
   const stubs = flecks.stubs();
-  if (stubs.length > 0) {
+  if (Object.keys(stubs).length > 0) {
     config.use.unshift(({config}) => {
-      stubs.forEach((path) => {
+      Object.keys(stubs).forEach((path) => {
         config.resolve.alias
           .set(path, '@flecks/core/empty');
       });
@@ -111,7 +111,7 @@ module.exports = (async () => {
       'const {Module} = require("module");',
       'const {require: Mr} = Module.prototype;',
       'Module.prototype.require = function hackedRequire(request, options) {',
-      '  if (-1 !== stubs.indexOf(request)) {',
+      '  if (stubs[request]) {',
       '    return undefined;',
       '  }',
       '  if (aliases[request]) {',

@@ -152,18 +152,18 @@ export default class ServerFlecks extends Flecks {
     }
     // Stub server-unfriendly modules.
     const stubs = this.stubs(['server'], rcs);
-    if (stubs.length > 0) {
+    if (Object.keys(stubs).length > 0) {
       debug('stubbing: %O', stubs);
     }
     // Do we need to get up in `require()`'s guts?
     if (
       Object.keys(aliases).length > 0
-      || stubs.length > 0
+      || Object.keys(stubs).length > 0
     ) {
       const {Module} = R('module');
       const {require: Mr} = Module.prototype;
       Module.prototype.require = function hackedRequire(request, options) {
-        if (-1 !== stubs.indexOf(request)) {
+        if (stubs[request]) {
           return undefined;
         }
         if (aliases[request]) {
@@ -603,7 +603,7 @@ export default class ServerFlecks extends Flecks {
           });
       }
     }
-    return Object.keys(stubs);
+    return stubs;
   }
 
 }
