@@ -134,12 +134,7 @@ export default class ServerFlecks extends Flecks {
     // Merge aliases;
     const aliases = {
       // from fleck configuration above,
-      ...(
-        Object.fromEntries(
-          Object.entries(resolver)
-            .filter(([from, to]) => from !== to),
-        )
-      ),
+      ...Object.fromEntries(Object.entries(resolver).filter(([from, to]) => from !== to)),
       // from symlinks,
       ...(
         Object.fromEntries(
