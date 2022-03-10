@@ -82,7 +82,11 @@ export default {
     }),
     '@flecks/core.starting': (flecks) => {
       debug('bootstrapping flecks...');
-      const httpFlecks = Flecks.bootstrap({platforms: ['client'], without: ['server']});
+      const httpFlecks = Flecks.bootstrap({
+        config: flecks.config,
+        platforms: ['client'],
+        without: ['server'],
+      });
       debug('bootstrapped');
       flecks.set('$flecks/http.flecks', httpFlecks);
     },
