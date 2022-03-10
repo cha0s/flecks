@@ -68,7 +68,6 @@ export default class ServerFlecks extends Flecks {
       config,
       platforms = ['server'],
       root = FLECKS_CORE_ROOT,
-      without = [],
     } = {},
   ) {
     // Load or use parameterized configuration.
@@ -85,6 +84,10 @@ export default class ServerFlecks extends Flecks {
     const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
     const resolver = {};
     const keys = Object.keys(config);
+    // `!platform` excludes that platform.
+    const without = platforms
+      .filter((platform) => '!'.charCodeAt(0) === platform.charCodeAt(0))
+      .map((platform) => platform.slice(1));
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
       // Parse the alias (if any).

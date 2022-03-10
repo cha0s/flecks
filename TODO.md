@@ -10,8 +10,7 @@
 - [x] flecks aliasing must ensure webpack aliasing and de-externalization into bundles
 - [x] `flecks.invokeMiddleware()` should not build every invocation
 - [x] `flecks.invokeComposed()` and `flecks.invokeMiddleware()` should not fatal on a missed lookup
-- [x] flecks should have a `platforms` setting, so auto-lookups of `/client`, `/server` are less
-  magical
+- [x] flecks should have a `platforms` setting, so auto-lookups of `/client`, `/server` are less magical
 - [x] `flecks.expandedFlecks()` should use `platforms`
 - [ ] config validation
 - [ ] hints for hook types
@@ -24,3 +23,4 @@
 - [x] Specialize `invokeReduce()` with `invokeMerge()`.
 - [x] Rename all hooks to dot-first notation; rewrite `lookupFlecks()`.
 - [ ] ensureUniqueReduction moved into invokeMerge
+- [x] `bootstrap({without: ['badplatform']})` should be handled by passing `{platforms: ['!badplatform']}`

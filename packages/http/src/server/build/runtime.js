@@ -12,7 +12,9 @@ const debug = D('@flecks/http/runtime');
 
 module.exports = async (flecks) => {
   debug('bootstrapping flecks...');
-  const httpFlecks = Flecks.bootstrap({platforms: ['client'], without: ['server']});
+  const httpFlecks = Flecks.bootstrap({
+    platforms: ['client', '!server'],
+  });
   debug('bootstrapped');
   const runtime = await realpath(R.resolve(join(flecks.resolve('@flecks/http'), 'runtime')));
   const fullresolve = (fleck, path) => realpath(R.resolve(join(flecks.resolve(fleck), path)));
