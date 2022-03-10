@@ -1,3 +1,2 @@
 '@flecks/core': {}
-'@flecks/server':
-  start: true
+'@flecks/server': {}

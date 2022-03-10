@@ -18,7 +18,7 @@ export default {
       /**
        * Whether to start the server after building.
        */
-      start: false,
+      start: true,
     }),
   },
 };
