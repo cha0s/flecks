@@ -7,6 +7,7 @@ import {
   basename,
   dirname,
   extname,
+  isAbsolute,
   join,
   resolve,
 } from 'path';
@@ -20,6 +21,7 @@ import Flecks from '../flecks';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  FLECKS_YML = 'flecks.yml',
 } = process.env;
 
 const debug = D('@flecks/core/flecks/server');
@@ -28,62 +30,10 @@ export default class ServerFlecks extends Flecks {
 
   constructor(options = {}) {
     super(options);
-    const {
-      resolver = {},
-      rcs = {},
-    } = options;
-    const keys = Object.keys(process.env);
-    // Reverse-sorting means e.g. `@flecks/core/server` comes before `@flecks/core`.
-    // We want to select the most specific match.
-    //
-    // `FLECKS_ENV_FLECKS_CORE_SERVER_VARIABLE` is ambiguous as it can equate to both:
-    // - `flecks.set('@flecks/core.server.variable');`
-    // - `flecks.set('@flecks/core/server.variable');`
-    //
-    // The latter will take precedence.
-    const seen = [];
-    Object.keys(this.flecks)
-      .sort((l, r) => (l < r ? 1 : -1))
-      .forEach((fleck) => {
-        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck)}`;
-        keys
-          .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
-          .map((key) => {
-            seen.push(key);
-            debug('reading environment from %s...', key);
-            return [key, process.env[key]];
-          })
-          .map(([key, value]) => [key.slice(prefix.length + 1), value])
-          .map(([subkey, value]) => [subkey.split('_'), value])
-          .forEach(([path, jsonOrString]) => {
-            try {
-              this.set([fleck, ...path], JSON.parse(jsonOrString));
-              debug('read (%s) as JSON', jsonOrString);
-            }
-            catch (error) {
-              this.set([fleck, ...path], jsonOrString);
-              debug('read (%s) as string', jsonOrString);
-            }
-          });
-      });
-    this.buildConfigs = Object.fromEntries(
-      Object.entries(this.invoke('@flecks/core.build.config'))
-        .map(([fleck, configs]) => (
-          configs.map((config) => {
-            const defaults = {
-              fleck,
-              root: FLECKS_CORE_ROOT,
-            };
-            if (Array.isArray(config)) {
-              return [config[0], {...defaults, ...config[1]}];
-            }
-            return [config, defaults];
-          })
-        ))
-        .flat(),
-    );
-    this.resolver = resolver;
-    this.rcs = rcs;
+    this.overrideConfigFromEnvironment();
+    this.buildConfigs = this.loadBuildConfigs();
+    this.resolver = options.resolver || {};
+    this.rcs = options.rcs || {};
   }
 
   aliases() {
@@ -115,53 +65,49 @@ export default class ServerFlecks extends Flecks {
 
   static bootstrap(
     {
+      config,
       platforms = ['server'],
       root = FLECKS_CORE_ROOT,
       without = [],
     } = {},
   ) {
-    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
-    let initial;
+    // Load or use parameterized configuration.
     let configType;
-    try {
-      const {load} = R('js-yaml');
-      const filename = join(resolvedRoot, 'build', 'flecks.yml');
-      const buffer = readFileSync(filename, 'utf8');
-      debug('parsing configuration from YML...');
-      initial = load(buffer, {filename}) || {};
-      configType = 'YML';
+    if (!config) {
+      // eslint-disable-next-line no-param-reassign
+      [configType, config] = this.loadConfig(root);
     }
-    catch (error) {
-      if ('ENOENT' !== error.code) {
-        throw error;
-      }
-      initial = {'@flecks/core': {}, '@flecks/fleck': {}};
-      configType = 'barebones';
+    else {
+      configType = 'parameter';
     }
-    debug('bootstrap configuration (%s): %O', configType, initial);
+    debug('bootstrap configuration (%s): %O', configType, config);
     // Fleck discovery.
-    const aliased = {};
-    const config = {};
+    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
     const resolver = {};
-    const keys = Object.keys(initial);
+    const keys = Object.keys(config);
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      const index = key.lastIndexOf(':');
-      const [path, alias] = -1 === index ? [key, key] : [key.slice(0, index), key.slice(index + 1)];
+      // Parse the alias (if any).
+      const index = key.indexOf(':');
+      const [path, alias] = -1 === index
+        ? [key, undefined]
+        : [key.slice(0, index), key.slice(index + 1)];
+      // Run it by the exception list.
       if (-1 !== without.indexOf(path.split('/').pop())) {
         // eslint-disable-next-line no-continue
         continue;
       }
-      const aliasPath = '.'.charCodeAt(0) === alias.charCodeAt(0)
-        ? join(resolvedRoot, alias)
-        : alias;
+      // Resolve the path (if necessary).
+      let resolvedPath;
+      if (alias) {
+        resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
+      }
+      else {
+        resolvedPath = path;
+      }
       try {
-        config[path] = initial[key];
-        R.resolve(aliasPath);
-        if (path !== alias) {
-          aliased[path] = aliasPath;
-        }
-        resolver[path] = aliasPath;
+        R.resolve(resolvedPath);
+        resolver[path] = resolvedPath;
       }
       // eslint-disable-next-line no-empty
       catch (error) {}
@@ -169,14 +115,9 @@ export default class ServerFlecks extends Flecks {
       if (platforms) {
         platforms.forEach((platform) => {
           try {
-            const platformAliasPath = join(aliasPath, platform);
-            const platformPath = join(path, platform);
-            R.resolve(platformAliasPath);
-            if (path !== alias) {
-              aliased[platformPath] = platformAliasPath;
-            }
-            config[platformPath] = config[platformPath] || {};
-            resolver[platformPath] = platformAliasPath;
+            const resolvedPlatformPath = join(resolvedPath, platform);
+            R.resolve(resolvedPlatformPath);
+            resolver[join(path, platform)] = resolvedPlatformPath;
           }
           // eslint-disable-next-line no-empty
           catch (error) {}
@@ -184,86 +125,65 @@ export default class ServerFlecks extends Flecks {
       }
     }
     const paths = Object.keys(resolver);
-    const rcs = {};
-    const roots = Array.from(new Set(
-      paths
-        .map((path) => this.root(resolver, path))
-        .filter((e) => !!e),
-    ));
-    for (let i = 0; i < roots.length; ++i) {
-      const root = roots[i];
-      try {
-        rcs[root] = R(join(root, 'build', '.flecksrc'));
-      }
-      catch (error) {
-        if ('MODULE_NOT_FOUND' !== error.code) {
-          throw error;
-        }
-      }
-    }
+    // Load RCs.
+    const rcs = this.loadRcs(resolver);
     debug('rcs: %O', rcs);
-    // Stub platform-unfriendly modules.
-    const stubs = this.stubs(platforms, rcs);
+    // Merge aliases;
+    const aliases = {
+      // from fleck configuration above,
+      ...(
+        Object.fromEntries(
+          Object.entries(resolver)
+            .filter(([from, to]) => from !== to),
+        )
+      ),
+      // from symlinks,
+      ...(
+        Object.fromEntries(
+          paths.filter((path) => this.fleckIsSymlinked(resolver, path))
+            .map((path) => [path, this.sourcepath(R.resolve(this.resolve(resolver, path)))]),
+        )
+      ),
+      // and from RCs.
+      ...this.aliases(rcs),
+    };
+    if (Object.keys(aliases).length > 0) {
+      debug('aliases: %O', aliases);
+    }
+    // Stub server-unfriendly modules.
+    const stubs = this.stubs(['server'], rcs);
     if (stubs.length > 0) {
       debug('stubbing: %O', stubs);
-      const regex = new RegExp(stubs.join('|'));
-      R('pirates').addHook(
-        () => '',
-        {
-          ignoreNodeModules: false,
-          matcher: (path) => !!path.match(regex),
-        },
-      );
+    }
+    // Do we need to get up in `require()`'s guts?
+    if (
+      Object.keys(aliases).length > 0
+      || stubs.length > 0
+    ) {
+      const {Module} = R('module');
+      const {require: Mr} = Module.prototype;
+      Module.prototype.require = function hackedRequire(request, options) {
+        if (-1 !== stubs.indexOf(request)) {
+          return undefined;
+        }
+        if (aliases[request]) {
+          return Mr.call(this, aliases[request], options);
+        }
+        return Mr.call(this, request, options);
+      };
     }
     // Flecks that are aliased or symlinked need compilation.
     const flecks = {};
     const needCompilation = paths
       .filter((path) => (
-        this.fleckIsAliased(resolver, path) || this.fleckIsSymlinked(resolver, path)
+        this.fleckIsAliased(resolver, path)
+        || this.fleckIsSymlinked(resolver, path)
       ));
-    // Lookups redirect require() requests.
-    const symlinked = paths
-      .filter((path) => this.fleckIsSymlinked(resolver, path));
-    if (symlinked.length > 0) {
-      const lookups = {
-        ...Object.fromEntries(
-          symlinked
-            .map((path) => [
-              R.resolve(path),
-              this.sourcepath(R.resolve(this.resolve(resolver, path))),
-            ]),
-        ),
-      };
-      debug('symlink lookups: %O', lookups);
-      R('pirates').addHook(
-        (code, path) => `module.exports = require('${lookups[path]}')`,
-        {
-          ignoreNodeModules: false,
-          // eslint-disable-next-line arrow-body-style
-          matcher: (path) => {
-            return !!lookups[path];
-          },
-        },
-      );
-    }
-    const {Module} = R('module');
-    const aliases = this.aliases(rcs);
-    debug('aliases: %O', aliases);
-    // Nasty hax to give us FULL CONTROL.
-    const {require: Mr} = Module.prototype;
-    const requirers = {
-      ...aliased,
-      ...aliases,
-    };
-    Module.prototype.require = function hackedRequire(request, options) {
-      if (requirers[request]) {
-        return Mr.call(this, requirers[request], options);
-      }
-      return Mr.call(this, request, options);
-    };
     if (needCompilation.length > 0) {
-      const rcBabel = this.babel(rcs);
-      debug('.flecksrc: babel: %O', rcBabel);
+      const register = R('@babel/register');
+      // Augment the compiler with babel config from flecksrc.
+      const rcBabelConfig = babelmerge(...this.babel(rcs).map(([, babel]) => babel));
+      debug('.flecksrc: babel: %O', rcBabelConfig);
       // Key flecks needing compilation by their roots, so we can compile all common roots with a
       // single invocation of `@babel/register`.
       const compilationRootMap = {};
@@ -276,9 +196,14 @@ export default class ServerFlecks extends Flecks {
       });
       // Register a compiler for each root and require() the flecks underneath.
       Object.entries(compilationRootMap).forEach(([root, compiling]) => {
-        debug('compiling: %s', root);
+        debug('compiling at root: %s', root);
         const resolved = dirname(R.resolve(join(root, 'package.json')));
         const sourcepath = this.sourcepath(resolved);
+        const sourceroot = join(sourcepath, '..');
+        // Load babel config from whichever we find first:
+        // - The fleck being compiled's build directory
+        // - The root build directory
+        // - Finally, the built-in babel config
         const configFile = this.resolveBuildConfig(
           resolver,
           [
@@ -290,71 +215,26 @@ export default class ServerFlecks extends Flecks {
             'babel.config.js',
           ],
         );
-        const register = R('@babel/register');
         const config = {
+          // Augment the selected config with the babel config from RCs.
           configFile,
-          // Augment the compiler with babel config from flecksrc.
-          ...babelmerge(...rcBabel.map(([, babel]) => babel)),
-          ignore: [resolve(join(sourcepath, '..', 'node_modules'))],
-          only: [resolve(join(sourcepath, '..'))],
-          sourceMaps: 'inline',
+          // Target the compiler to avoid unnecessary work.
+          ignore: [resolve(join(sourceroot, 'node_modules'))],
+          only: [resolve(sourceroot)],
         };
         debug("require('@babel/register')(%O)", config);
         register({
           ...config,
+          ...rcBabelConfig,
           // Make webpack goodies exist in nodespace.
-          plugins: [
-            [
-              'prepend',
-              {
-                prepend: [
-                  'require.context = (',
-                  '  directory,',
-                  '  useSubdirectories = true,',
-                  '  regExp = /^\\.\\/.*$/,',
-                  '  mode = "sync",',
-                  ') => {',
-                  '  const glob = require("glob");',
-                  '  const {resolve, sep} = require("path");',
-                  '  const keys = glob.sync(',
-                  '    useSubdirectories ? "**/*" : "*",',
-                  '    {cwd: resolve(__dirname, directory)},',
-                  '  )',
-                  '    .filter((key) => key.match(regExp))',
-                  '    .map(',
-                  '      (key) => (',
-                  '        -1 !== [".".charCodeAt(0), "/".charCodeAt(0)].indexOf(key.charCodeAt(0))',
-                  '          ? key',
-                  '          : ("." + sep + key)',
-                  '      ),',
-                  '    );',
-                  '  const R = (request) => require(keys[request]);',
-                  '  R.id = __filename',
-                  '  R.keys = () => keys;',
-                  '  return R;',
-                  '};',
-                ].join('\n'),
-              },
-              'require.context',
-            ],
-            [
-              'prepend',
-              {
-                prepend: 'const __non_webpack_require__ = require;',
-              },
-              '__non_webpack_require__',
-            ],
-            [
-              'prepend',
-              {
-                prepend: "require('source-map-support/register');",
-              },
-              'source-map-support',
-            ],
-          ],
+          plugins: this.nodespaceBabelPlugins(),
+          // Keep things debuggable.
+          sourceMaps: 'inline',
         });
         compiling.forEach((fleck) => {
+          debug('compiling %s...', fleck);
           flecks[fleck] = R(this.resolve(resolver, fleck));
+          debug('compiled');
           // Remove the required fleck from the list still needing require().
           paths.splice(paths.indexOf(fleck), 1);
         });
@@ -417,6 +297,152 @@ export default class ServerFlecks extends Flecks {
     const resolved = R.resolve(this.resolve(resolver, fleck));
     const realpath = realpathSync(resolved);
     return realpath !== resolved;
+  }
+
+  loadBuildConfigs() {
+    return Object.fromEntries(
+      Object.entries(this.invoke('@flecks/core.build.config'))
+        .map(([fleck, configs]) => (
+          configs.map((config) => {
+            const defaults = {
+              fleck,
+              root: FLECKS_CORE_ROOT,
+            };
+            if (Array.isArray(config)) {
+              return [config[0], {...defaults, ...config[1]}];
+            }
+            return [config, defaults];
+          })
+        ))
+        .flat(),
+    );
+  }
+
+  static loadConfig(root) {
+    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
+    try {
+      const {load} = R('js-yaml');
+      const filename = join(resolvedRoot, 'build', FLECKS_YML);
+      const buffer = readFileSync(filename, 'utf8');
+      debug('parsing configuration from YML...');
+      return ['YML', load(buffer, {filename}) || {}];
+    }
+    catch (error) {
+      if ('ENOENT' !== error.code) {
+        throw error;
+      }
+      return ['barebones', {'@flecks/core': {}, '@flecks/fleck': {}}];
+    }
+  }
+
+  static loadRcs(resolver) {
+    const rcs = {};
+    const roots = Array.from(new Set(
+      Object.keys(resolver)
+        .map((path) => this.root(resolver, path))
+        .filter((e) => !!e),
+    ));
+    for (let i = 0; i < roots.length; ++i) {
+      const root = roots[i];
+      try {
+        rcs[root] = R(join(root, 'build', '.flecksrc'));
+      }
+      catch (error) {
+        if ('MODULE_NOT_FOUND' !== error.code) {
+          throw error;
+        }
+      }
+    }
+    return rcs;
+  }
+
+  static nodespaceBabelPlugins() {
+    return [
+      [
+        'prepend',
+        {
+          prepend: [
+            'require.context = (',
+            '  directory,',
+            '  useSubdirectories = true,',
+            '  regExp = /^\\.\\/.*$/,',
+            '  mode = "sync",',
+            ') => {',
+            '  const glob = require("glob");',
+            '  const {resolve, sep} = require("path");',
+            '  const keys = glob.sync(',
+            '    useSubdirectories ? "**/*" : "*",',
+            '    {cwd: resolve(__dirname, directory)},',
+            '  )',
+            '    .filter((key) => key.match(regExp))',
+            '    .map(',
+            '      (key) => (',
+            '        -1 !== [".".charCodeAt(0), "/".charCodeAt(0)].indexOf(key.charCodeAt(0))',
+            '          ? key',
+            '          : ("." + sep + key)',
+            '      ),',
+            '    );',
+            '  const R = (request) => require(keys[request]);',
+            '  R.id = __filename',
+            '  R.keys = () => keys;',
+            '  return R;',
+            '};',
+          ].join('\n'),
+        },
+        'require.context',
+      ],
+      [
+        'prepend',
+        {
+          prepend: 'const __non_webpack_require__ = require;',
+        },
+        '__non_webpack_require__',
+      ],
+      [
+        'prepend',
+        {
+          prepend: "require('source-map-support/register');",
+        },
+        'source-map-support',
+      ],
+    ];
+  }
+
+  overrideConfigFromEnvironment() {
+    const keys = Object.keys(process.env);
+    const seen = [];
+    Object.keys(this.flecks)
+      // Reverse-sorting means e.g. `@flecks/core/server` comes before `@flecks/core`.
+      // We want to select the most specific match.
+      //
+      // `FLECKS_ENV_FLECKS_CORE_SERVER_VARIABLE` is ambiguous as it can equate to both:
+      // - `flecks.set('@flecks/core.server.variable');`
+      // - `flecks.set('@flecks/core/server.variable');`
+      //
+      // The latter will take precedence.
+      .sort((l, r) => (l < r ? 1 : -1))
+      .forEach((fleck) => {
+        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck)}`;
+        keys
+          .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
+          .map((key) => {
+            seen.push(key);
+            debug('reading environment from %s...', key);
+            return [key, process.env[key]];
+          })
+          .map(([key, value]) => [key.slice(prefix.length + 1), value])
+          .map(([subkey, value]) => [subkey.split('_'), value])
+          .forEach(([path, jsonOrString]) => {
+            try {
+              this.set([fleck, ...path], JSON.parse(jsonOrString));
+              debug('read (%s) as JSON', jsonOrString);
+            }
+            catch (error) {
+              this.set([fleck, ...path], jsonOrString);
+              debug('read (%s) as string', jsonOrString);
+            }
+          });
+      });
   }
 
   rcs() {
@@ -519,6 +545,7 @@ export default class ServerFlecks extends Flecks {
         .forEach((root) => {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.sourcepath(resolved);
+          const sourceroot = join(sourcepath, '..');
           const configFile = this.buildConfig('babel.config.js');
           debug('compiling: %s with %s', root, configFile);
           const babel = {
@@ -527,8 +554,8 @@ export default class ServerFlecks extends Flecks {
             ...babelmerge(...rcBabel.map(([, babel]) => babel)),
           };
           compileLoader({
-            ignore: [join(sourcepath, '..')],
-            include: [join(sourcepath, '..')],
+            ignore: [sourceroot],
+            include: [sourceroot],
             babel,
             ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
           })(neutrino);
