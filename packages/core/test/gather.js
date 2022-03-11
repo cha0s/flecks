@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 
-// eslint-disable-next-line import/no-unresolved
 import {Flecks, ById, ByType} from '@flecks/core';
 
 const testOne = require('./one');
@@ -23,5 +22,5 @@ it('can gather', () => {
       .to.equal(type);
   }
   expect(typeof Gathered.Three.bar)
-    .to.not.equal('undefined');
+    .to.not.be.undefined;
 });

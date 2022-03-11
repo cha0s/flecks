@@ -5,7 +5,23 @@ module.exports = {
   },
   ignorePatterns: [
     '**/dist/**',
-    '/build/dox/hooks.js',
+    'build/dox/hooks.js',
+  ],
+  overrides: [
+    {
+      files: [
+        'test/**/*.js',
+      ],
+      rules: {
+        'babel/no-unused-expressions': 'off',
+        'brace-style': 'off',
+        'class-methods-use-this': 'off',
+        'import/no-extraneous-dependencies': 'off',
+        'max-classes-per-file': 'off',
+        'no-new': 'off',
+        'padded-blocks': 'off',
+      },
+    },
   ],
   rules: {
     'babel/object-curly-spacing': 'off',
