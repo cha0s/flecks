@@ -37,6 +37,8 @@
     "tests.js.map"
   ],
   "dependencies": {
+    "@babel/parser": "^7.17.0",
+    "@babel/types": "^7.17.0",
     "@flecks/core": "^1.3.0",
     "@neutrinojs/dev-server": "^9.5.0",
     "@neutrinojs/font-loader": "^9.5.0",
