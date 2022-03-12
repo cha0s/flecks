@@ -513,7 +513,7 @@ export default class ServerFlecks extends Flecks {
     return undefined;
   }
 
-  runtimeCompiler(runtime, neutrino, allowlist = []) {
+  runtimeCompiler(runtime, neutrino, {additionalModuleDirs = [], allowlist = []} = {}) {
     const {config} = neutrino;
     // Pull the default compiler.
     if (config.module.rules.has('compile')) {
@@ -546,6 +546,7 @@ export default class ServerFlecks extends Flecks {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.sourcepath(resolved);
           const sourceroot = join(sourcepath, '..');
+          additionalModuleDirs.push(join(sourceroot, 'node_modules'));
           const configFile = this.buildConfig('babel.config.js');
           debug('compiling: %s with %s', root, configFile);
           const babel = {

@@ -109,19 +109,10 @@ module.exports = (async () => {
       start,
     ],
   };
-
   // Stub out non-server-friendly modules on the server.
   const stubs = flecks.stubs();
-  if (stubs.length > 0) {
-    config.use.unshift(({config}) => {
-      stubs.forEach((path) => {
-        config.resolve.alias
-          .set(path, '@flecks/core/empty');
-      });
-    });
-  }
-  // Hardcore hax for module aliasing.
   const aliases = flecks.aliases();
+  // Do we need to get up in `require()`'s guts?
   if (
     Object.keys(aliases).length > 0
     || stubs.length > 0
@@ -130,7 +121,7 @@ module.exports = (async () => {
       .map((stub) => (
         'string' === typeof stub
           ? JSON.stringify(stub)
-          : `new RegExp(${JSON.stringify(stub.toString())})`
+          : `new RegExp(${JSON.stringify(stub.toString().slice(1, -1))})`
       ));
     const code = [
       `const aliases = ${JSON.stringify(aliases)};`,

@@ -65,13 +65,17 @@ module.exports = async (flecks) => {
     ];
     config.resolve.alias
       .set('@flecks/server/runtime$', runtime);
-    flecks.runtimeCompiler('server', neutrino, allowlist);
+    const nodeExternalsConfig = {
+      additionalModuleDirs: [],
+      allowlist,
+    };
+    flecks.runtimeCompiler('server', neutrino, nodeExternalsConfig);
     // Rewrite to signals for HMR.
     if ('production' !== config.get('mode')) {
       allowlist.push(/^webpack/);
     }
     // Externalize the rest.
     const nodeExternals = R('webpack-node-externals');
-    config.externals(nodeExternals({allowlist}));
+    config.externals(nodeExternals(nodeExternalsConfig));
   };
 };
