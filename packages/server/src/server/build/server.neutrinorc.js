@@ -112,9 +112,9 @@ module.exports = (async () => {
 
   // Stub out non-server-friendly modules on the server.
   const stubs = flecks.stubs();
-  if (Object.keys(stubs).length > 0) {
+  if (stubs.length > 0) {
     config.use.unshift(({config}) => {
-      Object.keys(stubs).forEach((path) => {
+      stubs.forEach((path) => {
         config.resolve.alias
           .set(path, '@flecks/core/empty');
       });
@@ -122,15 +122,26 @@ module.exports = (async () => {
   }
   // Hardcore hax for module aliasing.
   const aliases = flecks.aliases();
-  if (Object.keys(aliases).length > 0) {
+  if (
+    Object.keys(aliases).length > 0
+    || stubs.length > 0
+  ) {
+    const sanitizedStubs = stubs
+      .map((stub) => (
+        'string' === typeof stub
+          ? JSON.stringify(stub)
+          : `new RegExp(${JSON.stringify(stub.toString())})`
+      ));
     const code = [
       `const aliases = ${JSON.stringify(aliases)};`,
-      `const stubs = ${JSON.stringify(stubs)};`,
+      `const stubs = [${sanitizedStubs}];`,
       'const {Module} = require("module");',
       'const {require: Mr} = Module.prototype;',
       'Module.prototype.require = function hackedRequire(request, options) {',
-      '  if (stubs[request]) {',
-      '    return undefined;',
+      '  for (let i = 0; i < stubs.length; ++i) {',
+      '    if (request.match(stubs[i])) {',
+      '      return undefined;',
+      '    }',
       '  }',
       '  if (aliases[request]) {',
       '    return Mr.call(this, aliases[request], options);',

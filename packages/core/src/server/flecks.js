@@ -150,19 +150,21 @@ export default class ServerFlecks extends Flecks {
     }
     // Stub server-unfriendly modules.
     const stubs = this.stubs(['server'], rcs);
-    if (Object.keys(stubs).length > 0) {
+    if (stubs.length > 0) {
       debug('stubbing: %O', stubs);
     }
     // Do we need to get up in `require()`'s guts?
     if (
       Object.keys(aliases).length > 0
-      || Object.keys(stubs).length > 0
+      || stubs.length > 0
     ) {
       const {Module} = R('module');
       const {require: Mr} = Module.prototype;
       Module.prototype.require = function hackedRequire(request, options) {
-        if (stubs[request]) {
-          return undefined;
+        for (let i = 0; i < stubs.length; ++i) {
+          if (request.match(stubs[i])) {
+            return undefined;
+          }
         }
         if (aliases[request]) {
           return Mr.call(this, aliases[request], options);
@@ -586,16 +588,16 @@ export default class ServerFlecks extends Flecks {
 
   static stubs(platforms, rcs) {
     const keys = Object.keys(rcs);
-    const stubs = {};
+    const stubs = [];
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
       const config = rcs[key];
       if (config.stubs) {
         Object.entries(config.stubs)
-          .forEach(([platform, paths]) => {
+          .forEach(([platform, patterns]) => {
             if (-1 !== platforms.indexOf(platform)) {
-              paths.forEach((path) => {
-                stubs[path] = true;
+              patterns.forEach((pattern) => {
+                stubs.push(pattern);
               });
             }
           });
