@@ -38,12 +38,9 @@ module.exports = (async () => {
         }]);
       // Entrypoints.
       const {output: originalOutput} = options;
-      options.root = root;
-      config.context(options.root);
-      options.source = '.';
-      options.mains.index = 'entry';
+      options.mains.index = join(root, 'entry');
       options.mains.tests = {
-        entry: './client/tests',
+        entry: join(root, 'client', 'tests'),
         title: 'Testbed',
       };
       options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
@@ -84,7 +81,7 @@ module.exports = (async () => {
         .publicPath('/')
         .filename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js');
       config
-        .devtool(isProduction ? 'source-map' : 'eval-source-map')
+        .devtool('source-map')
         .target('web');
       config.node
         .set('Buffer', true)

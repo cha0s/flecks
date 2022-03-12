@@ -12,14 +12,22 @@ const debug = D('@flecks/http/server');
 export default {
   [Hooks]: {
     '@flecks/core.build': (target, config) => {
-      config.use.push(styleLoader({
-        extract: {
-          enabled: false,
-        },
-        style: {
-          injectType: 'lazyStyleTag',
-        },
-      }));
+      config.use.push((neutrino) => {
+        const isProduction = 'production' === neutrino.config.get('mode');
+        neutrino.use(
+          styleLoader({
+            extract: {
+              enabled: false,
+            },
+            modules: {
+              localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+            },
+            style: {
+              injectType: 'lazyStyleTag',
+            },
+          }),
+        );
+      });
       config.use.push(fontLoader());
       config.use.push(imageLoader());
     },
