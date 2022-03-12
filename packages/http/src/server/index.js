@@ -11,13 +11,13 @@ const debug = D('@flecks/http/server');
 
 export default {
   [Hooks]: {
-    '@flecks/core.build': (target, config) => {
+    '@flecks/core.build': (target, config, flecks) => {
       config.use.push((neutrino) => {
         const isProduction = 'production' === neutrino.config.get('mode');
         neutrino.use(
           styleLoader({
             extract: {
-              enabled: false,
+              enabled: 'http' === target,
             },
             modules: {
               localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
@@ -25,6 +25,23 @@ export default {
             style: {
               injectType: 'lazyStyleTag',
             },
+            test: /\.(c|s[ac])ss$/,
+            modulesTest: /\.module\.(c|s[ac])ss$/,
+            loaders: [
+              {
+                loader: 'postcss-loader',
+                useId: 'postcss',
+                options: {
+                  postcssOptions: {
+                    config: flecks.buildConfig('postcss.config.js'),
+                  },
+                },
+              },
+              {
+                loader: 'sass-loader',
+                useId: 'sass',
+              },
+            ],
           }),
         );
       });
@@ -66,6 +83,12 @@ export default {
        * See: https://github.com/jantimon/html-webpack-plugin/blob/main/docs/template-option.md
        */
       'template.ejs',
+      /**
+       * PostCSS config file.
+       *
+       * See: https://github.com/postcss/postcss#usage
+       */
+      'postcss.config.js',
     ],
     '@flecks/core.config': () => ({
       /**

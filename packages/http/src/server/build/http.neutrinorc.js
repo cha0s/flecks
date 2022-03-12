@@ -53,8 +53,35 @@ module.exports = (async () => {
             pluginId: `html-${name}`,
             filename: `${name}.html`,
             chunks: [name],
-            inject: false,
             template: flecks.buildConfig('template.ejs'),
+            templateParameters: (compilation, assets, assetTags, options) => {
+              let styleFile;
+              const styleChunk = compilation.chunks.find((chunk) => (
+                chunk.chunkReason?.match(/split chunk \(cache group: styles\)/)
+              ));
+              if (styleChunk) {
+                const modules = styleChunk.getModules();
+                const styleModule = modules.find((module) => 'css/mini-extract' === module.type);
+                const styleFileHref = join(
+                  compilation.options.output.publicPath,
+                  styleChunk.files.find((file) => file.match(/\.css$/)),
+                );
+                styleFile = {
+                  href: styleFileHref,
+                  content: styleModule.content,
+                };
+              }
+              return {
+                compilation,
+                webpackConfig: compilation.options,
+                htmlWebpackPlugin: {
+                  tags: assetTags,
+                  files: assets,
+                  options,
+                },
+                styleFile,
+              };
+            },
             ...htmlTemplateConfig,
           }),
         );
@@ -72,6 +99,15 @@ module.exports = (async () => {
         .splitChunks({
           chunks: 'all',
           name: !isProduction,
+          cacheGroups: {
+            styles: {
+              name: !isProduction,
+              test: /\.(c|s[ac])ss$/,
+              chunks: 'all',
+              enforce: true,
+              priority: 100,
+            },
+          },
         })
         .runtimeChunk('single');
       // Outputs.
