@@ -7,10 +7,10 @@ module.exports = () => ({
   visitor: {
     /* eslint-disable no-param-reassign */
     ImportDeclaration(path) {
-      if (path.node.source.value.match(/\.s?css$/)) {
+      if (path.node.source.value.match(/\.(c|s[ac])ss$/)) {
         let defaultSpecifier = path.node.specifiers.find(types.isImportDefaultSpecifier);
         if (!defaultSpecifier) {
-          defaultSpecifier = types.importDefaultSpecifier(types.identifier(`LATUS_STYLES_${id++}`));
+          defaultSpecifier = types.importDefaultSpecifier(types.identifier(`FLECKS_STYLES_${id++}`));
           path.node.specifiers.unshift(defaultSpecifier);
         }
         const {name} = defaultSpecifier.local;
