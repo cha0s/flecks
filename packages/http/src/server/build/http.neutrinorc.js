@@ -1,12 +1,16 @@
+const {dirname, join} = require('path');
+const {realpath} = require('fs/promises');
+
 const {D} = require('@flecks/core');
-const {Flecks} = require('@flecks/core/server');
-const web = require('@neutrinojs/web');
+const {Flecks, require: R} = require('@flecks/core/server');
+const htmlLoader = require('@neutrinojs/html-loader');
+const htmlTemplate = require('@neutrinojs/html-template');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const {EnvironmentPlugin} = require('webpack');
 
 const devServer = require('./dev-server');
-const outputs = require('./outputs');
 const runtime = require('./runtime');
-const targets = require('./targets');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -18,6 +22,96 @@ module.exports = (async () => {
   debug('bootstrapping flecks...');
   const flecks = Flecks.bootstrap();
   debug('bootstrapped');
+  // Build configuration.
+  const build = async () => {
+    const root = await realpath(
+      dirname(R.resolve(join(flecks.resolve('@flecks/http'), 'entry.js'))),
+    );
+    return (neutrino) => {
+      const {config, options} = neutrino;
+      const isProduction = 'production' === config.get('mode');
+      // Environment.
+      config
+        .plugin('environment')
+        .use(EnvironmentPlugin, [{
+          FLECKS_CORE_BUILD_TARGET: 'client',
+        }]);
+      // Entrypoints.
+      const {output: originalOutput} = options;
+      options.root = root;
+      config.context(options.root);
+      options.source = '.';
+      options.mains.index = 'entry';
+      options.mains.tests = {
+        entry: './client/tests',
+        title: 'Testbed',
+      };
+      options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
+      neutrino.use(htmlLoader());
+      Object.entries(options.mains).forEach(([name, mainsConfig]) => {
+        const {entry, ...htmlTemplateConfig} = mainsConfig;
+        config.entry(name).add(entry);
+        neutrino.use(
+          htmlTemplate({
+            pluginId: `html-${name}`,
+            filename: `${name}.html`,
+            chunks: [name],
+            inject: false,
+            template: flecks.buildConfig('template.ejs'),
+            ...htmlTemplateConfig,
+          }),
+        );
+      });
+      // Fold in existing source maps.
+      config.module
+        .rule('maps')
+        .test(/\.js$/)
+        .enforce('pre')
+        .use('source-map-loader')
+        .loader('source-map-loader');
+      // Optimization.
+      config.optimization
+        .minimize(isProduction)
+        .splitChunks({
+          chunks: 'all',
+          name: !isProduction,
+        })
+        .runtimeChunk('single');
+      // Outputs.
+      config.output
+        .chunkFilename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js')
+        .path(options.output)
+        .publicPath('/')
+        .filename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js');
+      config
+        .devtool(isProduction ? 'source-map' : 'eval-source-map')
+        .target('web');
+      config.node
+        .set('Buffer', true)
+        .set('fs', 'empty')
+        .set('tls', 'empty')
+        .set('__dirname', false)
+        .set('__filename', false);
+      // Resolution.
+      config.resolve.extensions
+        .merge([
+          '.wasm',
+          ...options.extensions.map((ext) => `.${ext}`),
+          '.json',
+        ]);
+      config.resolve.modules
+        .merge([
+          join(FLECKS_CORE_ROOT, 'node_modules'),
+          'node_modules',
+        ]);
+      // Reporting.
+      config.stats(flecks.get('@flecks/http/server.stats'));
+      // Inline the main entrypoint (nice for FCP).
+      config
+        .plugin('inline-chunks')
+        .use(InlineChunkHtmlPlugin, [HtmlWebpackPlugin, [/^assets\/index(\.[^.]*)?\.js$/]]);
+    };
+  };
   // Neutrino configuration.
   const config = {
     options: {
@@ -25,48 +119,12 @@ module.exports = (async () => {
       root: FLECKS_CORE_ROOT,
     },
     use: [
-      ({config}) => {
-        config
-          .plugin('environment')
-          .use(EnvironmentPlugin, [{
-            FLECKS_CORE_BUILD_TARGET: 'client',
-          }]);
-      },
-      await targets(flecks),
+      await build(),
     ],
   };
-  // Compile code.
-  const compiler = flecks.invokeFleck(
-    '@flecks/http/server.compiler',
-    flecks.get('@flecks/http/server.compiler'),
-  );
-  if (compiler) {
-    config.use.push(compiler);
-  }
-  else {
-    // Use neutrino's web middleware by default.
-    config.use.push(web({
-      clean: false,
-      hot: false,
-      html: {
-        inject: false,
-        template: flecks.buildConfig('template.ejs'),
-      },
-      style: {
-        extract: {
-          enabled: false,
-        },
-        style: {
-          injectType: 'lazyStyleTag',
-        },
-      },
-    }));
-  }
   // Configure dev server.
   config.use.push(devServer(flecks));
   // Build the client runtime.
   config.use.push(await runtime(flecks));
-  // Output configuration.
-  config.use.push(outputs());
   return config;
 })();

@@ -101,7 +101,6 @@ export default (program, flecks) => {
         ['-d, --no-production', 'dev build'],
         ['-h, --hot', 'build with hot module reloading'],
         ['-w, --watch', 'watch for changes'],
-        ['-v, --verbose', 'verbose output'],
       ],
       description: 'build',
       action: (target, opts) => {
@@ -109,7 +108,6 @@ export default (program, flecks) => {
           hot,
           production,
           watch,
-          verbose,
         } = opts;
         debug('Building...', opts);
         const webpackConfig = flecks.buildConfig('webpack.config.js');
@@ -118,7 +116,6 @@ export default (program, flecks) => {
           '--colors',
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
-          ...(verbose ? ['--stats', 'verbose'] : []),
           ...((watch || hot) ? ['--watch'] : []),
         ];
         return spawnWith(

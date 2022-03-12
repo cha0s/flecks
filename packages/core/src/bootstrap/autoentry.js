@@ -30,19 +30,19 @@ const resolver = (source) => (path) => {
   }
 };
 
-module.exports = () => (neutrino) => {
-  const {packageJson: {name, files = []}, source} = neutrino.options;
+module.exports = () => ({config, options}) => {
+  const {packageJson: {name, files = []}, source} = options;
   // index is not taken for granted.
-  neutrino.config.entryPoints.delete('index');
+  config.entryPoints.delete('index');
   // Alias this package.
-  neutrino.config.resolve.alias
+  config.resolve.alias
     .set(name, join(FLECKS_CORE_ROOT, 'src'));
   // Calculate entry points from `files`.
   files
     .filter(resolver(source))
     .forEach((file) => {
       const trimmed = join(dirname(file), basename(file, extname(file)));
-      neutrino.config
+      config
         .entry(trimmed)
         .clear()
         .add(`./src/${trimmed}`);

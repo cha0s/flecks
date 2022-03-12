@@ -1,11 +1,63 @@
+const banner = require('@neutrinojs/banner');
+const clean = require('@neutrinojs/clean');
+const compileLoader = require('@neutrinojs/compile-loader');
+const babelMerge = require('babel-merge');
 const nodeExternals = require('webpack-node-externals');
 
-module.exports = () => (neutrino) => {
-  const {name} = neutrino.options.packageJson;
+const R = require('./require');
+
+module.exports = ({
+  babel = {},
+  targets = {
+    esmodules: true,
+    node: 'current',
+  },
+} = {}) => (neutrino) => {
+  const {config, options} = neutrino;
+  const {name} = options.packageJson;
+  neutrino.use(
+    compileLoader({
+      include: [options.source, options.tests],
+      babel: babelMerge(
+        {
+          plugins: [R.resolve('@babel/plugin-syntax-dynamic-import')],
+          presets: [
+            [
+              R.resolve('@babel/preset-env'),
+              {
+                shippedProposals: true,
+                targets,
+              },
+            ],
+          ],
+        },
+        babel,
+      ),
+    }),
+  );
+  neutrino.use(banner());
+  neutrino.use(clean({cleanStaleWebpackAssets: false}));
   /* eslint-disable indent */
-  neutrino.config
+  config
+    .context(options.root)
     .devtool('source-map')
+    .externals(nodeExternals({importType: 'umd'}))
     .target('node')
+    .resolve
+      .extensions
+        .merge([
+          '.wasm',
+          ...options.extensions.map((ext) => `.${ext}`),
+          '.json',
+        ])
+      .end()
+    .end()
+    .stats({
+      children: false,
+      colors: true,
+      entrypoints: false,
+      modules: false,
+    })
     .optimization
       .splitChunks(false)
       .runtimeChunk(false)
@@ -14,16 +66,11 @@ module.exports = () => (neutrino) => {
       .filename('[name].js')
       .library(name)
       .libraryTarget('umd')
+      .path(options.output)
       .umdNamedDefine(true)
     .end()
     .node
       .set('__dirname', false)
       .set('__filename', false);
   /* eslint-enable indent */
-  const options = neutrino.config.module
-    .rule('compile')
-    .use('babel')
-    .get('options');
-  options.presets[0][1].targets = {esmodules: true};
-  neutrino.config.externals(nodeExternals({importType: 'umd'}));
 };

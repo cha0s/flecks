@@ -4,19 +4,20 @@ const {join} = require('path');
 const airbnb = require('@neutrinojs/airbnb');
 const banner = require('@neutrinojs/banner');
 const copy = require('@neutrinojs/copy');
-const node = require('@neutrinojs/node');
 const glob = require('glob');
+
+const fleck = require('../src/bootstrap/fleck');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-module.exports = require('../src/bootstrap/fleck.neutrinorc');
+const config = require('../src/bootstrap/fleck.neutrinorc');
 
 // Dotfiles.
-module.exports.use.push((neutrino) => {
+config.use.push(({config}) => {
   ['eslintrc', 'eslint.defaults'].forEach((filename) => {
-    neutrino.config
+    config
       .entry(`server/build/.${filename}`)
       .clear()
       .add(`./src/server/build/${filename}`);
@@ -24,23 +25,19 @@ module.exports.use.push((neutrino) => {
 });
 
 // Tests.
-module.exports.use.push((neutrino) => {
+config.use.push(({config}) => {
   // Test entrypoint.
   const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
   testPaths.push(...glob.sync(join(FLECKS_CORE_ROOT, `test/platforms/server/*.js`)));
   if (testPaths.length > 0) {
-    const testEntry = neutrino.config.entry('test').clear();
+    const testEntry = config.entry('test').clear();
     testPaths.forEach((path) => testEntry.add(path));
   }
 });
 
-module.exports.use.unshift((neutrino) => {
-  neutrino.config.plugins.delete('start-server');
-});
+config.use.unshift(fleck());
 
-module.exports.use.unshift(node({clean: {cleanStaleWebpackAssets: false}}));
-
-module.exports.use.unshift(
+config.use.unshift(
   airbnb({
     eslint: {
       baseConfig: {
@@ -53,14 +50,14 @@ module.exports.use.unshift(
   }),
 );
 
-module.exports.use.push(banner({
+config.use.push(banner({
   banner: '#!/usr/bin/env node',
   include: /^cli\.js$/,
   pluginId: 'shebang',
   raw: true,
 }))
 
-module.exports.use.push(({config}) => {
+config.use.push(({config}) => {
   config
     .plugin('executable')
       .use(class Executable {
@@ -76,3 +73,5 @@ module.exports.use.push(({config}) => {
 
       });
 });
+
+module.exports = config;

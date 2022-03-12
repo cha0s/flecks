@@ -1,28 +1,19 @@
 import {Hooks} from '@flecks/core';
-import react from '@neutrinojs/react';
 
 import ssr from './ssr';
 
 export default {
   [Hooks]: {
-    '@flecks/http/server.compiler': (flecks) => (
-      react({
-        clean: false,
-        hot: false,
-        html: {
-          inject: false,
-          template: flecks.buildConfig('template.ejs'),
-        },
-        style: {
-          extract: {
-            enabled: false,
-          },
-          style: {
-            injectType: 'lazyStyleTag',
-          },
-        },
-      })
-    ),
+    '@flecks/core.build': (target, config) => {
+      // Resolution.
+      config.use.push(({config}) => {
+        config.resolve.alias
+          .set('react-native', 'react-native-web');
+        config.resolve.extensions
+          .prepend('.web.js')
+          .prepend('.web.jsx');
+      });
+    },
     '@flecks/http/server.stream.html': (stream, req, flecks) => (
       flecks.get('@flecks/react.ssr') ? ssr(stream, req, flecks) : stream
     ),

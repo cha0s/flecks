@@ -35,7 +35,7 @@
   "dependencies": {
     "@flecks/core": "^1.3.0",
     "@neutrinojs/banner": "^9.5.0",
-    "@neutrinojs/node": "^9.4.0",
+    "@neutrinojs/clean": "^9.5.0",
     "@neutrinojs/start-server": "^9.5.0",
     "debug": "^4.3.3",
     "loader-utils": "^1.4.0",

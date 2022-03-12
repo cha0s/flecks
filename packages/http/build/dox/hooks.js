@@ -31,12 +31,6 @@ export default {
       },
     ],
     /**
-     * Define neutrino compilation middleware (e.g. @neutrinojs/react).
-     */
-    '@flecks/http/server.compiler': () => {
-      return require('@neutrinojs/node');
-    },
-    /**
      * Define middleware to run when a route is matched.
      */
     '@flecks/http/server.request.route': () => (req, res, next) => {
@@ -66,4 +60,3 @@ export default {
     },
   },
 };
-

@@ -54,9 +54,10 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
     "@neutrinojs/airbnb": "^9.4.0",
+    "@neutrinojs/banner": "^9.4.0",
+    "@neutrinojs/clean": "^9.5.0",
     "@neutrinojs/compile-loader": "^9.5.0",
     "@neutrinojs/copy": "^9.4.0",
-    "@neutrinojs/node": "^9.1.0",
     "babel-merge": "^3.0.0",
     "babel-plugin-prepend": "^1.0.2",
     "chai": "4.2.0",
@@ -80,7 +81,6 @@
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
-    "@neutrinojs/banner": "^9.4.0",
     "glob": "^7.2.0",
     "mocha": "^8.3.2"
   }

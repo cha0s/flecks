@@ -14,6 +14,7 @@ export {
   targetNeutrinos,
 } from './commands';
 export {default as Flecks} from './flecks';
+export {default as fleck} from '../bootstrap/fleck';
 export {default as require} from '../bootstrap/require';
 export {JsonStream, transform} from './stream';
 

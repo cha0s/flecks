@@ -6,13 +6,14 @@ const {require: R} = require('@flecks/core/server');
 module.exports = async (flecks) => {
   const runtime = await realpath(R.resolve(join(flecks.resolve('@flecks/server'), 'runtime')));
   return (neutrino) => {
-    const {config, resolver} = flecks;
+    const {config, options} = neutrino;
+    const {resolver} = flecks;
     // Inject flecks configuration.
     const paths = Object.keys(resolver);
     const source = [
       "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
       'module.exports = (async () => ({',
-      `  config: ${JSON.stringify(config)},`,
+      `  config: ${JSON.stringify(flecks.config)},`,
       '  flecks: Object.fromEntries(await Promise.all([',
       paths.map((path) => `    ['${path}', import('${path}')]`).join(',\n'),
       '  ].map(async ([path, M]) => [path, await M]))),',
@@ -28,7 +29,7 @@ module.exports = async (flecks) => {
     source.push('  module.hot.addStatusHandler((status) => {');
     source.push('    if ("idle" === status) {');
     source.push('      require("glob")(');
-    source.push(`        join('${neutrino.options.output}', \`*\${previousHash}.hot-update.*\`),`);
+    source.push(`        join('${options.output}', \`*\${previousHash}.hot-update.*\`),`);
     source.push('        async (error, disposing) => {');
     source.push('          if (error) {');
     source.push('            throw error;');
@@ -49,8 +50,7 @@ module.exports = async (flecks) => {
     });
     source.push('}');
     // Create runtime.
-    const entries = neutrino.config.entry('index');
-    neutrino.config.module
+    config.module
       .rule(runtime)
       .test(runtime)
       .use('runtime')
@@ -63,19 +63,15 @@ module.exports = async (flecks) => {
       '@flecks/server/runtime',
       /^@babel\/runtime\/helpers\/esm/,
     ];
-    neutrino.config.resolve.alias
+    config.resolve.alias
       .set('@flecks/server/runtime$', runtime);
     flecks.runtimeCompiler('server', neutrino, allowlist);
     // Rewrite to signals for HMR.
-    if ('production' !== neutrino.config.get('mode')) {
+    if ('production' !== config.get('mode')) {
       allowlist.push(/^webpack/);
-      if (entries.has(`${R.resolve('webpack/hot/poll')}?1000`)) {
-        entries.delete(`${R.resolve('webpack/hot/poll')}?1000`);
-        entries.add('webpack/hot/signal');
-      }
     }
     // Externalize the rest.
     const nodeExternals = R('webpack-node-externals');
-    neutrino.config.externals(nodeExternals({allowlist}));
+    config.externals(nodeExternals({allowlist}));
   };
 };

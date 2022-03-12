@@ -1,5 +1,8 @@
 import {D, Hooks} from '@flecks/core';
 import {Flecks, spawnWith} from '@flecks/core/server';
+import fontLoader from '@neutrinojs/font-loader';
+import imageLoader from '@neutrinojs/image-loader';
+import styleLoader from '@neutrinojs/style-loader';
 
 import {configSource, inlineConfig} from './config';
 import {createHttpServer} from './http';
@@ -8,6 +11,18 @@ const debug = D('@flecks/http/server');
 
 export default {
   [Hooks]: {
+    '@flecks/core.build': (target, config) => {
+      config.use.push(styleLoader({
+        extract: {
+          enabled: false,
+        },
+        style: {
+          injectType: 'lazyStyleTag',
+        },
+      }));
+      config.use.push(fontLoader());
+      config.use.push(imageLoader());
+    },
     '@flecks/core.build.alter': (neutrinoConfigs, flecks) => {
       // Bail if there's no http build.
       if (!neutrinoConfigs.http) {
@@ -60,7 +75,11 @@ export default {
       /**
        * (webpack-dev-server) Webpack stats output.
        */
-      devStats: 'minimal',
+      devStats: {
+        chunks: false,
+        colors: true,
+        modules: false,
+      },
       /**
        * Host to bind.
        */
@@ -73,6 +92,14 @@ export default {
        * Port to bind.
        */
       port: 32340,
+      /**
+       * Webpack stats configuration when building HTTP target.
+       */
+      stats: {
+        chunks: false,
+        colors: true,
+        modules: false,
+      },
       /**
        * Proxies to trust.
        *

@@ -22,6 +22,7 @@ module.exports = async (flecks) => {
   const importLoader = await fullresolve('@flecks/http', 'import-loader');
   const tests = await realpath(R.resolve(join(flecks.resolve('@flecks/http'), 'tests')));
   return (neutrino) => {
+    const {config} = neutrino;
     const {resolver} = httpFlecks;
     const paths = Object.entries(resolver);
     const source = [
@@ -53,7 +54,7 @@ module.exports = async (flecks) => {
     source.push('}');
     source.push('');
     // Create runtime.
-    neutrino.config.module
+    config.module
       .rule(runtime)
       .test(runtime)
       .use('runtime/http')
@@ -61,11 +62,11 @@ module.exports = async (flecks) => {
       .options({
         source: source.join('\n'),
       });
-    neutrino.config.resolve.alias
+    config.resolve.alias
       .set('@flecks/http/runtime$', runtime);
     flecks.runtimeCompiler('http', neutrino);
     // Handle runtime import.
-    neutrino.config.module
+    config.module
       .rule(entry)
       .test(entry)
       .use('entry/http')
@@ -75,7 +76,7 @@ module.exports = async (flecks) => {
     if (Object.keys(aliases).length > 0) {
       Object.entries(aliases)
         .forEach(([from, to]) => {
-          neutrino.config.resolve.alias
+          config.resolve.alias
             .set(from, to);
         });
     }
@@ -104,10 +105,10 @@ module.exports = async (flecks) => {
     });
     // Test entrypoint.
     if (testPaths.length > 0) {
-      const testEntry = neutrino.config.entry('test').clear();
+      const testEntry = config.entry('test').clear();
       testPaths.forEach(([, path]) => testEntry.add(path));
     }
-    neutrino.config.module
+    config.module
       .rule(tests)
       .test(tests)
       .use('runtime/test')

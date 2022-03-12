@@ -1,8 +1,7 @@
 const {join} = require('path');
 
 const {D} = require('@flecks/core');
-const {Flecks} = require('@flecks/core/server');
-const node = require('@neutrinojs/node');
+const {fleck, Flecks} = require('@flecks/core/server');
 const babelmerge = require('babel-merge');
 const glob = require('glob');
 
@@ -19,44 +18,28 @@ module.exports = (async () => {
   const flecks = Flecks.bootstrap();
   debug('bootstrapped');
 
-  const compiler = flecks.invokeFleck(
-    '@flecks/fleck.compiler',
-    flecks.get('@flecks/fleck.compiler'),
-  );
-  if (compiler) {
-    config.use.unshift(compiler);
-  }
-  else {
-    config.use.unshift((neutrino) => {
-      neutrino.config.plugins.delete('start-server');
-    });
-    const configFile = flecks.buildConfig('babel.config.js');
-    config.use.unshift(node({
-      babel: {configFile},
-      clean: {
-        cleanStaleWebpackAssets: false,
-      },
-    }));
-  }
+  // Compile.
+  const rcBabel = flecks.babel();
+  debug('.flecksrc: babel: %O', rcBabel);
+  config.use.push(fleck({
+    babel: babelmerge(
+      {configFile: flecks.buildConfig('babel.config.js')},
+      ...rcBabel.map(([, babel]) => babel),
+    ),
+  }));
 
-  // Augment the compiler with babel config from flecksrc.
-  config.use.push((neutrino) => {
-    const rcBabel = flecks.babel();
-    debug('.flecksrc: babel: %O', rcBabel);
-    neutrino.config.module
-      .rule('compile')
-      .use('babel')
-      .tap((options) => babelmerge(options, ...rcBabel.map(([, babel]) => babel)));
+  config.use.push(({config}) => {
+    config.stats(flecks.get('@flecks/flecks/server.stats'));
   });
 
-  config.use.push((neutrino) => {
+  config.use.push(({config}) => {
     // Test entrypoint.
     const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
     for (let i = 0; i < flecks.platforms.length; ++i) {
       testPaths.push(...glob.sync(join(FLECKS_CORE_ROOT, `test/platforms/${flecks.platforms[i]}/*.js`)));
     }
     if (testPaths.length > 0) {
-      const testEntry = neutrino.config.entry('test').clear();
+      const testEntry = config.entry('test').clear();
       testPaths.forEach((path) => testEntry.add(path));
     }
   });

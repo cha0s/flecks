@@ -1,7 +1,6 @@
+const devServer = require('@neutrinojs/dev-server');
+
 module.exports = (flecks) => (neutrino) => {
-  if ('production' === neutrino.config.get('mode')) {
-    return;
-  }
   const {
     devHost,
     devPort,
@@ -9,10 +8,11 @@ module.exports = (flecks) => (neutrino) => {
     devStats,
     port,
   } = flecks.get('@flecks/http/server');
-  neutrino.config.devServer
-    .hot(false)
-    .host(devHost)
-    .port(devPort || (port + 1))
-    .public(devPublic)
-    .stats(devStats);
+  neutrino.use(devServer({
+    hot: false,
+    host: devHost,
+    port: devPort || (port + 1),
+    public: devPublic,
+    stats: devStats,
+  }));
 };

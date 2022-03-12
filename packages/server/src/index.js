@@ -19,6 +19,14 @@ export default {
        * Whether to start the server after building.
        */
       start: true,
+      /**
+       * Webpack stats configuration when building server target.
+       */
+      stats: {
+        chunks: false,
+        colors: true,
+        modules: false,
+      },
     }),
   },
 };

@@ -1,7 +1,6 @@
 const copy = require('@neutrinojs/copy');
 
 const autoentry = require('./autoentry');
-const fleck = require('./fleck');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -32,6 +31,5 @@ module.exports = {
       pluginId: '@flecks/core.copy',
     }),
     autoentry(),
-    fleck(),
   ],
 };
