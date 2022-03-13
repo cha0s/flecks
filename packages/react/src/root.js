@@ -4,11 +4,13 @@ import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import FlecksContext from '@flecks/react/context';
 
+import gatherComponents from './gather-components';
+
 const debug = D('@flecks/react/root');
 
 export default async (flecks, req) => {
   const Roots = flecks.invoke('@flecks/react.roots', req);
-  debug('roots: %O', Object.keys(Roots));
+  debug('roots: %O', Roots);
   const Providers = await flecks.invokeSequentialAsync('@flecks/react.providers', req);
   const FlattenedProviders = [];
   for (let i = 0; i < Providers.length; i++) {
@@ -19,21 +21,16 @@ export default async (flecks, req) => {
   }
   debug('providers: %O', FlattenedProviders);
   return () => {
-    const children = Object.entries(Roots)
-      .map(([key, Component]) => React.createElement(Component, {key}));
-    const AllProviders = [
-      [FlecksContext.Provider, {value: flecks}],
-    ]
-      .concat(FlattenedProviders);
-    const RootElements = AllProviders
-      .reverse()
-      .reduce((children, [Provider, props], i) => [
+    const RootElements = [[FlecksContext.Provider, {value: flecks}]]
+      .concat(FlattenedProviders)
+      .reduceRight((children, [Provider, props], i) => [
         React.createElement(
           Provider,
-          {key: `@flecks/react/provider(${AllProviders.length - (i + 1)})`, ...props},
+          // eslint-disable-next-line react/no-array-index-key
+          {key: `@flecks/react/provider(${i})`, ...props},
           children,
         ),
-      ], children);
+      ], gatherComponents(Roots));
     return RootElements[0];
   };
 };
