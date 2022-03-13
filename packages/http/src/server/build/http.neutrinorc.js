@@ -50,9 +50,10 @@ module.exports = (async () => {
         config.entry(name).add(entry);
         neutrino.use(
           htmlTemplate({
-            pluginId: `html-${name}`,
-            filename: `${name}.html`,
             chunks: [name],
+            filename: `${name}.html`,
+            inject: false,
+            pluginId: `html-${name}`,
             template: flecks.buildConfig('template.ejs'),
             templateParameters: (compilation, assets, assetTags, options) => {
               let styleFile;
