@@ -57,14 +57,23 @@ export default (async () => {
   );
   const neutrinoConfigs = Object.fromEntries(entries);
   await Promise.all(flecks.invokeFlat('@flecks/core.build.alter', neutrinoConfigs));
-  const webpackConfigs = await Promise.all(
-    Object.entries(neutrinoConfigs)
-      .map(async ([target, config]) => {
-        const webpackConfig = neutrino(config).webpack();
-        await flecks.invokeFlat('@flecks/core.webpack', target, webpackConfig);
-        return webpackConfig;
-      }),
-  );
+  const webpackConfigs = (
+    await Promise.all(
+      Object.entries(neutrinoConfigs)
+        .map(async ([target, config]) => {
+          const webpackConfig = neutrino(config).webpack();
+          await flecks.invokeFlat('@flecks/core.webpack', target, webpackConfig);
+          return webpackConfig;
+        }),
+    )
+  )
+    .filter((webpackConfig) => {
+      if (!webpackConfig.entry) {
+        debug('webpack configurations %O had no entry... discarding', webpackConfig);
+        return false;
+      }
+      return true;
+    });
   if (0 === webpackConfigs.length) {
     debug('no webpack configuration found! aborting...');
     await new Promise(() => {});
