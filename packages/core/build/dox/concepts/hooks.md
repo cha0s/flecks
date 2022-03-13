@@ -198,6 +198,8 @@ is *exactly equivalent* to the gather example above. By default, `Flecks.provide
 
 ```javascript
 {
+  // Whether to invoke the default export as a function.
+  invoke = true,
   // The transformation used on the class path.
   transformer = camelCase,
 }

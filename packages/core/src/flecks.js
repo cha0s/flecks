@@ -365,6 +365,7 @@ export default class Flecks {
   static provide(
     context,
     {
+      invoke = true,
       transformer = camelCase,
     } = {},
   ) {
@@ -373,7 +374,7 @@ export default class Flecks {
         context.keys()
           .map((path) => {
             const {default: M} = context(path);
-            if ('function' !== typeof M) {
+            if (invoke && 'function' !== typeof M) {
               throw new ReferenceError(
                 `Flecks.provide(): require(${
                   path
@@ -384,7 +385,7 @@ export default class Flecks {
             }
             return [
               transformer(this.symbolizePath(path)),
-              M(flecks),
+              invoke ? M(flecks) : M,
             ];
           }),
       )
