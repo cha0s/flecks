@@ -12,7 +12,7 @@ export default {
       // Hydrate from server.
       const {preloadedState} = flecks.get('@flecks/redux/client');
       const store = await configureStore(flecks, reducer, {preloadedState});
-      flecks.set('$flecks/redux/store', store);
+      flecks.set('$flecks/redux.store', store);
       return [Provider, {store}];
     },
     '@flecks/redux.store': ({enhancers}) => {

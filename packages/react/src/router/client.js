@@ -8,7 +8,7 @@ export default {
   [Hooks]: {
     '@flecks/react.providers': (req, flecks) => (
       flecks.fleck('@flecks/redux')
-        ? [ReduxHistoryRouter, {history: createReduxHistory(flecks.get('$flecks/redux/store'))}]
+        ? [ReduxHistoryRouter, {history: createReduxHistory(flecks.get('$flecks/redux.store'))}]
         : [HistoryRouter, {history}]
     ),
   },
