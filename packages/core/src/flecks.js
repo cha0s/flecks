@@ -206,7 +206,7 @@ export default class Flecks {
 
   invoke(hook, ...args) {
     if (!this.hooks[hook]) {
-      return [];
+      return {};
     }
     return this.flecksImplementing(hook)
       .reduce((r, fleck) => ({
