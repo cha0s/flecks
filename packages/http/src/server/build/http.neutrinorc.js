@@ -62,14 +62,17 @@ module.exports = (async () => {
               ));
               if (styleChunk) {
                 const modules = styleChunk.getModules();
-                const styleModule = modules.find((module) => 'css/mini-extract' === module.type);
                 const styleFileHref = join(
                   compilation.options.output.publicPath,
                   styleChunk.files.find((file) => file.match(/\.css$/)),
                 );
                 styleFile = {
                   href: styleFileHref,
-                  content: styleModule.content,
+                  content: (
+                    modules
+                      .filter((module) => 'css/mini-extract' === module.type)
+                      .map(({content}) => content).join('\n')
+                  ),
                 };
               }
               return {
