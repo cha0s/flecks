@@ -49,6 +49,12 @@ export default {
       config.use.push(imageLoader());
     },
     '@flecks/core.build.alter': (neutrinoConfigs, flecks) => {
+      // Don't build if there's a fleck target.
+      if (neutrinoConfigs.fleck && !flecks.get('@flecks/http/server.forceBuildWithFleck')) {
+        // eslint-disable-next-line no-param-reassign
+        delete neutrinoConfigs.http;
+        return;
+      }
       // Bail if there's no http build.
       if (!neutrinoConfigs.http) {
         return;
@@ -111,6 +117,10 @@ export default {
         colors: true,
         modules: false,
       },
+      /**
+       * Force building http target even if there's a fleck target.
+       */
+      forceBuildWithFleck: false,
       /**
        * Host to bind.
        */
