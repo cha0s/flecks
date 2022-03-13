@@ -24,3 +24,6 @@
 - [x] Rename all hooks to dot-first notation; rewrite `lookupFlecks()`.
 - [ ] ensureUniqueReduction moved into invokeMerge
 - [x] `bootstrap({without: ['badplatform']})` should be handled by passing `{platforms: ['!badplatform']}`
+- [ ] user redux server hydrate fails if no user in req
+- [ ] governor fails if not in server up
+- [ ] redux store provider fails if not in request
