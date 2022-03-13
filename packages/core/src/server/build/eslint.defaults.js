@@ -17,6 +17,7 @@ module.exports = {
         'brace-style': 'off',
         'class-methods-use-this': 'off',
         'import/no-extraneous-dependencies': 'off',
+        'import/no-unresolved': 'off',
         'max-classes-per-file': 'off',
         'no-new': 'off',
         'padded-blocks': 'off',
