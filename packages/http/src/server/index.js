@@ -17,13 +17,13 @@ export default {
         neutrino.use(
           styleLoader({
             extract: {
-              enabled: 'http' === target,
+              enabled: isProduction && 'http' === target,
             },
             modules: {
               localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
             },
             style: {
-              injectType: 'lazyStyleTag',
+              injectType: 'http' === target ? 'styleTag' : 'lazyStyleTag',
             },
             test: /\.(c|s[ac])ss$/,
             modulesTest: /\.module\.(c|s[ac])ss$/,

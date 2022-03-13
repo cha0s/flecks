@@ -60,7 +60,7 @@ module.exports = (async () => {
               const styleChunk = compilation.chunks.find((chunk) => (
                 chunk.chunkReason?.match(/split chunk \(cache group: styles\)/)
               ));
-              if (styleChunk) {
+              if (isProduction && styleChunk) {
                 const modules = styleChunk.getModules();
                 const styleFileHref = join(
                   compilation.options.output.publicPath,
