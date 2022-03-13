@@ -47,7 +47,6 @@ export default class Flecks {
     flecks = {},
     platforms = [],
   } = {}) {
-    this.originalConfig = JSON.parse(JSON.stringify(config));
     this.config = {
       ...Object.fromEntries(Object.keys(flecks).map((path) => [path, {}])),
       ...config,
