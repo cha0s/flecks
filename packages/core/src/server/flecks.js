@@ -531,7 +531,7 @@ export default class ServerFlecks extends Flecks {
           const alias = this.fleckIsAliased(fleck)
             ? resolved
             : this.sourcepath(R.resolve(this.resolve(fleck)));
-          allowlist.push(`${fleck}$`);
+          allowlist.push(fleck);
           config.resolve.alias
             .set(`${fleck}$`, alias);
           debug('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
