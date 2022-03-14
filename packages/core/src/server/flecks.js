@@ -127,6 +127,15 @@ export default class ServerFlecks extends Flecks {
         });
       }
     }
+    // Rewrite aliased config keys.
+    // eslint-disable-next-line no-param-reassign
+    config = Object.fromEntries(
+      Object.entries(config)
+        .map(([key, value]) => {
+          const index = key.indexOf(':');
+          return [-1 !== index ? key.slice(0, index) : key, value];
+        }),
+    );
     const paths = Object.keys(resolver);
     // Load RCs.
     const rcs = this.loadRcs(resolver);
