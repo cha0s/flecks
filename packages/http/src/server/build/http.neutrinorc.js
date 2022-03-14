@@ -34,7 +34,7 @@ module.exports = (async () => {
       config
         .plugin('environment')
         .use(EnvironmentPlugin, [{
-          FLECKS_CORE_BUILD_TARGET: 'client',
+          FLECKS_CORE_BUILD_TARGET: 'http',
         }]);
       // Entrypoints.
       const {output: originalOutput} = options;
