@@ -17,7 +17,7 @@ export default class Socket {
       const [type, Packet] = Packets[i];
       this.socket.on(Packet.id, (data, fn) => {
         const packet = new Packet(Packet.decode(Buffer.from(data)));
-        debug('received packet %s(%j)', type, data);
+        debug('received packet %s(%j)', type, packet.data);
         this.emit('packet', packet, fn);
       });
     }
