@@ -6,6 +6,7 @@ import Redirect from './packet/redirect';
 import Refresh from './packet/refresh';
 
 export {default as normalize} from './normalize';
+export * from './hooks';
 export {default as Packet, Packer, ValidationError} from './packet';
 
 export default {
