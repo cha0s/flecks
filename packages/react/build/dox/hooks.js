@@ -17,7 +17,7 @@ export default {
      * Define root-level React components that are mounted as siblings on `#main`.
      * Note: `req` will be only be defined when server-side rendering.
      *
-     * Return either a React component or an array whoe elements must either be a React component
+     * Return either a React component or an array whose elements must either be a React component
      * or an array of two elements where the first element is the component and the second element
      * is the props passed to the component.
      * @param {http.ClientRequest} req The HTTP request object.
