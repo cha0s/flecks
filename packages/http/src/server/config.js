@@ -2,14 +2,10 @@ import {Transform} from 'stream';
 
 const config = async (flecks, req) => {
   const httpConfig = await flecks.invokeMergeAsync('@flecks/http.config', req);
-  const config = {};
-  const {resolver} = flecks.get('$flecks/http.flecks');
-  const keys = Object.keys(resolver);
-  for (let i = 0; i < keys.length; ++i) {
-    const key = keys[i];
-    config[key] = flecks.get(key) || {};
-  }
+  const {config} = flecks.get('$flecks/http.flecks');
   return Object.keys(config)
+    .filter((path) => !path.startsWith('$'))
+    .filter((path) => !path.endsWith('/server'))
     .reduce(
       (r, key) => ({
         ...r,
