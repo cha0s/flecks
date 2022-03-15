@@ -99,8 +99,10 @@ export default class Flecks {
             );
           }
           const key = transformer(this.symbolizePath(path));
-          // eslint-disable-next-line no-param-reassign
-          Gathered[key] = M(Gathered[key], flecks);
+          if (Gathered[key]) {
+            // eslint-disable-next-line no-param-reassign
+            Gathered[key] = M(Gathered[key], flecks);
+          }
         });
       return Gathered;
     };
