@@ -4,9 +4,9 @@
     "build": "FLECKS_ENV_FLECKS_SERVER_start=0 npm run build:only",
     "build:only": "flecks build",
     "debug": "DEBUG=*,-babel* npm run dev",
-    "dev": "npm run -- build -h",
+    "dev": "npm run -- build:only -h",
     "repl": "npx flecks repl --rlwrap",
-    "start": "DEBUG=@flecks*,-@flecks/core/flecks* npm run dev"
+    "start": "DEBUG=@flecks*,flecks*,-@flecks/core/flecks* npm run dev"
   },
   "dependencies": {
     "@flecks/core": "^1.0.0",
