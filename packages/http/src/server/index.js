@@ -1,5 +1,5 @@
 import {D, Hooks} from '@flecks/core';
-import {Flecks, spawnWith} from '@flecks/core/server';
+import {Flecks, require as R, spawnWith} from '@flecks/core/server';
 import fontLoader from '@neutrinojs/font-loader';
 import imageLoader from '@neutrinojs/image-loader';
 import styleLoader from '@neutrinojs/style-loader';
@@ -45,6 +45,14 @@ export default {
           }),
         );
       });
+      if ('fleck' === target) {
+        config.use.push((neutrino) => {
+          neutrino.config.module.rule('compile').use('babel').tap((options) => ({
+            ...options,
+            plugins: [...options.plugins, R.resolve('@flecks/http/server/style-loader')],
+          }));
+        });
+      }
       config.use.push(fontLoader());
       config.use.push(imageLoader());
     },
