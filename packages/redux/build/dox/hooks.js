@@ -6,7 +6,7 @@ export default {
      * Define side-effects to run against Redux actions.
      */
     '@flecks/redux.effects': () => ({
-      someActionName: (store, action, flecks) => {
+      someActionName: (store, action) => {
         // Runs when `someActionName` actions are dispatched.
       },
     }),

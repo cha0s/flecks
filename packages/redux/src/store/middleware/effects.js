@@ -9,7 +9,7 @@ export default (flecks) => {
   };
   return (store) => (next) => (action) => {
     const result = next(action);
-    setTimeout(() => effect(store, action, flecks), 0);
+    setTimeout(() => effect(store, action), 0);
     return result;
   };
 };
