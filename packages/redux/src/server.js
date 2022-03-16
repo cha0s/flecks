@@ -12,6 +12,10 @@ export default {
     '@flecks/http/server.request.route': (flecks) => async (req, res, next) => {
       const slices = await ensureUniqueReduction(flecks, '@flecks/redux.slices');
       const reducer = createReducer(flecks, slices);
+      // Let the slices have a(n async) chance to hydrate with server data.
+      await Promise.all(
+        Object.values(slices).map(({hydrateServer}) => hydrateServer?.(req, flecks)),
+      );
       const preloadedState = reducer(undefined, hydrateServer({flecks, req}));
       debug(
         'creating redux store with slices(%O) and state(%O)',
