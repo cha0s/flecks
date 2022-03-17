@@ -29,7 +29,7 @@ module.exports = (async () => {
   }));
 
   config.use.push(({config}) => {
-    config.stats(flecks.get('@flecks/flecks/server.stats'));
+    config.stats(flecks.get('@flecks/fleck/server.stats'));
   });
 
   config.use.push(({config}) => {
