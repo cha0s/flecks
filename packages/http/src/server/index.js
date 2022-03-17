@@ -34,6 +34,9 @@ export default {
         neutrino.use(
           styleLoader({
             extract,
+            modules: {
+              localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+            },
             style,
             test: /\.(c|s[ac])ss$/,
             modulesTest: /\.module\.(c|s[ac])ss$/,
