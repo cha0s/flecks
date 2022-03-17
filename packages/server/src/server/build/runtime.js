@@ -69,7 +69,7 @@ module.exports = async (flecks) => {
       additionalModuleDirs: [],
       allowlist,
     };
-    flecks.runtimeCompiler('server', neutrino, nodeExternalsConfig);
+    flecks.runtimeCompiler(flecks.resolver, 'server', neutrino, nodeExternalsConfig);
     // Rewrite to signals for HMR.
     if ('production' !== config.get('mode')) {
       allowlist.push(/^webpack/);

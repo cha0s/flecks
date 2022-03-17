@@ -34,8 +34,6 @@
     "server/build/template.ejs",
     "server/build/http.neutrinorc.js",
     "server/build/http.neutrinorc.js.map",
-    "server/style-loader.js",
-    "server/style-loader.js.map",
     "src",
     "tests.js",
     "tests.js.map"

@@ -1,5 +1,5 @@
 import {D, Hooks} from '@flecks/core';
-import {Flecks, require as R, spawnWith} from '@flecks/core/server';
+import {Flecks, spawnWith} from '@flecks/core/server';
 import fontLoader from '@neutrinojs/font-loader';
 import imageLoader from '@neutrinojs/image-loader';
 import styleLoader from '@neutrinojs/style-loader';
@@ -14,17 +14,27 @@ export default {
     '@flecks/core.build': (target, config, flecks) => {
       config.use.push((neutrino) => {
         const isProduction = 'production' === neutrino.config.get('mode');
+        const extract = {};
+        const style = {};
+        if ('server' === target) {
+          extract.enabled = false;
+          style.injectType = 'lazyStyleTag';
+        }
+        if ('http' === target) {
+          extract.enabled = isProduction;
+          style.injectType = 'styleTag';
+        }
+        if ('fleck' === target) {
+          extract.enabled = true;
+          extract.plugin = {
+            filename: 'index.css',
+          };
+          style.injectType = 'lazyStyleTag';
+        }
         neutrino.use(
           styleLoader({
-            extract: {
-              enabled: isProduction && 'http' === target,
-            },
-            modules: {
-              localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
-            },
-            style: {
-              injectType: 'http' === target ? 'styleTag' : 'lazyStyleTag',
-            },
+            extract,
+            style,
             test: /\.(c|s[ac])ss$/,
             modulesTest: /\.module\.(c|s[ac])ss$/,
             loaders: [
@@ -45,14 +55,6 @@ export default {
           }),
         );
       });
-      if ('fleck' === target) {
-        config.use.push((neutrino) => {
-          neutrino.config.module.rule('compile').use('babel').tap((options) => ({
-            ...options,
-            plugins: [...options.plugins, R.resolve('@flecks/http/server/style-loader')],
-          }));
-        });
-      }
       config.use.push(fontLoader());
       config.use.push(imageLoader());
     },

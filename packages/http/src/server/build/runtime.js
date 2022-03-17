@@ -1,4 +1,4 @@
-const {realpath} = require('fs/promises');
+const {realpath, stat} = require('fs/promises');
 const {
   dirname,
   join,
@@ -16,11 +16,36 @@ module.exports = async (flecks) => {
     platforms: ['client', '!server'],
   });
   debug('bootstrapped');
-  const runtime = await realpath(R.resolve(join(flecks.resolve('@flecks/http'), 'runtime')));
-  const fullresolve = (fleck, path) => realpath(R.resolve(join(flecks.resolve(fleck), path)));
+  const rootMap = {};
+  Object.keys(httpFlecks.resolver)
+    .forEach((fleck) => {
+      rootMap[httpFlecks.root(fleck)] = fleck;
+    });
+  const roots = Object.entries(rootMap)
+    .map(([root, fleck]) => (
+      [fleck, dirname(R.resolve(join(root, 'package.json')))]
+    ));
+  const styles = (
+    await Promise.all(
+      roots
+        .map(async ([, path]) => {
+          try {
+            const filename = join(path, 'index.css');
+            await stat(filename);
+            return filename;
+          }
+          catch (error) {
+            return undefined;
+          }
+        }),
+    )
+  )
+    .filter((filename) => !!filename);
+  const runtime = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/http'), 'runtime')));
+  const fullresolve = (fleck, path) => realpath(R.resolve(join(httpFlecks.resolve(fleck), path)));
   const entry = await fullresolve('@flecks/http', 'entry');
   const importLoader = await fullresolve('@flecks/http', 'import-loader');
-  const tests = await realpath(R.resolve(join(flecks.resolve('@flecks/http'), 'tests')));
+  const tests = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/http'), 'tests')));
   return (neutrino) => {
     const {config} = neutrino;
     const {resolver} = httpFlecks;
@@ -64,7 +89,7 @@ module.exports = async (flecks) => {
       });
     config.resolve.alias
       .set('@flecks/http/runtime$', runtime);
-    flecks.runtimeCompiler('http', neutrino);
+    flecks.runtimeCompiler(httpFlecks.resolver, 'http', neutrino);
     // Handle runtime import.
     config.module
       .rule(entry)
@@ -72,7 +97,7 @@ module.exports = async (flecks) => {
       .use('entry/http')
       .loader(importLoader);
     // Aliases.
-    const aliases = flecks.aliases();
+    const aliases = httpFlecks.aliases();
     if (Object.keys(aliases).length > 0) {
       Object.entries(aliases)
         .forEach(([from, to]) => {
@@ -80,16 +105,14 @@ module.exports = async (flecks) => {
             .set(from, to);
         });
     }
+    // Styles.
+    const entries = config.entry('index');
+    styles.forEach((style) => {
+      entries.add(style);
+    });
     // Tests.
-    const testRoots = Array.from(new Set(
-      Object.keys(httpFlecks.resolver)
-        .map((fleck) => [fleck, httpFlecks.root(fleck)]),
-    ))
-      .map(([fleck, root]) => (
-        [fleck, dirname(R.resolve(join(root, 'package.json')))]
-      ));
     const testPaths = [];
-    testRoots.forEach(([fleck, root]) => {
+    roots.forEach(([fleck, root]) => {
       testPaths.push(...(
         glob.sync(join(root, 'test/*.js'))
           .map((path) => [fleck, path])

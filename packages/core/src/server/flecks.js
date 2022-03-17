@@ -522,24 +522,27 @@ export default class ServerFlecks extends Flecks {
     return undefined;
   }
 
-  runtimeCompiler(runtime, neutrino, {additionalModuleDirs = [], allowlist = []} = {}) {
+  runtimeCompiler(resolver, runtime, neutrino, {additionalModuleDirs = [], allowlist = []} = {}) {
     const {config} = neutrino;
     // Pull the default compiler.
     if (config.module.rules.has('compile')) {
       config.module.rules.delete('compile');
     }
     // Flecks that are aliased or symlinked need compilation.
-    const needCompilation = Object.entries(this.resolver)
-      .filter(([fleck]) => this.fleckIsAliased(fleck) || this.fleckIsSymlinked(fleck));
+    const needCompilation = Object.entries(resolver)
+      .filter(([fleck]) => (
+        this.constructor.fleckIsAliased(resolver, fleck)
+        || this.constructor.fleckIsSymlinked(resolver, fleck)
+      ));
     if (needCompilation.length > 0) {
       const rcBabel = this.babel();
       debug('.flecksrc: babel: %O', rcBabel);
       // Alias and de-externalize.
       needCompilation
         .forEach(([fleck, resolved]) => {
-          const alias = this.fleckIsAliased(fleck)
+          const alias = this.constructor.fleckIsAliased(resolver, fleck)
             ? resolved
-            : this.sourcepath(R.resolve(this.resolve(fleck)));
+            : this.constructor.sourcepath(R.resolve(this.constructor.resolve(resolver, fleck)));
           allowlist.push(fleck);
           config.resolve.alias
             .set(`${fleck}$`, alias);
@@ -549,11 +552,11 @@ export default class ServerFlecks extends Flecks {
       Array.from(new Set(
         needCompilation
           .map(([fleck]) => fleck)
-          .map((fleck) => this.root(fleck)),
+          .map((fleck) => this.constructor.root(resolver, fleck)),
       ))
         .forEach((root) => {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
-          const sourcepath = this.sourcepath(resolved);
+          const sourcepath = this.constructor.sourcepath(resolved);
           const sourceroot = join(sourcepath, '..');
           additionalModuleDirs.push(join(sourceroot, 'node_modules'));
           const configFile = this.buildConfig('babel.config.js');
