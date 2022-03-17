@@ -1,8 +1,14 @@
+import {join} from 'path';
+
 import airbnb from '@neutrinojs/airbnb';
 
 import {Hooks} from '../flecks';
 import commands from './commands';
 import R from '../bootstrap/require';
+
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
 export {dump as dumpYml, load as loadYml} from 'js-yaml';
 
@@ -21,23 +27,35 @@ export {JsonStream, transform} from './stream';
 export default {
   [Hooks]: {
     '@flecks/core.build': (target, config, flecks) => {
-      const {'eslint.exclude': exclude} = flecks.get('@flecks/core/server');
-      if (-1 !== exclude.indexOf(target)) {
-        return;
+      const {
+        'eslint.exclude': exclude,
+        profile,
+      } = flecks.get('@flecks/core/server');
+      if (-1 !== profile.indexOf(target)) {
+        config.use.push(({config}) => {
+          config
+            .plugin('profiler')
+            .use(
+              R.resolve('webpack/lib/debug/ProfilingPlugin'),
+              [{outputPath: join(FLECKS_CORE_ROOT, `profile.build-${target}.json`)}],
+            );
+        });
       }
-      const baseConfig = R(flecks.buildConfig('.eslint.defaults.js', target));
-      config.use.unshift(
-        airbnb({
-          eslint: {
-            baseConfig: {
-              ...baseConfig,
-              env: {
-                mocha: true,
+      if (-1 === exclude.indexOf(target)) {
+        const baseConfig = R(flecks.buildConfig('.eslint.defaults.js', target));
+        config.use.unshift(
+          airbnb({
+            eslint: {
+              baseConfig: {
+                ...baseConfig,
+                env: {
+                  mocha: true,
+                },
               },
             },
-          },
-        }),
-      );
+          }),
+        );
+      }
     },
     '@flecks/core.build.config': () => [
       /**
@@ -68,6 +86,10 @@ export default {
        * Build targets to exclude from ESLint.
        */
       'eslint.exclude': [],
+      /**
+       * Build targets to profile with `webpack.debug.ProfilingPlugin`.
+       */
+      profile: [],
     }),
   },
 };
