@@ -150,6 +150,7 @@ export default {
        * Webpack stats configuration when building HTTP target.
        */
       stats: {
+        children: false,
         chunks: false,
         colors: true,
         modules: false,

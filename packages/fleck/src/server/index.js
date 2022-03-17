@@ -10,6 +10,7 @@ export default {
        * Webpack stats configuration when building fleck target.
        */
       stats: {
+        children: false,
         chunks: false,
         colors: true,
         modules: false,

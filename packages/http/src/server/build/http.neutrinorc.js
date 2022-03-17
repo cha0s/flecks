@@ -44,6 +44,7 @@ module.exports = (async () => {
         title: 'Testbed',
       };
       options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
+      // Load HTML.
       neutrino.use(htmlLoader());
       Object.entries(options.mains).forEach(([name, mainsConfig]) => {
         const {entry, ...htmlTemplateConfig} = mainsConfig;
@@ -90,7 +91,9 @@ module.exports = (async () => {
           }),
         );
       });
-      // Fold in existing source maps.
+      // Install source-map-support and fold in existing source maps.
+      config.entry('index')
+        .add('source-map-support');
       config.module
         .rule('maps')
         .test(/\.js$/)
@@ -121,7 +124,7 @@ module.exports = (async () => {
         .publicPath('/')
         .filename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js');
       config
-        .devtool('source-map')
+        .devtool(isProduction ? 'source-map' : 'cheap-module-source-map')
         .target('web');
       config.node
         .set('Buffer', true)
@@ -137,10 +140,7 @@ module.exports = (async () => {
           '.json',
         ]);
       config.resolve.modules
-        .merge([
-          join(FLECKS_CORE_ROOT, 'node_modules'),
-          'node_modules',
-        ]);
+        .merge([join(FLECKS_CORE_ROOT, 'node_modules')]);
       // Reporting.
       config.stats(flecks.get('@flecks/http/server.stats'));
       // Inline the main entrypoint (nice for FCP).

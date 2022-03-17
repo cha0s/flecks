@@ -1,4 +1,3 @@
-const banner = require('@neutrinojs/banner');
 const clean = require('@neutrinojs/clean');
 const compileLoader = require('@neutrinojs/compile-loader');
 const babelMerge = require('babel-merge');
@@ -35,7 +34,6 @@ module.exports = ({
       ),
     }),
   );
-  neutrino.use(banner());
   neutrino.use(clean({cleanStaleWebpackAssets: false}));
   /* eslint-disable indent */
   config
