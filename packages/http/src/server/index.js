@@ -24,10 +24,8 @@ export default {
         const extract = {};
         const style = {};
         if ('server' === target) {
-          extract.enabled = true;
-          extract.plugin = {
-            filename: 'index.css',
-          };
+          extract.enabled = false;
+          style.injectType = 'lazyStyleTag';
         }
         if ('http' === target) {
           extract.enabled = isProduction;
