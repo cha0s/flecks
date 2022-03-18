@@ -16,12 +16,12 @@ const config = require('../../../../core/src/bootstrap/fleck.neutrinorc');
 module.exports = async (flecks) => {
   // Compile.
   const rcBabel = flecks.babel();
-  debug('.flecksrc: babel: %O', rcBabel);
+  debug('.flecksrc: babel: %j', rcBabel);
   config.use.push(fleck({
-    babel: babelmerge(
+    babel: babelmerge.all([
       {configFile: flecks.buildConfig('babel.config.js')},
       ...rcBabel.map(([, babel]) => babel),
-    ),
+    ]),
   }));
   config.use.push(({config}) => {
     config.stats(flecks.get('@flecks/fleck/server.stats'));

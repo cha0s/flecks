@@ -188,7 +188,7 @@ export default class ServerFlecks extends Flecks {
     if (needCompilation.length > 0) {
       const register = R('@babel/register');
       // Augment the compiler with babel config from flecksrc.
-      const rcBabelConfig = babelmerge(...this.babel(rcs).map(([, babel]) => babel));
+      const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
       debug('.flecksrc: babel: %O', rcBabelConfig);
       // Key flecks needing compilation by their roots, so we can compile all common roots with a
       // single invocation of `@babel/register`.
@@ -566,7 +566,7 @@ export default class ServerFlecks extends Flecks {
           const babel = {
             configFile,
             // Augment the compiler with babel config from flecksrc.
-            ...babelmerge(...rcBabel.map(([, babel]) => babel)),
+            ...babelmerge.all(rcBabel.map(([, babel]) => babel)),
           };
           compileLoader({
             ignore: [sourceroot],
