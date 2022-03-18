@@ -9,6 +9,9 @@ module.exports = (flecks) => (neutrino) => {
     port,
   } = flecks.get('@flecks/http/server');
   neutrino.use(devServer({
+    historyApiFallback: {
+      disableDotRule: true,
+    },
     hot: false,
     host: devHost,
     port: devPort || (port + 1),
