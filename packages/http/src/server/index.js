@@ -1,3 +1,6 @@
+import {stat, unlink} from 'fs/promises';
+import {join} from 'path';
+
 import {D, Hooks} from '@flecks/core';
 import {Flecks, spawnWith} from '@flecks/core/server';
 import fontLoader from '@neutrinojs/font-loader';
@@ -6,6 +9,10 @@ import styleLoader from '@neutrinojs/style-loader';
 
 import {configSource, inlineConfig} from './config';
 import {createHttpServer} from './http';
+
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
 const debug = D('@flecks/http/server');
 
@@ -61,7 +68,7 @@ export default {
       config.use.push(fontLoader());
       config.use.push(imageLoader());
     },
-    '@flecks/core.build.alter': (neutrinoConfigs, flecks) => {
+    '@flecks/core.build.alter': async (neutrinoConfigs, flecks) => {
       // Don't build if there's a fleck target.
       if (neutrinoConfigs.fleck && !flecks.get('@flecks/http/server.forceBuildWithFleck')) {
         // eslint-disable-next-line no-param-reassign
@@ -73,6 +80,44 @@ export default {
         if (process.argv.find((arg) => 'production' === arg)) {
           // eslint-disable-next-line no-param-reassign
           delete neutrinoConfigs['http-vendor'];
+        }
+        // Only build if something actually changed.
+        const dll = flecks.get('@flecks/http/server.dll');
+        if (dll.length > 0) {
+          const manifest = join(
+            FLECKS_CORE_ROOT,
+            'node_modules',
+            '.cache',
+            'flecks',
+            'http-vendor.manifest.json',
+          );
+          let timestamp = 0;
+          try {
+            const stats = await stat(manifest);
+            timestamp = stats.mtime;
+          }
+          // eslint-disable-next-line no-empty
+          catch (error) {}
+          let latest = 0;
+          for (let i = 0; i < dll.length; ++i) {
+            const path = dll[i];
+            try {
+              // eslint-disable-next-line no-await-in-loop
+              const stats = await stat(join(FLECKS_CORE_ROOT, 'node_modules', path));
+              if (stats.mtime > latest) {
+                latest = stats.mtime;
+              }
+            }
+            // eslint-disable-next-line no-empty
+            catch (error) {}
+          }
+          if (timestamp > latest) {
+            // eslint-disable-next-line no-param-reassign
+            delete neutrinoConfigs['http-vendor'];
+          }
+          else if (timestamp > 0) {
+            await unlink(manifest);
+          }
         }
       }
       // Bail if there's no http build.
