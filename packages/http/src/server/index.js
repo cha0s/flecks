@@ -24,8 +24,10 @@ export default {
         const extract = {};
         const style = {};
         if ('server' === target) {
-          extract.enabled = false;
-          style.injectType = 'lazyStyleTag';
+          extract.enabled = true;
+          extract.plugin = {
+            filename: 'index.css',
+          };
         }
         if ('http' === target) {
           extract.enabled = isProduction;
@@ -36,7 +38,6 @@ export default {
           extract.plugin = {
             filename: 'index.css',
           };
-          style.injectType = 'lazyStyleTag';
         }
         neutrino.use(
           styleLoader({
