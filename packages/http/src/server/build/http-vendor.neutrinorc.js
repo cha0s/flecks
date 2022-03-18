@@ -21,7 +21,6 @@ module.exports = async (flecks) => {
       ({config, options}) => {
         const dll = flecks.get('@flecks/http/server.dll');
         if (dll.length > 0) {
-          const isProduction = 'production' === config.get('mode');
           // Build the library and manifest.
           config.context(options.root);
           const entries = config.entry('index').clear();
@@ -42,14 +41,13 @@ module.exports = async (flecks) => {
             );
           // Output.
           config
-            .devtool(isProduction ? 'source-map' : 'cheap-module-source-map');
+            .devtool('cheap-module-source-map');
           config.output
             .path(options.output)
             .library('flecks_http_vendor')
             .filename('http-vendor.js');
           config.node
             .set('fs', 'empty');
-
           // Resolution.
           config.resolve.extensions
             .merge([
