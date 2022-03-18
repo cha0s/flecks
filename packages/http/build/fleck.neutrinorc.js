@@ -3,9 +3,9 @@ const copy = require('@neutrinojs/copy');
 const styleLoader = require('@neutrinojs/style-loader');
 const nodeExternals = require('webpack-node-externals');
 
-module.exports = (async () => {
+module.exports = async (flecks) => {
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
-  const config = await require('@flecks/fleck/server/build/fleck.neutrinorc');
+  const config = await require('@flecks/fleck/server/build/fleck.neutrinorc')(flecks);
   config.use.push(({config}) => {
     config.entryPoints.delete('server/build/template');
     config.externals(nodeExternals({
@@ -33,4 +33,4 @@ module.exports = (async () => {
     }),
   );
   return config;
-})();
+};

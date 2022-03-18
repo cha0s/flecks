@@ -1,7 +1,7 @@
 const {join} = require('path');
 
 const {D} = require('@flecks/core');
-const {fleck, Flecks} = require('@flecks/core/server');
+const {fleck} = require('@flecks/core/server');
 const babelmerge = require('babel-merge');
 const glob = require('glob');
 
@@ -13,11 +13,7 @@ const debug = D('@flecks/fleck/fleck.neutrino.js');
 
 const config = require('../../../../core/src/bootstrap/fleck.neutrinorc');
 
-module.exports = (async () => {
-  debug('bootstrapping flecks...');
-  const flecks = Flecks.bootstrap();
-  debug('bootstrapped');
-
+module.exports = async (flecks) => {
   // Compile.
   const rcBabel = flecks.babel();
   debug('.flecksrc: babel: %O', rcBabel);
@@ -27,11 +23,9 @@ module.exports = (async () => {
       ...rcBabel.map(([, babel]) => babel),
     ),
   }));
-
   config.use.push(({config}) => {
     config.stats(flecks.get('@flecks/fleck/server.stats'));
   });
-
   config.use.push(({config}) => {
     // Test entrypoint.
     const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
@@ -43,6 +37,5 @@ module.exports = (async () => {
       testPaths.forEach((path) => testEntry.add(path));
     }
   });
-
   return config;
-})();
+};

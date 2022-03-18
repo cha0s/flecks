@@ -47,7 +47,7 @@ export default (async () => {
   const entries = await Promise.all(targets.map(
     async (target) => [
       target,
-      await __non_webpack_require__(process.env[targetNeutrino(target)]),
+      await __non_webpack_require__(process.env[targetNeutrino(target)])(flecks),
     ],
   ));
   await Promise.all(

@@ -1,8 +1,7 @@
 const {dirname, join} = require('path');
 const {realpath} = require('fs/promises');
 
-const {D} = require('@flecks/core');
-const {Flecks, require: R} = require('@flecks/core/server');
+const {require: R} = require('@flecks/core/server');
 const htmlLoader = require('@neutrinojs/html-loader');
 const htmlTemplate = require('@neutrinojs/html-template');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -16,12 +15,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const debug = D('@flecks/http/http.neutrino.js');
-
-module.exports = (async () => {
-  debug('bootstrapping flecks...');
-  const flecks = Flecks.bootstrap();
-  debug('bootstrapped');
+module.exports = async (flecks) => {
   // Build configuration.
   const build = async () => {
     const root = await realpath(
@@ -164,4 +158,4 @@ module.exports = (async () => {
   // Build the client runtime.
   config.use.push(await runtime(flecks));
   return config;
-})();
+};

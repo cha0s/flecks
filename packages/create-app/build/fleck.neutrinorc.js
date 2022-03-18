@@ -5,9 +5,9 @@ const {join} = require('path');
 const banner = require('@neutrinojs/banner');
 const copy = require('@neutrinojs/copy');
 
-module.exports = (async () => {
+module.exports = async (flecks) => {
   // eslint-disable-next-line global-require
-  const config = await require('@flecks/fleck/server/build/fleck.neutrinorc');
+  const config = await require('@flecks/fleck/server/build/fleck.neutrinorc')(flecks);
 
   config.use.push(banner({
     banner: '#!/usr/bin/env node',
@@ -48,4 +48,4 @@ module.exports = (async () => {
 
   return config;
 
-})();
+};

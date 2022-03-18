@@ -1,7 +1,6 @@
 const {join} = require('path');
 
-const {D} = require('@flecks/core');
-const {Flecks, require: R} = require('@flecks/core/server');
+const {require: R} = require('@flecks/core/server');
 const banner = require('@neutrinojs/banner');
 const clean = require('@neutrinojs/clean');
 const startServer = require('@neutrinojs/start-server');
@@ -12,14 +11,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const debug = D('@flecks/server/server.neutrino.js');
-
-module.exports = (async () => {
-
-  debug('bootstrapping flecks...');
-  const flecks = Flecks.bootstrap();
-  debug('bootstrapped');
-
+module.exports = async (flecks) => {
   const {
     hot,
     inspect,
@@ -158,4 +150,4 @@ module.exports = (async () => {
   });
 
   return config;
-})();
+};
