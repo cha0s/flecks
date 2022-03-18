@@ -12,8 +12,6 @@ class WaitForManifestPlugin extends WebpackBeforeBuildPlugin {
         try {
           // eslint-disable-next-line no-await-in-loop
           await stat(manifest);
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((resolve) => setTimeout(resolve, 100));
           callback();
           break;
         }
