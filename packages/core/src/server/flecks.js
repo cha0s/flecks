@@ -181,13 +181,10 @@ export default class ServerFlecks extends Flecks {
         return Mr.call(this, request, options);
       };
     }
-    // Flecks that are aliased or symlinked need compilation.
+    // Compile.
     const flecks = {};
     const needCompilation = paths
-      .filter((path) => (
-        this.fleckIsAliased(resolver, path)
-        || this.fleckIsSymlinked(resolver, path)
-      ));
+      .filter((path) => this.fleckIsCompiled(resolver, path));
     if (needCompilation.length > 0) {
       const register = R('@babel/register');
       // Augment the compiler with babel config from flecksrc.
@@ -296,6 +293,14 @@ export default class ServerFlecks extends Flecks {
 
   static fleckIsAliased(resolver, fleck) {
     return fleck !== this.resolve(resolver, fleck);
+  }
+
+  fleckIsCompiled(fleck) {
+    return this.constructor.fleckIsCompiled(this.resolver, fleck);
+  }
+
+  static fleckIsCompiled(resolver, fleck) {
+    return this.fleckIsAliased(resolver, fleck) || this.fleckIsSymlinked(resolver, fleck);
   }
 
   fleckIsSymlinked(fleck) {
@@ -528,12 +533,9 @@ export default class ServerFlecks extends Flecks {
     if (config.module.rules.has('compile')) {
       config.module.rules.delete('compile');
     }
-    // Flecks that are aliased or symlinked need compilation.
+    // Compile.
     const needCompilation = Object.entries(resolver)
-      .filter(([fleck]) => (
-        this.constructor.fleckIsAliased(resolver, fleck)
-        || this.constructor.fleckIsSymlinked(resolver, fleck)
-      ));
+      .filter(([fleck]) => this.constructor.fleckIsCompiled(resolver, fleck));
     if (needCompilation.length > 0) {
       const rcBabel = this.babel();
       debug('.flecksrc: babel: %O', rcBabel);
