@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-require('source-map-support/register');
+import 'source-map-support/register';
 
 if ('production' !== process.env.NODE_ENV) {
   try {

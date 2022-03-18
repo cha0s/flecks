@@ -68,6 +68,13 @@ export default {
         delete neutrinoConfigs.http;
         return;
       }
+      // Only build vendor in dev.
+      if (neutrinoConfigs['http-vendor']) {
+        if (process.argv.find((arg) => 'production' === arg)) {
+          // eslint-disable-next-line no-param-reassign
+          delete neutrinoConfigs['http-vendor'];
+        }
+      }
       // Bail if there's no http build.
       if (!neutrinoConfigs.http) {
         return;
@@ -131,6 +138,10 @@ export default {
         modules: false,
       },
       /**
+       * Modules to externalize using `webpack.DllPlugin`.
+       */
+      dll: [],
+      /**
        * Force building http target even if there's a fleck target.
        */
       forceBuildWithFleck: false,
@@ -171,7 +182,10 @@ export default {
       debug('bootstrapped');
       flecks.set('$flecks/http.flecks', httpFlecks);
     },
-    '@flecks/core.targets': () => ['http'],
+    '@flecks/core.targets': (flecks) => [
+      'http',
+      ...(flecks.get('@flecks/http/server.dll').length > 0 ? ['http-vendor'] : []),
+    ],
     '@flecks/http.routes': (flecks) => [
       {
         method: 'get',

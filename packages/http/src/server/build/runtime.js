@@ -1,4 +1,4 @@
-const {realpath, stat} = require('fs/promises');
+const {readFile, realpath, stat} = require('fs/promises');
 const {
   dirname,
   join,
@@ -45,10 +45,14 @@ module.exports = async (flecks) => {
   const fullresolve = (fleck, path) => realpath(R.resolve(join(httpFlecks.resolve(fleck), path)));
   const entry = await fullresolve('@flecks/http', 'entry');
   const importLoader = await fullresolve('@flecks/http', 'import-loader');
-  const tests = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/http'), 'tests')));
+  const tests = await realpath(R.resolve(
+    join(httpFlecks.resolve('@flecks/http'), 'server', 'build', 'tests'),
+  ));
+  const testsSource = (await readFile(tests)).toString();
   return (neutrino) => {
     const {config} = neutrino;
     const {resolver} = httpFlecks;
+    const isProduction = 'production' === config.get('mode');
     const paths = Object.entries(resolver);
     const source = [
       'module.exports = (update) => (async () => ({',
@@ -111,45 +115,55 @@ module.exports = async (flecks) => {
       entries.add(style);
     });
     // Tests.
-    const testPaths = [];
-    roots.forEach(([fleck, root]) => {
-      testPaths.push(...(
-        glob.sync(join(root, 'test/*.js'))
-          .map((path) => [fleck, path])
-      ));
-      for (let i = 0; i < httpFlecks.platforms.length; ++i) {
-        testPaths.push(
-          ...(
-            glob.sync(join(root, `test/platforms/${httpFlecks.platforms[i]}/*.js`))
-              .map((path) => [fleck, path])
-          ),
-        );
-      }
-    });
-    // Test entrypoint.
-    if (testPaths.length > 0) {
-      const testEntry = config.entry('test').clear();
-      testPaths.forEach(([, path]) => testEntry.add(path));
-    }
-    config.module
-      .rule(tests)
-      .test(tests)
-      .use('runtime/test')
-      .loader(runtime)
-      .options({
-        source: Object.entries(
-          testPaths
-            .reduce(
-              (r, [fleck, path]) => ({
-                ...r,
-                [fleck]: [...(r[fleck] || []), `require('${path}');`],
-              }),
-              {},
+    if (!isProduction) {
+      const testPaths = [];
+      roots.forEach(([fleck, root]) => {
+        testPaths.push(...(
+          glob.sync(join(root, 'test/*.js'))
+            .map((path) => [fleck, path])
+        ));
+        for (let i = 0; i < httpFlecks.platforms.length; ++i) {
+          testPaths.push(
+            ...(
+              glob.sync(join(root, `test/platforms/${httpFlecks.platforms[i]}/*.js`))
+                .map((path) => [fleck, path])
             ),
-        )
-          .map(
-            ([original, paths]) => `describe('${original}', () => { ${paths.join(' ')} });`,
-          ).join(''),
+          );
+        }
       });
+      config.module
+        .rule(tests)
+        .test(tests)
+        .use('runtime/test')
+        .loader(runtime)
+        .options({
+          source: testsSource.replace(
+            "await import('@flecks/http/tests');",
+            [
+              'const tests = {};',
+              Object.entries(
+                testPaths
+                  .reduce(
+                    (r, [fleck, path]) => ({
+                      ...r,
+                      [fleck]: [...(r[fleck] || []), `require('${path}');`],
+                    }),
+                    {},
+                  ),
+              )
+                .map(
+                  ([original, paths]) => (
+                    [
+                      `describe('${original}', () => {`,
+                      `  ${paths.join('\n  ')}`,
+                      '});',
+                    ].join('\n')
+                  ),
+                ).join('\n'),
+              'await Promise.all(Object.values(tests));',
+            ].join('\n'),
+          ),
+        });
+    }
   };
 };

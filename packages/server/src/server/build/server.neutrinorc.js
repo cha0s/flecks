@@ -143,10 +143,7 @@ module.exports = async (flecks) => {
 
   // Give the resolver a helping hand.
   config.use.push(({config}) => {
-    config.resolve.modules.merge([
-      join(FLECKS_CORE_ROOT, 'node_modules'),
-      'node_modules',
-    ]);
+    config.resolve.modules.merge([join(FLECKS_CORE_ROOT, 'node_modules')]);
   });
 
   return config;

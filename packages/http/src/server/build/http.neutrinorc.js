@@ -10,6 +10,7 @@ const {EnvironmentPlugin} = require('webpack');
 
 const devServer = require('./dev-server');
 const runtime = require('./runtime');
+const WaitForManifestPlugin = require('./wait-for-manifest');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -34,7 +35,7 @@ module.exports = async (flecks) => {
       const {output: originalOutput} = options;
       options.mains.index = join(root, 'entry');
       options.mains.tests = {
-        entry: join(root, 'client', 'tests'),
+        entry: join(root, 'server', 'build', 'tests'),
         title: 'Testbed',
       };
       options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
@@ -111,7 +112,7 @@ module.exports = async (flecks) => {
           },
         })
         .runtimeChunk('single');
-      // Outputs.
+      // Output.
       config.output
         .chunkFilename(isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js')
         .path(options.output)
@@ -141,6 +142,40 @@ module.exports = async (flecks) => {
       config
         .plugin('inline-chunks')
         .use(InlineChunkHtmlPlugin, [HtmlWebpackPlugin, [/^assets\/index(\.[^.]*)?\.js$/]]);
+      const dll = flecks.get('@flecks/http/server.dll');
+      if (!isProduction && dll.length > 0) {
+        const manifest = join(
+          FLECKS_CORE_ROOT,
+          'node_modules',
+          '.cache',
+          'flecks',
+          'http-vendor',
+        );
+        config
+          .plugin('wait-for-manifest')
+          .use(WaitForManifestPlugin, [`${manifest}.manifest.json`]);
+        config
+          .plugin('dll')
+          .use(
+            R.resolve('webpack/lib/DllReferencePlugin'),
+            [
+              {
+                context: FLECKS_CORE_ROOT,
+                manifest: `${manifest}.manifest.json`,
+              },
+            ],
+          );
+        config
+          .plugin('include-dll')
+          .use(
+            R.resolve('add-asset-html-webpack-plugin'),
+            [
+              {
+                filepath: `${manifest}.js`,
+              },
+            ],
+          );
+      }
     };
   };
   // Neutrino configuration.

@@ -8,6 +8,7 @@ module.exports = async (flecks) => {
   const config = await require('@flecks/fleck/server/build/fleck.neutrinorc')(flecks);
   config.use.push(({config}) => {
     config.entryPoints.delete('server/build/template');
+    config.entryPoints.delete('server/build/tests');
     config.externals(nodeExternals({
       allowlist: ['mocha/mocha.css'],
       importType: 'umd',
@@ -28,6 +29,10 @@ module.exports = async (flecks) => {
         {
           from: 'src/server/build/template.ejs',
           to: 'server/build/template.ejs',
+        },
+        {
+          from: 'src/server/build/tests.js',
+          to: 'server/build/tests.js',
         },
       ],
     }),
