@@ -44,6 +44,7 @@
   ],
   "dependencies": {
     "@flecks/core": "^1.4.1",
+    "@flecks/web": "^1.4.1",
     "@hot-loader/react-dom": "^17.0.1",
     "@neutrinojs/react": "^9.4.0",
     "babel-merge": "^3.0.0",
