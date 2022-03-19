@@ -75,11 +75,11 @@ At its core, flecks is a collection of modules that use [hooks](packages/core/bu
 
 Just to give you an idea of the power of hooks, some will be listed here:
 
-- [`@flecks/http/server.stream.html`](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#fleckshttpserverstreamhtml)
+- [`@flecks/web/server.stream.html`](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#fleckshttpserverstreamhtml)
   > Compose the server-side HTML stream. This is how SSR slides in.
 - [`@flecks/docker.containers`](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#flecksdockercontainers)
   > Define [Docker](https://www.docker.com/) containers to automatically come up next to your app. See [`@flecks/redis`'s implementation](packages/redis/src/containers.js). `@flecks/docker` also generates `Dockerfile` and `docker-compose.yml` and provides the [CLI command](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#fleckscorecommands) `flecks docker` for even more.
-- [`@flecks/http/server.request.route`](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#fleckshttpserverrequestroute)
+- [`@flecks/web/server.request.route`](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md#fleckshttpserverrequestroute)
   > Define [Express](http://expressjs.com/) middleware that runs when an HTTP route is hit.
 - [... and many more on the hook reference page](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md)
 

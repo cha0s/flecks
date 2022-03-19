@@ -20,7 +20,7 @@ module.exports = async (flecks) => {
   // Build configuration.
   const build = async () => {
     const root = await realpath(
-      dirname(R.resolve(join(flecks.resolve('@flecks/http'), 'entry.js'))),
+      dirname(R.resolve(join(flecks.resolve('@flecks/web'), 'entry.js'))),
     );
     return (neutrino) => {
       const {config, options} = neutrino;
@@ -38,7 +38,7 @@ module.exports = async (flecks) => {
         entry: join(root, 'server', 'build', 'tests'),
         title: 'Testbed',
       };
-      options.output = join(originalOutput, flecks.get('@flecks/http/server.output'));
+      options.output = join(originalOutput, flecks.get('@flecks/web/server.output'));
       // Load HTML.
       neutrino.use(htmlLoader());
       Object.entries(options.mains).forEach(([name, mainsConfig]) => {
@@ -137,12 +137,12 @@ module.exports = async (flecks) => {
       config.resolve.modules
         .merge([join(FLECKS_CORE_ROOT, 'node_modules')]);
       // Reporting.
-      config.stats(flecks.get('@flecks/http/server.stats'));
+      config.stats(flecks.get('@flecks/web/server.stats'));
       // Inline the main entrypoint (nice for FCP).
       config
         .plugin('inline-chunks')
         .use(InlineChunkHtmlPlugin, [HtmlWebpackPlugin, [/^assets\/index(\.[^.]*)?\.js$/]]);
-      const dll = flecks.get('@flecks/http/server.dll');
+      const dll = flecks.get('@flecks/web/server.dll');
       if (!isProduction && dll.length > 0) {
         const manifest = join(
           FLECKS_CORE_ROOT,

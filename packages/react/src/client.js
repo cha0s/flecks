@@ -12,7 +12,7 @@ export {FlecksContext};
 
 export default {
   [Hooks]: {
-    '@flecks/http/client.up': async (flecks) => {
+    '@flecks/web/client.up': async (flecks) => {
       const {ssr} = flecks.get('@flecks/react');
       debug('%sing...', ssr ? 'hydrat' : 'render');
       (ssr ? hydrate : render)(

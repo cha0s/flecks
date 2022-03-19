@@ -7,10 +7,10 @@ const debug = D('@flecks/user/passport');
 export default {
   [Hooks]: {
     '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
-    '@flecks/http/server.request.route': (flecks) => (req, res, next) => {
-      debug('@flecks/http/server.request.route: passport.initialize()');
+    '@flecks/web/server.request.route': (flecks) => (req, res, next) => {
+      debug('@flecks/web/server.request.route: passport.initialize()');
       passport.initialize()(req, res, () => {
-        debug('@flecks/http/server.request.route: passport.session()');
+        debug('@flecks/web/server.request.route: passport.session()');
         passport.session()(req, res, () => {
           if (!req.user) {
             const {User} = flecks.get('$flecks/db.models');
@@ -21,7 +21,7 @@ export default {
         });
       });
     },
-    '@flecks/http.routes': () => [
+    '@flecks/web.routes': () => [
       {
         method: 'get',
         path: '/auth/logout',

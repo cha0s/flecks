@@ -1,6 +1,6 @@
 import {D} from '@flecks/core';
 
-const debug = D('@flecks/http/progress');
+const debug = D('@flecks/web/progress');
 
 export default class Progress {
 

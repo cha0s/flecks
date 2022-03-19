@@ -28,5 +28,5 @@
 - [ ] governor fails if not in server up
 - [ ] redux store provider fails if not in request
 - [ ] client hooks will run on server if they're explicit in `flecks.yml`. Should there be an implicit `!client` when bootstrapping the server?
-- [ ] rename `@flecks/http` to `@flecks/web`
+- [ ] rename `@flecks/web` to `@flecks/web`
 - [ ] simultaneous babel compilation across all compiled flecks

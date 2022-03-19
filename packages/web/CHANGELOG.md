@@ -21,7 +21,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.2.1](https://github.com/cha0s/flecks/compare/v1.2.0...v1.2.1) (2022-03-08)
 
-**Note:** Version bump only for package @flecks/http
+**Note:** Version bump only for package @flecks/web
 
 
 
@@ -48,7 +48,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.1.1](https://github.com/cha0s/flecks/compare/v1.1.0...v1.1.1) (2022-02-28)
 
-**Note:** Version bump only for package @flecks/http
+**Note:** Version bump only for package @flecks/web
 
 
 
@@ -67,4 +67,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.0.2](https://github.com/cha0s/flecks/compare/v1.0.1...v1.0.2) (2022-02-28)
 
-**Note:** Version bump only for package @flecks/http
+**Note:** Version bump only for package @flecks/web

@@ -16,16 +16,16 @@ export default {
         'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
       ),
     }),
-    '@flecks/http/server.request.route': (flecks) => {
+    '@flecks/web/server.request.route': (flecks) => {
       const urle = express.urlencoded({extended: true});
       return (req, res, next) => {
-        debug('@flecks/http/server.request.route: express.urlencoded()');
+        debug('@flecks/web/server.request.route: express.urlencoded()');
         urle(req, res, (error) => {
           if (error) {
             next(error);
             return;
           }
-          debug('@flecks/http/server.request.route: session()');
+          debug('@flecks/web/server.request.route: session()');
           flecks.get('$flecks/user.session')(req, res, (error) => {
             if (error) {
               next(error);

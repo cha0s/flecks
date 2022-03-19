@@ -1,8 +1,8 @@
 import {Transform} from 'stream';
 
 const config = async (flecks, req) => {
-  const httpConfig = await flecks.invokeMergeAsync('@flecks/http.config', req);
-  const {config} = flecks.get('$flecks/http.flecks');
+  const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
+  const {config} = flecks.get('$flecks/web.flecks');
   return Object.keys(config)
     .filter((path) => !path.startsWith('$'))
     .filter((path) => !path.endsWith('/server'))
@@ -20,7 +20,7 @@ const config = async (flecks, req) => {
 
 export const configSource = async (flecks, req) => {
   const codedConfig = encodeURIComponent(JSON.stringify(await config(flecks, req)));
-  return `window[Symbol.for('@flecks/http.config')] = JSON.parse(decodeURIComponent("${
+  return `window[Symbol.for('@flecks/web.config')] = JSON.parse(decodeURIComponent("${
     codedConfig
   }"));`;
 };

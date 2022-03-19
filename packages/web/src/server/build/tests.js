@@ -9,7 +9,7 @@ window.document.body.appendChild(mochaDiv);
   mocha.setup('bdd');
 
   // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-  await import('@flecks/http/tests');
+  await import('@flecks/web/tests');
 
   mocha.run();
 

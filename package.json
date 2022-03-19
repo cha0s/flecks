@@ -21,7 +21,6 @@
     "@flecks/dox": "^1.2.0",
     "@flecks/fleck": "^1.2.0",
     "@flecks/governor": "^1.2.0",
-    "@flecks/http": "^1.2.0",
     "@flecks/react": "^1.2.0",
     "@flecks/redis": "^1.2.0",
     "@flecks/redux": "^1.2.0",
@@ -29,6 +28,7 @@
     "@flecks/server": "^1.2.0",
     "@flecks/socket": "^1.2.0",
     "@flecks/user": "^1.2.0",
+    "@flecks/web": "^1.2.0",
     "lerna": "^3.22.1"
   }
 }

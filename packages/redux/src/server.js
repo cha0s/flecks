@@ -9,7 +9,7 @@ const debug = D('@flecks/redux/server');
 
 export default {
   [Hooks]: {
-    '@flecks/http/server.request.route': (flecks) => async (req, res, next) => {
+    '@flecks/web/server.request.route': (flecks) => async (req, res, next) => {
       const slices = await ensureUniqueReduction(flecks, '@flecks/redux.slices');
       const reducer = createReducer(flecks, slices);
       // Let the slices have a(n async) chance to hydrate with server data.
@@ -25,7 +25,7 @@ export default {
       req.redux = await configureStore(flecks, reducer, {preloadedState});
       next();
     },
-    '@flecks/http.config': async (req) => ({
+    '@flecks/web.config': async (req) => ({
       '@flecks/redux/client': {
         preloadedState: req.redux.getState(),
       },

@@ -14,7 +14,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const debug = D('@flecks/http/server');
+const debug = D('@flecks/web/server');
 
 export default {
   [Hooks]: {
@@ -69,7 +69,7 @@ export default {
     },
     '@flecks/core.build.alter': async (neutrinoConfigs, flecks) => {
       // Don't build if there's a fleck target.
-      if (neutrinoConfigs.fleck && !flecks.get('@flecks/http/server.forceBuildWithFleck')) {
+      if (neutrinoConfigs.fleck && !flecks.get('@flecks/web/server.forceBuildWithFleck')) {
         // eslint-disable-next-line no-param-reassign
         delete neutrinoConfigs.http;
         return;
@@ -81,7 +81,7 @@ export default {
           delete neutrinoConfigs['http-vendor'];
         }
         // Only build if something actually changed.
-        const dll = flecks.get('@flecks/http/server.dll');
+        const dll = flecks.get('@flecks/web/server.dll');
         if (dll.length > 0) {
           const manifest = join(
             FLECKS_CORE_ROOT,
@@ -224,13 +224,13 @@ export default {
         platforms: ['client', '!server'],
       });
       debug('bootstrapped');
-      flecks.set('$flecks/http.flecks', httpFlecks);
+      flecks.set('$flecks/web.flecks', httpFlecks);
     },
     '@flecks/core.targets': (flecks) => [
       'http',
-      ...(flecks.get('@flecks/http/server.dll').length > 0 ? ['http-vendor'] : []),
+      ...(flecks.get('@flecks/web/server.dll').length > 0 ? ['http-vendor'] : []),
     ],
-    '@flecks/http.routes': (flecks) => [
+    '@flecks/web.routes': (flecks) => [
       {
         method: 'get',
         path: '/flecks.config.js',
@@ -240,10 +240,10 @@ export default {
         },
       },
     ],
-    '@flecks/http/server.stream.html': inlineConfig,
+    '@flecks/web/server.stream.html': inlineConfig,
     '@flecks/server.up': (flecks) => createHttpServer(flecks),
     '@flecks/repl.context': (flecks) => ({
-      httpServer: flecks.get('$flecks/http/server.instance'),
+      httpServer: flecks.get('$flecks/web/server.instance'),
     }),
   },
 };

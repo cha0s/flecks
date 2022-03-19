@@ -11,12 +11,12 @@ const progress = new Progress(window);
 (async () => {
   // eslint-disable-next-line no-console
   console.log(`flecks client v${version} loading runtime...`);
-  const config = window[Symbol.for('@flecks/http.config')];
+  const config = window[Symbol.for('@flecks/web.config')];
   const debug = D(config['@flecks/core']?.id || 'flecks');
   debug('loading runtime...');
   const {default: loader} = await __non_webpack_import__(
     /* @preserve webpackChunkName: "flecks-runtime" */
-    '@flecks/http/runtime',
+    '@flecks/web/runtime',
   );
   const runtime = await loader(progress.update.bind(progress));
   progress.finish();
@@ -24,7 +24,7 @@ const progress = new Progress(window);
   const flecks = new Flecks(runtime);
   window.flecks = flecks;
   try {
-    await flecks.up('@flecks/http/client.up');
+    await flecks.up('@flecks/web/client.up');
     debug('up!');
   }
   catch (error) {

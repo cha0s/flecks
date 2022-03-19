@@ -4,7 +4,7 @@ import SocketClient from './socket';
 
 export default {
   [Hooks]: {
-    '@flecks/http/client.up': (flecks) => {
+    '@flecks/web/client.up': (flecks) => {
       const socket = new SocketClient(flecks);
       flecks.set('$flecks/socket.socket', socket);
       socket.connect();

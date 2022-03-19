@@ -19,7 +19,7 @@ module.exports = async (flecks) => {
     },
     use: [
       ({config, options}) => {
-        const dll = flecks.get('@flecks/http/server.dll');
+        const dll = flecks.get('@flecks/web/server.dll');
         if (dll.length > 0) {
           // Build the library and manifest.
           config.context(options.root);
@@ -65,7 +65,7 @@ module.exports = async (flecks) => {
           config.resolve.modules
             .merge([join(FLECKS_CORE_ROOT, 'node_modules')]);
           // Reporting.
-          config.stats(flecks.get('@flecks/http/server.stats'));
+          config.stats(flecks.get('@flecks/web/server.stats'));
         }
       },
     ],

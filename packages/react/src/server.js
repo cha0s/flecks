@@ -14,7 +14,7 @@ export default {
           .prepend('.web.jsx');
       });
     },
-    '@flecks/http/server.stream.html': (stream, req, flecks) => (
+    '@flecks/web/server.stream.html': (stream, req, flecks) => (
       flecks.get('@flecks/react.ssr') ? ssr(stream, req, flecks) : stream
     ),
   },

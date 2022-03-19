@@ -5,11 +5,11 @@ import Sockets from './sockets';
 
 export default {
   [Hooks]: {
-    '@flecks/http/server.request.socket': ({config: {'$flecks/socket.sockets': sockets}}) => (req, res, next) => {
+    '@flecks/web/server.request.socket': ({config: {'$flecks/socket.sockets': sockets}}) => (req, res, next) => {
       req.intercom = createIntercom(sockets, 'http');
       next();
     },
-    '@flecks/http/server.up': async (httpServer, flecks) => {
+    '@flecks/web/server.up': async (httpServer, flecks) => {
       const sockets = new Sockets(httpServer, flecks);
       await sockets.connect();
       flecks.set('$flecks/socket.sockets', sockets);

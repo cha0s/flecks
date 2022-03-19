@@ -19,7 +19,7 @@ export default {
     '@flecks/db/server.models.decorate': (
       Flecks.decorate(require.context('./models/decorators', false, /\.js$/))
     ),
-    '@flecks/http.routes': (flecks) => {
+    '@flecks/web.routes': (flecks) => {
       const {failureRedirect, successRedirect} = flecks.get('@flecks/user/local/server');
       return [
         {

@@ -7,7 +7,7 @@ module.exports = (flecks) => (neutrino) => {
     devPublic,
     devStats,
     port,
-  } = flecks.get('@flecks/http/server');
+  } = flecks.get('@flecks/web/server');
   neutrino.use(devServer({
     historyApiFallback: {
       disableDotRule: true,

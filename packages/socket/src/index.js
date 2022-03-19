@@ -17,7 +17,7 @@ export default {
         {check: badPacketsCheck},
       ));
     },
-    '@flecks/http.config': async (
+    '@flecks/web.config': async (
       req,
       {config: {'@flecks/socket': {'packets.decorate': decorators = ['...']}}},
     ) => ({

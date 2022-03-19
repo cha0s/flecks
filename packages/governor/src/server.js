@@ -26,7 +26,7 @@ export default {
       },
     }),
     '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
-    '@flecks/http/server.request.route': (flecks) => {
+    '@flecks/web/server.request.route': (flecks) => {
       const {http} = flecks.get('@flecks/governor/server');
       const limiter = flecks.get('$flecks/governor.http.limiter');
       return async (req, res, next) => {
@@ -56,7 +56,7 @@ export default {
       };
     },
     '@flecks/server.up': async (flecks) => {
-      if (flecks.fleck('@flecks/http/server')) {
+      if (flecks.fleck('@flecks/web/server')) {
         const {http} = flecks.get('@flecks/governor/server');
         const limiter = await createLimiter(
           flecks,

@@ -8,7 +8,7 @@ const {D} = require('@flecks/core');
 const {Flecks, require: R} = require('@flecks/core/server');
 const glob = require('glob');
 
-const debug = D('@flecks/http/runtime');
+const debug = D('@flecks/web/runtime');
 
 module.exports = async (flecks) => {
   debug('bootstrapping flecks...');
@@ -41,12 +41,12 @@ module.exports = async (flecks) => {
     )
   )
     .filter((filename) => !!filename);
-  const runtime = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/http'), 'runtime')));
+  const runtime = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/web'), 'runtime')));
   const fullresolve = (fleck, path) => realpath(R.resolve(join(httpFlecks.resolve(fleck), path)));
-  const entry = await fullresolve('@flecks/http', 'entry');
-  const importLoader = await fullresolve('@flecks/http', 'import-loader');
+  const entry = await fullresolve('@flecks/web', 'entry');
+  const importLoader = await fullresolve('@flecks/web', 'import-loader');
   const tests = await realpath(R.resolve(
-    join(httpFlecks.resolve('@flecks/http'), 'server', 'build', 'tests'),
+    join(httpFlecks.resolve('@flecks/web'), 'server', 'build', 'tests'),
   ));
   const testsSource = (await readFile(tests)).toString();
   return (neutrino) => {
@@ -56,7 +56,7 @@ module.exports = async (flecks) => {
     const paths = Object.entries(resolver);
     const source = [
       'module.exports = (update) => (async () => ({',
-      "  config: window[Symbol.for('@flecks/http.config')],",
+      "  config: window[Symbol.for('@flecks/web.config')],",
       '  flecks: Object.fromEntries(await Promise.all([',
       paths
         .map(([path]) => [
@@ -92,7 +92,7 @@ module.exports = async (flecks) => {
         source: source.join('\n'),
       });
     config.resolve.alias
-      .set('@flecks/http/runtime$', runtime);
+      .set('@flecks/web/runtime$', runtime);
     flecks.runtimeCompiler(httpFlecks.resolver, 'http', neutrino);
     // Handle runtime import.
     config.module
@@ -138,7 +138,7 @@ module.exports = async (flecks) => {
         .loader(runtime)
         .options({
           source: testsSource.replace(
-            "await import('@flecks/http/tests');",
+            "await import('@flecks/web/tests');",
             [
               'const tests = {};',
               Object.entries(
