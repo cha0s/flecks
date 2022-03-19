@@ -31,7 +31,8 @@ export default class ServerFlecks extends Flecks {
   constructor(options = {}) {
     super(options);
     this.overrideConfigFromEnvironment();
-    this.buildConfigs = this.loadBuildConfigs();
+    this.buildConfigs = {};
+    this.loadBuildConfigs();
     this.resolver = options.resolver || {};
     this.rcs = options.rcs || {};
   }
@@ -314,22 +315,18 @@ export default class ServerFlecks extends Flecks {
   }
 
   loadBuildConfigs() {
-    return Object.fromEntries(
-      Object.entries(this.invoke('@flecks/core.build.config'))
-        .map(([fleck, configs]) => (
-          configs.map((config) => {
-            const defaults = {
-              fleck,
-              root: FLECKS_CORE_ROOT,
-            };
-            if (Array.isArray(config)) {
-              return [config[0], {...defaults, ...config[1]}];
-            }
-            return [config, defaults];
-          })
-        ))
-        .flat(),
-    );
+    Object.entries(this.invoke('@flecks/core.build.config'))
+      .forEach(([fleck, configs]) => (
+        configs.forEach((config) => {
+          const defaults = {
+            fleck,
+          };
+          if (Array.isArray(config)) {
+            this.registerBuildConfig(config[0], {...defaults, ...config[1]});
+          }
+          this.registerBuildConfig(config, defaults);
+        })
+      ));
   }
 
   static loadConfig(root) {
@@ -461,6 +458,17 @@ export default class ServerFlecks extends Flecks {
 
   rcs() {
     return this.rcs;
+  }
+
+  registerBuildConfig(filename, config) {
+    const defaults = {
+      root: FLECKS_CORE_ROOT,
+    };
+    this.buildConfigs[filename] = {...defaults, ...config};
+  }
+
+  registerResolver(from, to = from) {
+    this.resolver[from] = to;
   }
 
   resolve(path) {
