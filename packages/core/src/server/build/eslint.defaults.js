@@ -27,6 +27,7 @@ module.exports = {
   rules: {
     'babel/object-curly-spacing': 'off',
     'brace-style': ['error', 'stroustrup'],
+    'jsx-a11y/label-has-associated-control': ['error', {assert: 'either'}],
     'no-plusplus': 'off',
     'no-shadow': 'off',
     'padded-blocks': ['error', {classes: 'always'}],
