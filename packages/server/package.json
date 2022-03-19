@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -33,7 +33,7 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.0",
+    "@flecks/core": "^1.4.1",
     "@neutrinojs/banner": "^9.5.0",
     "@neutrinojs/clean": "^9.5.0",
     "@neutrinojs/start-server": "^9.5.0",
@@ -43,6 +43,6 @@
     "webpack-node-externals": "2.5.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.0"
+    "@flecks/fleck": "^1.4.1"
   }
 }

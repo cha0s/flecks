@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/cha0s/flecks/compare/v1.4.0...v1.4.1) (2022-03-19)
+
+
+### Bug Fixes
+
+* bump ([5ae65e4](https://github.com/cha0s/flecks/commit/5ae65e4eb002f5df540ce3c1856306b6f488729f))
+
+
+
+
+
 # [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
 
 

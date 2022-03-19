@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "bin": {
     "create-app": "./cli.js"
   },
@@ -28,12 +28,12 @@
     "template"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.0",
+    "@flecks/core": "^1.4.1",
     "glob": "^7.2.0",
     "minimatch": "^5.0.1",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.0"
+    "@flecks/fleck": "^1.4.1"
   }
 }
