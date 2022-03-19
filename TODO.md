@@ -30,3 +30,4 @@
 - [ ] client hooks will run on server if they're explicit in `flecks.yml`. Should there be an implicit `!client` when bootstrapping the server?
 - [ ] rename `@flecks/web` to `@flecks/web`
 - [ ] simultaneous babel compilation across all compiled flecks
+- [ ] add building to publish process ...
