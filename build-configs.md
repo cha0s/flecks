@@ -18,6 +18,10 @@ Neutrino build configuration. See: https://neutrinojs.org/usage/
 
 Babel configuration. See: https://babeljs.io/docs/en/config-files
 
+## `postcss.config.js`
+
+PostCSS config file. See: https://github.com/postcss/postcss#usage
+
 ## `template.ejs`
 
 Template file used to generate the client HTML. See: https://github.com/jantimon/html-webpack-plugin/blob/main/docs/template-option.md

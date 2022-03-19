@@ -4,7 +4,7 @@ This page documents all the configuration in this project.
 
 ## `@flecks/core`
 
-> *No description provided.*
+> The ID of your application.
 
 ```javascript
 id: 'flecks'
@@ -12,10 +12,16 @@ id: 'flecks'
 
 ## `@flecks/core/server`
 
-> *No description provided.*
+> Build targets to exclude from ESLint.
 
 ```javascript
 eslint.exclude: []
+```
+
+> Build targets to profile with `webpack.debug.ProfilingPlugin`.
+
+```javascript
+profile: []
 ```
 
 ## `@flecks/db/server`
@@ -72,6 +78,19 @@ enabled: true
 filenameRewriters: {}
 ```
 
+## `@flecks/fleck/server`
+
+> Webpack stats configuration when building fleck target.
+
+```javascript
+stats: {
+        children: false,
+        chunks: false,
+        colors: true,
+        modules: false,
+      }
+```
+
 ## `@flecks/governor/server`
 
 > All keys used to determine fingerprint.
@@ -100,56 +119,6 @@ socket: {
         duration: 30,
         ttl: 30,
       }
-```
-
-## `@flecks/http/server`
-
-> (webpack-dev-server) Host to bind.
-
-```javascript
-devHost: 'localhost'
-```
-
-> (webpack-dev-server) Port to bind.
-
-```javascript
-devPort: undefined
-```
-
-> (webpack-dev-server) Public path to serve.
-
-```javascript
-devPublic: undefined
-```
-
-> (webpack-dev-server) Webpack stats output.
-
-```javascript
-devStats: 'minimal'
-```
-
-> Host to bind.
-
-```javascript
-host: '0.0.0.0'
-```
-
-> Build path.
-
-```javascript
-output: 'http'
-```
-
-> Port to bind.
-
-```javascript
-port: 32340
-```
-
-> Proxies to trust. See: https://www.npmjs.com/package/proxy-addr
-
-```javascript
-trust: false
 ```
 
 ## `@flecks/react`
@@ -182,13 +151,13 @@ port: 6379
 hot: false
 ```
 
-> Whether the Node inspector is enabled.
+> Whether the Node.js inspector is enabled.
 
 ```javascript
 inspect: false
 ```
 
-> Whether node profiling is enabled.
+> Whether Node.js profiling is enabled.
 
 ```javascript
 profile: false
@@ -197,7 +166,17 @@ profile: false
 > Whether to start the server after building.
 
 ```javascript
-start: false
+start: true
+```
+
+> Webpack stats configuration when building server target.
+
+```javascript
+stats: {
+        chunks: false,
+        colors: true,
+        modules: false,
+      }
 ```
 
 ## `@flecks/user/local/server`
@@ -220,4 +199,81 @@ successRedirect: '/'
 
 ```javascript
 cookieSecret: 'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
+```
+
+## `@flecks/web/server`
+
+> (webpack-dev-server) Host to bind.
+
+```javascript
+devHost: 'localhost'
+```
+
+> (webpack-dev-server) Port to bind.
+
+```javascript
+devPort: undefined
+```
+
+> (webpack-dev-server) Public path to serve.
+
+```javascript
+devPublic: undefined
+```
+
+> (webpack-dev-server) Webpack stats output.
+
+```javascript
+devStats: {
+        chunks: false,
+        colors: true,
+        modules: false,
+      }
+```
+
+> Modules to externalize using `webpack.DllPlugin`.
+
+```javascript
+dll: []
+```
+
+> Force building http target even if there's a fleck target.
+
+```javascript
+forceBuildWithFleck: false
+```
+
+> Host to bind.
+
+```javascript
+host: '0.0.0.0'
+```
+
+> Build path.
+
+```javascript
+output: 'http'
+```
+
+> Port to bind.
+
+```javascript
+port: 32340
+```
+
+> Webpack stats configuration when building HTTP target.
+
+```javascript
+stats: {
+        children: false,
+        chunks: false,
+        colors: true,
+        modules: false,
+      }
+```
+
+> Proxies to trust. See: https://www.npmjs.com/package/proxy-addr
+
+```javascript
+trust: false
 ```
