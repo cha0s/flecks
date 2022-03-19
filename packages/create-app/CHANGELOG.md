@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* FileTree directory writing ([3a8bc21](https://github.com/cha0s/flecks/commit/3a8bc213d7db7535200216884bf0122db75dc0ec))
+* template ([7ba496d](https://github.com/cha0s/flecks/commit/7ba496d8695bb77e06421e8a95c89c6487288d28))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 **Note:** Version bump only for package @flecks/create-app

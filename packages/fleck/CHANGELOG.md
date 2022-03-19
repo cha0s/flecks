@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* babel config merging ([958f3b8](https://github.com/cha0s/flecks/commit/958f3b80a1cbb3b885fced3e08b875bce7666e6e))
+* build ([a7150c1](https://github.com/cha0s/flecks/commit/a7150c1d923f37be058f55875510a1f24bffbe31))
+* typo ([2546e25](https://github.com/cha0s/flecks/commit/2546e2502a4479f9a77d8019f2ea2d75403b4e19))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 **Note:** Version bump only for package @flecks/fleck

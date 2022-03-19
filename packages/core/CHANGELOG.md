@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* babel config merging ([958f3b8](https://github.com/cha0s/flecks/commit/958f3b80a1cbb3b885fced3e08b875bce7666e6e))
+* build ([a7150c1](https://github.com/cha0s/flecks/commit/a7150c1d923f37be058f55875510a1f24bffbe31))
+* default ([ffbdb77](https://github.com/cha0s/flecks/commit/ffbdb7777af3ede0a2b629fc2d7292dfd7763f23))
+* don't try to decorate non-existent ([0b8b880](https://github.com/cha0s/flecks/commit/0b8b8809a8d65490d13108b5e873f97f1a21389a))
+* handle no entries ([3e2ccb0](https://github.com/cha0s/flecks/commit/3e2ccb0d73731572a70860a0fc90789fdd6a8790))
+* node-externals doesn't use regex ([fb988c9](https://github.com/cha0s/flecks/commit/fb988c9c82baf951e8694d46d9960aad08c9808d))
+* rewrite aliased config keys ([01b25c3](https://github.com/cha0s/flecks/commit/01b25c3464c2855039c2de699c403581d43b6a70))
+* server stubs ([365a855](https://github.com/cha0s/flecks/commit/365a855abc28f6896f7c11be06df5bea33add1fb))
+
+
+### Features
+
+* build profiling ([78b4d3a](https://github.com/cha0s/flecks/commit/78b4d3a8289eaaa9f51d7f5a70c039ab330c322d))
+* invocation option for Flecks.provide() ([bbcf0d8](https://github.com/cha0s/flecks/commit/bbcf0d8798d1af3b3946e76f96b28135851681a6))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* debugging binary isn't very useful ([c06907b](https://github.com/cha0s/flecks/commit/c06907b3183da90449a6ddf39dcce72171452c2a))
+
+
+### Features
+
+* socket hooks ([090762f](https://github.com/cha0s/flecks/commit/090762fd5c03c8f50219b947654dc21390d1793b))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 

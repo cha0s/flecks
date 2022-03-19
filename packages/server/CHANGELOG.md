@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* deps ([1103eff](https://github.com/cha0s/flecks/commit/1103efff92ea02d898f8f22faa3b251a3b94d1e5))
+* server stubs ([365a855](https://github.com/cha0s/flecks/commit/365a855abc28f6896f7c11be06df5bea33add1fb))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 **Note:** Version bump only for package @flecks/server

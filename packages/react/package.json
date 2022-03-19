@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.3.0",
+  "version": "1.4.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -43,7 +43,7 @@
     "style-loader.js.map"
   ],
   "dependencies": {
-    "@flecks/core": "^1.3.0",
+    "@flecks/core": "^1.4.0",
     "@hot-loader/react-dom": "^17.0.1",
     "@neutrinojs/react": "^9.4.0",
     "babel-merge": "^3.0.0",
@@ -56,6 +56,6 @@
     "redux-first-history": "^5.0.8"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.3.0"
+    "@flecks/fleck": "^1.4.0"
   }
 }

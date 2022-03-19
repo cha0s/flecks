@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/cha0s/flecks/compare/v1.3.0...v1.4.0) (2022-03-19)
+
+
+### Bug Fixes
+
+* ALL of them ([4c72fc0](https://github.com/cha0s/flecks/commit/4c72fc028527b613e6c893fbb8d687963b68cb14))
+* autoinject needs work ([55aaa1c](https://github.com/cha0s/flecks/commit/55aaa1cddfef3b4e4481927012a32410c052943c))
+* babel config merging ([958f3b8](https://github.com/cha0s/flecks/commit/958f3b80a1cbb3b885fced3e08b875bce7666e6e))
+* build ([a7150c1](https://github.com/cha0s/flecks/commit/a7150c1d923f37be058f55875510a1f24bffbe31))
+* debugging binary isn't very useful ([c06907b](https://github.com/cha0s/flecks/commit/c06907b3183da90449a6ddf39dcce72171452c2a))
+* default ([ffbdb77](https://github.com/cha0s/flecks/commit/ffbdb7777af3ede0a2b629fc2d7292dfd7763f23))
+* deps ([1103eff](https://github.com/cha0s/flecks/commit/1103efff92ea02d898f8f22faa3b251a3b94d1e5))
+* don't try to decorate non-existent ([0b8b880](https://github.com/cha0s/flecks/commit/0b8b8809a8d65490d13108b5e873f97f1a21389a))
+* dot rule ([0250482](https://github.com/cha0s/flecks/commit/0250482a3d087c25025244d211d6d0f286cc70d0))
+* FileTree directory writing ([3a8bc21](https://github.com/cha0s/flecks/commit/3a8bc213d7db7535200216884bf0122db75dc0ec))
+* fleck styles ([8b5bd3a](https://github.com/cha0s/flecks/commit/8b5bd3a2ced451efda0c68041f002d9c21ce4b98))
+* handle no entries ([3e2ccb0](https://github.com/cha0s/flecks/commit/3e2ccb0d73731572a70860a0fc90789fdd6a8790))
+* inefficiency > broken ([8a602a4](https://github.com/cha0s/flecks/commit/8a602a477d5ff304bafb877832b219383930d74a))
+* moar bettar HTTP config ([8890ea3](https://github.com/cha0s/flecks/commit/8890ea33d334fa30096843c6407a4654ed2aa389))
+* node-externals doesn't use regex ([fb988c9](https://github.com/cha0s/flecks/commit/fb988c9c82baf951e8694d46d9960aad08c9808d))
+* rewrite aliased config keys ([01b25c3](https://github.com/cha0s/flecks/commit/01b25c3464c2855039c2de699c403581d43b6a70))
+* server stubs ([365a855](https://github.com/cha0s/flecks/commit/365a855abc28f6896f7c11be06df5bea33add1fb))
+* target ([7fa428f](https://github.com/cha0s/flecks/commit/7fa428f86ae8161e04d38ccfae38ef12e1ffce5c))
+* template ([7ba496d](https://github.com/cha0s/flecks/commit/7ba496d8695bb77e06421e8a95c89c6487288d28))
+* typo ([2546e25](https://github.com/cha0s/flecks/commit/2546e2502a4479f9a77d8019f2ea2d75403b4e19))
+
+
+### Features
+
+* build profiling ([78b4d3a](https://github.com/cha0s/flecks/commit/78b4d3a8289eaaa9f51d7f5a70c039ab330c322d))
+* CSS modules ([b9018fd](https://github.com/cha0s/flecks/commit/b9018fdaa1dde7ebfa989e87ba152e0b5ca25c41))
+* HTTP stubs out styles ([0ddb8e2](https://github.com/cha0s/flecks/commit/0ddb8e2d295be5d37c59cb7d5fe916622f005615))
+* invocation option for Flecks.provide() ([bbcf0d8](https://github.com/cha0s/flecks/commit/bbcf0d8798d1af3b3946e76f96b28135851681a6))
+* multiple roots and props ([677bc59](https://github.com/cha0s/flecks/commit/677bc593cc4bd82711d03c809c6957c561582df2))
+* socket hooks ([090762f](https://github.com/cha0s/flecks/commit/090762fd5c03c8f50219b947654dc21390d1793b))
+* style! 🤩 ([6336af8](https://github.com/cha0s/flecks/commit/6336af82b6c0b799fc844f005e275126fa44e0ae))
+
+
+
+
+
 # [1.3.0](https://github.com/cha0s/flecks/compare/v1.2.1...v1.3.0) (2022-03-09)
 
 
