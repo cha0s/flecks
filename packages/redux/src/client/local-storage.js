@@ -21,7 +21,9 @@ const localStorageEnhancer = (createStore) => (reducer, initialState, enhancer) 
   // Hydrate.
   const storage = JSON.parse(window.localStorage.getItem('@flecks/redux/state'));
   if (storage) {
-    store.dispatch(hydrateLocalStorage(storage));
+    setTimeout(() => {
+      store.dispatch(hydrateLocalStorage(storage));
+    }, 0);
   }
   // Subscribes to changes.
   store.subscribe(
