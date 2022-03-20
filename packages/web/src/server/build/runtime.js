@@ -42,9 +42,6 @@ module.exports = async (flecks) => {
   )
     .filter((filename) => !!filename);
   const runtime = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/web'), 'runtime')));
-  const fullresolve = (fleck, path) => realpath(R.resolve(join(httpFlecks.resolve(fleck), path)));
-  const entry = await fullresolve('@flecks/web', 'entry');
-  const importLoader = await fullresolve('@flecks/web', 'import-loader');
   const tests = await realpath(R.resolve(
     join(httpFlecks.resolve('@flecks/web'), 'server', 'build', 'tests'),
   ));
@@ -83,6 +80,7 @@ module.exports = async (flecks) => {
     source.push('}');
     source.push('');
     // Create runtime.
+    console.log(source);
     config.module
       .rule(runtime)
       .test(runtime)
@@ -94,12 +92,6 @@ module.exports = async (flecks) => {
     config.resolve.alias
       .set('@flecks/web/runtime$', runtime);
     flecks.runtimeCompiler(httpFlecks.resolver, 'http', neutrino);
-    // Handle runtime import.
-    config.module
-      .rule(entry)
-      .test(entry)
-      .use('entry/http')
-      .loader(importLoader);
     // Aliases.
     const aliases = httpFlecks.aliases();
     if (Object.keys(aliases).length > 0) {

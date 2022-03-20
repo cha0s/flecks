@@ -5,6 +5,12 @@ import ReactDOMServer from '@hot-loader/react-dom/server';
 
 import root from './root';
 
+const {
+  NODE_ENV,
+} = process.env;
+
+console.log({NODE_ENV});
+
 class Ssr extends Transform {
 
   constructor(flecks, req) {
@@ -24,7 +30,10 @@ class Ssr extends Transform {
       this.push(
         string.replace(
           '<div id="root"></div>',
-          `<div id="root">${output}</div>`,
+          `<div id="root"${
+            // What FOUC? ;)
+            'production' !== NODE_ENV ? ' style="display: none"' : ''
+          }>${output}</div>`,
         ),
       );
     }

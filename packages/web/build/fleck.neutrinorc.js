@@ -7,6 +7,7 @@ module.exports = async (flecks) => {
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
   const config = await require('@flecks/fleck/server/build/fleck.neutrinorc')(flecks);
   config.use.push(({config}) => {
+    config.entryPoints.delete('server/build/entry');
     config.entryPoints.delete('server/build/template');
     config.entryPoints.delete('server/build/tests');
     config.externals(nodeExternals({
@@ -26,6 +27,10 @@ module.exports = async (flecks) => {
     copy({
       copyUnmodified: true,
       patterns: [
+        {
+          from: 'src/server/build/entry.js',
+          to: 'server/build/entry.js',
+        },
         {
           from: 'src/server/build/template.ejs',
           to: 'server/build/template.ejs',

@@ -20,7 +20,7 @@ module.exports = async (flecks) => {
   // Build configuration.
   const build = async () => {
     const root = await realpath(
-      dirname(R.resolve(join(flecks.resolve('@flecks/web'), 'entry.js'))),
+      dirname(R.resolve(join(flecks.resolve('@flecks/web'), 'package.json'))),
     );
     return (neutrino) => {
       const {config, options} = neutrino;
@@ -33,7 +33,7 @@ module.exports = async (flecks) => {
         }]);
       // Entrypoints.
       const {output: originalOutput} = options;
-      options.mains.index = join(root, 'entry');
+      options.mains.index = join(root, 'server', 'build', 'entry');
       options.mains.tests = {
         entry: join(root, 'server', 'build', 'tests'),
         title: 'Testbed',
