@@ -80,7 +80,6 @@ module.exports = async (flecks) => {
     source.push('}');
     source.push('');
     // Create runtime.
-    console.log(source);
     config.module
       .rule(runtime)
       .test(runtime)

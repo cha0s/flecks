@@ -9,8 +9,6 @@ const {
   NODE_ENV,
 } = process.env;
 
-console.log({NODE_ENV});
-
 class Ssr extends Transform {
 
   constructor(flecks, req) {
