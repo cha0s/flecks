@@ -12,12 +12,14 @@ import {
   resolve,
 } from 'path';
 
-import babelmerge from 'babel-merge';
 import compileLoader from '@neutrinojs/compile-loader';
+import babelmerge from 'babel-merge';
+import {addHook} from 'pirates';
 
 import R from '../bootstrap/require';
 import D from '../debug';
 import Flecks from '../flecks';
+import Compiler from './compiler';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -183,12 +185,12 @@ export default class ServerFlecks extends Flecks {
       };
     }
     // Compile.
+    const compilations = [];
     const flecks = {};
     const needCompilation = paths
       .filter((path) => this.fleckIsCompiled(resolver, path));
     if (needCompilation.length > 0) {
-      const register = R('@babel/register');
-      // Augment the compiler with babel config from flecksrc.
+      // Augment the compilations with babel config from flecksrc.
       const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
       debug('.flecksrc: babel: %O', rcBabelConfig);
       // Key flecks needing compilation by their roots, so we can compile all common roots with a
@@ -201,9 +203,8 @@ export default class ServerFlecks extends Flecks {
         }
         compilationRootMap[root].push(fleck);
       });
-      // Register a compiler for each root and require() the flecks underneath.
+      // Register a compilation for each root.
       Object.entries(compilationRootMap).forEach(([root, compiling]) => {
-        debug('compiling at root: %s', root);
         const resolved = dirname(R.resolve(join(root, 'package.json')));
         const sourcepath = this.sourcepath(resolved);
         const sourceroot = join(sourcepath, '..');
@@ -222,33 +223,41 @@ export default class ServerFlecks extends Flecks {
             'babel.config.js',
           ],
         );
+        const ignore = `${resolve(join(sourceroot, 'node_modules'))}/`;
+        const only = `${resolve(sourceroot)}/`;
         const config = {
           // Augment the selected config with the babel config from RCs.
           configFile,
           // Target the compiler to avoid unnecessary work.
-          ignore: [resolve(join(sourceroot, 'node_modules'))],
-          only: [resolve(sourceroot)],
+          ignore: [ignore],
+          only: [only],
         };
-        debug("require('@babel/register')(%O)", config);
-        register({
-          ...config,
-          ...rcBabelConfig,
-          // Make webpack goodies exist in nodespace.
-          plugins: this.nodespaceBabelPlugins(),
-          // Keep things debuggable.
-          sourceMaps: 'inline',
+        debug('compiling %O with %j', compiling, config);
+        compilations.push({
+          ignore,
+          only,
+          compiler: new Compiler(babelmerge(config, rcBabelConfig)),
         });
-        compiling.forEach((fleck) => {
-          debug('compiling %s...', fleck);
-          flecks[fleck] = R(this.resolve(resolver, fleck));
-          debug('compiled');
-          // Remove the required fleck from the list still needing require().
-          paths.splice(paths.indexOf(fleck), 1);
-        });
-        // Don't pollute, kids.
-        register.revert();
       });
     }
+    const findCompiler = (request) => {
+      for (let i = 0; i < compilations.length; ++i) {
+        const {compiler, ignore, only} = compilations[i];
+        if (request.startsWith(only) && !request.startsWith(ignore)) {
+          return compiler;
+        }
+      }
+      return undefined;
+    };
+    const exts = this.exts(rcs);
+    debug('pirating exts: %O', exts);
+    addHook(
+      (code, request) => {
+        const compilation = findCompiler(request).compile(code, request);
+        return null === compilation ? code : compilation.code;
+      },
+      {exts, matcher: (request) => !!findCompiler(request)},
+    );
     // Load the rest of the flecks.
     paths.forEach((path) => {
       flecks[path] = R(this.resolve(resolver, path));
@@ -286,6 +295,19 @@ export default class ServerFlecks extends Flecks {
       .replace(/[^a-zA-Z0-9]/g, '_')
       .replace(/_*(.*)_*/, '$1')
       .toUpperCase();
+  }
+
+  static exts(rcs) {
+    const keys = Object.keys(rcs);
+    const exts = [];
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      const config = rcs[key];
+      if (config.exts) {
+        exts.push(...config.exts);
+      }
+    }
+    return exts;
   }
 
   fleckIsAliased(fleck) {
@@ -365,58 +387,6 @@ export default class ServerFlecks extends Flecks {
       }
     }
     return rcs;
-  }
-
-  static nodespaceBabelPlugins() {
-    return [
-      [
-        'prepend',
-        {
-          prepend: [
-            'require.context = (',
-            '  directory,',
-            '  useSubdirectories = true,',
-            '  regExp = /^\\.\\/.*$/,',
-            '  mode = "sync",',
-            ') => {',
-            '  const glob = require("glob");',
-            '  const {resolve, sep} = require("path");',
-            '  const keys = glob.sync(',
-            '    useSubdirectories ? "**/*" : "*",',
-            '    {cwd: resolve(__dirname, directory)},',
-            '  )',
-            '    .filter((key) => key.match(regExp))',
-            '    .map(',
-            '      (key) => (',
-            '        -1 !== [".".charCodeAt(0), "/".charCodeAt(0)].indexOf(key.charCodeAt(0))',
-            '          ? key',
-            '          : ("." + sep + key)',
-            '      ),',
-            '    );',
-            '  const R = (request) => require(keys[request]);',
-            '  R.id = __filename',
-            '  R.keys = () => keys;',
-            '  return R;',
-            '};',
-          ].join('\n'),
-        },
-        'require.context',
-      ],
-      [
-        'prepend',
-        {
-          prepend: 'const __non_webpack_require__ = require;',
-        },
-        '__non_webpack_require__',
-      ],
-      [
-        'prepend',
-        {
-          prepend: "require('source-map-support/register');",
-        },
-        'source-map-support',
-      ],
-    ];
   }
 
   overrideConfigFromEnvironment() {

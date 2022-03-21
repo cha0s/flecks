@@ -71,6 +71,7 @@
     "lodash.set": "^4.3.2",
     "lodash.without": "^4.4.0",
     "neutrino": "^9.4.0",
+    "pirates": "^4.0.5",
     "rimraf": "^3.0.2",
     "source-map-support": "0.5.19",
     "supports-color": "9.2.1",

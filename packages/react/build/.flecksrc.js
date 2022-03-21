@@ -7,4 +7,5 @@ module.exports = {
       '@babel/preset-react',
     ],
   },
+  exts: ['.jsx'],
 };
