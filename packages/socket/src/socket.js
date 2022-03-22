@@ -3,7 +3,7 @@ import {ByType, D} from '@flecks/core';
 import normalize from './normalize';
 import acceptor from './packet/acceptor';
 
-const debug = D('@flecks/socket');
+const debug = D('@flecks/socket:silly');
 
 export default class Socket {
 

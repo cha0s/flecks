@@ -7,6 +7,7 @@ import createIntercom from './create-intercom';
 import ServerSocket from './socket';
 
 const debug = D('@flecks/socket/server/sockets');
+const debugSilly = D('@flecks/socket/server/sockets:silly');
 
 export default class SocketServer {
 
@@ -78,7 +79,7 @@ export default class SocketServer {
   static send(flecks, nsp, packetOrDehydrated) {
     const packet = normalize(flecks, packetOrDehydrated);
     const {constructor: Packet} = packet;
-    debug('sending packet %s(%j)', Packet.type, packet.data);
+    debugSilly('sending packet %s(%j)', Packet.type, packet.data);
     try {
       nsp.emit(Packet.id, Packet.encode(packet.data));
     }
