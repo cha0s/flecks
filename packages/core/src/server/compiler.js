@@ -79,7 +79,7 @@ class Compiler {
       cacheKey += `:${env}`;
     }
     const cached = this.constructor.cache[cacheKey];
-    const {mtime} = +statSync(request);
+    const mtime = +statSync(request).mtime;
     if (cached && cached.mtime === mtime) {
       return {
         cached: cached.value,
