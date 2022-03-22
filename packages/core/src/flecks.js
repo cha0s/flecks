@@ -108,6 +108,13 @@ export default class Flecks {
     };
   }
 
+  destroy() {
+    this.config = {};
+    this.hooks = {};
+    this.flecks = {};
+    this.platforms = [];
+  }
+
   expandedFlecks(hook) {
     const flecks = this.lookupFlecks(hook);
     let expanded = [];
