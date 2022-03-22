@@ -3,12 +3,11 @@ import {join} from 'path';
 
 import {D} from '@flecks/core';
 import chokidar from 'chokidar';
+import clearModule from 'clear-module';
 import glob from 'glob';
+import Mocha from 'mocha';
 
-import {
-  commands as coreCommands,
-  spawnWith,
-} from '@flecks/core/server';
+import {commands as coreCommands} from '@flecks/core/server';
 
 const debug = D('@flecks/core.commands');
 
@@ -54,14 +53,14 @@ export default (program, flecks) => {
           await new Promise((resolve) => setTimeout(resolve, 50));
         }
       }
-      const spawnMocha = () => {
-        const cmd = [
-          'npx', 'mocha',
-          '--colors',
-          '--reporter', 'min',
-          testLocation,
-        ];
-        return spawnWith(cmd);
+      const runMocha = async () => {
+        const mocha = new Mocha();
+        mocha.ui('bdd');
+        mocha.reporter('min');
+        clearModule(testLocation);
+        mocha.addFile(testLocation);
+        mocha.loadFiles();
+        return new Promise((r, e) => mocha.run((me) => (me ? e(me) : r())));
       };
       if (!watch) {
         await new Promise((resolve, reject) => {
@@ -74,16 +73,13 @@ export default (program, flecks) => {
           });
           child.on('error', reject);
         });
-        return spawnMocha();
+        await runMocha();
+        return 0;
       }
-      let tester;
-      chokidar.watch(testLocation)
-        .on('all', () => {
-          if (tester) {
-            tester.kill();
-          }
-          tester = spawnMocha();
-        });
+      chokidar.watch(testLocation).on('all', async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        runMocha();
+      });
       return new Promise(() => {});
     },
   };
