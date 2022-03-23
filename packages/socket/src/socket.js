@@ -24,26 +24,16 @@ export default class Socket {
     this.on('packet', acceptor(this));
   }
 
-  static send(flecks, socket, packetOrDehydrated, method) {
-    const packet = normalize(flecks, packetOrDehydrated);
+  send(packetOrDehydrated) {
+    const packet = normalize(this.flecks, packetOrDehydrated);
     const {constructor: Packet} = packet;
     debug('sending packet %s(%j)', Packet.type, packet.data);
     try {
-      return socket[method](Packet.id, Packet.encode(packet.data));
+      return this.socket.emitPromise(Packet.id, Packet.encode(packet.data));
     }
     catch (error) {
       throw new Error(`${error.message}, data: ${JSON.stringify(packet.data, null, 2)}`);
     }
-  }
-
-  send(packet) {
-    return this.constructor.send(this.flecks, this.socket, packet, 'emitPromise');
-  }
-
-  to(room) {
-    return {
-      send: (packet) => this.constructor.send(this.flecks, this.socket.to(room), packet, 'emit'),
-    };
   }
 
 }
