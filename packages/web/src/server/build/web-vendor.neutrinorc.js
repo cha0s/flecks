@@ -34,8 +34,8 @@ module.exports = async (flecks) => {
               [
                 {
                   context: options.root,
-                  path: join(options.output, 'http-vendor.manifest.json'),
-                  name: 'flecks_http_vendor',
+                  path: join(options.output, 'web-vendor.manifest.json'),
+                  name: 'flecks_web_vendor',
                 },
               ],
             );
@@ -44,8 +44,8 @@ module.exports = async (flecks) => {
             .devtool('cheap-module-source-map');
           config.output
             .path(options.output)
-            .library('flecks_http_vendor')
-            .filename('http-vendor.js');
+            .library('flecks_web_vendor')
+            .filename('web-vendor.js');
           config.node
             .set('fs', 'empty');
           // Resolution.

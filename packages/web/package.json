@@ -3,7 +3,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cha0s/flecks.git",
-    "directory": "packages/http"
+    "directory": "packages/web"
   },
   "publishConfig": {
     "access": "public"
@@ -30,12 +30,12 @@
     "server/build/postcss.config.js",
     "server/build/postcss.config.js.map",
     "server/build/template.ejs",
-    "server/build/http.neutrinorc.js",
-    "server/build/http.neutrinorc.js.map",
-    "server/build/http-vendor.neutrinorc.js",
-    "server/build/http-vendor.neutrinorc.js.map",
     "server/build/tests.js",
     "server/build/tests.js.map",
+    "server/build/web.neutrinorc.js",
+    "server/build/web.neutrinorc.js.map",
+    "server/build/web-vendor.neutrinorc.js",
+    "server/build/web-vendor.neutrinorc.js.map",
     "src",
     "tests.js",
     "tests.js.map"

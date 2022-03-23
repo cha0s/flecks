@@ -12,14 +12,14 @@ const debug = D('@flecks/web/runtime');
 
 module.exports = async (flecks) => {
   debug('bootstrapping flecks...');
-  const httpFlecks = Flecks.bootstrap({
+  const webFlecks = Flecks.bootstrap({
     platforms: ['client', '!server'],
   });
   debug('bootstrapped');
   const rootMap = {};
-  Object.keys(httpFlecks.resolver)
+  Object.keys(webFlecks.resolver)
     .forEach((fleck) => {
-      rootMap[httpFlecks.root(fleck)] = fleck;
+      rootMap[webFlecks.root(fleck)] = fleck;
     });
   const roots = Object.entries(rootMap)
     .map(([root, fleck]) => (
@@ -41,14 +41,14 @@ module.exports = async (flecks) => {
     )
   )
     .filter((filename) => !!filename);
-  const runtime = await realpath(R.resolve(join(httpFlecks.resolve('@flecks/web'), 'runtime')));
+  const runtime = await realpath(R.resolve(join(webFlecks.resolve('@flecks/web'), 'runtime')));
   const tests = await realpath(R.resolve(
-    join(httpFlecks.resolve('@flecks/web'), 'server', 'build', 'tests'),
+    join(webFlecks.resolve('@flecks/web'), 'server', 'build', 'tests'),
   ));
   const testsSource = (await readFile(tests)).toString();
   return (neutrino) => {
     const {config} = neutrino;
-    const {resolver} = httpFlecks;
+    const {resolver} = webFlecks;
     const isProduction = 'production' === config.get('mode');
     const paths = Object.entries(resolver);
     const source = [
@@ -83,16 +83,16 @@ module.exports = async (flecks) => {
     config.module
       .rule(runtime)
       .test(runtime)
-      .use('runtime/http')
+      .use('runtime/web')
       .loader(runtime)
       .options({
         source: source.join('\n'),
       });
     config.resolve.alias
       .set('@flecks/web/runtime$', runtime);
-    flecks.runtimeCompiler(httpFlecks.resolver, 'http', neutrino);
+    flecks.runtimeCompiler(webFlecks.resolver, 'web', neutrino);
     // Aliases.
-    const aliases = httpFlecks.aliases();
+    const aliases = webFlecks.aliases();
     if (Object.keys(aliases).length > 0) {
       Object.entries(aliases)
         .forEach(([from, to]) => {
@@ -113,10 +113,10 @@ module.exports = async (flecks) => {
           glob.sync(join(root, 'test/*.js'))
             .map((path) => [fleck, path])
         ));
-        for (let i = 0; i < httpFlecks.platforms.length; ++i) {
+        for (let i = 0; i < webFlecks.platforms.length; ++i) {
           testPaths.push(
             ...(
-              glob.sync(join(root, `test/platforms/${httpFlecks.platforms[i]}/*.js`))
+              glob.sync(join(root, `test/platforms/${webFlecks.platforms[i]}/*.js`))
                 .map((path) => [fleck, path])
             ),
           );

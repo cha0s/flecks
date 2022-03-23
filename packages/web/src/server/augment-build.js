@@ -11,7 +11,7 @@ const augmentBuild = (target, config, flecks) => {
       extract.enabled = false;
       style.injectType = 'lazyStyleTag';
     }
-    if ('http' === target) {
+    if ('web' === target) {
       extract.enabled = isProduction;
       style.injectType = 'styleTag';
     }

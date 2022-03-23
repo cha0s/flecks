@@ -29,7 +29,7 @@ module.exports = async (flecks) => {
       config
         .plugin('environment')
         .use(EnvironmentPlugin, [{
-          FLECKS_CORE_BUILD_TARGET: 'http',
+          FLECKS_CORE_BUILD_TARGET: 'web',
         }]);
       // Entrypoints.
       const {output: originalOutput} = options;
@@ -149,7 +149,7 @@ module.exports = async (flecks) => {
           'node_modules',
           '.cache',
           'flecks',
-          'http-vendor',
+          'web-vendor',
         );
         config
           .plugin('wait-for-manifest')

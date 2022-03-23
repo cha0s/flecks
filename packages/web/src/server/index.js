@@ -23,14 +23,14 @@ export default {
       // Don't build if there's a fleck target.
       if (neutrinoConfigs.fleck && !flecks.get('@flecks/web/server.forceBuildWithFleck')) {
         // eslint-disable-next-line no-param-reassign
-        delete neutrinoConfigs.http;
+        delete neutrinoConfigs.web;
         return;
       }
       // Only build vendor in dev.
-      if (neutrinoConfigs['http-vendor']) {
+      if (neutrinoConfigs['web-vendor']) {
         if (process.argv.find((arg) => 'production' === arg)) {
           // eslint-disable-next-line no-param-reassign
-          delete neutrinoConfigs['http-vendor'];
+          delete neutrinoConfigs['web-vendor'];
         }
         // Only build if something actually changed.
         const dll = flecks.get('@flecks/web/server.dll');
@@ -40,7 +40,7 @@ export default {
             'node_modules',
             '.cache',
             'flecks',
-            'http-vendor.manifest.json',
+            'web-vendor.manifest.json',
           );
           let timestamp = 0;
           try {
@@ -64,15 +64,15 @@ export default {
           }
           if (timestamp > latest) {
             // eslint-disable-next-line no-param-reassign
-            delete neutrinoConfigs['http-vendor'];
+            delete neutrinoConfigs['web-vendor'];
           }
           else if (timestamp > 0) {
             await unlink(manifest);
           }
         }
       }
-      // Bail if there's no http build.
-      if (!neutrinoConfigs.http) {
+      // Bail if there's no web build.
+      if (!neutrinoConfigs.web) {
         return;
       }
       // Bail if the build isn't watching.
@@ -90,13 +90,13 @@ export default {
         cmd,
         {
           env: {
-            FLECKS_CORE_BUILD_LIST: 'http',
+            FLECKS_CORE_BUILD_LIST: 'web',
           },
         },
       );
       // Remove the build config since we're handing off to WDS.
       // eslint-disable-next-line no-param-reassign
-      delete neutrinoConfigs.http;
+      delete neutrinoConfigs.web;
     },
     '@flecks/core.build.config': () => [
       /**
@@ -148,7 +148,7 @@ export default {
       /**
        * Build path.
        */
-      output: 'http',
+      output: 'web',
       /**
        * Port to bind.
        */
@@ -171,16 +171,16 @@ export default {
     }),
     '@flecks/core.starting': (flecks) => {
       debug('bootstrapping flecks...');
-      const httpFlecks = Flecks.bootstrap({
+      const webFlecks = Flecks.bootstrap({
         config: flecks.config,
         platforms: ['client', '!server'],
       });
       debug('bootstrapped');
-      flecks.set('$flecks/web.flecks', httpFlecks);
+      flecks.set('$flecks/web.flecks', webFlecks);
     },
     '@flecks/core.targets': (flecks) => [
-      'http',
-      ...(flecks.get('@flecks/web/server.dll').length > 0 ? ['http-vendor'] : []),
+      'web',
+      ...(flecks.get('@flecks/web/server.dll').length > 0 ? ['web-vendor'] : []),
     ],
     '@flecks/web.routes': (flecks) => [
       {

@@ -12,7 +12,7 @@ export default {
        * All keys used to determine fingerprint.
        */
       keys: ['ip'],
-      http: {
+      web: {
         keys: ['ip'],
         points: 60,
         duration: 30,
@@ -27,8 +27,8 @@ export default {
     }),
     '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
     '@flecks/web/server.request.route': (flecks) => {
-      const {http} = flecks.get('@flecks/governor/server');
-      const limiter = flecks.get('$flecks/governor.http.limiter');
+      const {web} = flecks.get('@flecks/governor/server');
+      const limiter = flecks.get('$flecks/governor.web.limiter');
       return async (req, res, next) => {
         const {Ban} = flecks.get('$flecks/db.models');
         try {
@@ -48,7 +48,7 @@ export default {
           next();
         }
         catch (error) {
-          const {ttl, keys} = http;
+          const {ttl, keys} = web;
           const ban = Ban.fromRequest(req, keys, ttl);
           await Ban.create({...ban});
           res.status(429).send(`<pre>${Ban.format([ban])}</pre>`);
@@ -57,15 +57,15 @@ export default {
     },
     '@flecks/server.up': async (flecks) => {
       if (flecks.fleck('@flecks/web/server')) {
-        const {http} = flecks.get('@flecks/governor/server');
+        const {web} = flecks.get('@flecks/governor/server');
         const limiter = await createLimiter(
           flecks,
           {
-            keyPrefix: '@flecks/governor.http.request.route',
-            ...http,
+            keyPrefix: '@flecks/governor.web.request.route',
+            ...web,
           },
         );
-        flecks.set('$flecks/governor.http.limiter', limiter);
+        flecks.set('$flecks/governor.web.limiter', limiter);
       }
       if (flecks.fleck('@flecks/socket/server')) {
         const {[ByType]: Packets} = flecks.get('$flecks/socket.packets');
