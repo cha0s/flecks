@@ -4,11 +4,11 @@ const UserLocalLogin = () => (
   <form action="/auth/local" method="post">
     <label>
       <span>Email address</span>
-      <input name="email" type="text" />
+      <input autoComplete="username" name="email" type="text" />
     </label>
     <label>
       <span>Password</span>
-      <input name="password" type="password" />
+      <input autoComplete="current-password" name="password" type="password" />
     </label>
     <div>
       <label>
