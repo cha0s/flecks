@@ -2,11 +2,9 @@ import {Hooks} from '@flecks/core';
 
 import {Logout} from './packets';
 
-import user from './state/user';
-import users from './state/users';
+import {user, users} from './state';
 
-export * from './state/user';
-export * from './state/users';
+export * from './state';
 
 export default {
   [Hooks]: {
