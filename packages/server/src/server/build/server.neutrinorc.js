@@ -102,6 +102,7 @@ module.exports = async (flecks) => {
     ],
   };
   // Stub out non-server-friendly modules on the server.
+  const exts = flecks.exts();
   const stubs = flecks.stubs();
   const aliases = flecks.aliases();
   // Do we need to get up in `require()`'s guts?
@@ -117,17 +118,29 @@ module.exports = async (flecks) => {
       ));
     const code = [
       `const aliases = ${JSON.stringify(aliases)};`,
+      'const aliasKeys = Object.keys(aliases);',
       `const stubs = [${sanitizedStubs}];`,
       'const {Module} = require("module");',
       'const {require: Mr} = Module.prototype;',
+      'const enhancedResolver = require("enhanced-resolve").create.sync({',
+      `  extensions: ${JSON.stringify(exts)},`,
+      '  alias: aliases,',
+      '});',
       'Module.prototype.require = function hackedRequire(request, options) {',
       '  for (let i = 0; i < stubs.length; ++i) {',
       '    if (request.match(stubs[i])) {',
       '      return undefined;',
       '    }',
       '  }',
-      '  if (aliases[request]) {',
-      '    return Mr.call(this, aliases[request], options);',
+      '  if (aliasKeys.find((aliasKey) => request.startsWith(aliasKey))) {',
+      '    try {',
+      '      const resolved = enhancedResolver(process.cwd(), request);',
+      '      if (resolved) {',
+      '        return Mr.call(this, resolved, options);',
+      '      }',
+      '    }',
+      '    // eslint-disable-next-line no-empty',
+      '    catch (error) {}',
       '  }',
       '  return Mr.call(this, request, options);',
       '};',

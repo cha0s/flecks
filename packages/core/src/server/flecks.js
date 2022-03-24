@@ -14,6 +14,7 @@ import {
 
 import compileLoader from '@neutrinojs/compile-loader';
 import babelmerge from 'babel-merge';
+import enhancedResolve from 'enhanced-resolve';
 import {addHook} from 'pirates';
 
 import R from '../bootstrap/require';
@@ -160,6 +161,11 @@ export default class ServerFlecks extends Flecks {
     if (Object.keys(aliases).length > 0) {
       debug('aliases: %O', aliases);
     }
+    const exts = this.exts(rcs);
+    const enhancedResolver = enhancedResolve.create.sync({
+      extensions: exts,
+      alias: aliases,
+    });
     // Stub server-unfriendly modules.
     const stubs = this.stubs(['server'], rcs);
     if (stubs.length > 0) {
@@ -172,14 +178,22 @@ export default class ServerFlecks extends Flecks {
     ) {
       const {Module} = R('module');
       const {require: Mr} = Module.prototype;
+      const aliasKeys = Object.keys(aliases);
       Module.prototype.require = function hackedRequire(request, options) {
         for (let i = 0; i < stubs.length; ++i) {
           if (request.match(stubs[i])) {
             return undefined;
           }
         }
-        if (aliases[request]) {
-          return Mr.call(this, aliases[request], options);
+        if (aliasKeys.find((aliasKey) => request.startsWith(aliasKey))) {
+          try {
+            const resolved = enhancedResolver(FLECKS_CORE_ROOT, request);
+            if (resolved) {
+              return Mr.call(this, resolved, options);
+            }
+          }
+          // eslint-disable-next-line no-empty
+          catch (error) {}
         }
         return Mr.call(this, request, options);
       };
@@ -249,7 +263,6 @@ export default class ServerFlecks extends Flecks {
       }
       return undefined;
     };
-    const exts = this.exts(rcs);
     debug('pirating exts: %O', exts);
     addHook(
       (code, request) => {
@@ -295,6 +308,10 @@ export default class ServerFlecks extends Flecks {
       .replace(/[^a-zA-Z0-9]/g, '_')
       .replace(/_*(.*)_*/, '$1')
       .toUpperCase();
+  }
+
+  exts() {
+    return this.constructor.exts(this.rcs);
   }
 
   static exts(rcs) {
@@ -525,7 +542,7 @@ export default class ServerFlecks extends Flecks {
             : this.constructor.sourcepath(R.resolve(this.constructor.resolve(resolver, fleck)));
           allowlist.push(fleck);
           config.resolve.alias
-            .set(`${fleck}$`, alias);
+            .set(`${fleck}/`, alias);
           debug('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
         });
       // Set up compilation at each root.
