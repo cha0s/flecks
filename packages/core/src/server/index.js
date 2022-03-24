@@ -1,6 +1,7 @@
 import {join} from 'path';
 
 import airbnb from '@neutrinojs/airbnb';
+import neutrino from 'neutrino';
 
 import {Hooks} from '../flecks';
 import commands from './commands';
@@ -43,13 +44,22 @@ export default {
       }
       if (-1 === exclude.indexOf(target)) {
         const baseConfig = R(flecks.buildConfig('.eslint.defaults.js', target));
+        const webpackConfig = neutrino(config).webpack();
         config.use.unshift(
           airbnb({
             eslint: {
               baseConfig: {
                 ...baseConfig,
-                env: {
-                  mocha: true,
+                settings: {
+                  ...(baseConfig.settings || {}),
+                  'import/resolver': {
+                    ...(baseConfig.settings['import/resolver'] || {}),
+                    webpack: {
+                      config: {
+                        resolve: webpackConfig.resolve,
+                      },
+                    },
+                  },
                 },
               },
             },

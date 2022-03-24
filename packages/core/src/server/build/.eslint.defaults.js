@@ -1,4 +1,11 @@
 module.exports = {
+  env: {
+    browser: true,
+    // @todo chase
+    es2021: true,
+    node: true,
+    mocha: true,
+  },
   globals: {
     __non_webpack_require__: true,
     window: true,

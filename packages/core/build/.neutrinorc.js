@@ -16,7 +16,7 @@ const config = require('../src/bootstrap/fleck.neutrinorc');
 
 // Dotfiles.
 config.use.push(({config}) => {
-  ['eslintrc', 'eslint.defaults'].forEach((filename) => {
+  ['eslintrc'].forEach((filename) => {
     config
       .entry(`server/build/.${filename}`)
       .clear()
@@ -40,12 +40,7 @@ config.use.unshift(fleck());
 config.use.unshift(
   airbnb({
     eslint: {
-      baseConfig: {
-        ...require('../src/server/build/eslint.defaults'),
-        env: {
-          mocha: true,
-        },
-      },
+      baseConfig: require('../src/server/build/.eslint.defaults'),
     },
   }),
 );
