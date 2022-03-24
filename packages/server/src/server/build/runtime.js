@@ -14,7 +14,7 @@ module.exports = async (flecks) => {
       "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
       'module.exports = (async () => ({',
       `  config: ${JSON.stringify(flecks.config)},`,
-      '  flecks: Object.fromEntries(await Promise.all([',
+      '  loadFlecks: async () => Object.fromEntries(await Promise.all([',
       paths.map((path) => `    ['${path}', import('${path}')]`).join(',\n'),
       '  ].map(async ([path, M]) => [path, await M]))),',
       "  platforms: ['server']",

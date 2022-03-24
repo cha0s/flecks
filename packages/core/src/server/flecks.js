@@ -84,53 +84,8 @@ export default class ServerFlecks extends Flecks {
       configType = 'parameter';
     }
     debug('bootstrap configuration (%s): %O', configType, config);
-    // Fleck discovery.
-    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
-    const resolver = {};
-    const keys = Object.keys(config);
-    // `!platform` excludes that platform.
-    const without = platforms
-      .filter((platform) => '!'.charCodeAt(0) === platform.charCodeAt(0))
-      .map((platform) => platform.slice(1));
-    for (let i = 0; i < keys.length; ++i) {
-      const key = keys[i];
-      // Parse the alias (if any).
-      const index = key.indexOf(':');
-      const [path, alias] = -1 === index
-        ? [key, undefined]
-        : [key.slice(0, index), key.slice(index + 1)];
-      // Run it by the exception list.
-      if (-1 !== without.indexOf(path.split('/').pop())) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-      // Resolve the path (if necessary).
-      let resolvedPath;
-      if (alias) {
-        resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
-      }
-      else {
-        resolvedPath = path;
-      }
-      try {
-        R.resolve(resolvedPath);
-        resolver[path] = resolvedPath;
-      }
-      // eslint-disable-next-line no-empty
-      catch (error) {}
-      // Discover platform-specific variants.
-      if (platforms) {
-        platforms.forEach((platform) => {
-          try {
-            const resolvedPlatformPath = join(resolvedPath, platform);
-            R.resolve(resolvedPlatformPath);
-            resolver[join(path, platform)] = resolvedPlatformPath;
-          }
-          // eslint-disable-next-line no-empty
-          catch (error) {}
-        });
-      }
-    }
+    // Make resolver.
+    const resolver = this.makeResolver(config, platforms, root);
     // Rewrite aliased config keys.
     // eslint-disable-next-line no-param-reassign
     config = Object.fromEntries(
@@ -140,141 +95,14 @@ export default class ServerFlecks extends Flecks {
           return [-1 !== index ? key.slice(0, index) : key, value];
         }),
     );
-    const paths = Object.keys(resolver);
     // Load RCs.
     const rcs = this.loadRcs(resolver);
-    debug('rcs: %O', rcs);
-    // Merge aliases;
-    const aliases = {
-      // from fleck configuration above,
-      ...Object.fromEntries(Object.entries(resolver).filter(([from, to]) => from !== to)),
-      // from symlinks,
-      ...(
-        Object.fromEntries(
-          paths.filter((path) => this.fleckIsSymlinked(resolver, path))
-            .map((path) => [path, this.sourcepath(R.resolve(this.resolve(resolver, path)))]),
-        )
-      ),
-      // and from RCs.
-      ...this.aliases(rcs),
-    };
-    if (Object.keys(aliases).length > 0) {
-      debug('aliases: %O', aliases);
-    }
-    const exts = this.exts(rcs);
-    const enhancedResolver = enhancedResolve.create.sync({
-      extensions: exts,
-      alias: aliases,
-    });
-    // Stub server-unfriendly modules.
-    const stubs = this.stubs(['server'], rcs);
-    if (stubs.length > 0) {
-      debug('stubbing: %O', stubs);
-    }
-    // Do we need to get up in `require()`'s guts?
-    if (
-      Object.keys(aliases).length > 0
-      || stubs.length > 0
-    ) {
-      const {Module} = R('module');
-      const {require: Mr} = Module.prototype;
-      const aliasKeys = Object.keys(aliases);
-      Module.prototype.require = function hackedRequire(request, options) {
-        for (let i = 0; i < stubs.length; ++i) {
-          if (request.match(stubs[i])) {
-            return undefined;
-          }
-        }
-        if (aliasKeys.find((aliasKey) => request.startsWith(aliasKey))) {
-          try {
-            const resolved = enhancedResolver(FLECKS_CORE_ROOT, request);
-            if (resolved) {
-              return Mr.call(this, resolved, options);
-            }
-          }
-          // eslint-disable-next-line no-empty
-          catch (error) {}
-        }
-        return Mr.call(this, request, options);
-      };
-    }
-    // Compile.
-    const compilations = [];
-    const flecks = {};
-    const needCompilation = paths
-      .filter((path) => this.fleckIsCompiled(resolver, path));
-    if (needCompilation.length > 0) {
-      // Augment the compilations with babel config from flecksrc.
-      const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
-      debug('.flecksrc: babel: %O', rcBabelConfig);
-      // Key flecks needing compilation by their roots, so we can compile all common roots with a
-      // single invocation of `@babel/register`.
-      const compilationRootMap = {};
-      needCompilation.forEach((fleck) => {
-        const root = this.root(resolver, fleck);
-        if (!compilationRootMap[root]) {
-          compilationRootMap[root] = [];
-        }
-        compilationRootMap[root].push(fleck);
-      });
-      // Register a compilation for each root.
-      Object.entries(compilationRootMap).forEach(([root, compiling]) => {
-        const resolved = dirname(R.resolve(join(root, 'package.json')));
-        const sourcepath = this.sourcepath(resolved);
-        const sourceroot = join(sourcepath, '..');
-        // Load babel config from whichever we find first:
-        // - The fleck being compiled's build directory
-        // - The root build directory
-        // - Finally, the built-in babel config
-        const configFile = this.resolveBuildConfig(
-          resolver,
-          [
-            resolved,
-            FLECKS_CORE_ROOT,
-            this.resolvePath(resolver, '@flecks/core/server'),
-          ],
-          [
-            'babel.config.js',
-          ],
-        );
-        const ignore = `${resolve(join(sourceroot, 'node_modules'))}/`;
-        const only = `${resolve(sourceroot)}/`;
-        const config = {
-          // Augment the selected config with the babel config from RCs.
-          configFile,
-          // Target the compiler to avoid unnecessary work.
-          ignore: [ignore],
-          only: [only],
-        };
-        debug('compiling %O with %j', compiling, config);
-        compilations.push({
-          ignore,
-          only,
-          compiler: new Compiler(babelmerge(config, rcBabelConfig)),
-        });
-      });
-    }
-    const findCompiler = (request) => {
-      for (let i = 0; i < compilations.length; ++i) {
-        const {compiler, ignore, only} = compilations[i];
-        if (request.startsWith(only) && !request.startsWith(ignore)) {
-          return compiler;
-        }
-      }
-      return undefined;
-    };
-    debug('pirating exts: %O', exts);
-    addHook(
-      (code, request) => {
-        const compilation = findCompiler(request).compile(code, request);
-        return null === compilation ? code : compilation.code;
-      },
-      {exts, matcher: (request) => !!findCompiler(request)},
+    this.installCompilers(rcs, resolver);
+    // Load the flecks.
+    const flecks = Object.fromEntries(
+      Object.keys(resolver)
+        .map((path) => [path, R(this.resolve(resolver, path))]),
     );
-    // Load the rest of the flecks.
-    paths.forEach((path) => {
-      flecks[path] = R(this.resolve(resolver, path));
-    });
     return new ServerFlecks({
       config,
       flecks,
@@ -353,6 +181,140 @@ export default class ServerFlecks extends Flecks {
     return realpath !== resolved;
   }
 
+  static installCompilers(rcs, resolver) {
+    const paths = Object.keys(resolver);
+    debug('rcs: %O', rcs);
+    // Merge aliases;
+    const aliases = Object.fromEntries(
+      Object.entries({
+        // from fleck configuration above,
+        ...Object.fromEntries(Object.entries(resolver).filter(([from, to]) => from !== to)),
+        // from symlinks,
+        ...(
+          Object.fromEntries(
+            paths.filter((path) => this.fleckIsSymlinked(resolver, path))
+              .map((path) => [path, this.sourcepath(R.resolve(this.resolve(resolver, path)))]),
+          )
+        ),
+        // and from RCs.
+        ...this.aliases(rcs),
+      })
+        .map(([from, to]) => [from, to.endsWith('/index') ? to.slice(0, -6) : to]),
+    );
+    if (Object.keys(aliases).length > 0) {
+      debug('aliases: %O', aliases);
+    }
+    const exts = this.exts(rcs);
+    const enhancedResolver = enhancedResolve.create.sync({
+      extensions: exts,
+      alias: aliases,
+    });
+    // Stub server-unfriendly modules.
+    const stubs = this.stubs(['server'], rcs);
+    if (stubs.length > 0) {
+      debug('stubbing: %O', stubs);
+    }
+    // Do we need to get up in `require()`'s guts?
+    if (
+      Object.keys(aliases).length > 0
+      || stubs.length > 0
+    ) {
+      const {Module} = R('module');
+      const {require: Mr} = Module.prototype;
+      const aliasKeys = Object.keys(aliases);
+      Module.prototype.require = function hackedRequire(request, options) {
+        for (let i = 0; i < stubs.length; ++i) {
+          if (request.match(stubs[i])) {
+            return undefined;
+          }
+        }
+        if (aliasKeys.find((aliasKey) => request.startsWith(aliasKey))) {
+          try {
+            const resolved = enhancedResolver(FLECKS_CORE_ROOT, request);
+            if (resolved) {
+              return Mr.call(this, resolved, options);
+            }
+          }
+          // eslint-disable-next-line no-empty
+          catch (error) {}
+        }
+        return Mr.call(this, request, options);
+      };
+    }
+    // Compile.
+    const compilations = [];
+    const needCompilation = paths
+      .filter((path) => this.fleckIsCompiled(resolver, path));
+    if (needCompilation.length > 0) {
+      // Augment the compilations with babel config from flecksrc.
+      const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
+      debug('.flecksrc: babel: %O', rcBabelConfig);
+      // Key flecks needing compilation by their roots, so we can compile all common roots with a
+      // single invocation of `@babel/register`.
+      const compilationRootMap = {};
+      needCompilation.forEach((fleck) => {
+        const root = this.root(resolver, fleck);
+        if (!compilationRootMap[root]) {
+          compilationRootMap[root] = [];
+        }
+        compilationRootMap[root].push(fleck);
+      });
+      // Register a compilation for each root.
+      Object.entries(compilationRootMap).forEach(([root, compiling]) => {
+        const resolved = dirname(R.resolve(join(root, 'package.json')));
+        const sourcepath = this.sourcepath(resolved);
+        const sourceroot = join(sourcepath, '..');
+        // Load babel config from whichever we find first:
+        // - The fleck being compiled's build directory
+        // - The root build directory
+        // - Finally, the built-in babel config
+        const configFile = this.resolveBuildConfig(
+          resolver,
+          [
+            resolved,
+            FLECKS_CORE_ROOT,
+            this.resolvePath(resolver, '@flecks/core/server'),
+          ],
+          [
+            'babel.config.js',
+          ],
+        );
+        const ignore = `${resolve(join(sourceroot, 'node_modules'))}/`;
+        const only = `${resolve(sourceroot)}/`;
+        const config = {
+          // Augment the selected config with the babel config from RCs.
+          configFile,
+          // Target the compiler to avoid unnecessary work.
+          ignore: [ignore],
+          only: [only],
+        };
+        debug('compiling %O with %j', compiling, config);
+        compilations.push({
+          ignore,
+          only,
+          compiler: new Compiler(babelmerge(config, rcBabelConfig)),
+        });
+      });
+    }
+    const findCompiler = (request) => {
+      for (let i = 0; i < compilations.length; ++i) {
+        const {compiler, ignore, only} = compilations[i];
+        if (request.startsWith(only) && !request.startsWith(ignore)) {
+          return compiler;
+        }
+      }
+      return undefined;
+    };
+    debug('pirating exts: %O', exts);
+    addHook(
+      (code, request) => {
+        const compilation = findCompiler(request).compile(code, request);
+        return null === compilation ? code : compilation.code;
+      },
+      {exts, matcher: (request) => !!findCompiler(request)},
+    );
+  }
+
   loadBuildConfigs() {
     Object.entries(this.invoke('@flecks/core.build.config'))
       .forEach(([fleck, configs]) => (
@@ -404,6 +366,56 @@ export default class ServerFlecks extends Flecks {
       }
     }
     return rcs;
+  }
+
+  static makeResolver(config, platforms = ['server'], root = FLECKS_CORE_ROOT) {
+    const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
+    const resolver = {};
+    const keys = Object.keys(config);
+    // `!platform` excludes that platform.
+    const without = platforms
+      .filter((platform) => '!'.charCodeAt(0) === platform.charCodeAt(0))
+      .map((platform) => platform.slice(1));
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      // Parse the alias (if any).
+      const index = key.indexOf(':');
+      const [path, alias] = -1 === index
+        ? [key, undefined]
+        : [key.slice(0, index), key.slice(index + 1)];
+      // Run it by the exception list.
+      if (-1 !== without.indexOf(path.split('/').pop())) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // Resolve the path (if necessary).
+      let resolvedPath;
+      if (alias) {
+        resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
+      }
+      else {
+        resolvedPath = path;
+      }
+      try {
+        R.resolve(resolvedPath);
+        resolver[path] = resolvedPath;
+      }
+      // eslint-disable-next-line no-empty
+      catch (error) {}
+      // Discover platform-specific variants.
+      if (platforms) {
+        platforms.forEach((platform) => {
+          try {
+            const resolvedPlatformPath = join(resolvedPath, platform);
+            R.resolve(resolvedPlatformPath);
+            resolver[join(path, platform)] = resolvedPlatformPath;
+          }
+          // eslint-disable-next-line no-empty
+          catch (error) {}
+        });
+      }
+    }
+    return resolver;
   }
 
   overrideConfigFromEnvironment() {
@@ -536,13 +548,15 @@ export default class ServerFlecks extends Flecks {
       debug('.flecksrc: babel: %O', rcBabel);
       // Alias and de-externalize.
       needCompilation
+        .sort(([l], [r]) => (l < r ? 1 : -1))
         .forEach(([fleck, resolved]) => {
-          const alias = this.constructor.fleckIsAliased(resolver, fleck)
+          let alias = this.constructor.fleckIsAliased(resolver, fleck)
             ? resolved
             : this.constructor.sourcepath(R.resolve(this.constructor.resolve(resolver, fleck)));
+          alias = alias.endsWith('/index') ? alias.slice(0, -6) : alias;
           allowlist.push(fleck);
           config.resolve.alias
-            .set(`${fleck}/`, alias);
+            .set(fleck, alias);
           debug('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
         });
       // Set up compilation at each root.

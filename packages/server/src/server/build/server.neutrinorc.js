@@ -101,55 +101,6 @@ module.exports = async (flecks) => {
       start,
     ],
   };
-  // Stub out non-server-friendly modules on the server.
-  const exts = flecks.exts();
-  const stubs = flecks.stubs();
-  const aliases = flecks.aliases();
-  // Do we need to get up in `require()`'s guts?
-  if (
-    Object.keys(aliases).length > 0
-    || stubs.length > 0
-  ) {
-    const sanitizedStubs = stubs
-      .map((stub) => (
-        'string' === typeof stub
-          ? JSON.stringify(stub)
-          : `new RegExp(${JSON.stringify(stub.toString().slice(1, -1))})`
-      ));
-    const code = [
-      `const aliases = ${JSON.stringify(aliases)};`,
-      'const aliasKeys = Object.keys(aliases);',
-      `const stubs = [${sanitizedStubs}];`,
-      'const {Module} = require("module");',
-      'const {require: Mr} = Module.prototype;',
-      'const enhancedResolver = require("enhanced-resolve").create.sync({',
-      `  extensions: ${JSON.stringify(exts)},`,
-      '  alias: aliases,',
-      '});',
-      'Module.prototype.require = function hackedRequire(request, options) {',
-      '  for (let i = 0; i < stubs.length; ++i) {',
-      '    if (request.match(stubs[i])) {',
-      '      return undefined;',
-      '    }',
-      '  }',
-      '  if (aliasKeys.find((aliasKey) => request.startsWith(aliasKey))) {',
-      '    try {',
-      '      const resolved = enhancedResolver(process.cwd(), request);',
-      '      if (resolved) {',
-      '        return Mr.call(this, resolved, options);',
-      '      }',
-      '    }',
-      '    // eslint-disable-next-line no-empty',
-      '    catch (error) {}',
-      '  }',
-      '  return Mr.call(this, request, options);',
-      '};',
-    ].join('\n');
-    config.use.push(banner({
-      banner: code,
-      pluginId: 'aliases-banner',
-    }));
-  }
 
   // Build the server runtime.
   config.use.push(await runtime(flecks));
