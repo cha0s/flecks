@@ -50,12 +50,14 @@ else {
     module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslintrc.json')).toString());
   }
   catch (error) {
-    const {stdout} = spawnSync('node', [__filename], {
+    const {stderr, stdout} = spawnSync('node', [__filename], {
       env: {
         FLECKS_CORE_SYNC_FOR_ESLINT: true,
         ...process.env,
       },
     });
+    // eslint-disable-next-line no-console
+    console.error(stderr.toString());
     const json = stdout.toString();
     try {
       statSync(join(FLECKS_CORE_ROOT, 'node_modules'));
