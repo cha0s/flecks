@@ -28,18 +28,18 @@ export default (program, flecks) => {
       const {
         watch,
       } = opts;
+      const {build} = coreCommands(program, flecks);
+      const child = build.action(undefined, opts);
       const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
         console.log('No fleck tests found.');
-        return 0;
+        return child;
       }
       const testLocation = join(FLECKS_CORE_ROOT, 'dist', 'test.js');
       if (watch) {
         await unlink(testLocation);
       }
-      const {build} = coreCommands(program, flecks);
-      const child = build.action(undefined, opts);
       debug('Testing...', opts);
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -76,10 +76,11 @@ export default (program, flecks) => {
         await runMocha();
         return 0;
       }
-      chokidar.watch(testLocation).on('all', async () => {
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        runMocha();
-      });
+      chokidar.watch(testLocation)
+        .on('all', async () => {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+          runMocha();
+        });
       return new Promise(() => {});
     },
   };
