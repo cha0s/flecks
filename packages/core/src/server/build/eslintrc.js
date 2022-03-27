@@ -31,7 +31,7 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
     const config = neutrinos[targetNeutrino(FLECKS_CORE_BUILD_TARGET)]
       ? await R(neutrinos[targetNeutrino(FLECKS_CORE_BUILD_TARGET)])(flecks)
       // eslint-disable-next-line global-require
-      : require('../../bootstrap/fleck.neutrinorc');
+      : require('../../../build/.neutrinorc');
     flecks.invokeFlat('@flecks/core.build', FLECKS_CORE_BUILD_TARGET, config);
     const eslintConfig = neutrino(config).eslintrc();
     const webpackConfig = neutrino(config).webpack();
