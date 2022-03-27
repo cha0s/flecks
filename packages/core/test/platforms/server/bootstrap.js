@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
-import {Flecks} from '@flecks/core/server';
+import {Flecks} from '../../../src/server';
 
 it('bootstraps FLECKS_CORE_ROOT by default', () => {
   const flecks = Flecks.bootstrap();

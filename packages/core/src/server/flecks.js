@@ -268,12 +268,20 @@ export default class ServerFlecks extends Flecks {
         // - The fleck being compiled's build directory
         // - The root build directory
         // - Finally, the built-in babel config
+        let builtInPath;
+        try {
+          builtInPath = this.resolvePath(resolver, '@flecks/core/server');
+        }
+        catch (error) {
+          // This file won't be resolved during testing.
+          builtInPath = join(__dirname, '..', 'src', 'server');
+        }
         const configFile = this.resolveBuildConfig(
           resolver,
           [
             resolved,
             FLECKS_CORE_ROOT,
-            this.resolvePath(resolver, '@flecks/core/server'),
+            builtInPath,
           ],
           [
             'babel.config.js',
