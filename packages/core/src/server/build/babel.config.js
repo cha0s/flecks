@@ -18,6 +18,7 @@ module.exports = (api) => {
         {
           exclude: [
             '@babel/plugin-transform-regenerator',
+            '@babel/plugin-transform-async-to-generator',
           ],
         },
       ],
