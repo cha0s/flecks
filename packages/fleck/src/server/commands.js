@@ -60,7 +60,17 @@ export default (program, flecks) => {
         clearModule(testLocation);
         mocha.addFile(testLocation);
         mocha.loadFiles();
-        return new Promise((r, e) => mocha.run((me) => (me ? e(me) : r())));
+        return new Promise((r, e) => {
+          mocha.run((code) => {
+            if (!code) {
+              r();
+              return;
+            }
+            const error = new Error('Tests failed');
+            error.code = code;
+            e(error);
+          });
+        });
       };
       if (!watch) {
         await new Promise((resolve, reject) => {
@@ -73,8 +83,13 @@ export default (program, flecks) => {
           });
           child.on('error', reject);
         });
-        await runMocha();
-        return 0;
+        try {
+          await runMocha();
+          return 0;
+        }
+        catch (error) {
+          return error.code;
+        }
       }
       chokidar.watch(testLocation)
         .on('all', async () => {
