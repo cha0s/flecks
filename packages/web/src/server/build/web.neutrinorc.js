@@ -137,7 +137,12 @@ module.exports = async (flecks) => {
       config.resolve.modules
         .merge([join(FLECKS_CORE_ROOT, 'node_modules')]);
       // Reporting.
-      config.stats(flecks.get('@flecks/web/server.stats'));
+      config.stats({
+        ...flecks.get('@flecks/web/server.stats'),
+        warningsFilter: [
+          /Failed to parse source map/,
+        ],
+      });
       // Inline the main entrypoint (nice for FCP).
       config
         .plugin('inline-chunks')

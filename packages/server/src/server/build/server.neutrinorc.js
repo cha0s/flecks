@@ -49,7 +49,12 @@ module.exports = async (flecks) => {
         '.json',
       ]);
     // Reporting.
-    config.stats(flecks.get('@flecks/server.stats'));
+    config.stats({
+      ...flecks.get('@flecks/server.stats'),
+      warningsFilter: [
+        /Failed to parse source map/,
+      ],
+    });
     // Outputs.
     config.output
       .path(options.output)

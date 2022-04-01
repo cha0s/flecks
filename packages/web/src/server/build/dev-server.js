@@ -16,6 +16,11 @@ module.exports = (flecks) => (neutrino) => {
     host: devHost,
     port: devPort || (port + 1),
     public: devPublic,
-    stats: devStats,
+    stats: {
+      ...devStats,
+      warningsFilter: [
+        /Failed to parse source map/,
+      ],
+    },
   }));
 };
