@@ -1,0 +1,25 @@
+{
+  "name": "@flecks/electron",
+  "version": "1.4.1",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postversion": "cp package.json dist",
+    "test": "flecks test"
+  },
+  "files": [
+    "build",
+    "server.js",
+    "server.js.map",
+    "src",
+    "test"
+  ],
+  "dependencies": {
+    "@flecks/core": "^1.4.1",
+    "electron": "^18.0.1"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^1.4.1"
+  }
+}
