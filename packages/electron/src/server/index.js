@@ -11,7 +11,7 @@ async function createWindow(flecks) {
     browserWindowOptions,
   } = flecks.get('@flecks/electron/server');
   win = new BrowserWindow(browserWindowOptions);
-  await flecks.invokeSequentialAsync('@flecks/electron.window', win);
+  await flecks.invokeSequentialAsync('@flecks/electron/server.window', win);
 }
 
 export default {
@@ -30,7 +30,7 @@ export default {
        */
       url: undefined,
     }),
-    '@flecks/electron.initialize': async (app, flecks) => {
+    '@flecks/electron/server.initialize': async (app, flecks) => {
       // Apple has to be *special*.
       app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
@@ -45,7 +45,7 @@ export default {
       await app.whenReady();
       await createWindow(flecks);
     },
-    '@flecks/electron.window': async (win, flecks) => {
+    '@flecks/electron/server.window': async (win, flecks) => {
       const {
         url = `http://localhost:${flecks.get('@flecks/web/server.port')}`,
       } = flecks.get('@flecks/electron/server');
@@ -56,7 +56,7 @@ export default {
       if (!app) {
         return;
       }
-      await flecks.invokeSequentialAsync('@flecks/electron.initialize', app);
+      await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', app);
     },
   },
 };
