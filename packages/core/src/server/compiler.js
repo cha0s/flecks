@@ -9,6 +9,8 @@ import {
 } from '@babel/core';
 import sourceMapSupport from 'source-map-support';
 
+sourceMapSupport.install();
+
 const cache = require('@babel/register/lib/cache');
 
 const identity = (i) => i;
