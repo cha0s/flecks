@@ -18,7 +18,7 @@ const augmentBuild = (target, config, flecks) => {
     if ('fleck' === target) {
       extract.enabled = true;
       extract.plugin = {
-        filename: 'index.css',
+        filename: '[name].css',
       };
     }
     neutrino.use(

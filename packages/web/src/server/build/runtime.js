@@ -28,9 +28,22 @@ module.exports = async (flecks) => {
   const styles = (
     await Promise.all(
       roots
-        .map(async ([, path]) => {
+        .map(([, path]) => {
           try {
-            const filename = join(path, 'index.css');
+            const {files} = R(join(path, 'package.json'));
+            return (
+              files
+                .filter((name) => name.match(/\.css$/))
+                .map((name) => join(path, name))
+            );
+          }
+          catch (error) {
+            return [];
+          }
+        })
+        .flat()
+        .map(async (filename) => {
+          try {
             await stat(filename);
             return filename;
           }
