@@ -1,8 +1,16 @@
+import cluster from 'cluster';
+import {join} from 'path';
+
 import {Hooks} from '@flecks/core';
+import {require as R} from '@flecks/core/server';
 import {
   app,
   BrowserWindow,
 } from 'electron';
+
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
 let win;
 
@@ -30,6 +38,32 @@ export default {
        */
       url: undefined,
     }),
+    '@flecks/core.webpack': (target, config) => {
+      const StartServerWebpackPlugin = R('start-server-webpack-plugin');
+      const plugin = config.plugins.find((plugin) => plugin instanceof StartServerWebpackPlugin);
+      // Extremely hackish, c'est la vie.
+      if (plugin) {
+        /* eslint-disable no-underscore-dangle */
+        plugin._startServer = function _startServerHacked(callback) {
+          const execArgv = this._getArgs();
+          const inspectPort = this._getInspectPort(execArgv);
+          const clusterOptions = {
+            args: [this._entryPoint],
+            exec: join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'electron'),
+            execArgv,
+          };
+          if (inspectPort) {
+            clusterOptions.inspectPort = inspectPort;
+          }
+          cluster.setupMaster(clusterOptions);
+          cluster.on('online', (worker) => {
+            callback(worker);
+          });
+          cluster.fork();
+        };
+        /* eslint-enable no-underscore-dangle */
+      }
+    },
     '@flecks/electron/server.initialize': async (app, flecks) => {
       // Apple has to be *special*.
       app.on('window-all-closed', () => {
