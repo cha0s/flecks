@@ -7,10 +7,11 @@ import FlecksContext from '@flecks/react/context';
 import gatherComponents from './gather-components';
 
 const debug = D('@flecks/react/root');
+const debugSilly = debug.extend('silly');
 
 export default async (flecks, req) => {
   const Roots = flecks.invoke('@flecks/react.roots', req);
-  debug('roots: %O', Roots);
+  debugSilly('roots: %O', Roots);
   const Providers = await flecks.invokeSequentialAsync('@flecks/react.providers', req);
   const FlattenedProviders = [];
   for (let i = 0; i < Providers.length; i++) {
@@ -19,7 +20,7 @@ export default async (flecks, req) => {
       FlattenedProviders.push(...(Array.isArray(Provider[0]) ? Provider : [Provider]));
     }
   }
-  debug('providers: %O', FlattenedProviders);
+  debugSilly('providers: %O', FlattenedProviders);
   return () => {
     const RootElements = [[FlecksContext.Provider, {value: flecks}]]
       .concat(FlattenedProviders)

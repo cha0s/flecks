@@ -21,8 +21,9 @@ module.exports = (name) => {
       D.formatters.o = undefined;
       D.formatters.O = undefined;
     }
+    const type = 'server' === process.env.FLECKS_CORE_BUILD_TARGET ? 'error' : 'debug';
     // eslint-disable-next-line no-console
-    D.log = console.debug.bind(console);
+    D.log = console[type].bind(console);
   }
   return D(name);
 };

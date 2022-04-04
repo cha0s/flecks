@@ -6,6 +6,7 @@ import createReducer from './store/create-reducer';
 import configureStore from './store';
 
 const debug = D('@flecks/redux/server');
+const debugSilly = debug.extend('silly');
 
 export default {
   [Hooks]: {
@@ -17,7 +18,7 @@ export default {
         Object.values(slices).map(({hydrateServer}) => hydrateServer?.(req, flecks)),
       );
       const preloadedState = reducer(undefined, hydrateServer({flecks, req}));
-      debug(
+      debugSilly(
         'creating redux store with slices(%O) and state(%O)',
         Object.keys(slices),
         preloadedState,

@@ -6,6 +6,7 @@ import session from 'express-session';
 import createClient from '../create-client';
 
 const debug = D('@flecks/redis/session');
+const debugSilly = debug.extend('silly');
 
 const RedisStore = ConnectRedis(session);
 
@@ -22,7 +23,7 @@ export default {
       const pubClient = createClient(flecks);
       const subClient = createClient(flecks);
       await Promise.all([pubClient.connect(), subClient.connect()]);
-      debug('creating adapter');
+      debugSilly('creating adapter');
       return {
         adapter: redisAdapter(pubClient, subClient),
       };

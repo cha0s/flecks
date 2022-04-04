@@ -14,6 +14,7 @@ import D from './debug';
 import Middleware from './middleware';
 
 const debug = D('@flecks/core/flecks');
+const debugSilly = debug.extend('silly');
 
 export const ById = Symbol.for('@flecks/core.byId');
 export const ByType = Symbol.for('@flecks/core.byType');
@@ -55,13 +56,13 @@ export default class Flecks {
     this.flecks = {};
     this.platforms = platforms;
     const entries = Object.entries(flecks);
-    debug('paths: %O', entries.map(([fleck]) => fleck));
+    debugSilly('paths: %O', entries.map(([fleck]) => fleck));
     for (let i = 0; i < entries.length; i++) {
       const [fleck, M] = entries[i];
       this.registerFleck(fleck, M);
     }
     this.configureFlecks();
-    debug('config: %O', this.config);
+    debugSilly('config: %O', this.config);
   }
 
   configureFleck(fleck) {
@@ -204,7 +205,7 @@ export default class Flecks {
       [ByType]: types,
     };
     hotGathered.set(hook, {idAttribute, gathered, typeAttribute});
-    debug("gathered '%s': %O", hook, gathered);
+    debug("gathered '%s': %O", hook, Object.keys(gathered[ByType]));
     return gathered;
   }
 
@@ -257,7 +258,7 @@ export default class Flecks {
   }
 
   invokeFleck(hook, fleck, ...args) {
-    debug('invokeFleck(%s, %s, ...)', hook, fleck);
+    debugSilly('invokeFleck(%s, %s, ...)', hook, fleck);
     if (!this.hooks[hook]) {
       return undefined;
     }
@@ -346,7 +347,7 @@ export default class Flecks {
   }
 
   makeMiddleware(hook) {
-    debug('makeMiddleware(...): %s', hook);
+    debugSilly('makeMiddleware(...): %s', hook);
     if (!this.hooks[hook]) {
       return Promise.resolve();
     }
@@ -356,7 +357,7 @@ export default class Flecks {
     }
     const middleware = flecks
       .filter((fleck) => this.fleckImplements(fleck, hook));
-    debug('middleware: %O', middleware);
+    debugSilly('middleware: %O', middleware);
     const instance = new Middleware(middleware.map((fleck) => this.invokeFleck(hook, fleck)));
     return async (...args) => {
       const next = args.pop();
@@ -422,13 +423,13 @@ export default class Flecks {
   }
 
   registerFleck(fleck, M) {
-    debug('registering %s...', fleck);
+    debugSilly('registering %s...', fleck);
     this.flecks[fleck] = M;
     if (M.default) {
       const {default: {[Hooks]: hooks}} = M;
       if (hooks) {
         const keys = Object.keys(hooks);
-        debug("hooks for '%s': %O", fleck, keys);
+        debugSilly("hooks for '%s': %O", fleck, keys);
         for (let j = 0; j < keys.length; j++) {
           const key = keys[j];
           if (!this.hooks[key]) {
@@ -439,7 +440,7 @@ export default class Flecks {
       }
     }
     else {
-      debug("'%s' has no default export: %O", fleck, M);
+      debugSilly("'%s' has no default export", fleck);
     }
   }
 

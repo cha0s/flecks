@@ -12,6 +12,7 @@ const {
 } = process.env;
 
 const debug = D('@flecks/core/commands');
+const debugSilly = debug.extend('silly');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
 export const processCode = (child) => new Promise((resolve, reject) => {
@@ -23,7 +24,8 @@ export const processCode = (child) => new Promise((resolve, reject) => {
 });
 
 export const spawnWith = (cmd, opts = {}) => {
-  debug("spawning: '%s' with options: %O", cmd.join(' '), opts);
+  debug("spawning: '%s'", cmd.join(' '));
+  debugSilly('with options: %O', opts);
   const child = spawn(cmd[0], cmd.slice(1), {
     ...opts,
     env: {

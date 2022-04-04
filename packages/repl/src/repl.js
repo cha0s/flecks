@@ -7,21 +7,22 @@ import {start} from 'repl';
 import {D} from '@flecks/core';
 
 const debug = D('@flecks/repl');
+const debugSilly = debug.extend('silly');
 
 export async function createReplServer(flecks) {
   const {id} = flecks.get('@flecks/core');
   const context = flecks.invokeFlat('@flecks/repl.context')
     .reduce((r, vars) => ({...r, ...vars}), {flecks});
   debug(
-    'context = %O',
-    Object.fromEntries(Object.entries(context).map(([key]) => [key, '...'])),
+    'Object.keys(context) === %O',
+    Object.keys(context),
   );
   const commands = {};
   Object.entries(
     flecks.invokeFlat('@flecks/repl.commands').reduce((r, commands) => ({...r, ...commands}), {}),
   ).forEach(([key, value]) => {
     commands[key] = value;
-    debug('registered command: %s', key);
+    debugSilly('registered command: %s', key);
   });
   const netServer = createServer((socket) => {
     debug('client connection to repl established');

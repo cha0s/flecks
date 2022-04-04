@@ -1,4 +1,5 @@
 import {join} from 'path';
+import {inspect} from 'util';
 
 import airbnb from '@neutrinojs/airbnb';
 import neutrino from 'neutrino';
@@ -10,6 +11,11 @@ import R from '../bootstrap/require';
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
+
+const {defaultOptions} = inspect;
+defaultOptions.breakLength = 160;
+defaultOptions.compact = 6;
+defaultOptions.sorted = true;
 
 export {dump as dumpYml, load as loadYml} from 'js-yaml';
 

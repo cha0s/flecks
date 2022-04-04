@@ -19,6 +19,7 @@ import {targetNeutrino} from '../commands';
 import Flecks from '../flecks';
 
 const debug = D('@flecks/core/build/webpack.config.js');
+const debugSilly = debug.extend('silly');
 
 const {
   FLECKS_CORE_BUILD_LIST = '',
@@ -78,6 +79,6 @@ export default (async () => {
     debug('no webpack configuration found! aborting...');
     await new Promise(() => {});
   }
-  debug('webpack configurations %O', webpackConfigs);
+  debugSilly('webpack configurations %O', webpackConfigs);
   return webpackConfigs;
 })();

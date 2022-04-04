@@ -3,6 +3,7 @@ import express from 'express';
 import expressSession from 'express-session';
 
 const debug = D('@flecks/user/session');
+const debugSilly = debug.extend('silly');
 
 export default {
   [Hooks]: {
@@ -19,19 +20,19 @@ export default {
     '@flecks/web/server.request.route': (flecks) => {
       const urle = express.urlencoded({extended: true});
       return (req, res, next) => {
-        debug('@flecks/web/server.request.route: express.urlencoded()');
+        debugSilly('@flecks/web/server.request.route: express.urlencoded()');
         urle(req, res, (error) => {
           if (error) {
             next(error);
             return;
           }
-          debug('@flecks/web/server.request.route: session()');
+          debugSilly('@flecks/web/server.request.route: session()');
           flecks.get('$flecks/user.session')(req, res, (error) => {
             if (error) {
               next(error);
               return;
             }
-            debug('session ID: %s', req.session.id);
+            debugSilly('session ID: %s', req.session.id);
             next();
           });
         });
@@ -47,7 +48,7 @@ export default {
       }));
     },
     '@flecks/socket/server.request.socket': (flecks) => (socket, next) => {
-      debug('@flecks/socket/server.request.socket: session()');
+      debugSilly('@flecks/socket/server.request.socket: session()');
       flecks.get('$flecks/user.session')(socket.handshake, {}, () => {
         const id = socket.handshake.session?.id;
         socket.join(id);

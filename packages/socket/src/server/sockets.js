@@ -7,7 +7,7 @@ import createIntercom from './create-intercom';
 import ServerSocket from './socket';
 
 const debug = D('@flecks/socket/server/sockets');
-const debugSilly = D('@flecks/socket/server/sockets:silly');
+const debugSilly = debug.extend('silly');
 
 export default class SocketServer {
 
@@ -16,9 +16,9 @@ export default class SocketServer {
     this.flecks = flecks;
     this.httpServer = httpServer;
     const hooks = flecks.invokeMerge('@flecks/socket.intercom');
-    debug('intercom hooks(%O)', hooks);
+    debugSilly('intercom hooks(%O)', hooks);
     this.localIntercom = async ({payload, type}, fn) => {
-      debug('customHook: %s(%o)', type, payload);
+      debugSilly('customHook: %s(%o)', type, payload);
       if (hooks[type]) {
         fn(await hooks[type](payload, this));
       }

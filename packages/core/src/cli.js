@@ -12,6 +12,7 @@ const {
 } = process.env;
 
 const debug = D('@flecks/core/cli');
+const debugSilly = debug.extend('silly');
 
 // Guarantee local node_modules path.
 const defaultNodeModules = resolve(join(FLECKS_CORE_ROOT, 'node_modules'));
@@ -40,7 +41,7 @@ const environmentUpdates = (
   }
   : undefined;
 if (environmentUpdates) {
-  debug('updating environment, forking with %O...', environmentUpdates);
+  debugSilly('updating environment, forking with %O...', environmentUpdates);
   const forkOptions = {
     env: {
       ...process.env,
@@ -61,13 +62,13 @@ else {
     const child = await fn(...args);
     if ('object' !== typeof child) {
       const code = 'undefined' !== typeof child ? child : 0;
-      debug('action returned code %d', code);
+      debugSilly('action returned code %d', code);
       process.exitCode = code;
       return;
     }
     try {
       const code = await processCode(child);
-      debug('action exited with code %d', code);
+      debugSilly('action exited with code %d', code);
       process.exitCode = code;
     }
     catch (error) {
@@ -84,9 +85,9 @@ else {
     .usage('[command] [...]');
   // Bootstrap.
   (async () => {
-    debug('bootstrapping flecks...');
+    debugSilly('bootstrapping flecks...');
     const flecks = Flecks.bootstrap();
-    debug('bootstrapped');
+    debugSilly('bootstrapped');
     // Register commands.
     const commands = flecks.invokeMerge('@flecks/core.commands', program);
     const keys = Object.keys(commands).sort();
@@ -98,7 +99,7 @@ else {
         name = keys[i],
         options = [],
       } = commands[keys[i]];
-      debug('adding command %s...', name);
+      debugSilly('adding command %s...', name);
       const cmd = program.command(name);
       cmd.description(description);
       for (let i = 0; i < args.length; ++i) {

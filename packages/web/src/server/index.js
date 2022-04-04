@@ -129,6 +129,7 @@ export default {
        * (webpack-dev-server) Webpack stats output.
        */
       devStats: {
+        assets: false,
         chunks: false,
         colors: true,
         modules: false,

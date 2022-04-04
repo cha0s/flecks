@@ -28,6 +28,7 @@ const {
 } = process.env;
 
 const debug = D('@flecks/core/flecks/server');
+const debugSilly = debug.extend('silly');
 
 export default class ServerFlecks extends Flecks {
 
@@ -83,7 +84,8 @@ export default class ServerFlecks extends Flecks {
     else {
       configType = 'parameter';
     }
-    debug('bootstrap configuration (%s): %O', configType, config);
+    debug('bootstrap configuration (%s)', configType);
+    debugSilly(config);
     // Make resolver.
     const resolver = this.makeResolver(config, platforms, root);
     // Rewrite aliased config keys.
@@ -183,7 +185,7 @@ export default class ServerFlecks extends Flecks {
 
   static installCompilers(rcs, resolver) {
     const paths = Object.keys(resolver);
-    debug('rcs: %O', rcs);
+    debugSilly('rcs: %O', rcs);
     // Merge aliases;
     const aliases = Object.fromEntries(
       Object.entries({
@@ -202,7 +204,7 @@ export default class ServerFlecks extends Flecks {
         .map(([from, to]) => [from, to.endsWith('/index') ? to.slice(0, -6) : to]),
     );
     if (Object.keys(aliases).length > 0) {
-      debug('aliases: %O', aliases);
+      debugSilly('aliases: %O', aliases);
     }
     const exts = this.exts(rcs);
     const enhancedResolver = enhancedResolve.create.sync({
@@ -212,7 +214,7 @@ export default class ServerFlecks extends Flecks {
     // Stub server-unfriendly modules.
     const stubs = this.stubs(['server'], rcs);
     if (stubs.length > 0) {
-      debug('stubbing: %O', stubs);
+      debugSilly('stubbing: %O', stubs);
     }
     // Do we need to get up in `require()`'s guts?
     if (
@@ -248,7 +250,7 @@ export default class ServerFlecks extends Flecks {
     if (needCompilation.length > 0) {
       // Augment the compilations with babel config from flecksrc.
       const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
-      debug('.flecksrc: babel: %O', rcBabelConfig);
+      debugSilly('.flecksrc: babel: %O', rcBabelConfig);
       // Key flecks needing compilation by their roots, so we can compile all common roots with a
       // single invocation of `@babel/register`.
       const compilationRootMap = {};
@@ -296,7 +298,7 @@ export default class ServerFlecks extends Flecks {
           ignore: [ignore],
           only: [only],
         };
-        debug('compiling %O with %j', compiling, config);
+        debugSilly('compiling %O with %j', compiling, config);
         compilations.push({
           ignore,
           only,
@@ -313,7 +315,7 @@ export default class ServerFlecks extends Flecks {
       }
       return undefined;
     };
-    debug('pirating exts: %O', exts);
+    debugSilly('pirating exts: %O', exts);
     addHook(
       (code, request) => {
         const compilation = findCompiler(request).compile(code, request);
@@ -344,7 +346,7 @@ export default class ServerFlecks extends Flecks {
       const {load} = R('js-yaml');
       const filename = join(resolvedRoot, 'build', FLECKS_YML);
       const buffer = readFileSync(filename, 'utf8');
-      debug('parsing configuration from YML...');
+      debugSilly('parsing configuration from YML...');
       return ['YML', load(buffer, {filename}) || {}];
     }
     catch (error) {
@@ -553,7 +555,7 @@ export default class ServerFlecks extends Flecks {
       .filter(([fleck]) => this.constructor.fleckIsCompiled(resolver, fleck));
     if (needCompilation.length > 0) {
       const rcBabel = this.babel();
-      debug('.flecksrc: babel: %O', rcBabel);
+      debugSilly('.flecksrc: babel: %O', rcBabel);
       // Alias and de-externalize.
       needCompilation
         .sort(([l], [r]) => (l < r ? 1 : -1))
@@ -565,7 +567,7 @@ export default class ServerFlecks extends Flecks {
           allowlist.push(fleck);
           config.resolve.alias
             .set(fleck, alias);
-          debug('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
+          debugSilly('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
         });
       // Set up compilation at each root.
       Array.from(new Set(
@@ -579,7 +581,7 @@ export default class ServerFlecks extends Flecks {
           const sourceroot = join(sourcepath, '..');
           additionalModuleDirs.push(join(sourceroot, 'node_modules'));
           const configFile = this.buildConfig('babel.config.js');
-          debug('compiling: %s with %s', root, configFile);
+          debugSilly('compiling: %s with %s', root, configFile);
           const babel = {
             configFile,
             // Augment the compiler with babel config from flecksrc.
