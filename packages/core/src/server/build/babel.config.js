@@ -10,6 +10,9 @@ module.exports = (api) => {
       setSpreadProperties: true,
     },
     plugins: [
+      '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-logical-assignment-operators',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
       '@babel/plugin-proposal-optional-chaining',
     ],
     presets: [
@@ -19,6 +22,7 @@ module.exports = (api) => {
           exclude: [
             '@babel/plugin-transform-regenerator',
             '@babel/plugin-transform-async-to-generator',
+            '@babel/plugin-transform-object-super',
           ],
         },
       ],
