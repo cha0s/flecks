@@ -14,8 +14,7 @@ const {
 module.exports = async (flecks) => {
   const {
     hot,
-    inspect,
-    profile,
+    nodeArgs,
     start: isStarting,
   } = flecks.get('@flecks/server');
 
@@ -79,14 +78,8 @@ module.exports = async (flecks) => {
           options.keyboard = false;
           // HMR.
           options.signal = !!hot;
-          // Debugging.
-          if (inspect) {
-            options.nodeArgs.push('--inspect');
-          }
-          // Profiling.
-          if (profile) {
-            options.nodeArgs.push('--prof');
-          }
+          // Node args.
+          options.nodeArgs.push(...nodeArgs);
           // Bail hard on unhandled rejections and report.
           options.nodeArgs.push('--unhandled-rejections=strict');
           options.nodeArgs.push('--trace-uncaught');

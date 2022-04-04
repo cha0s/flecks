@@ -8,13 +8,9 @@ export default {
        */
       hot: false,
       /**
-       * Whether the Node.js inspector is enabled.
+       * Arguments to pass along to node. See: https://nodejs.org/api/cli.html
        */
-      inspect: false,
-      /**
-       * Whether Node.js profiling is enabled.
-       */
-      profile: false,
+      nodeArgs: [],
       /**
        * Whether to start the server after building.
        */
