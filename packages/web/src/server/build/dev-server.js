@@ -7,6 +7,7 @@ module.exports = (flecks) => (neutrino) => {
     devPublic,
     devStats,
     port,
+    public: $$public,
   } = flecks.get('@flecks/web/server');
   neutrino.use(devServer({
     historyApiFallback: {
@@ -15,7 +16,7 @@ module.exports = (flecks) => (neutrino) => {
     hot: false,
     host: devHost,
     port: devPort || (port + 1),
-    public: devPublic,
+    public: devPublic || $$public,
     stats: {
       ...devStats,
       warningsFilter: [

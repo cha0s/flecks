@@ -34,7 +34,7 @@ export default {
       /**
        * The URL to load in electron by default.
        *
-       * Defaults to `http://localhost:${flecks.get('@flecks/web/server.port')}`.
+       * Defaults to `http://${flecks.get('@flecks/web/server.public')}:${flecks.get('@flecks/web/server.port')}`.
        */
       url: undefined,
     }),
@@ -80,9 +80,8 @@ export default {
       await createWindow(flecks);
     },
     '@flecks/electron/server.window': async (win, flecks) => {
-      const {
-        url = `http://localhost:${flecks.get('@flecks/web/server.port')}`,
-      } = flecks.get('@flecks/electron/server');
+      const {public: $$public} = flecks.get('@flecks/web/server');
+      const {url = `http://${$$public}`} = flecks.get('@flecks/electron/server');
       await win.loadURL(url);
     },
     '@flecks/server.up': async (flecks) => {

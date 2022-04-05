@@ -114,6 +114,12 @@ export default {
     ],
     '@flecks/core.config': () => ({
       /**
+       * (webpack-dev-server) Disable the host check.
+       *
+       * See: https://github.com/webpack/webpack-dev-server/issues/887
+       */
+      devDisableHostCheck: false,
+      /**
        * (webpack-dev-server) Host to bind.
        */
       devHost: 'localhost',
@@ -123,6 +129,8 @@ export default {
       devPort: undefined,
       /**
        * (webpack-dev-server) Public path to serve.
+       *
+       * Defaults to `flecks.get('@flecks/web/server.public')`.
        */
       devPublic: undefined,
       /**
@@ -154,6 +162,10 @@ export default {
        * Port to bind.
        */
       port: 32340,
+      /**
+       * Public path to server.
+       */
+      public: 'localhost:32340',
       /**
        * Webpack stats configuration when building HTTP target.
        */
