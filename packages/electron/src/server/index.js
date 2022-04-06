@@ -15,9 +15,7 @@ const {
 let win;
 
 async function createWindow(flecks) {
-  const {
-    browserWindowOptions,
-  } = flecks.get('@flecks/electron/server');
+  const {browserWindowOptions} = flecks.get('@flecks/electron/server');
   win = new BrowserWindow(browserWindowOptions);
   await flecks.invokeSequentialAsync('@flecks/electron/server.window', win);
 }
@@ -31,6 +29,10 @@ export default {
        * See: https://www.electronjs.org/docs/latest/api/browser-window
        */
       browserWindowOptions: {},
+      /**
+       * Quit the app when all windows are closed.
+       */
+      quitOnClosed: true,
       /**
        * The URL to load in electron by default.
        *
@@ -65,11 +67,16 @@ export default {
       }
     },
     '@flecks/electron/server.initialize': async (app, flecks) => {
-      // Apple has to be *special*.
       app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin') {
-          app.quit();
+        const {quitOnClosed} = flecks.get('@flecks/electron/server');
+        if (!quitOnClosed) {
+          return;
         }
+        // Apple has to be *special*.
+        if (process.platform === 'darwin') {
+          return;
+        }
+        app.quit();
       });
       app.on('activate', async () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -84,6 +91,11 @@ export default {
       const {url = `http://${$$public}`} = flecks.get('@flecks/electron/server');
       await win.loadURL(url);
     },
+    '@flecks/repl.context': (flecks) => ({
+      electron: {
+        createWindow: () => createWindow(flecks),
+      },
+    }),
     '@flecks/server.up': async (flecks) => {
       // `app` will be undefined if we aren't running in an electron environment. Just bail.
       if (!app) {
