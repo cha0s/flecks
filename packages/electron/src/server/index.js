@@ -47,7 +47,7 @@ export default {
       /**
        * The URL to load in electron by default.
        *
-       * Defaults to `http://${flecks.get('@flecks/web/server.public')}:${flecks.get('@flecks/web/server.port')}`.
+       * Defaults to `http://${flecks.get('@flecks/web/server.public')}`.
        */
       url: undefined,
     }),
