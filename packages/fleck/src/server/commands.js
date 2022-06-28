@@ -56,7 +56,6 @@ export default (program, flecks) => {
       const runMocha = async () => {
         const mocha = new Mocha();
         mocha.ui('bdd');
-        mocha.reporter('min');
         clearModule(testLocation);
         mocha.addFile(testLocation);
         mocha.loadFiles();
