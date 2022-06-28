@@ -83,13 +83,8 @@ export default (program, flecks) => {
           });
           child.on('error', reject);
         });
-        try {
-          await runMocha();
-          return 0;
-        }
-        catch (error) {
-          return error.code;
-        }
+        await runMocha();
+        return 0;
       }
       chokidar.watch(testLocation)
         .on('all', async () => {
