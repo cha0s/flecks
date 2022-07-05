@@ -10,13 +10,14 @@ const {
 } = process.env;
 
 const debug = D('@flecks/fleck/fleck.neutrino.js');
+const debugSilly = debug.extend('silly');
 
 const config = require('../../../../core/src/bootstrap/fleck.neutrinorc');
 
 module.exports = async (flecks) => {
   // Compile.
   const rcBabel = flecks.babel();
-  debug('.flecksrc: babel: %j', rcBabel);
+  debugSilly('.flecksrc: babel: %j', rcBabel);
   config.use.push(fleck({
     babel: babelmerge.all([
       {configFile: flecks.buildConfig('babel.config.js')},
