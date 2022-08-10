@@ -17,6 +17,7 @@ import {
   isObjectExpression,
   isStringLiteral,
   isThisExpression,
+  isVariableDeclaration,
 } from '@babel/types';
 import {require as R} from '@flecks/core/server';
 import {parse as parseComment} from 'comment-parser';
@@ -75,15 +76,14 @@ class ParserState {
 }
 
 const implementationVisitor = (fn) => ({
-  ExportDefaultDeclaration(path) {
+  ExportNamedDeclaration(path) {
     const {declaration} = path.node;
-    if (isObjectExpression(declaration)) {
-      const {properties} = declaration;
-      properties.forEach((property) => {
-        const {key, value} = property;
-        if (isIdentifier(key) && key.name === 'Hooks') {
-          if (isObjectExpression(value)) {
-            const {properties} = value;
+    if (isVariableDeclaration(declaration)) {
+      const {declarations} = declaration;
+      declarations.forEach((declarator) => {
+        if ('hooks' === declarator.id.name) {
+          if (isObjectExpression(declarator.init)) {
+            const {properties} = declarator.init;
             properties.forEach((property) => {
               const {key} = property;
               if (isLiteral(key)) {

@@ -16,24 +16,38 @@ import Middleware from './middleware';
 const debug = D('@flecks/core/flecks');
 const debugSilly = debug.extend('silly');
 
+// Symbols for Gathered classes.
 export const ById = Symbol.for('@flecks/core.byId');
 export const ByType = Symbol.for('@flecks/core.byType');
-export const Hooks = Symbol.for('@flecks/core.hooks');
 
+/**
+ * Capitalize a string.
+ *
+ * @param {string} string
+ * @returns {string}
+ */
 const capitalize = (string) => string.substring(0, 1).toUpperCase() + string.substring(1);
 
+/**
+ * CamelCase a string.
+ *
+ * @param {string} string
+ * @returns {string}
+ */
 const camelCase = (string) => string.split(/[_-]/).map(capitalize).join('');
 
+// Track gathered for HMR.
 const hotGathered = new Map();
 
-const wrapperClass = (Class, id, idAttribute, type, typeAttribute) => {
+// Wrap classes to expose their flecks ID and type.
+const wrapGathered = (Class, id, idProperty, type, typeProperty) => {
   class Subclass extends Class {
 
-    static get [idAttribute]() {
+    static get [idProperty]() {
       return id;
     }
 
-    static get [typeAttribute]() {
+    static get [typeProperty]() {
       return type;
     }
 
@@ -43,72 +57,121 @@ const wrapperClass = (Class, id, idAttribute, type, typeAttribute) => {
 
 export default class Flecks {
 
+  config = {};
+
+  flecks = {};
+
+  hooks = {};
+
+  platforms = {};
+
+  /**
+   * @param {object} init
+   * @param {object} init.config The Flecks configuration (e.g. loaded from `flecks.yml`).
+   * @param {string[]} init.platforms Platforms this instance is running on.
+   */
   constructor({
     config = {},
     flecks = {},
     platforms = [],
   } = {}) {
-    this.config = {
-      ...Object.fromEntries(Object.keys(flecks).map((path) => [path, {}])),
-      ...config,
-    };
-    this.hooks = {};
-    this.flecks = {};
+    const emptyConfigForAllFlecks = Object.fromEntries(
+      Object.keys(flecks).map((path) => [path, {}]),
+    );
+    this.config = {...emptyConfigForAllFlecks, ...config};
     this.platforms = platforms;
     const entries = Object.entries(flecks);
     debugSilly('paths: %O', entries.map(([fleck]) => fleck));
     for (let i = 0; i < entries.length; i++) {
       const [fleck, M] = entries[i];
-      this.registerFleck(fleck, M);
+      this.registerFleckHooks(fleck, M);
+      this.invoke('@flecks/core.registered', fleck, M);
     }
-    this.configureFlecks();
+    this.configureFlecksDefaults();
     debugSilly('config: %O', this.config);
   }
 
-  configureFleck(fleck) {
+  /**
+   * Configure defaults for a fleck.
+   *
+   * @param {string} fleck
+   * @protected
+   */
+  configureFleckDefaults(fleck) {
     this.config[fleck] = {
       ...this.invokeFleck('@flecks/core.config', fleck),
       ...this.config[fleck],
     };
   }
 
-  configureFlecks() {
-    const defaultConfig = this.invoke('@flecks/core.config');
-    const flecks = Object.keys(defaultConfig);
+  /**
+   * Configure defaults for all flecks.
+   *
+   * @protected
+   */
+  configureFlecksDefaults() {
+    const flecks = this.flecksImplementing('@flecks/core.config');
     for (let i = 0; i < flecks.length; i++) {
-      this.configureFleck(flecks[i]);
+      this.configureFleckDefaults(flecks[i]);
     }
   }
 
+  /**
+   * [Dasherize]{@link https://en.wiktionary.org/wiki/dasherize} a fleck path.
+   *
+   * @param {string} path The path to dasherize.
+   * @returns {string}
+   */
+  static dasherizePath(path) {
+    const parts = dirname(path).split('/');
+    if ('.' === parts[0]) {
+      parts.shift();
+    }
+    if ('index' === parts[parts.length - 1]) {
+      parts.pop();
+    }
+    return join(parts.join('-'), basename(path, extname(path)));
+  }
+
+  /**
+   * Generate a decorator from a require context.
+   *
+   * @param {*} context @see {@link https://webpack.js.org/guides/dependency-management/#requirecontext}
+   * @param {object} config
+   * @param {function} [config.transformer = {@link camelCase}]
+   *   Function to run on each context path.
+   * @returns {function} The decorator.
+   */
   static decorate(
     context,
     {
       transformer = camelCase,
     } = {},
   ) {
-    return (Gathered, flecks) => {
+    return (Gathered, flecks) => (
       context.keys()
-        .forEach((path) => {
-          const {default: M} = context(path);
-          if ('function' !== typeof M) {
-            throw new ReferenceError(
-              `Flecks.decorate(): require(${
-                path
-              }).default is not a function (from: ${
-                context.id
-              })`,
-            );
-          }
-          const key = transformer(this.symbolizePath(path));
-          if (Gathered[key]) {
-            // eslint-disable-next-line no-param-reassign
-            Gathered[key] = M(Gathered[key], flecks);
-          }
-        });
-      return Gathered;
-    };
+        .reduce(
+          (Gathered, path) => {
+            const key = transformer(this.dasherizePath(path));
+            if (!Gathered[key]) {
+              return Gathered;
+            }
+            const {default: M} = context(path);
+            if ('function' !== typeof M) {
+              throw new ReferenceError(
+                `Flecks.decorate(): require(${path}).default is not a function (from: ${context.id})`,
+              );
+            }
+            return {...Gathered, [key]: M(Gathered[key], flecks)};
+          },
+          Gathered,
+        )
+    );
   }
 
+  /**
+   * Destroy this instance.
+   */
   destroy() {
     this.config = {};
     this.hooks = {};
@@ -116,12 +179,20 @@ export default class Flecks {
     this.platforms = [];
   }
 
+  /**
+   * Lists all flecks implementing a hook, including platform-specific and elided variants.
+   *
+   * @param {string} hook
+   * @returns {string[]} The expanded list of flecks.
+   */
   expandedFlecks(hook) {
     const flecks = this.lookupFlecks(hook);
     let expanded = [];
     for (let i = 0; i < flecks.length; ++i) {
       const fleck = flecks[i];
+      // Just the fleck.
       expanded.push(fleck);
+      // Platform-specific variants.
       for (let j = 0; j < this.platforms.length; ++j) {
         const platform = this.platforms[j];
         const variant = join(fleck, platform);
@@ -130,6 +201,7 @@ export default class Flecks {
         }
       }
     }
+    // Expand elided flecks.
     const index = expanded.findIndex((fleck) => '...' === fleck);
     if (-1 !== index) {
       if (-1 !== expanded.slice(index + 1).findIndex((fleck) => '...' === fleck)) {
@@ -158,33 +230,66 @@ export default class Flecks {
     return expanded;
   }
 
+  /**
+   * Get the module for a fleck.
+   *
+   * @param {*} fleck
+   *
+   * @returns {*}
+   */
   fleck(fleck) {
     return this.flecks[fleck];
   }
 
+  /**
+   * Test whether a fleck implements a hook.
+   *
+   * @param {*} fleck
+   * @param {string} hook
+   * @returns {boolean}
+   */
   fleckImplements(fleck, hook) {
     return !!this.hooks[hook].find(({fleck: candidate}) => fleck === candidate);
   }
 
+  /**
+   * Get a list of flecks implementing a hook.
+   *
+   * @param {string} hook
+   * @returns {string[]}
+   */
   flecksImplementing(hook) {
     return this.hooks[hook]?.map(({fleck}) => fleck) || [];
   }
 
+  /**
+   * Gather and register class types.
+   *
+   * @param {string} hook
+   * @param {object} config
+   * @param {string} [config.idProperty='id'] The property used to get/set the class ID.
+   * @param {string} [config.typeProperty='type'] The property used to get/set the class type.
+   * @param {function} [config.check=() => {}] Check the validity of the gathered classes.
+   * @returns {object} An object with keys for ID, type, {@link ById}, and {@link ByType}.
+   */
   gather(
     hook,
     {
-      idAttribute = 'id',
-      typeAttribute = 'type',
+      idProperty = 'id',
+      typeProperty = 'type',
       check = () => {},
     } = {},
   ) {
     if (!hook || 'string' !== typeof hook) {
       throw new TypeError('Flecks.gather(): Expects parameter 1 (hook) to be string');
     }
+    // Gather classes and check.
     const raw = this.invokeMerge(hook);
     check(raw, hook);
+    // Decorate and check.
     const decorated = this.invokeComposed(`${hook}.decorate`, raw);
     check(decorated, `${hook}.decorate`);
+    // Assign unique IDs to each class and sort by type.
     let uid = 1;
     const ids = {};
     const types = (
@@ -193,50 +298,78 @@ export default class Flecks {
           .sort(([ltype], [rtype]) => (ltype < rtype ? -1 : 1))
           .map(([type, Class]) => {
             const id = uid++;
-            ids[id] = wrapperClass(Class, id, idAttribute, type, typeAttribute);
+            ids[id] = wrapGathered(Class, id, idProperty, type, typeProperty);
             return [type, ids[id]];
           }),
       )
     );
+    // Conglomerate all ID and type keys along with Symbols for accessing either/or.
     const gathered = {
       ...ids,
       ...types,
       [ById]: ids,
       [ByType]: types,
     };
-    hotGathered.set(hook, {idAttribute, gathered, typeAttribute});
+    // Register for HMR?
+    if (module.hot) {
+      hotGathered.set(hook, {idProperty, gathered, typeProperty});
+    }
     debug("gathered '%s': %O", hook, Object.keys(gathered[ByType]));
     return gathered;
   }
 
+  /**
+   * Get a configuration value.
+   *
+   * @param {string} path The configuration path e.g. `@flecks/example.config`.
+   * @param {*} defaultValue The default value if no configuration value is found.
+   * @returns {*}
+   */
   get(path, defaultValue) {
     return get(this.config, path, defaultValue);
   }
 
+  /**
+   * Return an object whose keys are fleck paths and values are the result of invoking the hook.
+   * @param {string} hook
+   * @param {...any} args Arguments passed to each implementation.
+   * @returns {*}
+   */
   invoke(hook, ...args) {
     if (!this.hooks[hook]) {
       return {};
     }
     return this.flecksImplementing(hook)
-      .reduce((r, fleck) => ({
-        ...r,
-        [fleck]: this.invokeFleck(hook, fleck, ...args),
-      }), {});
+      .reduce((r, fleck) => ({...r, [fleck]: this.invokeFleck(hook, fleck, ...args)}), {});
   }
 
-  invokeComposed(hook, arg, ...args) {
+  /**
+   * See: [function composition](https://www.educative.io/edpresso/function-composition-in-javascript).
+   *
+   * @configurable
+   * @param {string} hook
+   * @param {*} initial The initial value passed to the composition chain.
+   * @param  {...any} args The arguments passed after the accumulator to each implementation.
+   * @returns {*} The final composed value.
+   */
+  invokeComposed(hook, initial, ...args) {
     if (!this.hooks[hook]) {
-      return arg;
+      return initial;
     }
     const flecks = this.expandedFlecks(hook);
     if (0 === flecks.length) {
-      return arg;
+      return initial;
     }
     return flecks
       .filter((fleck) => this.fleckImplements(fleck, hook))
-      .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), arg);
+      .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), initial);
   }
 
+  /**
+   * An async version of `invokeComposed`.
+   *
+   * @see {@link Flecks#invokeComposed}
+   */
   async invokeComposedAsync(hook, arg, ...args) {
     if (!this.hooks[hook]) {
       return arg;
@@ -250,6 +383,13 @@ export default class Flecks {
       .reduce(async (r, fleck) => this.invokeFleck(hook, fleck, await r, ...args), arg);
   }
 
+  /**
+   * Invokes a hook and returns a flat array of results.
+   *
+   * @param {string} hook
+   * @param  {...any} args The arguments passed to each implementation.
+   * @returns {any[]}
+   */
   invokeFlat(hook, ...args) {
     if (!this.hooks[hook]) {
       return [];
@@ -257,6 +397,14 @@ export default class Flecks {
     return this.hooks[hook].map(({fleck}) => this.invokeFleck(hook, fleck, ...args));
   }
 
+  /**
+   * Invokes a hook on a single fleck.
+   *
+   * @param {string} hook
+   * @param {*} fleck
+   * @param  {...any} args
+   * @returns {*}
+   */
   invokeFleck(hook, fleck, ...args) {
     debugSilly('invokeFleck(%s, %s, ...)', hook, fleck);
     if (!this.hooks[hook]) {
@@ -270,33 +418,116 @@ export default class Flecks {
     return candidate.fn(...(args.concat(this)));
   }
 
+  static $$invokeMerge(r, o) {
+    return {...r, ...o};
+  }
+
+  /**
+   * Specialization of `invokeReduce`. Invokes a hook and reduces an object from all the resulting
+   * objects.
+   *
+   * @param {string} hook
+   * @param  {...any} args
+   * @returns {object}
+   */
   invokeMerge(hook, ...args) {
-    return this.invokeReduce(hook, (r, o) => ({...r, ...o}), {}, ...args);
+    return this.invokeReduce(hook, this.constructor.$$invokeMerge, {}, ...args);
   }
 
+  /**
+   * An async version of `invokeMerge`.
+   *
+   * @see {@link Flecks#invokeMerge}
+   */
   async invokeMergeAsync(hook, ...args) {
-    return this.invokeReduceAsync(hook, (r, o) => ({...r, ...o}), {}, ...args);
+    return this.invokeReduceAsync(hook, this.constructor.$$invokeMerge, {}, ...args);
   }
 
+  static $$invokeMergeUnique() {
+    const track = {};
+    return (r, o, fleck, hook) => {
+      const keys = Object.keys(o);
+      for (let i = 0; i < keys.length; ++i) {
+        const key = keys[i];
+        if (track[key]) {
+          throw new ReferenceError(
+            `Conflict in ${hook}: '${track[key]}' implemented '${key}', followed by '${fleck}'`,
+          );
+        }
+        track[key] = fleck;
+      }
+      return ({...r, ...o});
+    };
+  }
+
+  /**
+   * Specialization of `invokeMerge`. Invokes a hook and reduces an object from all the resulting
+   * objects.
+   *
+   * @param {string} hook
+   * @param  {...any} args
+   * @returns {object}
+   */
+  invokeMergeUnique(hook, ...args) {
+    return this.invokeReduce(hook, this.constructor.$$invokeMergeUnique(), {}, ...args);
+  }
+
+  /**
+   * An async version of `invokeMergeUnique`.
+   *
+   * @see {@link Flecks#invokeMergeUnique}
+   */
+  async invokeMergeUniqueAsync(hook, ...args) {
+    return this.invokeReduceAsync(hook, this.constructor.$$invokeMergeUnique(), {}, ...args);
+  }
+
+  /**
+   * See: [Array.prototype.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+   *
+   * @param {string} hook
+   * @param {*} reducer
+   * @param {*} initial
+   * @param  {...any} args The arguments passed after the accumulator to each implementation.
+   * @returns {*}
+   */
   invokeReduce(hook, reducer, initial, ...args) {
     if (!this.hooks[hook]) {
       return initial;
     }
     return this.hooks[hook]
-      .reduce((r, {fleck}) => reducer(r, this.invokeFleck(hook, fleck, ...args)), initial);
+      .reduce(
+        (r, {fleck}) => reducer(r, this.invokeFleck(hook, fleck, ...args), fleck, hook),
+        initial,
+      );
   }
 
+  /**
+   * An async version of `invokeReduce`.
+   *
+   * @see {@link Flecks#invokeReduce}
+   */
   async invokeReduceAsync(hook, reducer, initial, ...args) {
     if (!this.hooks[hook]) {
       return initial;
     }
     return this.hooks[hook]
       .reduce(
-        async (r, {fleck}) => reducer(await r, await this.invokeFleck(hook, fleck, ...args)),
+        async (r, {fleck}) => (
+          reducer(await r, await this.invokeFleck(hook, fleck, ...args), fleck, hook)
+        ),
         initial,
       );
   }
 
+  /**
+   * Invokes hooks on a fleck one after another. This is effectively a configurable version of
+   * {@link Flecks#invokeFlat}.
+   *
+   * @configurable
+   * @param {string} hook
+   * @param  {...any} args The arguments passed to each implementation.
+   * @returns {any[]}
+   */
   invokeSequential(hook, ...args) {
     if (!this.hooks[hook]) {
       return [];
@@ -315,6 +546,11 @@ export default class Flecks {
     return results;
   }
 
+  /**
+   * An async version of `invokeSequential`.
+   *
+   * @see {@link Flecks#invokeSequential}
+   */
   async invokeSequentialAsync(hook, ...args) {
     if (!this.hooks[hook]) {
       return [];
@@ -334,10 +570,18 @@ export default class Flecks {
     return results;
   }
 
-  isOnPlatform(platform) {
-    return -1 !== this.platforms.indexOf(platform);
-  }
-
+  /**
+   * Lookup flecks configured for a hook.
+   *
+   * If no configuration is found, defaults to ellipses.
+   *
+   * @param {string} hook
+   * @example
+   * # Given hook @flecks/example.hook, `flecks.yml` could be configured as such:
+   * '@flecks/example':
+   *   hook: ['...']
+   * @returns {string[]}
+   */
   lookupFlecks(hook) {
     const index = hook.indexOf('.');
     if (-1 === index) {
@@ -346,31 +590,37 @@ export default class Flecks {
     return this.get([hook.slice(0, index), hook.slice(index + 1)], ['...']);
   }
 
+  /**
+   * Make a middleware function from configured middleware.
+   * @param {string} hook
+   * @returns {function}
+   */
   makeMiddleware(hook) {
     debugSilly('makeMiddleware(...): %s', hook);
     if (!this.hooks[hook]) {
-      return Promise.resolve();
+      return (...args) => args.pop()();
     }
     const flecks = this.expandedFlecks(hook);
     if (0 === flecks.length) {
-      return Promise.resolve();
+      return (...args) => args.pop()();
     }
     const middleware = flecks
       .filter((fleck) => this.fleckImplements(fleck, hook));
     debugSilly('middleware: %O', middleware);
     const instance = new Middleware(middleware.map((fleck) => this.invokeFleck(hook, fleck)));
-    return async (...args) => {
-      const next = args.pop();
-      try {
-        await instance.promise(...args);
-        next();
-      }
-      catch (error) {
-        next(error);
-      }
-    };
+    return instance.dispatch.bind(instance);
   }
 
+  /**
+   * Provide classes for e.g. {@link Flecks#gather}
+   *
+   * @param {*} context @see {@link https://webpack.js.org/guides/dependency-management/#requirecontext}
+   * @param {object} config
+   * @param {function} [config.invoke = true] Invoke the default exports as a function?
+   * @param {function} [config.transformer = {@link camelCase}]
+   *   Function to run on each context path.
+   * @returns {object}
+   */
   static provide(
     context,
     {
@@ -393,7 +643,7 @@ export default class Flecks {
               );
             }
             return [
-              transformer(this.symbolizePath(path)),
+              transformer(this.dasherizePath(path)),
               invoke ? M(flecks) : M,
             ];
           }),
@@ -401,79 +651,46 @@ export default class Flecks {
     );
   }
 
+  /**
+   * Refresh a fleck's hooks, configuration, and any gathered classes.
+   *
+   * @example
+   * module.hot.accept('@flecks/example', async () => {
+   *   flecks.refresh('@flecks/example', require('@flecks/example'));
+   * });
+   * @param {string} fleck
+   * @param {object} M The fleck module
+   * @protected
+   */
   refresh(fleck, M) {
     debug('refreshing %s...', fleck);
     // Remove old hook implementations.
-    const keys = Object.keys(this.hooks);
-    for (let j = 0; j < keys.length; j++) {
-      const key = keys[j];
-      if (this.hooks[key]) {
-        const index = this.hooks[key].findIndex(({fleck: hookPlugin}) => hookPlugin === fleck);
-        if (-1 !== index) {
-          this.hooks[key].splice(index, 1);
-        }
-      }
-    }
+    this.unregisterFleckHooks(fleck);
     // Replace the fleck.
-    this.registerFleck(fleck, M);
+    this.registerFleckHooks(fleck, M);
     // Write config.
-    this.configureFleck(fleck);
+    this.configureFleckDefaults(fleck);
     // HMR.
-    this.updateHotGathered(fleck);
-  }
-
-  registerFleck(fleck, M) {
-    debugSilly('registering %s...', fleck);
-    this.flecks[fleck] = M;
-    if (M.default) {
-      const {default: {[Hooks]: hooks}} = M;
-      if (hooks) {
-        const keys = Object.keys(hooks);
-        debugSilly("hooks for '%s': %O", fleck, keys);
-        for (let j = 0; j < keys.length; j++) {
-          const key = keys[j];
-          if (!this.hooks[key]) {
-            this.hooks[key] = [];
-          }
-          this.hooks[key].push({fleck, fn: hooks[key]});
-        }
-      }
-    }
-    else {
-      debugSilly("'%s' has no default export", fleck);
+    if (module.hot) {
+      this.refreshGathered(fleck);
     }
   }
 
-  set(path, value) {
-    return set(this.config, path, value);
-  }
-
-  static symbolizePath(path) {
-    const parts = dirname(path).split('/');
-    if ('.' === parts[0]) {
-      parts.shift();
-    }
-    if ('index' === parts[parts.length - 1]) {
-      parts.pop();
-    }
-    return join(parts.join('-'), basename(path, extname(path)));
-  }
-
-  async up(hook) {
-    await Promise.all(this.invokeFlat('@flecks/core.starting'));
-    await this.invokeSequentialAsync(hook);
-  }
-
-  updateHotGathered(fleck) {
+  /**
+   * Refresh gathered classes for a fleck.
+   *
+   * @param {string} fleck
+   */
+  refreshGathered(fleck) {
     const it = hotGathered.entries();
     for (let current = it.next(); current.done !== true; current = it.next()) {
       const {
         value: [
           hook,
           {
-            idAttribute,
+            idProperty,
             gathered,
-            typeAttribute,
+            typeProperty,
           },
         ],
       } = current;
@@ -482,11 +699,62 @@ export default class Flecks {
         debug('updating gathered %s from %s...', hook, fleck);
         const entries = Object.entries(updates);
         for (let i = 0, [type, Class] = entries[i]; i < entries.length; ++i) {
-          const {[type]: {[idAttribute]: id}} = gathered;
-          const Subclass = wrapperClass(Class, id, idAttribute, type, typeAttribute);
+          const {[type]: {[idProperty]: id}} = gathered;
+          const Subclass = wrapGathered(Class, id, idProperty, type, typeProperty);
           // eslint-disable-next-line no-multi-assign
           gathered[type] = gathered[id] = gathered[ById][id] = gathered[ByType][type] = Subclass;
           this.invoke('@flecks/core.hmr.gathered', Subclass, hook);
+        }
+      }
+    }
+  }
+
+  /**
+   * Register hooks for a fleck.
+   *
+   * @param {string} fleck
+   * @param {object} M The fleck module
+   * @protected
+   */
+  registerFleckHooks(fleck, M) {
+    debugSilly('registering %s...', fleck);
+    this.flecks[fleck] = M;
+    if (M.hooks) {
+      const keys = Object.keys(M.hooks);
+      debugSilly("hooks for '%s': %O", fleck, keys);
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
+        if (!this.hooks[key]) {
+          this.hooks[key] = [];
+        }
+        this.hooks[key].push({fleck, fn: M.hooks[key]});
+      }
+    }
+  }
+
+  /**
+   * Set a configuration value.
+   *
+   * @param {string} path The configuration path e.g. `@flecks/example.config`.
+   * @param {*} value The value to set.
+   * @returns {*} The value that was set.
+   */
+  set(path, value) {
+    return set(this.config, path, value);
+  }
+
+  /**
+   * Unregister hooks for a fleck.
+   * @param {*} fleck
+   */
+  unregisterFleckHooks(fleck) {
+    const keys = Object.keys(this.hooks);
+    for (let j = 0; j < keys.length; j++) {
+      const key = keys[j];
+      if (this.hooks[key]) {
+        const index = this.hooks[key].findIndex(({fleck: hookPlugin}) => hookPlugin === fleck);
+        if (-1 !== index) {
+          this.hooks[key].splice(index, 1);
         }
       }
     }

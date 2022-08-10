@@ -1,7 +1,3 @@
-import {Hooks} from '@flecks/core';
-
-export default {
-  [Hooks]: {
-    '@flecks/core.targets': () => ['server'],
-  },
+export const hooks = {
+  '@flecks/core.targets': () => ['server'],
 };

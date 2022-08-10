@@ -1,5 +1,3 @@
-import {Hooks} from '@flecks/core';
-
 import containers from './containers';
 import createClient from './create-client';
 
@@ -27,21 +25,19 @@ const safeKeys = async (client, pattern, caret) => {
 
 export const keys = (client, pattern) => safeKeys(client, pattern, 0);
 
-export default {
-  [Hooks]: {
-    '@flecks/core.config': () => ({
-      /**
-       * Redis server host.
-       */
-      host: 'localhost',
-      /**
-       * Redis server port.
-       */
-      port: 6379,
-    }),
-    '@flecks/docker.containers': containers,
-    '@flecks/repl.context': (flecks) => ({
-      redisClient: createClient(flecks),
-    }),
-  },
+export const hooks = {
+  '@flecks/core.config': () => ({
+    /**
+     * Redis server host.
+     */
+    host: 'localhost',
+    /**
+     * Redis server port.
+     */
+    port: 6379,
+  }),
+  '@flecks/docker.containers': containers,
+  '@flecks/repl.context': (flecks) => ({
+    redisClient: createClient(flecks),
+  }),
 };

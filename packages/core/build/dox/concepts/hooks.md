@@ -2,16 +2,12 @@
 
 Hooks are how everything happens in flecks. There are many hooks and the hooks provided by flecks are documented at the [hooks reference page](https://github.com/cha0s/flecks/blob/gh-pages/hooks.md).
 
-To define hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks), you only have to import the `Hooks` symbol and key your default export:
+To define hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks), you only have to export a `hooks` object:
 
 ```javascript
-import {Hooks} from '@flecks/core';
-
-export default {
-  [Hooks]: {
-    '@flecks/core.starting': () => {
-      console.log('hello, gorgeous');
-    },
+export const hooks = {
+  '@flecks/core.starting': () => {
+    console.log('hello, gorgeous');
   },
 };
 ```
@@ -133,15 +129,15 @@ assert(foo.type === 'Foo');
 ```javascript
 {
   // The property added when extending the class to return the numeric ID.
-  idAttribute = 'id',
+  idProperty = 'id',
   // The property added when extending the class to return the type.
-  typeAttribute = 'type',
+  typeProperty = 'type',
   // A function called with the `Gathered` object to allow checking validity.
   check = () => {},
 }
 ```
 
-As an example, when `@flecks/db/server` gathers models, `typeAttribute` is set to `name`, because Sequelize requires its model classes to have a unique `name` property.
+As an example, when `@flecks/db/server` gathers models, `typeProperty` is set to `name`, because Sequelize requires its model classes to have a unique `name` property.
 
 **Note:** the numeric IDs are useful for efficient serialization between the client and server, but **if you are using this property, ensure that `flecks.gather()` is called equivalently on both the client and the server**. As a rule of thumb, if you have serializable `Gathered`s, they should be invoked and defined in `your-fleck`, and not in `your-fleck/[platform]`, so that they are invoked for every platform.
 
@@ -152,19 +148,15 @@ Complementary to gather hooks above, `Flecks.provide()` allows you to ergonomica
 Here's an example of how you could manually provide `@flecks/db/server.models` in your own fleck:
 
 ```javascript
-import {Hooks} foom '@flecks/core';
-
 import SomeModel from './models/some-model';
 import AnotherModel from './models/another-model';
 
-export default {
-  [Hooks]: {
-    '@flecks/db/server.models': () => ({
-      SomeModel,
-      AnotherModel,
-    }),
-  },
-};
+export const hooks = {
+  '@flecks/db/server.models': () => ({
+    SomeModel,
+    AnotherModel,
+  }),
+}
 ```
 
 If you think about the example above, you might realize that it will become a lot of typing to keep adding new models over time. Provider hooks exist to reduce this maintenance burden for you.
@@ -183,12 +175,10 @@ models/
 then, this `index.js`:
 
 ```javascript
-import {Flecks, Hooks} from '@flecks/core';
+import {Flecks} from '@flecks/core';
 
-export default {
-  [Hooks]: {
-    '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
-  },
+export const hooks = {
+  '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
 };
 ```
 
@@ -212,31 +202,27 @@ is *exactly equivalent* to the gather example above. By default, `Flecks.provide
 When a Model (or any other) is gathered as above, an implicit hook is called: `${hook}.decorate`. This allows other flecks to decorate whatever has been gathered:
 
 ```javascript
-import {Hooks} from '@flecks/core';
-
-export default {
-  [Hooks]: {
-    '@flecks/db/server.models.decorate': (Models) => {
-      return {
-        ...Models,
-        User: class extends Models.User {
-          
-          // Let's mix in some logging...
-          constructor(...args) {
-            super(...args);
-            console.log ('Another user decorated!');
-          }
-          
-        },
-      };
-    },
+export const hooks = {
+  '@flecks/db/server.models.decorate': (Models) => {
+    return {
+      ...Models,
+      User: class extends Models.User {
+        
+        // Let's mix in some logging...
+        constructor(...args) {
+          super(...args);
+          console.log ('Another user decorated!');
+        }
+        
+      },
+    };
   },
 };
 ```
 
 #### `Flecks.decorate(context, options)`
 
-As with above, there exists an API for making the maintenance of decorators more ergonomic.
+As with above, there exists an API for making the maintenance of decorators even more ergonomic.
 
 Supposing our fleck is structured like so:
 
@@ -266,12 +252,12 @@ export default (User) => {
 then, this `index.js`:
 
 ```javascript
-import {Flecks, Hooks} from '@flecks/core';
+import {Flecks} from '@flecks/core';
 
-export default {
-  [Hooks]: {
-    '@flecks/db/server.models.decorate': Flecks.decorate(require.context('./models/decorators', false, /\.js$/)),
-  },
+export const hooks = {
+  '@flecks/db/server.models.decorate': (
+    Flecks.decorate(require.context('./models/decorators', false, /\.js$/))
+  ),
 };
 ```
 
@@ -307,7 +293,7 @@ Our `flecks.yml` could be configured like so:
 
 In this application, when `@flecks/http/server.request.route` is invoked, `@flecks/user/session`'s implementation is invoked (which reifies the user's session from cookies), followed by `my-cool-fleck`'s (which, we assume, does some kind of very cool dark mode check).
 
-### Ellipses
+### Ellipses/elision
 
 It may not always be ergonomic to configure the order of every single implementation, but enough to specify which implementations must run first (or last).
 

@@ -1,5 +1,3 @@
-import {Hooks} from '@flecks/core';
-
 export {default as ReactDom} from '@hot-loader/react-dom';
 export {default as classnames} from 'classnames';
 export {default as PropTypes} from 'prop-types';
@@ -14,13 +12,11 @@ export {default as useEvent} from './hooks/use-event';
 export {default as useFlecks} from './hooks/use-flecks';
 export {default as usePrevious} from './hooks/use-previous';
 
-export default {
-  [Hooks]: {
-    '@flecks/core.config': () => ({
-      /**
-       * Whether to enable server-side rendering.
-       */
-      ssr: true,
-    }),
-  },
+export const hooks = {
+  '@flecks/core.config': () => ({
+    /**
+     * Whether to enable server-side rendering.
+     */
+    ssr: true,
+  }),
 };

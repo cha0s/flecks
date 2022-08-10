@@ -1,4 +1,4 @@
-import {D, Hooks} from '@flecks/core';
+import {D} from '@flecks/core';
 import {hydrate, render} from '@hot-loader/react-dom';
 import React from 'react';
 
@@ -10,20 +10,18 @@ const debug = D('@flecks/react/client');
 
 export {FlecksContext};
 
-export default {
-  [Hooks]: {
-    '@flecks/web/client.up': async (flecks) => {
-      const {ssr} = flecks.get('@flecks/react');
-      debug('%sing...', ssr ? 'hydrat' : 'render');
-      (ssr ? hydrate : render)(
-        React.createElement(
-          React.StrictMode,
-          {},
-          [React.createElement(await root(flecks), {key: 'root'})],
-        ),
-        window.document.getElementById('root'),
-      );
-      debug('rendered');
-    },
+export const hooks = {
+  '@flecks/web/client.up': async (flecks) => {
+    const {ssr} = flecks.get('@flecks/react');
+    debug('%sing...', ssr ? 'hydrat' : 'render');
+    (ssr ? hydrate : render)(
+      React.createElement(
+        React.StrictMode,
+        {},
+        [React.createElement(await root(flecks), {key: 'root'})],
+      ),
+      window.document.getElementById('root'),
+    );
+    debug('rendered');
   },
 };

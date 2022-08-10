@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import {Flecks, Hooks} from '@flecks/core';
+import {Flecks} from '@flecks/core';
 
 export const testNodespace = () => [
   /* eslint-disable no-eval */
@@ -8,23 +8,28 @@ export const testNodespace = () => [
   /* eslint-enable no-eval */
 ];
 
-export default {
-  [Hooks]: {
-    '@flecks/core.config': () => ({
-      foo: 'bar',
-    }),
-    '@flecks/core/one/test-gather': (
-      Flecks.provide(require.context('./things', false, /\.js$/))
-    ),
-    '@flecks/core/one/test-gather.decorate': (
-      Flecks.decorate(require.context('./things/decorators', false, /\.js$/))
-    ),
-    '@flecks/core/test/invoke': () => 69,
-    '@flecks/core/test/invoke-parallel': (O) => {
-      // eslint-disable-next-line no-param-reassign
-      O.foo *= 2;
-    },
-    '@flecks/core/test/invoke-merge': () => ({foo: 69}),
-    '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => resolve({foo: 69})),
+export const hooks = {
+  '@flecks/core.config': () => ({
+    foo: 'bar',
+  }),
+  '@flecks/core/one/test-gather': (
+    Flecks.provide(require.context('./things', false, /\.js$/))
+  ),
+  '@flecks/core/one/test-gather.decorate': (
+    Flecks.decorate(require.context('./things/decorators', false, /\.js$/))
+  ),
+  '@flecks/core/test/invoke': () => 69,
+  '@flecks/core/test/invoke-parallel': (O) => {
+    // eslint-disable-next-line no-param-reassign
+    O.foo *= 2;
+  },
+  '@flecks/core/test/invoke-merge': () => ({foo: 69}),
+  '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => resolve({foo: 69})),
+  '@flecks/core/test/invoke-merge-unique': () => ({foo: 69}),
+  '@flecks/core/test/invoke-merge-unique-async': () => new Promise((resolve) => resolve({foo: 69})),
+  '@flecks/core/test.middleware': () => (foo, next) => {
+    // eslint-disable-next-line no-param-reassign
+    foo.bar += 1;
+    next();
   },
 };

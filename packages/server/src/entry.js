@@ -33,7 +33,8 @@ const {version} = require('../package.json');
     rcs,
   });
   try {
-    await global.flecks.up('@flecks/server.up');
+    await Promise.all(global.flecks.invokeFlat('@flecks/core.starting'));
+    await global.flecks.invokeSequentialAsync('@flecks/server.up');
     debug('up!');
   }
   catch (error) {

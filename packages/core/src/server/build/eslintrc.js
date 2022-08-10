@@ -22,6 +22,7 @@ const {
   FLECKS_CORE_SYNC_FOR_ESLINT = false,
 } = process.env;
 
+// This is kinda nuts, but ESLint doesn't support its configuration files returning a promise!
 if (FLECKS_CORE_SYNC_FOR_ESLINT) {
   (async () => {
     debug('bootstrapping flecks...');
@@ -50,6 +51,7 @@ else {
     module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslintrc.json')).toString());
   }
   catch (error) {
+    // Just silly. By synchronously spawning... ourselves, the spawned copy can use async.
     const {stderr, stdout} = spawnSync('node', [__filename], {
       env: {
         FLECKS_CORE_SYNC_FOR_ESLINT: true,

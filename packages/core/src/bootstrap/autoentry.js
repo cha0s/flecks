@@ -11,7 +11,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const resolver = (source) => (path) => {
+const resolveValidModulePath = (source) => (path) => {
   // Does the file resolve as source?
   try {
     R.resolve(`${source}/${path}`);
@@ -39,7 +39,7 @@ module.exports = () => ({config, options}) => {
     .set(name, join(FLECKS_CORE_ROOT, 'src'));
   // Calculate entry points from `files`.
   files
-    .filter(resolver(source))
+    .filter(resolveValidModulePath(source))
     .forEach((file) => {
       const trimmed = join(dirname(file), basename(file, extname(file)));
       config

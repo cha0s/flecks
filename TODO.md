@@ -22,7 +22,7 @@
 - [x] remove `invokeParallel()`
 - [x] Specialize `invokeReduce()` with `invokeMerge()`.
 - [x] Rename all hooks to dot-first notation; rewrite `lookupFlecks()`.
-- [ ] ensureUniqueReduction moved into invokeMerge
+- [x] ensureUniqueReduction moved into invokeMerge
 - [x] `bootstrap({without: ['badplatform']})` should be handled by passing `{platforms: ['!badplatform']}`
 - [ ] user redux server hydrate fails if no user in req
 - [ ] governor fails if not in server up
@@ -31,3 +31,4 @@
 - [ ] rename `@flecks/web` to `@flecks/web`
 - [ ] simultaneous babel compilation across all compiled flecks
 - [ ] add building to publish process ...
+- [ ] @babel/register@7.18.x has a bug

@@ -1,6 +1,6 @@
 import {D, Flecks} from '@flecks/core';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 const {version} = require('@flecks/web/package.json');
 
 (async () => {
@@ -56,7 +56,8 @@ const {version} = require('@flecks/web/package.json');
   const flecks = new Flecks(runtime);
   window.flecks = flecks;
   try {
-    await flecks.up('@flecks/web/client.up');
+    await Promise.all(flecks.invokeFlat('@flecks/core.starting'));
+    await flecks.invokeSequentialAsync('@flecks/web/client.up');
     window.document.querySelector('#root').style.display = 'block';
     debug('up!');
   }

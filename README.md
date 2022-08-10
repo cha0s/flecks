@@ -1,7 +1,7 @@
 <div align="center">
   <h1>flecks</h1>
   <p>
-    Flecks is a dynamic, configuration-driven, fullstack application production system. Its purpose
+    Flecks is an exceptionally extensible fullstack application production system. Its true purpose
     is to make application development a more joyful endeavor. Intelligent defaults combined with
     a highly dynamic structure encourage consistency while allowing you to easily express your own
     opinions.

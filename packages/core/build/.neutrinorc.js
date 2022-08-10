@@ -35,8 +35,10 @@ config.use.push(({config}) => {
   }
 });
 
+// Fleck build configuration.
 config.use.unshift(fleck());
 
+// AirBnb linting.
 config.use.unshift(
   airbnb({
     eslint: {
@@ -45,13 +47,13 @@ config.use.unshift(
   }),
 );
 
+// Include a shebang and set the executable bit..
 config.use.push(banner({
   banner: '#!/usr/bin/env node',
   include: /^cli\.js$/,
   pluginId: 'shebang',
   raw: true,
 }))
-
 config.use.push(({config}) => {
   config
     .plugin('executable')
