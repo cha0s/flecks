@@ -482,8 +482,8 @@ export default {
 <details>
 <summary>Invocations</summary>
 <ul>
-<li>@flecks/docker/src/server.js:19:31</li>
 <li>@flecks/docker/src/commands.js:51:25</li>
+<li>@flecks/docker/src/server.js:19:31</li>
 </ul>
 </details>
 
@@ -999,8 +999,8 @@ export default {
 <details>
 <summary>Implementations</summary>
 <ul>
-<li>@flecks/redis/src/session/server.js:21:4</li>
 <li>@flecks/socket/src/server/index.js:21:4</li>
+<li>@flecks/redis/src/session/server.js:21:4</li>
 </ul>
 </details>
 
