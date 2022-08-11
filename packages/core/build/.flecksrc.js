@@ -1,3 +1,3 @@
 module.exports = {
-  exts: ['.js'],
+  exts: ['.mjs', '.js'],
 };

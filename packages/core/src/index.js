@@ -15,4 +15,12 @@ export const hooks = {
      */
     id: 'flecks',
   }),
+  '@flecks/core.build': (target, config) => {
+    config.use.push(({config}) => {
+      config.module
+        .rule('mjs$')
+        .test(/.mjs$/)
+        .type('javascript/auto');
+    });
+  },
 };
