@@ -3,10 +3,6 @@ import {join} from 'path';
 
 import {require as R} from '@flecks/core/server';
 import banner from '@neutrinojs/banner';
-import {
-  app,
-  BrowserWindow,
-} from 'electron';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -16,6 +12,7 @@ const {
 let win;
 
 async function createWindow(flecks) {
+  const {BrowserWindow} = flecks.get('$flecks/electron');
   const {browserWindowOptions} = flecks.get('@flecks/electron/server');
   win = new BrowserWindow(browserWindowOptions);
   await flecks.invokeSequentialAsync('@flecks/electron/server.window', win);
@@ -86,8 +83,8 @@ export const hooks = {
       /* eslint-enable no-underscore-dangle */
     }
   },
-  '@flecks/electron/server.initialize': async (app, flecks) => {
-    app.on('window-all-closed', () => {
+  '@flecks/electron/server.initialize': async (electron, flecks) => {
+    electron.app.on('window-all-closed', () => {
       const {quitOnClosed} = flecks.get('@flecks/electron/server');
       if (!quitOnClosed) {
         return;
@@ -96,14 +93,14 @@ export const hooks = {
       if (process.platform === 'darwin') {
         return;
       }
-      app.quit();
+      electron.app.quit();
     });
-    app.on('activate', async () => {
-      if (BrowserWindow.getAllWindows().length === 0) {
+    electron.app.on('activate', async () => {
+      if (electron.BrowserWindow.getAllWindows().length === 0) {
         createWindow();
       }
     });
-    await app.whenReady();
+    await electron.app.whenReady();
     await createWindow(flecks);
   },
   '@flecks/electron/server.window': async (win, flecks) => {
@@ -138,10 +135,14 @@ export const hooks = {
     },
   }),
   '@flecks/server.up': async (flecks) => {
-    // `app` will be undefined if we aren't running in an electron environment. Just bail.
-    if (!app) {
+    // Local require because electron is kinda skittish.
+    // eslint-disable-next-line global-require
+    const electron = require('electron');
+    // `electron.app` will be undefined if we aren't running in an electron environment. Just bail.
+    if (!electron.app) {
       return;
     }
-    await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', app);
+    flecks.set('$flecks/electron', electron);
+    await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', electron);
   },
 };

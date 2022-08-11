@@ -1,10 +1,10 @@
 export const hooks = {
   /**
    * Invoked when electron is initializing.
-   * @param {Electron.App} app The electron app. See: https://www.electronjs.org/docs/latest/api/app
+   * @param {Electron} electron The electron module.
    */
-  '@flecks/electron/server.initialize': (app) => {
-    app.on('will-quit', () => {
+  '@flecks/electron/server.initialize': (electron) => {
+    electron.app.on('will-quit', () => {
       // ...
     });
   },
