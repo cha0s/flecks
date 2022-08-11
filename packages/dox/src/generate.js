@@ -110,10 +110,8 @@ export const generateHookPage = (hooks, flecks) => {
         source.push('### Example usage');
         source.push('');
         source.push('```javascript');
-        source.push('export default {');
-        source.push('  [Hooks]: {');
-        source.push(`    '${hook}': ${example}`);
-        source.push('  },');
+        source.push('export const hooks = {');
+        source.push(`  '${hook}': ${example}`);
         source.push('};');
         source.push('```');
         source.push('');
