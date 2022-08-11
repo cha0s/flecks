@@ -102,7 +102,7 @@ keys: ['ip']
 > *No description provided.*
 
 ```javascript
-http: {
+web: {
         keys: ['ip'],
         points: 60,
         duration: 30,
@@ -252,7 +252,7 @@ host: '0.0.0.0'
 > Build path.
 
 ```javascript
-output: 'http'
+output: 'web'
 ```
 
 > Port to bind.
