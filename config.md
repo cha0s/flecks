@@ -78,17 +78,43 @@ enabled: true
 filenameRewriters: {}
 ```
 
+## `@flecks/electron/server`
+
+> Browser window options. See: https://www.electronjs.org/docs/latest/api/browser-window
+
+```javascript
+browserWindowOptions: {}
+```
+
+> Install devtools extensions (by default). If `true`, will install some devtools extensions based on which flecks are enabled. You can pass an array of Chrome store IDs to install a list of custom extensions. Extensions will not be installed if `'production' === process.env.NODE_ENV`
+
+```javascript
+installExtensions: true
+```
+
+> Quit the app when all windows are closed.
+
+```javascript
+quitOnClosed: true
+```
+
+> The URL to load in electron by default. Defaults to `http://${flecks.get('@flecks/web/server.public')}`.
+
+```javascript
+url: undefined
+```
+
 ## `@flecks/fleck/server`
 
 > Webpack stats configuration when building fleck target.
 
 ```javascript
 stats: {
-        children: false,
-        chunks: false,
-        colors: true,
-        modules: false,
-      }
+      children: false,
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
 ## `@flecks/governor/server`
@@ -103,22 +129,22 @@ keys: ['ip']
 
 ```javascript
 web: {
-        keys: ['ip'],
-        points: 60,
-        duration: 30,
-        ttl: 30,
-      }
+      keys: ['ip'],
+      points: 60,
+      duration: 30,
+      ttl: 30,
+    }
 ```
 
 > *No description provided.*
 
 ```javascript
 socket: {
-        keys: ['ip'],
-        points: 60,
-        duration: 30,
-        ttl: 30,
-      }
+      keys: ['ip'],
+      points: 60,
+      duration: 30,
+      ttl: 30,
+    }
 ```
 
 ## `@flecks/react`
@@ -151,16 +177,10 @@ port: 6379
 hot: false
 ```
 
-> Whether the Node.js inspector is enabled.
+> Arguments to pass along to node. See: https://nodejs.org/api/cli.html
 
 ```javascript
-inspect: false
-```
-
-> Whether Node.js profiling is enabled.
-
-```javascript
-profile: false
+nodeArgs: []
 ```
 
 > Whether to start the server after building.
@@ -173,10 +193,10 @@ start: true
 
 ```javascript
 stats: {
-        chunks: false,
-        colors: true,
-        modules: false,
-      }
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
 ## `@flecks/user/local/server`
@@ -203,6 +223,12 @@ cookieSecret: 'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret enviro
 
 ## `@flecks/web/server`
 
+> (webpack-dev-server) Disable the host check. See: https://github.com/webpack/webpack-dev-server/issues/887
+
+```javascript
+devDisableHostCheck: false
+```
+
 > (webpack-dev-server) Host to bind.
 
 ```javascript
@@ -215,7 +241,7 @@ devHost: 'localhost'
 devPort: undefined
 ```
 
-> (webpack-dev-server) Public path to serve.
+> (webpack-dev-server) Public path to serve. Defaults to `flecks.get('@flecks/web/server.public')`.
 
 ```javascript
 devPublic: undefined
@@ -225,10 +251,11 @@ devPublic: undefined
 
 ```javascript
 devStats: {
-        chunks: false,
-        colors: true,
-        modules: false,
-      }
+      assets: false,
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
 > Modules to externalize using `webpack.DllPlugin`.
@@ -261,15 +288,21 @@ output: 'web'
 port: 32340
 ```
 
+> Public path to server.
+
+```javascript
+public: 'localhost:32340'
+```
+
 > Webpack stats configuration when building HTTP target.
 
 ```javascript
 stats: {
-        children: false,
-        chunks: false,
-        colors: true,
-        modules: false,
-      }
+      children: false,
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
 > Proxies to trust. See: https://www.npmjs.com/package/proxy-addr
