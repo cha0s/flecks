@@ -19,6 +19,7 @@
     "@flecks/db": "^1.4.1",
     "@flecks/docker": "^1.4.1",
     "@flecks/dox": "^1.4.1",
+    "@flecks/electron": "^1.4.1",
     "@flecks/fleck": "^1.4.1",
     "@flecks/governor": "^1.4.1",
     "@flecks/react": "^1.4.1",
