@@ -2,6 +2,7 @@ import cluster from 'cluster';
 import {join} from 'path';
 
 import {require as R} from '@flecks/core/server';
+import banner from '@neutrinojs/banner';
 import {
   app,
   BrowserWindow,
@@ -21,6 +22,16 @@ async function createWindow(flecks) {
 }
 
 export const hooks = {
+  '@flecks/core.build': (target, config) => {
+    if ('server' === target) {
+      config.use.push(banner({
+        banner: "require('module').Module._initPaths();",
+        include: 'index.js',
+        pluginId: 'initPaths',
+        raw: true,
+      }));
+    }
+  },
   '@flecks/core.config': () => ({
     /**
      * Browser window options.
