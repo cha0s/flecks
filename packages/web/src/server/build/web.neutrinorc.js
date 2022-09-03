@@ -50,7 +50,7 @@ module.exports = async (flecks) => {
             filename: `${name}.html`,
             inject: false,
             pluginId: `html-${name}`,
-            template: flecks.buildConfig('template.ejs'),
+            template: flecks.buildConfig('template.ejs', name),
             templateParameters: (compilation, assets, assetTags, options) => {
               let styleFile;
               const styleChunk = compilation.chunks.find((chunk) => (

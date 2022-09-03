@@ -103,7 +103,7 @@ export const hooks = {
      *
      * See: https://github.com/jantimon/html-webpack-plugin/blob/main/docs/template-option.md
      */
-    'template.ejs',
+    ['template.ejs', {specifier: (specific) => `${specific}.template.ejs`}],
     /**
      * PostCSS config file.
      *
