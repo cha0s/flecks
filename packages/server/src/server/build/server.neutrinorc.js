@@ -3,9 +3,9 @@ const {join} = require('path');
 const {require: R} = require('@flecks/core/server');
 const banner = require('@neutrinojs/banner');
 const clean = require('@neutrinojs/clean');
-const startServer = require('@neutrinojs/start-server');
 
 const runtime = require('./runtime');
+const startServer = require('./start');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -69,23 +69,13 @@ module.exports = async (flecks) => {
   // Augment the application-starting configuration.
   const start = (neutrino) => {
     if (isStarting) {
-      neutrino.use(startServer({name: 'index.js'}));
-      // Really dumb that I can't just pass these in.
-      neutrino.config
-        .plugin('start-server')
-        .tap((args) => {
-          const options = args[0];
-          options.keyboard = false;
-          // HMR.
-          options.signal = !!hot;
-          // Node args.
-          options.nodeArgs.push(...nodeArgs);
-          // Bail hard on unhandled rejections and report.
-          options.nodeArgs.push('--unhandled-rejections=strict');
-          options.nodeArgs.push('--trace-uncaught');
-          return args;
-        });
-
+      neutrino.use(startServer({
+        exec: 'index.js',
+        // Bail hard on unhandled rejections and report.
+        nodeArgs: [...nodeArgs, '--unhandled-rejections=strict', '--trace-uncaught'],
+        // HMR.
+        signal: !!hot,
+      }));
     }
   };
 
