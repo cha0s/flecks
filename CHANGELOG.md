@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/cha0s/flecks/compare/v2.0.0...v2.0.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* dox ([2d7c2f9](https://github.com/cha0s/flecks/commit/2d7c2f93dc673e12ce02263d54a2f8b309ed29fe))
+
+
+
+
+
 # [2.0.0](https://github.com/cha0s/flecks/compare/v1.4.1...v2.0.0) (2023-11-22)
 
 
