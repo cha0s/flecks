@@ -1,55 +1,37 @@
-import fontLoader from '@neutrinojs/font-loader';
-import imageLoader from '@neutrinojs/image-loader';
-import styleLoader from '@neutrinojs/style-loader';
+import {font, image, style} from './webpack';
 
-const augmentBuild = (target, config, flecks) => {
-  config.use.push((neutrino) => {
-    const isProduction = 'production' === neutrino.config.get('mode');
-    const extract = {};
-    const style = {};
-    if ('server' === target) {
-      extract.enabled = false;
-      style.injectType = 'lazyStyleTag';
-    }
-    if ('web' === target) {
-      extract.enabled = isProduction;
-      style.injectType = 'styleTag';
-    }
-    if ('fleck' === target) {
-      extract.enabled = true;
-      extract.plugin = {
-        filename: '[name].css',
-      };
-    }
-    neutrino.use(
-      styleLoader({
-        extract,
-        modules: {
-          localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+const augmentBuild = (target, config, env, argv, flecks) => {
+  const extract = {};
+  const styleOptions = {};
+  if ('server' === target) {
+    extract.enabled = false;
+    styleOptions.injectType = 'lazyStyleTag';
+  }
+  if ('web' === target) {
+    styleOptions.injectType = 'styleTag';
+  }
+  if ('fleck' === target) {
+    extract.enabled = true;
+    extract.plugin = {
+      filename: '[name].css',
+    };
+  }
+  const loaders = [
+    {
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          config: flecks.buildConfig('postcss.config.js'),
         },
-        style,
-        test: /\.(c|s[ac])ss$/,
-        modulesTest: /\.module\.(c|s[ac])ss$/,
-        loaders: [
-          {
-            loader: 'postcss-loader',
-            useId: 'postcss',
-            options: {
-              postcssOptions: {
-                config: flecks.buildConfig('postcss.config.js'),
-              },
-            },
-          },
-          {
-            loader: 'sass-loader',
-            useId: 'sass',
-          },
-        ],
-      }),
-    );
-  });
-  config.use.push(fontLoader());
-  config.use.push(imageLoader());
+      },
+    },
+    {
+      loader: 'sass-loader',
+    },
+  ];
+  style(config, env, argv, {extract, loaders, style: styleOptions}, flecks);
+  font(config, env, argv);
+  image(config, env, argv);
 };
 
 export default augmentBuild;

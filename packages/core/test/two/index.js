@@ -13,9 +13,9 @@ export const hooks = {
     }, 0);
   }),
   '@flecks/core/test/invoke-merge': () => ({bar: 420}),
-  '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => resolve({bar: 420})),
+  '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => { resolve({bar: 420}); }),
   '@flecks/core/test/invoke-merge-unique': () => ({foo: 69}),
-  '@flecks/core/test/invoke-merge-unique-async': () => new Promise((resolve) => resolve({foo: 69})),
+  '@flecks/core/test/invoke-merge-unique-async': () => new Promise((resolve) => { resolve({foo: 69}); }),
   '@flecks/core/test.middleware': () => (foo, next) => {
     // eslint-disable-next-line no-param-reassign
     foo.bar *= 2;

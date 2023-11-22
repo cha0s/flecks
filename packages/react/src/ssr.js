@@ -22,9 +22,15 @@ class Ssr extends Transform {
     const string = chunk
       .toString('utf8');
     if (-1 !== string.indexOf('<div id="root"></div>')) {
-      const output = ReactDOMServer.renderToString(
-        React.createElement(await root(this.flecks, this.req)),
-      );
+      let output;
+      try {
+        output = ReactDOMServer.renderToString(
+          React.createElement(await root(this.flecks, this.req)),
+        );
+      }
+      catch (e) {
+        output = '';
+      }
       this.push(
         string.replace(
           '<div id="root"></div>',

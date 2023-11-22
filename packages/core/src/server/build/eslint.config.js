@@ -7,14 +7,10 @@ const {
 } = require('fs');
 const {join} = require('path');
 
-const neutrino = require('neutrino');
-
-const R = require('../../bootstrap/require');
 const D = require('../../debug');
-const {targetNeutrino, targetNeutrinos} = require('../commands');
 const {default: Flecks} = require('../flecks');
 
-const debug = D('@flecks/core/.eslintrc.js');
+const debug = D('@flecks/core/server/build/eslint.config.js');
 
 const {
   FLECKS_CORE_BUILD_TARGET = 'fleck',
@@ -28,14 +24,8 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
     debug('bootstrapping flecks...');
     const flecks = Flecks.bootstrap();
     debug('bootstrapped');
-    const neutrinos = targetNeutrinos(flecks);
-    const config = neutrinos[targetNeutrino(FLECKS_CORE_BUILD_TARGET)]
-      ? await R(neutrinos[targetNeutrino(FLECKS_CORE_BUILD_TARGET)])(flecks)
-      // eslint-disable-next-line global-require
-      : require('../../../build/.neutrinorc');
-    flecks.invokeFlat('@flecks/core.build', FLECKS_CORE_BUILD_TARGET, config);
-    const eslintConfig = neutrino(config).eslintrc();
-    const webpackConfig = neutrino(config).webpack();
+    const eslintConfig = flecks.buildConfig('eslint.config.js', FLECKS_CORE_BUILD_TARGET);
+    const webpackConfig = flecks.buildConfig('webpack.config.js', FLECKS_CORE_BUILD_TARGET);
     eslintConfig.settings['import/resolver'].webpack = {
       config: {
         resolve: webpackConfig.resolve,
@@ -45,10 +35,10 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
   })();
 }
 else {
-  const cacheDirectory = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', 'flecks');
+  const cacheDirectory = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'core');
   try {
-    statSync(join(cacheDirectory, 'eslintrc.json'));
-    module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslintrc.json')).toString());
+    statSync(join(cacheDirectory, 'eslint.config.json'));
+    module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslint.config.json')).toString());
   }
   catch (error) {
     // Just silly. By synchronously spawning... ourselves, the spawned copy can use async.
@@ -64,7 +54,7 @@ else {
     try {
       statSync(join(FLECKS_CORE_ROOT, 'node_modules'));
       mkdirSync(cacheDirectory, {recursive: true});
-      writeFileSync(join(cacheDirectory, 'eslintrc.json'), json);
+      writeFileSync(join(cacheDirectory, 'eslint.config.json'), json);
     }
     // eslint-disable-next-line no-empty
     catch (error) {}

@@ -1,4 +1,5 @@
 const cluster = require('cluster');
+const {join} = require('path');
 
 class StartServerPlugin {
 
@@ -30,10 +31,10 @@ class StartServerPlugin {
       }
       let entryPoint;
       if (!exec) {
-        entryPoint = compilation.assets[Object.keys(compilation.assets)[0]].existsAt;
+        entryPoint = compilation.getPath(Object.keys(compilation.assets)[0]);
       }
       else if (compilation.assets[exec]) {
-        entryPoint = compilation.assets[exec].existsAt;
+        entryPoint = compilation.getPath(exec);
       }
       else if ('string' === typeof exec) {
         entryPoint = exec;
@@ -41,10 +42,7 @@ class StartServerPlugin {
       else {
         entryPoint = exec(compilation);
       }
-      this.startServer(
-        entryPoint,
-        callback,
-      );
+      this.startServer(join(compiler.options.output.path, entryPoint), callback);
     });
     compiler.hooks.shouldEmit.tap(pluginName, (compilation) => {
       const entryPoints = Object.keys(compilation.assets);
@@ -84,17 +82,6 @@ class StartServerPlugin {
 
 }
 
-module.exports = ({
-  nodeArgs = [],
-  pluginId = 'start-server',
-  ...pluginOptions
-} = {}) => (
-  ({config, options}) => {
-    config
-      .plugin(pluginId)
-      .use(
-        StartServerPlugin,
-        [{...pluginOptions, nodeArgs: nodeArgs.concat(options.debug ? ['--inspect'] : [])}],
-      );
-  }
+module.exports = (pluginOptions = {}) => (
+  new StartServerPlugin(pluginOptions)
 );

@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.1",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -24,10 +24,10 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.1",
+    "@flecks/core": "^2.0.0",
     "debug": "^4.3.3"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.1"
+    "@flecks/fleck": "^2.0.0"
   }
 }

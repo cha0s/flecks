@@ -7,9 +7,16 @@ export const hooks = {
      * Webpack stats configuration when building fleck target.
      */
     stats: {
+      assetsSort: 'name',
+      assetsSpace: Infinity,
       children: false,
-      chunks: false,
       colors: true,
+      excludeAssets: [/^(?:build|src|test)\//],
+      groupAssetsByChunk: false,
+      groupAssetsByEmitStatus: false,
+      groupAssetsByExtension: false,
+      groupAssetsByInfo: false,
+      groupAssetsByPath: false,
       modules: false,
     },
   }),

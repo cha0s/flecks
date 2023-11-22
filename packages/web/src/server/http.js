@@ -79,6 +79,7 @@ export const createHttpServer = async (flecks) => {
     });
     proxy.on('error', (error, req, res) => {
       if (res instanceof ServerResponse) {
+        debug('webpack-dev-server proxy failed, got: %s', error.message);
         res.status(502).end('Bad Gateway (WDS)');
       }
     });

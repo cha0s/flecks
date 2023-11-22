@@ -5,7 +5,9 @@ export default (flecks) => {
 
     static respond(packet, {req}) {
       req.logout();
-      return new Promise((r, e) => req.session.save((error) => (error ? e(error) : r())));
+      return new Promise((r, e) => {
+        req.session.save((error) => (error ? e(error) : r()));
+      });
     }
 
     static validate(packet, {req}) {

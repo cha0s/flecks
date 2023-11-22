@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.1",
+  "version": "2.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -26,23 +26,19 @@
     "index.js.map",
     "runtime.js",
     "runtime.js.map",
-    "server/build/server.neutrinorc.js",
-    "server/build/server.neutrinorc.js.map",
+    "server/build/server.webpack.config.js",
+    "server/build/server.webpack.config.js.map",
     "server.js",
     "server.js.map",
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.1",
-    "@neutrinojs/banner": "^9.5.0",
-    "@neutrinojs/clean": "^9.5.0",
-    "@neutrinojs/start-server": "^9.5.0",
+    "@flecks/core": "^2.0.0",
     "debug": "^4.3.3",
     "loader-utils": "^1.4.0",
-    "source-map-loader": "^1.1.3",
-    "webpack-node-externals": "2.5.2"
+    "source-map-loader": "^1.1.3"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.1"
+    "@flecks/fleck": "^2.0.0"
   }
 }

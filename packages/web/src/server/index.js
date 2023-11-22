@@ -18,18 +18,19 @@ export {augmentBuild};
 
 export const hooks = {
   '@flecks/core.build': augmentBuild,
-  '@flecks/core.build.alter': async (neutrinoConfigs, flecks) => {
+  '@flecks/core.build.alter': async (configs, env, argv, flecks) => {
     // Don't build if there's a fleck target.
-    if (neutrinoConfigs.fleck && !flecks.get('@flecks/web/server.forceBuildWithFleck')) {
+    if (configs.fleck && !flecks.get('@flecks/web/server.forceBuildWithFleck')) {
       // eslint-disable-next-line no-param-reassign
-      delete neutrinoConfigs.web;
+      delete configs.web;
       return;
     }
+    const isProduction = 'production' === argv.mode;
     // Only build vendor in dev.
-    if (neutrinoConfigs['web-vendor']) {
-      if (process.argv.find((arg) => 'production' === arg)) {
+    if (configs['web-vendor']) {
+      if (isProduction) {
         // eslint-disable-next-line no-param-reassign
-        delete neutrinoConfigs['web-vendor'];
+        delete configs['web-vendor'];
       }
       // Only build if something actually changed.
       const dll = flecks.get('@flecks/web/server.dll');
@@ -38,8 +39,10 @@ export const hooks = {
           FLECKS_CORE_ROOT,
           'node_modules',
           '.cache',
-          'flecks',
-          'web-vendor.manifest.json',
+          '@flecks',
+          'web',
+          'vendor',
+          'manifest.json',
         );
         let timestamp = 0;
         try {
@@ -63,7 +66,7 @@ export const hooks = {
         }
         if (timestamp > latest) {
           // eslint-disable-next-line no-param-reassign
-          delete neutrinoConfigs['web-vendor'];
+          delete configs['web-vendor'];
         }
         else if (timestamp > 0) {
           await unlink(manifest);
@@ -71,7 +74,7 @@ export const hooks = {
       }
     }
     // Bail if there's no web build.
-    if (!neutrinoConfigs.web) {
+    if (!configs.web) {
       return;
     }
     // Bail if the build isn't watching.
@@ -83,7 +86,7 @@ export const hooks = {
       'npx', 'webpack-dev-server',
       '--mode', 'development',
       '--hot',
-      '--config', flecks.buildConfig('webpack.config.js'),
+      '--config', flecks.buildConfig('fleckspack.config.js'),
     ];
     spawnWith(
       cmd,
@@ -95,7 +98,7 @@ export const hooks = {
     );
     // Remove the build config since we're handing off to WDS.
     // eslint-disable-next-line no-param-reassign
-    delete neutrinoConfigs.web;
+    delete configs.web;
   },
   '@flecks/core.build.config': () => [
     /**

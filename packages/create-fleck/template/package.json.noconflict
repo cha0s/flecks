@@ -15,9 +15,9 @@
     "test"
   ],
   "dependencies": {
-    "@flecks/core": "^1.0.0"
+    "@flecks/core": "^2.0.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.0.0"
+    "@flecks/fleck": "^2.0.0"
   }
 }

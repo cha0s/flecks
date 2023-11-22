@@ -53,7 +53,9 @@ export async function createDatabaseConnection(flecks) {
     }
     catch (error) {
       // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
     }
   }
   const dependencies = {};

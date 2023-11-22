@@ -79,7 +79,9 @@ export default async (flecks, key, config) => {
   while (await !containerIsRunning(name)) {
     debug("waiting for '%s' to start...", key);
     // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 10);
+    });
   }
   debug("'%s' started", key);
   if (config.hasConnected) {

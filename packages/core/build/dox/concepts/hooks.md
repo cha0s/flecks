@@ -161,7 +161,7 @@ export const hooks = {
 
 If you think about the example above, you might realize that it will become a lot of typing to keep adding new models over time. Provider hooks exist to reduce this maintenance burden for you.
 
-Webpack provides an API called [require.context](https://v4.webpack.js.org/guides/dependency-management/#requirecontext), and the flecks provider is optimized to work with this API.
+Webpack provides an API called [require.context](https://webpack.js.org/guides/dependency-management/#requirecontext), and the flecks provider is optimized to work with this API.
 
 Supposing our fleck is structured like so:
 

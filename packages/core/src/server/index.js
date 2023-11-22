@@ -1,11 +1,11 @@
 import {join} from 'path';
 import {inspect} from 'util';
 
-import airbnb from '@neutrinojs/airbnb';
-import neutrino from 'neutrino';
+import ESLintPlugin from 'eslint-webpack-plugin';
+import webpack from 'webpack';
 
+import eslint from './build/default.eslint.config';
 import commands from './commands';
-import R from '../bootstrap/require';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -22,46 +22,44 @@ export {
   default as commands,
   processCode,
   spawnWith,
-  targetNeutrino,
-  targetNeutrinos,
 } from './commands';
 export {default as Flecks} from './flecks';
-export {default as fleck} from '../bootstrap/fleck';
-export {default as require} from '../bootstrap/require';
+export {default as require} from '../require';
 export {JsonStream, transform} from './stream';
+export * from './webpack';
+
+export {webpack};
 
 export const hooks = {
-  '@flecks/core.build': (target, config, flecks) => {
+  '@flecks/core.build': (target, config, env, argv, flecks) => {
     const {
       'eslint.exclude': exclude,
       profile,
     } = flecks.get('@flecks/core/server');
-    if (-1 !== profile.indexOf(target)) {
-      config.use.push(({config}) => {
-        config
-          .plugin('profiler')
-          .use(
-            R.resolve('webpack/lib/debug/ProfilingPlugin'),
-            [{outputPath: join(FLECKS_CORE_ROOT, `profile.build-${target}.json`)}],
-          );
-      });
+    if (profile.includes(target)) {
+      config.plugins.push(
+        new webpack.debug.ProfilingPlugin({
+          outputPath: join(FLECKS_CORE_ROOT, `profile.build-${target}.json`),
+        }),
+      );
     }
-    if (-1 === exclude.indexOf(target)) {
-      const baseConfig = R(flecks.buildConfig('.eslint.defaults.js', target));
-      const webpackConfig = neutrino(config).webpack();
-      config.use.unshift(
-        airbnb({
-          eslint: {
-            baseConfig: {
-              ...baseConfig,
-              settings: {
-                ...(baseConfig.settings || {}),
-                'import/resolver': {
-                  ...(baseConfig.settings['import/resolver'] || {}),
-                  webpack: {
-                    config: {
-                      resolve: webpackConfig.resolve,
-                    },
+    if (exclude.includes(target)) {
+      config.plugins.push(
+        new ESLintPlugin({
+          cache: true,
+          cwd: FLECKS_CORE_ROOT,
+          emitWarning: argv.mode !== 'production',
+          failOnError: argv.mode === 'production',
+          useEslintrc: false,
+          overrideConfig: {
+            ...eslint,
+            settings: {
+              ...(eslint.settings || {}),
+              'import/resolver': {
+                ...(eslint.settings['import/resolver'] || {}),
+                webpack: {
+                  config: {
+                    resolve: config.resolve,
                   },
                 },
               },
@@ -77,20 +75,20 @@ export const hooks = {
      */
     'babel.config.js',
     /**
-     * ESLint defaults. The default .eslintrc.js just reads from this file so that the build
+     * ESLint defaults. The default `eslint.config.js` just reads from this file so that the build
      * process can dynamically configure parts of ESLint.
      */
-    ['.eslint.defaults.js', {specifier: (specific) => `${specific}.eslint.defaults.js`}],
+    'default.eslint.config.js',
     /**
      * ESLint configuration. See: https://eslint.org/docs/user-guide/configuring/
      */
-    ['.eslintrc.js', {specifier: (specific) => `${specific}.eslintrc.js`}],
+    'eslint.config.js',
     /**
-     * Neutrino build configuration. See: https://neutrinojs.org/usage/
+     * Flecks webpack configuration. See: https://webpack.js.org/configuration/
      */
-    ['.neutrinorc.js', {specifier: (specific) => `${specific}.neutrinorc.js`}],
+    ['fleckspack.config.js', {specifier: false}],
     /**
-     * Webpack (v4) configuration. See: https://v4.webpack.js.org/configuration/
+     * Webpack configuration. See: https://webpack.js.org/configuration/
      */
     'webpack.config.js',
   ],

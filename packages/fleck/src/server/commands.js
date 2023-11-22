@@ -50,7 +50,9 @@ export default (program, flecks) => {
         }
         catch (error) {
           // eslint-disable-next-line no-await-in-loop
-          await new Promise((resolve) => setTimeout(resolve, 50));
+          await new Promise((resolve) => {
+            setTimeout(resolve, 50);
+          });
         }
       }
       const runMocha = async () => {
@@ -87,7 +89,9 @@ export default (program, flecks) => {
       }
       chokidar.watch(testLocation)
         .on('all', async () => {
-          await new Promise((resolve) => setTimeout(resolve, 50));
+          await new Promise((resolve) => {
+            setTimeout(resolve, 50);
+          });
           runMocha();
         });
       return new Promise(() => {});

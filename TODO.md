@@ -32,4 +32,7 @@
 
 # Next
 
+# Webpack 5
+
+fixup no-param-reassign
 

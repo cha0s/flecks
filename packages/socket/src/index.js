@@ -5,7 +5,7 @@ import Refresh from './packet/refresh';
 
 export {default as normalize} from './normalize';
 export * from './hooks';
-export {default as Packet, Packer, ValidationError} from './packet';
+export {Packet, Packer, ValidationError} from './packet';
 
 export const hooks = {
   '@flecks/core.starting': (flecks) => {

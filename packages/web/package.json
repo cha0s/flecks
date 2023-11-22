@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.1",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -32,10 +32,10 @@
     "server/build/template.ejs",
     "server/build/tests.js",
     "server/build/tests.js.map",
-    "server/build/web.neutrinorc.js",
-    "server/build/web.neutrinorc.js.map",
-    "server/build/web-vendor.neutrinorc.js",
-    "server/build/web-vendor.neutrinorc.js.map",
+    "server/build/web.webpack.config.js",
+    "server/build/web.webpack.config.js.map",
+    "server/build/web-vendor.webpack.config.js",
+    "server/build/web-vendor.webpack.config.js.map",
     "src",
     "tests.js",
     "tests.js.map"
@@ -43,35 +43,32 @@
   "dependencies": {
     "@babel/parser": "^7.17.0",
     "@babel/types": "^7.17.0",
-    "@flecks/core": "^1.4.1",
-    "@neutrinojs/dev-server": "^9.5.0",
-    "@neutrinojs/font-loader": "^9.5.0",
-    "@neutrinojs/html-loader": "^9.5.0",
-    "@neutrinojs/html-template": "^9.5.0",
-    "@neutrinojs/image-loader": "^9.5.0",
-    "@neutrinojs/style-loader": "^9.5.0",
+    "@flecks/core": "^2.0.0",
     "add-asset-html-webpack-plugin": "^5.0.1",
     "autoprefixer": "^9.8.6",
     "before-build-webpack": "^0.2.12",
+    "clean-webpack-plugin": "4.0.0",
     "compression": "^1.7.4",
+    "css-loader": "^6.8.1",
     "express": "^4.17.1",
+    "file-loader": "^6.2.0",
     "glob": "^7.2.0",
-    "html-webpack-plugin": "^4.5.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.3",
     "http-proxy": "^1.17.0",
     "loader-utils": "^1.4.0",
     "lodash.flatten": "^4.4.0",
+    "mini-css-extract-plugin": "^2.7.6",
     "mocha": "^8.3.2",
     "postcss-loader": "4.2.0",
     "react-dev-utils": "12.0.0",
     "sass": "^1.49.9",
     "sass-loader": "10.2.0",
     "source-map-loader": "^1.1.3",
-    "webpack": "^4",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-node-externals": "2.5.2"
+    "style-loader": "^3.3.3",
+    "webpack-dev-server": "4.11.1"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.1",
-    "@neutrinojs/copy": "^9.4.0"
+    "@flecks/fleck": "^2.0.0"
   }
 }
