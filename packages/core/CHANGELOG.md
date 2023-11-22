@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/cha0s/flecks/compare/v1.4.1...v2.0.0) (2023-11-22)
+
+
+### Bug Fixes
+
+* babel devs always breaking things ([cc8a35a](https://github.com/cha0s/flecks/commit/cc8a35a4b25ee730feb8cb1c978d3f29238e1f64))
+* coerce the number ([820e390](https://github.com/cha0s/flecks/commit/820e390744d9a16a145db72c2ea7a433d2273d57))
+* complex aliasing ([4ba2b51](https://github.com/cha0s/flecks/commit/4ba2b5113657f4426d8e976fe9a77d797378475a))
+* core neutrino config ([7feac4a](https://github.com/cha0s/flecks/commit/7feac4a87b711ec9e48fa5b41be6d52b251a4e61))
+* default source-map-support install ([ed2aa6a](https://github.com/cha0s/flecks/commit/ed2aa6a3c1354d7dfc4290e431c50779b8be2437))
+* fake context ([3976078](https://github.com/cha0s/flecks/commit/3976078bebdf426bd2fa027f8d4e553149a14d02))
+* tests ([a982224](https://github.com/cha0s/flecks/commit/a98222495ebffa555db426e480e5f453148c240a))
+
+
+### Features
+
+* "wtf, you can't just take @babel/register, give it an actual API, and make it work simultaneously across multiple roots" ([82e22c3](https://github.com/cha0s/flecks/commit/82e22c3eef69f13b6b8645667d3362d49d3b3e6b))
+* awesomerific module resolution ([60c844d](https://github.com/cha0s/flecks/commit/60c844d58b294df0d9cf0be741266fdd8dd53a33))
+* crazy hax to make our ESLint experience dope ([467f0c9](https://github.com/cha0s/flecks/commit/467f0c9ad30521f841665a7b939ad4d9b7c8b53c))
+* ServerFlecks::register(BuildConfig|Resolver) ([013f980](https://github.com/cha0s/flecks/commit/013f980f583277e2e48e74e53ff148f12ebb345a))
+* support mjs ([7935597](https://github.com/cha0s/flecks/commit/79355977830a3778ef2414ece4d2812bc2e7ea0c))
+* webpack 5 support ([288b368](https://github.com/cha0s/flecks/commit/288b368b9ff96be5ccb58bd811838a4a4bb6c48c))
+
+
+
+
+
 ## [1.4.1](https://github.com/cha0s/flecks/compare/v1.4.0...v1.4.1) (2022-03-19)
 
 **Note:** Version bump only for package @flecks/core

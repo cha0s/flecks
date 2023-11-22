@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/cha0s/flecks/compare/v1.4.1...v2.0.0) (2023-11-22)
+
+
+### Bug Fixes
+
+* mocha error propagation ([1f11aac](https://github.com/cha0s/flecks/commit/1f11aac027e0699b821c2bc9f31bdfe3fd61a2d0))
+* test fails -> nonzero process code ([1f01189](https://github.com/cha0s/flecks/commit/1f0118914393d8b16913aad25eef81aaadac4e68))
+
+
+### Features
+
+* webpack 5 support ([288b368](https://github.com/cha0s/flecks/commit/288b368b9ff96be5ccb58bd811838a4a4bb6c48c))
+
+
+
+
+
 ## [1.4.1](https://github.com/cha0s/flecks/compare/v1.4.0...v1.4.1) (2022-03-19)
 
 **Note:** Version bump only for package @flecks/fleck

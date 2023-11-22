@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/cha0s/flecks/compare/v1.4.1...v2.0.0) (2023-11-22)
+
+
+### Features
+
+* UserRequired ([9b5f6f4](https://github.com/cha0s/flecks/commit/9b5f6f4818afaec76ee941c8d2c4795912234ee8))
+* webpack 5 support ([288b368](https://github.com/cha0s/flecks/commit/288b368b9ff96be5ccb58bd811838a4a4bb6c48c))
+
+
+
+
+
 ## [1.4.1](https://github.com/cha0s/flecks/compare/v1.4.0...v1.4.1) (2022-03-19)
 
 **Note:** Version bump only for package @flecks/user
