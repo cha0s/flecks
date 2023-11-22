@@ -26,12 +26,12 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^2.0.1",
-    "@flecks/db": "^2.0.1",
+    "@flecks/core": "^2.0.2",
+    "@flecks/db": "^2.0.2",
     "rate-limiter-flexible": "^2.1.13",
     "redis": "^3.1.2"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.1"
+    "@flecks/fleck": "^2.0.2"
   }
 }

@@ -43,7 +43,7 @@
   "dependencies": {
     "@babel/parser": "^7.17.0",
     "@babel/types": "^7.17.0",
-    "@flecks/core": "^2.0.1",
+    "@flecks/core": "^2.0.2",
     "add-asset-html-webpack-plugin": "^5.0.1",
     "autoprefixer": "^9.8.6",
     "before-build-webpack": "^0.2.12",
@@ -69,6 +69,6 @@
     "webpack-dev-server": "4.11.1"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.1"
+    "@flecks/fleck": "^2.0.2"
   }
 }

@@ -25,13 +25,13 @@
     "src"
   ],
   "dependencies": {
-    "@flecks/core": "^2.0.1",
+    "@flecks/core": "^2.0.2",
     "@socket.io/redis-adapter": "7.1.0",
     "connect-redis": "^5.0.0",
     "express-session": "^1.17.1",
     "redis": "4.0.3"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.1"
+    "@flecks/fleck": "^2.0.2"
   }
 }

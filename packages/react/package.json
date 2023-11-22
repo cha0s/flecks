@@ -42,8 +42,8 @@
   ],
   "dependencies": {
     "@babel/preset-react": "^7.18.6",
-    "@flecks/core": "^2.0.1",
-    "@flecks/web": "^2.0.1",
+    "@flecks/core": "^2.0.2",
+    "@flecks/web": "^2.0.2",
     "@hot-loader/react-dom": "^17.0.1",
     "babel-merge": "^3.0.0",
     "classnames": "^2.3.1",
@@ -55,6 +55,6 @@
     "redux-first-history": "^5.0.8"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.1"
+    "@flecks/fleck": "^2.0.2"
   }
 }
