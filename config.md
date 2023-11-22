@@ -4,21 +4,21 @@ This page documents all the configuration in this project.
 
 ## `@flecks/core`
 
-> *No description provided.*
+> The ID of your application.
 
 ```javascript
-id: "flecks"
+id: 'flecks'
 ```
 
 ## `@flecks/core/server`
 
-> *No description provided.*
+> Build targets to exclude from ESLint.
 
 ```javascript
 eslint.exclude: []
 ```
 
-> *No description provided.*
+> Build targets to profile with `webpack.debug.ProfilingPlugin`.
 
 ```javascript
 profile: []
@@ -26,53 +26,53 @@ profile: []
 
 ## `@flecks/db/server`
 
-> *No description provided.*
+> The database to connect to.
 
 ```javascript
-database: ":memory:"
+database: ':memory:'
 ```
 
-> *No description provided.*
+> SQL dialect. See: https://sequelize.org/v5/manual/dialects.html
 
 ```javascript
-dialect: "sqlite"
+dialect: 'sqlite'
 ```
 
-> *No description provided.*
+> Database server host.
 
 ```javascript
-host: void 0
+host: undefined
 ```
 
-> *No description provided.*
+> Database server password.
 
 ```javascript
-password: void 0
+password: undefined
 ```
 
-> *No description provided.*
+> Database server port.
 
 ```javascript
-port: void 0
+port: undefined
 ```
 
-> *No description provided.*
+> Database server username.
 
 ```javascript
-username: void 0
+username: undefined
 ```
 
 ## `@flecks/docker/server`
 
-> *No description provided.*
+> Whether to run docker containers.
 
 ```javascript
-enabled: !0
+enabled: true
 ```
 
 ## `@flecks/dox/server`
 
-> *No description provided.*
+> Rewrite the output filenames of source files. `filename.replace(new RegExp([key]), [value]);`
 
 ```javascript
 filenameRewriters: {}
@@ -80,75 +80,97 @@ filenameRewriters: {}
 
 ## `@flecks/electron/server`
 
-> *No description provided.*
+> Browser window options. See: https://www.electronjs.org/docs/latest/api/browser-window
 
 ```javascript
 browserWindowOptions: {}
 ```
 
-> *No description provided.*
+> Install devtools extensions (by default). If `true`, will install some devtools extensions based on which flecks are enabled. You can pass an array of Chrome store IDs to install a list of custom extensions. Extensions will not be installed if `'production' === process.env.NODE_ENV`
 
 ```javascript
-installExtensions: !0
+installExtensions: true
 ```
 
-> *No description provided.*
+> Quit the app when all windows are closed.
 
 ```javascript
-quitOnClosed: !0
+quitOnClosed: true
 ```
 
-> *No description provided.*
+> The URL to load in electron by default. Defaults to `http://${flecks.get('@flecks/web/server.public')}`.
 
 ```javascript
-url: void 0
+url: undefined
 ```
 
 ## `@flecks/fleck/server`
 
-> *No description provided.*
+> Webpack stats configuration when building fleck target.
 
 ```javascript
-stats: {assetsSort:"name",assetsSpace:1/0,children:!1,colors:!0,excludeAssets:[/^(?:build|src|test)\//],groupAssetsByChunk:!1,groupAssetsByEmitStatus:!1,groupAssetsByExtension:!1,groupAssetsByInfo:!1,groupAssetsByPath:!1,modules:!1}
+stats: {
+      assetsSort: 'name',
+      assetsSpace: Infinity,
+      children: false,
+      colors: true,
+      excludeAssets: [/^(?:build|src|test)\//],
+      groupAssetsByChunk: false,
+      groupAssetsByEmitStatus: false,
+      groupAssetsByExtension: false,
+      groupAssetsByInfo: false,
+      groupAssetsByPath: false,
+      modules: false,
+    }
 ```
 
 ## `@flecks/governor/server`
 
-> *No description provided.*
+> All keys used to determine fingerprint.
 
 ```javascript
-keys: ["ip"]
+keys: ['ip']
 ```
 
 > *No description provided.*
 
 ```javascript
-web: {keys:["ip"],points:60,duration:30,ttl:30}
+web: {
+      keys: ['ip'],
+      points: 60,
+      duration: 30,
+      ttl: 30,
+    }
 ```
 
 > *No description provided.*
 
 ```javascript
-socket: {keys:["ip"],points:60,duration:30,ttl:30}
+socket: {
+      keys: ['ip'],
+      points: 60,
+      duration: 30,
+      ttl: 30,
+    }
 ```
 
 ## `@flecks/react`
 
-> *No description provided.*
+> Whether to enable server-side rendering.
 
 ```javascript
-ssr: !0
+ssr: true
 ```
 
 ## `@flecks/redis/server`
 
-> *No description provided.*
+> Redis server host.
 
 ```javascript
-host: "localhost"
+host: 'localhost'
 ```
 
-> *No description provided.*
+> Redis server port.
 
 ```javascript
 port: 6379
@@ -156,128 +178,142 @@ port: 6379
 
 ## `@flecks/server`
 
-> *No description provided.*
+> Whether HMR is enabled.
 
 ```javascript
-hot: !1
+hot: false
 ```
 
-> *No description provided.*
+> Arguments to pass along to node. See: https://nodejs.org/api/cli.html
 
 ```javascript
 nodeArgs: []
 ```
 
-> *No description provided.*
+> Whether to start the server after building.
 
 ```javascript
-start: !0
+start: true
 ```
 
-> *No description provided.*
+> Webpack stats configuration when building server target.
 
 ```javascript
-stats: {chunks:!1,colors:!0,modules:!1}
+stats: {
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
 ## `@flecks/user/local/server`
 
-> *No description provided.*
+> Path to redirect to after failed login.
 
 ```javascript
-failureRedirect: "/"
+failureRedirect: '/'
 ```
 
-> *No description provided.*
+> Path to redirect to after successful login.
 
 ```javascript
-successRedirect: "/"
+successRedirect: '/'
 ```
 
 ## `@flecks/user/session/server`
 
-> *No description provided.*
+> Set the cookie secret for session encryption. See: http://expressjs.com/en/resources/middleware/cookie-parser.html
 
 ```javascript
-cookieSecret: "Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!"
+cookieSecret: 'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
 ```
 
 ## `@flecks/web/server`
 
-> *No description provided.*
+> (webpack-dev-server) Disable the host check. See: https://github.com/webpack/webpack-dev-server/issues/887
 
 ```javascript
-devDisableHostCheck: !1
+devDisableHostCheck: false
 ```
 
-> *No description provided.*
+> (webpack-dev-server) Host to bind.
 
 ```javascript
-devHost: "localhost"
+devHost: 'localhost'
 ```
 
-> *No description provided.*
+> (webpack-dev-server) Port to bind.
 
 ```javascript
-devPort: void 0
+devPort: undefined
 ```
 
-> *No description provided.*
+> (webpack-dev-server) Public path to serve. Defaults to `flecks.get('@flecks/web/server.public')`.
 
 ```javascript
-devPublic: void 0
+devPublic: undefined
 ```
 
-> *No description provided.*
+> (webpack-dev-server) Webpack stats output.
 
 ```javascript
-devStats: {assets:!1,chunks:!1,colors:!0,modules:!1}
+devStats: {
+      assets: false,
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
-> *No description provided.*
+> Modules to externalize using `webpack.DllPlugin`.
 
 ```javascript
 dll: []
 ```
 
-> *No description provided.*
+> Force building http target even if there's a fleck target.
 
 ```javascript
-forceBuildWithFleck: !1
+forceBuildWithFleck: false
 ```
 
-> *No description provided.*
+> Host to bind.
 
 ```javascript
-host: "0.0.0.0"
+host: '0.0.0.0'
 ```
 
-> *No description provided.*
+> Build path.
 
 ```javascript
-output: "web"
+output: 'web'
 ```
 
-> *No description provided.*
+> Port to bind.
 
 ```javascript
 port: 32340
 ```
 
-> *No description provided.*
+> Public path to server.
 
 ```javascript
-public: "localhost:32340"
+public: 'localhost:32340'
 ```
 
-> *No description provided.*
+> Webpack stats configuration when building HTTP target.
 
 ```javascript
-stats: {children:!1,chunks:!1,colors:!0,modules:!1}
+stats: {
+      children: false,
+      chunks: false,
+      colors: true,
+      modules: false,
+    }
 ```
 
-> *No description provided.*
+> Proxies to trust. See: https://www.npmjs.com/package/proxy-addr
 
 ```javascript
-trust: !1
+trust: false
 ```
