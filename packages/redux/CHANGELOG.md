@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
+
+
+### Bug Fixes
+
+* electron ([81fc978](https://github.com/cha0s/flecks/commit/81fc978da2b8d32e303d165fe7c2f6071ac8e741))
+
+
+
+
+
 ## [2.0.2](https://github.com/cha0s/flecks/compare/v2.0.1...v2.0.2) (2023-11-22)
 
 **Note:** Version bump only for package @flecks/redux
