@@ -8,14 +8,13 @@ class StartServerPlugin {
   worker = null;
 
   constructor(options = {}) {
-    this.options = 'string' === typeof options
-      ? {name: options}
-      : {
-        args: [],
-        nodeArgs: [],
-        signal: false,
-        ...options,
-      };
+    this.options = {
+      args: [],
+      killOnExit: true,
+      nodeArgs: [],
+      signal: false,
+      ...('string' === typeof options ? {name: options} : options),
+    };
   }
 
   apply(compiler) {
@@ -67,7 +66,7 @@ class StartServerPlugin {
   }
 
   startServer(exec, callback) {
-    const {args, nodeArgs} = this.options;
+    const {args, killOnExit, nodeArgs} = this.options;
     const execArgv = nodeArgs.concat(process.execArgv);
     const inspectPort = this.constructor.inspectPortFromExecArgv(execArgv);
     cluster.setupPrimary({
@@ -78,6 +77,11 @@ class StartServerPlugin {
     });
     cluster.on('online', () => callback());
     this.worker = cluster.fork();
+    if (killOnExit) {
+      this.worker.on('exit', () => {
+        process.exit();
+      });
+    }
   }
 
 }
