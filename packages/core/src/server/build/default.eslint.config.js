@@ -85,7 +85,7 @@ module.exports = (flecks) => {
         node: {},
       },
       react: {
-        version: '18',
+        version: '17.0.1',
       },
     },
   };
