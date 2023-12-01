@@ -1,9 +1,8 @@
 import {join} from 'path';
 
-import banner from '@neutrinojs/banner';
+import {banner} from '@flecks/core/server';
 
 const {
-  FLECKS_CORE_ROOT = process.cwd(),
   NODE_ENV,
 } = process.env;
 
@@ -19,12 +18,13 @@ async function createWindow(flecks) {
 export const hooks = {
   '@flecks/core.build': (target, config) => {
     if ('server' === target) {
-      config.use.push(banner({
-        banner: "require('module').Module._initPaths();",
-        include: 'index.js',
-        pluginId: 'initPaths',
-        raw: true,
-      }));
+      config.plugins.push(
+        banner({
+          // Bootstrap our `require()` magic.
+          banner: "require('module').Module._initPaths();",
+          include: 'index.js',
+        }),
+      );
     }
   },
   '@flecks/core.config': () => ({
@@ -55,15 +55,18 @@ export const hooks = {
      */
     url: undefined,
   }),
-  '@flecks/core.webpack': (target, config) => {
-    const plugin = config.plugins.find(({pluginName}) => pluginName === 'StartServerPlugin');
-    // Extremely hackish, c'est la vie.
-    if (plugin) {
-      const {exec} = plugin.options;
-      plugin.options.exec = (compilation) => {
-        plugin.options.args = [compilation.assets[exec].existsAt];
-        return join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'electron');
-      };
+  '@flecks/core.build.alter': (configs) => {
+    const {server: config} = configs;
+    if (config) {
+      const plugin = config.plugins.find(({pluginName}) => pluginName === 'StartServerPlugin');
+      // Extremely hackish, c'est la vie.
+      if (plugin) {
+        const {exec} = plugin.options;
+        plugin.options.exec = (compilation) => {
+          plugin.options.args = [join(config.output.path, compilation.getPath(exec))];
+          return join('..', 'node_modules', '.bin', 'electron');
+        };
+      }
     }
   },
   '@flecks/electron/server.initialize': async (electron, flecks) => {

@@ -4,13 +4,11 @@ export const hooks = {
   '@flecks/core.commands': commands,
   '@flecks/core.config': () => ({
     /**
-     * Webpack stats configuration when building fleck target.
+     * Webpack stats configuration.
      */
     stats: {
-      children: false,
-      chunks: false,
       colors: true,
-      modules: false,
+      errorDetails: true,
     },
   }),
   '@flecks/core.targets': () => ['fleck'],

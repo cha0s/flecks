@@ -79,12 +79,26 @@ export const createHttpServer = async (flecks) => {
     });
     proxy.on('error', (error, req, res) => {
       if (res instanceof ServerResponse) {
+        debug('webpack-dev-server proxy failed, got: %s', error.message);
+        if ('ECONNREFUSED' === error.code) {
+          debug('retrying in 1 second...');
+          setTimeout(() => {
+            proxy.web(req, res, {selfHandleResponse: true});
+          }, 1000);
+          return;
+        }
         res.status(502).end('Bad Gateway (WDS)');
       }
     });
-    app.all('*', (req, res) => proxy.web(req, res, {selfHandleResponse: true}));
-    httpServer.on('upgrade', (req, socket, head) => proxy.ws(req, socket, head));
-    httpServer.on('close', () => proxy.close());
+    app.all('*', (req, res) => {
+      proxy.web(req, res, {selfHandleResponse: true});
+    });
+    httpServer.on('upgrade', (req, socket, head) => {
+      proxy.ws(req, socket, head);
+    });
+    httpServer.on('close', () => {
+      proxy.close();
+    });
   }
   else {
     // Serve the document root, sans index.

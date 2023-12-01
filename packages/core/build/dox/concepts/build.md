@@ -71,28 +71,28 @@ Have fun!
 The flecks server provides an interface (`flecks.buildConfig()`) for gathering configuration files
 from the `build` directory. The resolution order is determined by a few variables:
 
-- `filename` specifies the name of the configuration file, e.g. `server.neutrinorc.js`.
+- `filename` specifies the name of the configuration file, e.g. `server.webpack.config.js`.
 
-- `general` specifies a general variation of the given configuration. The general form of `server.neutrinorc.js` is `.neutrinorc.js`.
+- `general` specifies a general variation of the given configuration. The general form of `server.webpack.config.js` is `webpack.config.js`.
 
 - `root` specifies an alternative location to search. Defaults to `FLECKS_CORE_ROOT`.
 
-- `fleck` specifies the fleck owning the configuration. `@flecks/server` owns `server.neutrinorc.js`.
+- `fleck` specifies the fleck owning the configuration. `@flecks/server` owns `server.webpack.config.js`.
 
 Given these considerations, and supposing we had the above variables set like:
 
 ```javascript
-const filename = 'server.neutrinorc.js';
-const general = '.neutrinorc.js';
+const filename = 'server.webpack.config.js';
+const general = 'webpack.config.js';
 const root = '/foo/bar/baz';
 const fleck = '@flecks/server';
 ```
 
 Flecks will then search the following paths top-down until it finds the build configuration:
 
-- `/foo/bar/baz/build/server.neutrinorc.js`
-- `/foo/bar/baz/build/.neutrinorc.js`
-- `${FLECKS_CORE_ROOT}/build/server.neutrinorc.js`
-- `${FLECKS_CORE_ROOT}/build/.neutrinorc.js`
-- `@flecks/server/build/server.neutrinorc.js`
-- `@flecks/server/build/.neutrinorc.js`
+- `/foo/bar/baz/build/server.webpack.config.js`
+- `/foo/bar/baz/build/webpack.config.js`
+- `${FLECKS_CORE_ROOT}/build/server.webpack.config.js`
+- `${FLECKS_CORE_ROOT}/build/webpack.config.js`
+- `@flecks/server/build/server.webpack.config.js`
+- `@flecks/server/build/webpack.config.js`

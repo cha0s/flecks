@@ -12,14 +12,13 @@ import {
   resolve,
 } from 'path';
 
-import compileLoader from '@neutrinojs/compile-loader';
 import babelmerge from 'babel-merge';
 import enhancedResolve from 'enhanced-resolve';
 import {addHook} from 'pirates';
 
-import R from '../bootstrap/require';
 import D from '../debug';
 import Flecks from '../flecks';
+import R from '../require';
 import Compiler from './compiler';
 
 const {
@@ -119,9 +118,14 @@ export default class ServerFlecks extends Flecks {
     if (!config) {
       throw new Error(`Unknown build config '${path}'`);
     }
-    const paths = [];
-    if (config.specifier) {
-      paths.push(config.specifier(specific));
+    const paths = [`${specific}.${path}`];
+    if ('specifier' in config) {
+      if (false === config.specifier) {
+        paths.pop();
+      }
+      else {
+        paths.push(config.specifier(specific));
+      }
     }
     paths.push(path);
     const roots = [config.root];
@@ -493,12 +497,14 @@ export default class ServerFlecks extends Flecks {
   }
 
   static resolveBuildConfig(resolver, roots, paths) {
+    const tried = [];
     for (let i = 0; i < roots.length; ++i) {
       const root = roots[i];
       for (let j = 0; j < paths.length; ++j) {
         const path = paths[j];
         const resolved = join(root, 'build', path);
         try {
+          tried.push(resolved);
           statSync(resolved);
           return resolved;
         }
@@ -506,7 +512,7 @@ export default class ServerFlecks extends Flecks {
         catch (error) {}
       }
     }
-    throw new Error(`Couldn't resolve build file '${paths.pop()}'`);
+    throw new Error(`Couldn't resolve build file '${paths.pop()}', tried: ${tried.join(', ')}`);
   }
 
   resolvePath(path) {
@@ -544,12 +550,7 @@ export default class ServerFlecks extends Flecks {
     return undefined;
   }
 
-  runtimeCompiler(resolver, runtime, neutrino, {additionalModuleDirs = [], allowlist = []} = {}) {
-    const {config} = neutrino;
-    // Pull the default compiler.
-    if (config.module.rules.has('compile')) {
-      config.module.rules.delete('compile');
-    }
+  runtimeCompiler(resolver, runtime, config, {additionalModuleDirs = [], allowlist = []} = {}) {
     // Compile.
     const needCompilation = Object.entries(resolver)
       .filter(([fleck]) => this.constructor.fleckIsCompiled(resolver, fleck));
@@ -565,8 +566,7 @@ export default class ServerFlecks extends Flecks {
             : this.constructor.sourcepath(R.resolve(this.constructor.resolve(resolver, fleck)));
           alias = alias.endsWith('/index') ? alias.slice(0, -6) : alias;
           allowlist.push(fleck);
-          config.resolve.alias
-            .set(fleck, alias);
+          config.resolve.alias[fleck] = alias;
           debugSilly('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
         });
       // Set up compilation at each root.
@@ -587,12 +587,23 @@ export default class ServerFlecks extends Flecks {
             // Augment the compiler with babel config from flecksrc.
             ...babelmerge.all(rcBabel.map(([, babel]) => babel)),
           };
-          compileLoader({
-            ignore: [sourceroot],
-            include: [sourceroot],
-            babel,
-            ruleId: `@flecks/${runtime}/runtime/compile[${root}]`,
-          })(neutrino);
+          config.module.rules.push(
+            {
+              test: /\.(m?jsx?)?$/,
+              include: [sourceroot],
+              use: [
+                {
+                  loader: R.resolve('babel-loader'),
+                  options: {
+                    cacheDirectory: true,
+                    babelrc: false,
+                    configFile: false,
+                    ...babel,
+                  },
+                },
+              ],
+            },
+          );
         });
     }
   }

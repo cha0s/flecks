@@ -293,12 +293,12 @@ export const parseFile = async (filename, resolved, state) => {
 };
 
 const fleckSources = async (path) => (
-  new Promise((r, e) => (
+  new Promise((r, e) => {
     glob(
       join(path, 'src', '**', '*.js'),
       (error, result) => (error ? e(error) : r(result)),
-    )
-  ))
+    );
+  })
 );
 
 export const parseFleckRoot = async (root, state) => {

@@ -13,12 +13,11 @@ export const hooks = {
      */
     start: true,
     /**
-     * Webpack stats configuration when building server target.
+     * Webpack stats configuration.
      */
     stats: {
-      chunks: false,
       colors: true,
-      modules: false,
+      errorDetails: true,
     },
   }),
 };

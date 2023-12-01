@@ -1,32 +1,40 @@
 export const hooks = {
 
   /**
-   * Hook into neutrino configuration.
+   * Hook into webpack configuration.
    * @param {string} target The build target; e.g. `server`.
-   * @param {Object} config The neutrino configuration.
+   * @param {Object} config The webpack configuration.
+   * @param {Object} env The webpack environment.
+   * @param {Object} argv The webpack commandline arguments.
+   * @see {@link https://webpack.js.org/configuration/configuration-types/#exporting-a-function}
    */
-    '@flecks/core.build': (target, config) => {
+  '@flecks/core.build': (target, config, env, argv) => {
     if ('something' === target) {
-      config[target].use.push(someNeutrinoMiddleware);
+      if ('production' === argv.mode) {
+        config.plugins.push(new SomePlugin());
+      }
     }
   },
 
   /**
-    * Alter build configurations after they have been hooked.
-    * @param {Object} configs The neutrino configurations.
-    */
+   * Alter build configurations after they have been hooked.
+   * @param {Object} configs The webpack configurations keyed by target.
+   * @param {Object} env The webpack environment.
+   * @param {Object} argv The webpack commandline arguments.
+   * @see {@link https://webpack.js.org/configuration/configuration-types/#exporting-a-function}
+   */
   '@flecks/core.build.alter': (configs) => {
-    // Maybe we want to do something if a config exists..?
-    if (configs.something) {
+    // Maybe we want to do something if a target exists..?
+    if (configs.someTarget) {
       // Do something...
-      // And then maybe we want to remove it from the build configuration..?
-      delete configs.something;
+      // And then maybe we want to remove it from the build configuration..? That's ok!
+      delete configs.someTarget;
     }
   },
 
   /**
-    * Register build configuration.
-    */
+   * Register build configuration.
+   */
   '@flecks/core.build.config': () => [
     /**
      * If you document your config files like this, documentation will be automatically
@@ -40,8 +48,8 @@ export const hooks = {
   ],
 
   /**
-    * Define CLI commands.
-    */
+   * Define CLI commands.
+   */
   '@flecks/core.commands': (program) => ({
     // So this could be invoked like:
     // npx flecks something -t --blow-up blah
@@ -61,8 +69,8 @@ export const hooks = {
   }),
 
   /**
-    * Define configuration.
-    */
+   * Define configuration.
+   */
   '@flecks/core.config': () => ({
     whatever: 'configuration',
     your: 1337,
@@ -74,45 +82,34 @@ export const hooks = {
   }),
 
   /**
-  * Invoked when a fleck is HMR'd
-  * @param {string} path The path of the fleck
-  * @param {Module} updatedFleck The updated fleck module.
-  */
-    '@flecks/core.hmr': (path, updatedFleck) => {
+   * Invoked when a fleck is HMR'd
+   * @param {string} path The path of the fleck
+   * @param {Module} updatedFleck The updated fleck module.
+   */
+  '@flecks/core.hmr': (path, updatedFleck) => {
     if ('my-fleck' === path) {
       updatedFleck.doSomething();
     }
   },
 
   /**
-    * Invoked when a gathered class is HMR'd.
-    * @param {constructor} Class The class.
-    * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
-    */
+   * Invoked when a gathered class is HMR'd.
+   * @param {constructor} Class The class.
+   * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
+   */
   '@flecks/core.hmr.gathered': (Class, hook) => {
     // Do something with Class...
   },
 
   /**
-    * Invoked when the application is starting. Use for order-independent initialization tasks.
-    */
+   * Invoked when the application is starting. Use for order-independent initialization tasks.
+   */
   '@flecks/core.starting': (flecks) => {
     flecks.set('$my-fleck/value', initializeMyValue());
   },
 
   /**
-    * Define neutrino build targets.
-    */
+   * Define build targets.
+   */
   '@flecks/core.targets': () => ['sometarget'],
-
-  /**
-    * Hook into webpack configuration.
-    * @param {string} target The build target; e.g. `server`.
-    * @param {Object} config The neutrino configuration.
-    */
-  '@flecks/core.webpack': (target, config) => {
-    if ('something' === target) {
-      config.stats = 'verbose';
-    }
-  },
 };

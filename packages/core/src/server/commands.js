@@ -37,41 +37,8 @@ export const spawnWith = (cmd, opts = {}) => {
   child.stdout.pipe(process.stdout);
   return child;
 };
-export const targetNeutrino = (target) => (
-  `FLECKS_CORE_BUILD_TARGET_${
-    target
-      .toUpperCase()
-      .replace(/[^A-Za-z0-9]/g, '_')
-  }_NEUTRINO`
-);
-
-export const targetNeutrinos = (flecks) => {
-  const entries = Object.entries(flecks.invoke('@flecks/core.targets'));
-  const targetNeutrinos = {};
-  for (let i = 0; i < entries.length; ++i) {
-    const [fleck, targets] = entries[i];
-    targets
-      .forEach((target) => {
-        targetNeutrinos[targetNeutrino(target)] = flecks.resolveBuildConfig(
-          [
-            FLECKS_CORE_ROOT,
-            flecks.resolvePath(fleck),
-          ],
-          [
-            `${target}.neutrinorc.js`,
-            '.neutrinorc.js',
-          ],
-        );
-      });
-  }
-  return targetNeutrinos;
-};
 
 export default (program, flecks) => {
-  Object.entries(targetNeutrinos(flecks))
-    .forEach(([key, value]) => {
-      process.env[key] = value;
-    });
   const commands = {
     clean: {
       description: 'remove node_modules, lock file, build artifacts, then reinstall',
@@ -112,10 +79,9 @@ export default (program, flecks) => {
           watch,
         } = opts;
         debug('Building...', opts);
-        const webpackConfig = flecks.buildConfig('webpack.config.js');
+        const webpackConfig = flecks.buildConfig('fleckspack.config.js');
         const cmd = [
           'npx', 'webpack',
-          '--colors',
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
           ...((watch || hot) ? ['--watch'] : []),
@@ -124,7 +90,6 @@ export default (program, flecks) => {
           cmd,
           {
             env: {
-              ...targetNeutrinos(flecks),
               ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
               ...(hot ? {FLECKS_ENV_FLECKS_SERVER_hot: 'true'} : {}),
             },
@@ -159,7 +124,6 @@ export default (program, flecks) => {
               {
                 env: {
                   FLECKS_CORE_BUILD_TARGET: target,
-                  ...targetNeutrinos(flecks),
                 },
               },
             );

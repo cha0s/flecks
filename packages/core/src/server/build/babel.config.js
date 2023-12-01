@@ -10,10 +10,10 @@ module.exports = (api) => {
       setSpreadProperties: true,
     },
     plugins: [
-      '@babel/plugin-proposal-class-properties',
-      '@babel/plugin-proposal-logical-assignment-operators',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-syntax-class-properties',
+      '@babel/plugin-syntax-logical-assignment-operators',
+      '@babel/plugin-syntax-nullish-coalescing-operator',
+      '@babel/plugin-syntax-optional-chaining',
     ],
     presets: [
       [

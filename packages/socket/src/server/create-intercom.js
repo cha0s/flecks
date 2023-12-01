@@ -13,7 +13,9 @@ export default function createIntercom(sockets, transport) {
       );
     });
     responses.push(
-      await new Promise((resolve) => sockets.localIntercom({payload, type}, resolve)),
+      await new Promise((resolve) => {
+        sockets.localIntercom({payload, type}, resolve);
+      }),
     );
     return responses;
   };

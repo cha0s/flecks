@@ -34,18 +34,31 @@ export const generateConfigPage = (configs) => {
   Object.entries(configs)
     .sort(([l], [r]) => (l < r ? -1 : 1))
     .forEach(([fleck, configs]) => {
-      source.push(`## \`${fleck}\``);
-      source.push('');
+      // source.push(`## \`${fleck}\``);
+      source.push('```javascript');
+      source.push(`'${fleck}': {`);
       configs.forEach(({comment, config, defaultValue}) => {
         comment.split('\n').forEach((line) => {
-          source.push(`> ${line}`);
+          source.push(`  // ${line}`);
         });
-        source.push('');
-        source.push('```javascript');
-        source.push(`${config}: ${defaultValue}`);
-        source.push('```');
-        source.push('');
+        const value = defaultValue
+          .split('\n')
+          .map((line, i, array) => {
+            let output = '';
+            if (array.length - 1 === i) {
+              output += '  ';
+            }
+            else if (0 !== i) {
+              output += '    ';
+            }
+            output += line.trim();
+            return output;
+          })
+          .join('\n');
+        source.push(`  ${config}: ${value}`);
       });
+      source.push('}');
+      source.push('```');
     });
   return source.join('\n');
 };

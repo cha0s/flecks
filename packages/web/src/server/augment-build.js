@@ -1,55 +1,92 @@
-import fontLoader from '@neutrinojs/font-loader';
-import imageLoader from '@neutrinojs/image-loader';
-import styleLoader from '@neutrinojs/style-loader';
+import {regexFromExtensions} from '@flecks/core/server';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-const augmentBuild = (target, config, flecks) => {
-  config.use.push((neutrino) => {
-    const isProduction = 'production' === neutrino.config.get('mode');
-    const extract = {};
-    const style = {};
-    if ('server' === target) {
-      extract.enabled = false;
-      style.injectType = 'lazyStyleTag';
+const augmentBuild = (target, config, env, argv, flecks) => {
+  const isProduction = 'production' === argv.mode;
+  let finalLoader;
+  switch (target) {
+    case 'fleck': {
+      finalLoader = {loader: MiniCssExtractPlugin.loader};
+      config.plugins.push(new MiniCssExtractPlugin({filename: '[name].css'}));
+      break;
     }
-    if ('web' === target) {
-      extract.enabled = isProduction;
-      style.injectType = 'styleTag';
+    case 'server': {
+      finalLoader = {loader: 'style-loader', options: {injectType: 'lazyStyleTag'}};
+      break;
     }
-    if ('fleck' === target) {
-      extract.enabled = true;
-      extract.plugin = {
-        filename: '[name].css',
-      };
+    case 'web': {
+      if (isProduction) {
+        finalLoader = {loader: MiniCssExtractPlugin.loader};
+        config.plugins.push(new MiniCssExtractPlugin());
+      }
+      else {
+        finalLoader = {loader: 'style-loader', options: {injectType: 'styleTag'}};
+      }
+      break;
     }
-    neutrino.use(
-      styleLoader({
-        extract,
-        modules: {
-          localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+    default: break;
+  }
+  const buildOneOf = (test, loaders, cssOptions = {}) => ({
+    test,
+    use: [
+      finalLoader,
+      {
+        loader: 'css-loader',
+        options: {
+          ...cssOptions,
+          importLoaders: loaders.length,
         },
-        style,
-        test: /\.(c|s[ac])ss$/,
-        modulesTest: /\.module\.(c|s[ac])ss$/,
-        loaders: [
-          {
-            loader: 'postcss-loader',
-            useId: 'postcss',
-            options: {
-              postcssOptions: {
-                config: flecks.buildConfig('postcss.config.js'),
-              },
-            },
-          },
-          {
-            loader: 'sass-loader',
-            useId: 'sass',
-          },
-        ],
-      }),
-    );
+      },
+      ...loaders,
+      'source-map-loader',
+    ],
   });
-  config.use.push(fontLoader());
-  config.use.push(imageLoader());
+  const stylesWithModulesRule = (extensions, loaders) => ({
+    oneOf: [
+      // `.module.*` must match first.
+      buildOneOf(
+        regexFromExtensions(extensions.map((ext) => `module${ext}`)),
+        loaders,
+        {
+          modules: {
+            localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+          },
+        },
+      ),
+      buildOneOf(
+        regexFromExtensions(extensions),
+        loaders,
+      ),
+    ],
+  });
+  const postcss = {
+    loader: 'postcss-loader',
+    options: {
+      postcssOptions: {
+        config: flecks.buildConfig('postcss.config.js'),
+      },
+    },
+  };
+  // Originally separated because Sass can't handle incoming source maps, but probably more
+  // performant with 3rd-party CSS anyway.
+  config.module.rules.push(stylesWithModulesRule(['.css'], [postcss]));
+  config.module.rules.push(stylesWithModulesRule(['.sass', '.scss'], [postcss, 'sass-loader']));
+  // Fonts.
+  config.module.rules.push({
+    generator: {
+      filename: 'assets/[hash][ext][query]',
+    },
+    test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+    type: 'asset',
+  });
+  // Images.
+  config.module.rules.push({
+    generator: {
+      filename: 'assets/[hash][ext][query]',
+    },
+    test: /\.(ico|png|jpg|jpeg|gif|svg|webp)(\?v=\d+\.\d+\.\d+)?$/,
+    type: 'asset',
+  });
 };
 
 export default augmentBuild;

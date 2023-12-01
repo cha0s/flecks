@@ -1,6 +1,4 @@
-const {getOptions} = require('loader-utils');
-
 module.exports = function FlecksRuntime() {
-  const {source} = getOptions(this);
+  const {source} = this.getOptions();
   return source;
 };

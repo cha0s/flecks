@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.1",
+  "version": "2.0.3",
   "author": "cha0s",
   "license": "MIT",
   "bin": {
@@ -22,8 +22,8 @@
   },
   "files": [
     "build",
-    "server/build/fleck.neutrinorc.js",
-    "server/build/fleck.neutrinorc.js.map",
+    "server/build/fleck.webpack.config.js",
+    "server/build/fleck.webpack.config.js.map",
     "server.js",
     "server.js.map",
     "src",
@@ -31,7 +31,7 @@
     "test.js.map"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.1",
+    "@flecks/core": "^2.0.3",
     "babel-merge": "^3.0.0",
     "chokidar": "^3.5.3",
     "clear-module": "^4.1.2",

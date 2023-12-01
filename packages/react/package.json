@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.1",
+  "version": "2.0.3",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -38,25 +38,23 @@
     "router/server.js.map",
     "server.js",
     "server.js.map",
-    "src",
-    "style-loader.js",
-    "style-loader.js.map"
+    "src"
   ],
   "dependencies": {
-    "@flecks/core": "^1.4.1",
-    "@flecks/web": "^1.4.1",
-    "@hot-loader/react-dom": "^17.0.1",
-    "@neutrinojs/react": "^9.4.0",
+    "@babel/preset-react": "^7.23.3",
+    "@flecks/core": "^2.0.3",
+    "@flecks/web": "^2.0.3",
+    "@hot-loader/react-dom": "^17.0.2",
     "babel-merge": "^3.0.0",
     "classnames": "^2.3.1",
     "history": "^5.3.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
-    "react-hot-loader": "^4.13.0",
-    "react-router-dom": "^6.2.1",
-    "redux-first-history": "^5.0.8"
+    "react-hot-loader": "^4.13.1",
+    "react-router-dom": "6.20.0",
+    "redux-first-history": "5.1.1"
   },
   "devDependencies": {
-    "@flecks/fleck": "^1.4.1"
+    "@flecks/fleck": "^2.0.3"
   }
 }
