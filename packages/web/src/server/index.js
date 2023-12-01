@@ -83,12 +83,15 @@ export const hooks = {
     }
     // Otherwise, spawn `webpack-dev-server` (WDS).
     const cmd = [
-      'npx', 'webpack', 'serve',
+      // `npx` doesn't propagate signals!
+      // 'npx', 'webpack',
+      join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'webpack'),
+      'serve',
       '--mode', 'development',
       '--hot',
       '--config', flecks.buildConfig('fleckspack.config.js'),
     ];
-    spawnWith(
+    const child = spawnWith(
       cmd,
       {
         env: {
@@ -96,6 +99,10 @@ export const hooks = {
         },
       },
     );
+    // Clean up on exit.
+    process.on('exit', () => {
+      child.kill();
+    });
     // Remove the build config since we're handing off to WDS.
     // eslint-disable-next-line no-param-reassign
     delete configs.web;
