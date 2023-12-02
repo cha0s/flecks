@@ -5,17 +5,22 @@ const {
   join,
 } = require('path');
 
+const babelmerge = require('babel-merge');
 const CopyPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
+const D = require('../../debug');
 const R = require('../../require');
-const {defaultConfig, externals} = require('../webpack');
+const {defaultConfig, externals, regexFromExtensions} = require('../webpack');
 const eslintConfigFn = require('./default.eslint.config');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
+
+const debug = D('@flecks/core/server/build/fleck.webpack.config.js');
+const debugSilly = debug.extend('silly');
 
 const source = join(FLECKS_CORE_ROOT, 'src');
 const tests = join(FLECKS_CORE_ROOT, 'test');
@@ -97,6 +102,48 @@ module.exports = (env, argv, flecks) => {
     },
     target: 'node',
   });
+  const merging = [
+    {
+      plugins: ['@babel/plugin-syntax-dynamic-import'],
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            shippedProposals: true,
+            targets: {
+              esmodules: true,
+              node: 'current',
+            },
+          },
+        ],
+      ],
+    },
+  ];
+  if (flecks) {
+    merging.push({configFile: flecks.buildConfig('babel.config.js')});
+    const rcBabel = flecks.babel();
+    debugSilly('.flecksrc: babel: %j', rcBabel);
+    merging.push(...rcBabel.map(([, babel]) => babel));
+  }
+  const babelConfig = babelmerge.all(merging);
+  const extensionsRegex = regexFromExtensions(config.resolve.extensions);
+  config.module.rules.push(
+    {
+      include: [source, tests],
+      test: extensionsRegex,
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            babelrc: false,
+            configFile: false,
+            ...babelConfig,
+          },
+        },
+      ],
+    },
+  );
   const eslint = eslintConfigFn(flecks);
   eslint.settings['import/resolver'].webpack = {
     config: {
