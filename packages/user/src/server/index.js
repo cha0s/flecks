@@ -62,7 +62,6 @@ export const hooks = {
     passport.initialize()(socket.handshake, undefined, () => {
       debugSilly('@flecks/socket/server.request.socket: passport.session()');
       passport.session()(socket.handshake, undefined, async () => {
-        /* eslint-disable no-param-reassign */
         if (!socket.handshake.user) {
           const {User} = flecks.get('$flecks/db.models');
           socket.handshake.user = new User();
@@ -74,7 +73,6 @@ export const hooks = {
         socket.handshake.logOut = LogOps.logOut;
         socket.handshake.isAuthenticated = LogOps.isAuthenticated;
         socket.handshake.isUnauthenticated = LogOps.isUnauthenticated;
-        /* eslint-enable no-param-reassign */
         await socket.join(`/u/${socket.handshake.user.id}`);
         next();
       });

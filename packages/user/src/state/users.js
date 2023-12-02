@@ -20,7 +20,6 @@ const slice = createSlice({
     entities: {0: {name: 'anonymous'}},
     ids: [0],
   }),
-  /* eslint-disable no-param-reassign */
   extraReducers: (builder) => {
     builder.addCase(hydrateLocalStorage, (state, action) => {
       const storage = action.payload;
@@ -38,7 +37,6 @@ const slice = createSlice({
       }
     });
   },
-  /* eslint-enable no-param-reassign */
 });
 
 export default slice.reducer;

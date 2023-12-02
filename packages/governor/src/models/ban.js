@@ -32,7 +32,6 @@ export default (flecks) => {
               this.destroy({where: {id: ban.id}});
               return [...r, null];
             }
-            // eslint-disable-next-line no-param-reassign
             ban.ttl = Math.ceil((expiresAt.getTime() - Date.now()) / 1000);
           }
           return [...r, ban];

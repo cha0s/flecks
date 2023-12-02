@@ -21,14 +21,12 @@ export default (key) => (Superclass) => {
   );
   Packer.pack = key
     ? (data) => {
-      // eslint-disable-next-line no-param-reassign
       data[key] = msgpack.encode(data[key]);
       return Superclass.pack(data);
     }
     : (data) => msgpack.encode(data);
   Packer.unpack = key
     ? (data) => {
-      // eslint-disable-next-line no-param-reassign
       data[key] = msgpack.decode(data[key]);
       return Superclass.pack(data);
     }

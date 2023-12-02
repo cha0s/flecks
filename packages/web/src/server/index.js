@@ -21,7 +21,6 @@ export const hooks = {
   '@flecks/core.build.alter': async (configs, env, argv, flecks) => {
     // Don't build if there's a fleck target.
     if (configs.fleck && !flecks.get('@flecks/web/server.forceBuildWithFleck')) {
-      // eslint-disable-next-line no-param-reassign
       delete configs.web;
       return;
     }
@@ -29,7 +28,6 @@ export const hooks = {
     // Only build vendor in dev.
     if (configs['web-vendor']) {
       if (isProduction) {
-        // eslint-disable-next-line no-param-reassign
         delete configs['web-vendor'];
       }
       // Only build if something actually changed.
@@ -65,7 +63,6 @@ export const hooks = {
           catch (error) {}
         }
         if (timestamp > latest) {
-          // eslint-disable-next-line no-param-reassign
           delete configs['web-vendor'];
         }
         else if (timestamp > 0) {
@@ -104,7 +101,6 @@ export const hooks = {
       child.kill();
     });
     // Remove the build config since we're handing off to WDS.
-    // eslint-disable-next-line no-param-reassign
     delete configs.web;
   },
   '@flecks/core.build.config': () => [

@@ -34,6 +34,5 @@
 
 # Webpack 5
 
-fixup no-param-reassign
 warningsFilter deprecated
 refactor stats
