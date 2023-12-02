@@ -550,7 +550,7 @@ export default class ServerFlecks extends Flecks {
     return undefined;
   }
 
-  runtimeCompiler(resolver, runtime, config, {additionalModuleDirs = [], allowlist = []} = {}) {
+  runtimeCompiler(resolver, runtime, config, {allowlist = []} = {}) {
     // Compile.
     const needCompilation = Object.entries(resolver)
       .filter(([fleck]) => this.constructor.fleckIsCompiled(resolver, fleck));
@@ -579,7 +579,8 @@ export default class ServerFlecks extends Flecks {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.constructor.sourcepath(resolved);
           const sourceroot = join(sourcepath, '..');
-          additionalModuleDirs.push(join(sourceroot, 'node_modules'));
+          // Alias this compiled fleck's `node_modules` to the root `node_modules`.
+          config.resolve.alias[join(sourceroot, 'node_modules')] = join(FLECKS_CORE_ROOT, 'node_modules');
           const configFile = this.buildConfig('babel.config.js');
           debugSilly('compiling: %s with %s', root, configFile);
           const babel = {

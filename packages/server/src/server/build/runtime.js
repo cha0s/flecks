@@ -68,7 +68,6 @@ module.exports = async (config, env, argv, flecks) => {
   ];
   config.resolve.alias['@flecks/server/runtime$'] = runtime;
   const nodeExternalsConfig = {
-    additionalModuleDirs: [],
     allowlist,
   };
   flecks.runtimeCompiler(flecks.resolver, 'server', config, nodeExternalsConfig);
