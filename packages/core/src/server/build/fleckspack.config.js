@@ -16,7 +16,6 @@ import D from '../../debug';
 import Flecks from '../flecks';
 
 const debug = D('@flecks/core/server/build/fleckspack.config.js');
-const debugSilly = debug.extend('silly');
 
 const {
   FLECKS_CORE_BUILD_LIST = '',
@@ -90,6 +89,6 @@ export default async (env, argv) => {
     debug('no webpack configuration found! aborting...');
     await new Promise(() => {});
   }
-  debugSilly('webpack configurations %O', enterableWebpackConfigs);
+  debug('webpack configurations %O', enterableWebpackConfigs);
   return enterableWebpackConfigs;
 };
