@@ -27,11 +27,13 @@ module.exports = async (env, argv, flecks) => {
     ],
     resolve: {
       fallback: {
+        assert: R.resolve('assert'),
         child_process: false,
         fs: false,
         path: R.resolve('path-browserify'),
         process: R.resolve('process/browser'),
         stream: false,
+        util: R.resolve('util'),
       },
     },
     stats: {
