@@ -17,22 +17,6 @@
   "dependencies": {},
   "devDependencies": {
     "@flecks/core": "*",
-    "@flecks/create-app": "*",
-    "@flecks/create-fleck": "*",
-    "@flecks/db": "*",
-    "@flecks/docker": "*",
-    "@flecks/dox": "*",
-    "@flecks/electron": "*",
-    "@flecks/fleck": "*",
-    "@flecks/governor": "*",
-    "@flecks/react": "*",
-    "@flecks/redis": "*",
-    "@flecks/redux": "*",
-    "@flecks/repl": "*",
-    "@flecks/server": "*",
-    "@flecks/socket": "*",
-    "@flecks/user": "*",
-    "@flecks/web": "*",
     "lerna": "^7.4.2"
   }
 }

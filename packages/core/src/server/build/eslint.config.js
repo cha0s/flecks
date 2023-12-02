@@ -9,7 +9,7 @@ const {join} = require('path');
 
 const D = require('../../debug');
 const {default: Flecks} = require('../flecks');
-const R = require('../../require');
+// const R = require('../../require');
 
 const debug = D('@flecks/core/server/build/eslint.config.js');
 
@@ -25,11 +25,10 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
     debug('bootstrapping flecks...');
     const flecks = Flecks.bootstrap();
     debug('bootstrapped');
-    const eslintConfigFn = R(
-      flecks.buildConfig('default.eslint.config.js', FLECKS_CORE_BUILD_TARGET),
-    );
+    const eslintConfigFn = __non_webpack_require__(flecks.buildConfig('default.eslint.config.js', FLECKS_CORE_BUILD_TARGET));
     const eslintConfig = eslintConfigFn(flecks);
-    const webpackConfig = flecks.buildConfig('webpack.config.js', FLECKS_CORE_BUILD_TARGET);
+    const webpackConfigFn = __non_webpack_require__(flecks.buildConfig('webpack.config.js', FLECKS_CORE_BUILD_TARGET));
+    const webpackConfig = webpackConfigFn({}, {mode: 'development'}, flecks);
     eslintConfig.settings['import/resolver'].webpack = {
       config: {
         resolve: webpackConfig.resolve,
@@ -49,6 +48,7 @@ else {
     const {stderr, stdout} = spawnSync('node', [__filename], {
       env: {
         FLECKS_CORE_SYNC_FOR_ESLINT: true,
+        NODE_PATH: join(FLECKS_CORE_ROOT, 'node_modules'),
         ...process.env,
       },
     });
