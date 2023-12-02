@@ -4,8 +4,8 @@ import {inspect} from 'util';
 import ESLintPlugin from 'eslint-webpack-plugin';
 import webpack from 'webpack';
 
-import eslintConfigFn from './build/default.eslint.config';
 import commands from './commands';
+import R from '../require';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -43,7 +43,8 @@ export const hooks = {
         }),
       );
     }
-    if (exclude.includes(target)) {
+    if (!exclude.includes(target)) {
+      const eslintConfigFn = R(flecks.buildConfig('default.eslint.config.js', target));
       const eslint = eslintConfigFn(flecks);
       config.plugins.push(
         new ESLintPlugin({
@@ -55,9 +56,9 @@ export const hooks = {
           overrideConfig: {
             ...eslint,
             settings: {
-              ...(eslint.settings || {}),
+              ...eslint.settings,
               'import/resolver': {
-                ...(eslint.settings['import/resolver'] || {}),
+                ...eslint.settings['import/resolver'],
                 webpack: {
                   config: {
                     resolve: config.resolve,
@@ -76,8 +77,8 @@ export const hooks = {
      */
     'babel.config.js',
     /**
-     * ESLint defaults. The default `eslint.config.js` just reads from this file so that the build
-     * process can dynamically configure parts of ESLint.
+     * ESLint defaults. The generated `eslint.config.js` just reads from this file so that the
+     * build can dynamically configure parts of ESLint.
      */
     'default.eslint.config.js',
     /**

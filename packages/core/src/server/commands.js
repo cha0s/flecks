@@ -113,9 +113,7 @@ export default (program, flecks) => {
           process.env.FLECKS_CORE_BUILD_TARGET = target;
           const cmd = [
             'npx', 'eslint',
-            '--config', flecks.buildConfig('.eslintrc.js', target),
-            '--format', 'codeframe',
-            '--ext', 'js',
+            '--config', flecks.buildConfig('eslint.config.js', target),
             '.',
           ];
           promises.push(new Promise((resolve, reject) => {
