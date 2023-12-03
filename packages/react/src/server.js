@@ -7,7 +7,7 @@ export const hooks = {
     const isProduction = 'production' === argv.mode;
     config.resolve.alias['react-native'] = 'react-native-web';
     config.resolve.alias['react-hot-loader'] = isProduction
-      ? 'react-hot-loader/dist/react-hot-loader.production'
+      ? 'react-hot-loader/dist/react-hot-loader.production.min'
       : 'react-hot-loader/dist/react-hot-loader.development';
     config.resolve.extensions.unshift(...['.web.js', '.web.jsx']);
     // Augment the build on behalf of a missing `@flecks/web`.
