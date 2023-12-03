@@ -31,7 +31,7 @@ export * from './webpack';
 export {webpack};
 
 export const hooks = {
-  '@flecks/core.build': (target, config, env, argv, flecks) => {
+  '@flecks/core.build': async (target, config, env, argv, flecks) => {
     const {
       'eslint.exclude': exclude,
       profile,
@@ -45,7 +45,7 @@ export const hooks = {
     }
     if (!exclude.includes(target)) {
       const eslintConfigFn = R(flecks.buildConfig('default.eslint.config.js', target));
-      const eslint = eslintConfigFn(flecks);
+      const eslint = await eslintConfigFn(flecks);
       config.plugins.push(
         new ESLintPlugin({
           cache: true,
@@ -80,11 +80,11 @@ export const hooks = {
      * ESLint defaults. The generated `eslint.config.js` just reads from this file so that the
      * build can dynamically configure parts of ESLint.
      */
-    'default.eslint.config.js',
+    ['default.eslint.config.js', {specifier: false}],
     /**
      * ESLint configuration. See: https://eslint.org/docs/user-guide/configuring/
      */
-    'eslint.config.js',
+    ['eslint.config.js', {specifier: false}],
     /**
      * Flecks webpack configuration. See: https://webpack.js.org/configuration/
      */

@@ -3,7 +3,7 @@ const globals = require('globals');
 
 const R = require('../../require');
 
-module.exports = (flecks) => {
+module.exports = async (flecks) => {
   const merging = [
     {
       plugins: [R.resolve('@babel/plugin-syntax-dynamic-import')],
@@ -40,7 +40,8 @@ module.exports = (flecks) => {
       __non_webpack_require__: true,
     },
     ignorePatterns: [
-      '**/dist/**',
+      'dist/**',
+      // Not even gonna try.
       'build/dox/hooks.js',
     ],
     overrides: [

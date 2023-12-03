@@ -118,13 +118,18 @@ export default class ServerFlecks extends Flecks {
     if (!config) {
       throw new Error(`Unknown build config '${path}'`);
     }
-    const paths = [`${specific}.${path}`];
-    if ('specifier' in config) {
-      if (false === config.specifier) {
-        paths.pop();
+    const paths = [];
+    if (specific) {
+      if ('specifier' in config) {
+        if (false === config.specifier) {
+          paths.shift();
+        }
+        else {
+          paths.push(config.specifier(specific));
+        }
       }
       else {
-        paths.push(config.specifier(specific));
+        paths.push(`${specific}.${path}`);
       }
     }
     paths.push(path);

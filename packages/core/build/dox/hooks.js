@@ -44,7 +44,7 @@ export const hooks = {
     /**
      * Make sure you return them as an array expression, like this.
      */
-    ['mygeneralrc.js', {specifier: (specific) => `${specific}.mygeneralrc.js`}],
+    ['something.config.js', {specifier: (specific) => `something.${specific}.config.js`}],
   ],
 
   /**

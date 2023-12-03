@@ -8,12 +8,10 @@ const {
 const babelmerge = require('babel-merge');
 const CopyPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
-const ESLintPlugin = require('eslint-webpack-plugin');
 
 const D = require('../../debug');
 const R = require('../../require');
 const {defaultConfig, externals, regexFromExtensions} = require('../webpack');
-const eslintConfigFn = require('./default.eslint.config');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -136,22 +134,6 @@ module.exports = (env, argv, flecks) => {
         },
       ],
     },
-  );
-  const eslint = eslintConfigFn(flecks);
-  eslint.settings['import/resolver'].webpack = {
-    config: {
-      resolve: config.resolve,
-    },
-  };
-  config.plugins.push(
-    new ESLintPlugin({
-      cache: true,
-      cwd: FLECKS_CORE_ROOT,
-      emitWarning: argv.mode !== 'production',
-      failOnError: argv.mode === 'production',
-      useEslintrc: false,
-      overrideConfig: eslint,
-    }),
   );
   // Automatic entry registration.
   files

@@ -2,6 +2,7 @@ import {spawn} from 'child_process';
 import {join, normalize} from 'path';
 
 import {Argument} from 'commander';
+import glob from 'glob';
 import flatten from 'lodash.flatten';
 import rimraf from 'rimraf';
 
@@ -33,6 +34,8 @@ export const spawnWith = (cmd, opts = {}) => {
       ...(opts.env || {}),
     },
   });
+  process.stderr.setMaxListeners(100);
+  process.stdout.setMaxListeners(100);
   child.stderr.pipe(process.stderr);
   child.stdout.pipe(process.stdout);
   return child;
@@ -97,32 +100,34 @@ export default (program, flecks) => {
         );
       },
     };
-    commands.lint = {
-      description: 'run linter',
-      args: [
-        program.createArgument('[target]', 'target').choices(targets),
-      ],
-      action: (targetArgument) => {
-        const promises = [];
-        for (let i = 0; i < targets.length; ++i) {
-          const target = targets[i];
-          if (targetArgument && targetArgument !== target) {
-            // eslint-disable-next-line no-continue
-            continue;
-          }
-          process.env.FLECKS_CORE_BUILD_TARGET = target;
+  }
+  commands.lint = {
+    description: 'run linter',
+    args: [],
+    action: async () => {
+      const promises = [];
+      const packages = await new Promise((r, e) => {
+        glob(
+          join('packages', '*'),
+          (error, result) => (error ? e(error) : r(result)),
+        );
+      });
+      if (0 === packages.length) {
+        packages.push('.');
+      }
+      packages
+        .map((pkg) => join(process.cwd(), pkg))
+        .forEach((cwd) => {
           const cmd = [
             'npx', 'eslint',
-            '--config', flecks.buildConfig('eslint.config.js', target),
+            '--config', flecks.buildConfig('eslint.config.js'),
             '.',
           ];
           promises.push(new Promise((resolve, reject) => {
             const child = spawnWith(
               cmd,
               {
-                env: {
-                  FLECKS_CORE_BUILD_TARGET: target,
-                },
+                cwd,
               },
             );
             child.on('error', reject);
@@ -131,28 +136,27 @@ export default (program, flecks) => {
               resolve(code);
             });
           }));
-        }
-        const promise = Promise.all(promises)
-          .then(
-            (codes) => (
-              codes.every((code) => 0 === parseInt(code, 10))
-                ? 0
-                : codes.find((code) => code !== 0)
-            ),
-          );
-        return {
-          off: () => {},
-          on: (type, fn) => {
-            if ('error' === type) {
-              promise.catch(fn);
-            }
-            else if ('exit' === type) {
-              promise.then(fn);
-            }
-          },
-        };
-      },
-    };
-  }
+        });
+      const promise = Promise.all(promises)
+        .then(
+          (codes) => (
+            codes.every((code) => 0 === parseInt(code, 10))
+              ? 0
+              : codes.find((code) => code !== 0)
+          ),
+        );
+      return {
+        off: () => {},
+        on: (type, fn) => {
+          if ('error' === type) {
+            promise.catch(fn);
+          }
+          else if ('exit' === type) {
+            promise.then(fn);
+          }
+        },
+      };
+    },
+  };
   return commands;
 };
