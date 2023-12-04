@@ -50,7 +50,7 @@ export const createHttpServer = async (flecks) => {
     proxy.on('proxyRes', async (proxyRes, req, res) => {
       res.statusCode = proxyRes.statusCode;
       // HTML.
-      if (proxyRes.headers['content-type'].match('text/html')) {
+      if (proxyRes.headers['content-type']?.match('text/html')) {
         // Tests bypass middleware and stream processing.
         const {pathname} = new URL(req.url, 'https://example.org/');
         if ('/tests.html' === pathname) {
@@ -73,7 +73,9 @@ export const createHttpServer = async (flecks) => {
       }
       // Any other assets.
       else {
-        res.setHeader('Content-Type', proxyRes.headers['content-type']);
+        if (proxyRes.headers['content-type']) {
+          res.setHeader('Content-Type', proxyRes.headers['content-type']);
+        }
         proxyRes.pipe(res);
       }
     });
