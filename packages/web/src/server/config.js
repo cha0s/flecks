@@ -3,7 +3,7 @@ import {Transform} from 'stream';
 const config = async (flecks, req) => {
   const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
   const {config} = flecks.get('$flecks/web.flecks');
-  return Object.keys(config)
+  const reducedConfig = Object.keys(config)
     .filter((path) => !path.startsWith('$'))
     .filter((path) => !path.endsWith('/server'))
     .reduce(
@@ -16,6 +16,14 @@ const config = async (flecks, req) => {
       }),
       {},
     );
+  // Fold in any bespoke configuration.
+  Object.keys(httpConfig)
+    .forEach((key) => {
+      if (!(key in reducedConfig)) {
+        reducedConfig[key] = httpConfig[key];
+      }
+    });
+  return reducedConfig;
 };
 
 export const configSource = async (flecks, req) => {
