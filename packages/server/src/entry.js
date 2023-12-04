@@ -19,7 +19,7 @@ const {version} = require('../package.json');
       throw error;
     }
   }
-  const debug = D(config['@flecks/core']?.id || 'flecks');
+  const debug = D('@flecks/server/entry');
   debug('starting server...');
   // Make resolver.
   const resolver = Flecks.makeResolver(config);
