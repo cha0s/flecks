@@ -109,6 +109,7 @@ module.exports = async (config, env, argv, flecks) => {
       });
   }
   // Styles.
+  // @todo Not necessary for compiled flecks.
   config.entry.index.push(...styles);
   // Tests.
   if (!isProduction) {
