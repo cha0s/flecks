@@ -575,6 +575,7 @@ export default class ServerFlecks extends Flecks {
           debugSilly('%s runtime de-externalized %s, alias: %s', runtime, fleck, alias);
         });
       // Set up compilation at each root.
+      const compiledPaths = [];
       Array.from(new Set(
         needCompilation
           .map(([fleck]) => fleck)
@@ -584,6 +585,8 @@ export default class ServerFlecks extends Flecks {
           const resolved = dirname(R.resolve(join(root, 'package.json')));
           const sourcepath = this.constructor.sourcepath(resolved);
           const sourceroot = join(sourcepath, '..');
+          compiledPaths.push(sourceroot);
+          // @todo Ideally the fleck's 3rd party modules would be externalized.
           // Alias this compiled fleck's `node_modules` to the root `node_modules`.
           config.resolve.alias[join(sourceroot, 'node_modules')] = join(FLECKS_CORE_ROOT, 'node_modules');
           const configFile = this.buildConfig('babel.config.js');
@@ -611,6 +614,24 @@ export default class ServerFlecks extends Flecks {
             },
           );
         });
+      const compiledPathsRegex = new RegExp(
+        `(?:${compiledPaths.map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')})`,
+      );
+      if (!config.optimization) {
+        config.optimization = {};
+      }
+      if (!config.optimization.splitChunks) {
+        config.optimization.splitChunks = {};
+      }
+      if (!config.optimization.splitChunks.cacheGroups) {
+        config.optimization.splitChunks.cacheGroups = {};
+      }
+      config.optimization.splitChunks.cacheGroups.flecksCompiled = {
+        chunks: 'all',
+        enforce: true,
+        priority: 100,
+        test: compiledPathsRegex,
+      };
     }
   }
 
