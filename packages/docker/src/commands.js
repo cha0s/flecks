@@ -101,7 +101,7 @@ export default (program, flecks) => {
       await writeFile(
         dockerFile,
         [
-          'FROM node:16',
+          'FROM node:20',
           '',
           'RUN mkdir -p /var/www',
           'WORKDIR /var/www',
