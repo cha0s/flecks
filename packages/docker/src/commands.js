@@ -55,7 +55,7 @@ export default (program, flecks) => {
             .map(async ([fleck, config]) => {
               Object.entries(await config)
                 .forEach(([key, config]) => {
-                  services[key] = {image: config.image, environment: {}};
+                  services[key] = {image: config.image, environment: {}, ...config.extra};
                 });
               return [
                 `FLECKS_ENV_${flecks.constructor.environmentalize(fleck)}`,
