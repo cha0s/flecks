@@ -137,6 +137,7 @@ export const createHttpServer = async (flecks) => {
       debug('HTTP server up @ %s!', [host, port].filter((e) => !!e).join(':'));
       resolve();
     });
+    debug('httpServer.listen(...%O)', args.slice(0, -1));
     httpServer.listen(...args);
   });
 };
