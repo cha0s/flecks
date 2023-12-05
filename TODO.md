@@ -30,6 +30,7 @@
 - [ ] add building to publish process ...
 - [ ] @babel/register@7.18.x has a bug
 - [ ] `$flecks/db/sequelize` should be `$flecks/db.sequelize`
+- [ ] `url()` in styles breaks HMR
 # Next
 
 # Webpack 5
