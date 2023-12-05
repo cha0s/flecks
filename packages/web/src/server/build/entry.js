@@ -46,7 +46,7 @@ const {version} = require('@flecks/web/package.json');
   const progress = new Progress(window);
   debug('loading runtime...');
   const {default: loader} = await import(
-    /* webpackChunkName: "flecks-runtime" */ // eslint-disable-next-line import/no-unresolved
+    /* webpackChunkName: "flecks-runtime" */
     '@flecks/web/runtime'
   );
   const runtime = await loader(progress.update.bind(progress));
