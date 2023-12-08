@@ -12,10 +12,13 @@ export default class Socket {
   }
 
   listen() {
-    const Packets = Object.entries(this.flecks.get('$flecks/socket.packets')[ByType]);
+    const {[ByType]: PacketsByType} = this.flecks.get('$flecks/socket.packets');
+    const Packets = Object.entries(PacketsByType);
     for (let i = 0; i < Packets.length; i++) {
       const [type, Packet] = Packets[i];
       this.socket.on(Packet.id, (data, fn) => {
+        // Look up again in case of HMR.
+        const Packet = PacketsByType[type];
         const packet = new Packet(Packet.decode(Buffer.from(data)));
         debug('received packet %s(%j)', type, packet.data);
         this.emit('packet', packet, fn);
