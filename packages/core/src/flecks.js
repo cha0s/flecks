@@ -169,6 +169,15 @@ export default class Flecks {
     );
   }
 
+  checkAndDecorateRawGathered(hook, raw, check) {
+    // Gather classes and check.
+    check(raw, hook);
+    // Decorate and check.
+    const decorated = this.invokeComposed(`${hook}.decorate`, raw);
+    check(decorated, `${hook}.decorate`);
+    return decorated;
+  }
+
   /**
    * Destroy this instance.
    */
@@ -285,10 +294,7 @@ export default class Flecks {
     }
     // Gather classes and check.
     const raw = this.invokeMerge(hook);
-    check(raw, hook);
-    // Decorate and check.
-    const decorated = this.invokeComposed(`${hook}.decorate`, raw);
-    check(decorated, `${hook}.decorate`);
+    const decorated = this.checkAndDecorateRawGathered(hook, raw, check);
     // Assign unique IDs to each class and sort by type.
     let uid = 1;
     const ids = {};
@@ -311,9 +317,15 @@ export default class Flecks {
       [ByType]: types,
     };
     // Register for HMR?
-    if (module.hot) {
-      hotGathered.set(hook, {idProperty, gathered, typeProperty});
-    }
+    hotGathered.set(
+      hook,
+      {
+        check,
+        idProperty,
+        typeProperty,
+        gathered,
+      },
+    );
     debug("gathered '%s': %O", hook, Object.keys(gathered[ByType]));
     return gathered;
   }
@@ -654,10 +666,6 @@ export default class Flecks {
   /**
    * Refresh a fleck's hooks, configuration, and any gathered classes.
    *
-   * @example
-   * module.hot.accept('@flecks/example', async () => {
-   *   flecks.refresh('@flecks/example', require('@flecks/example'));
-   * });
    * @param {string} fleck
    * @param {object} M The fleck module
    * @protected
@@ -671,9 +679,7 @@ export default class Flecks {
     // Write config.
     this.configureFleckDefaults(fleck);
     // HMR.
-    if (module.hot) {
-      this.refreshGathered(fleck);
-    }
+    this.refreshGathered(fleck);
   }
 
   /**
@@ -688,23 +694,36 @@ export default class Flecks {
         value: [
           hook,
           {
+            check,
             idProperty,
             gathered,
             typeProperty,
           },
         ],
       } = current;
-      const updates = this.invokeFleck(hook, fleck);
-      if (updates) {
-        debug('updating gathered %s from %s...', hook, fleck);
-        const entries = Object.entries(updates);
-        for (let i = 0, [type, Class] = entries[i]; i < entries.length; ++i) {
+      let raw;
+      // If decorating, gather all again
+      if (this.fleckImplements(fleck, `${hook}.decorate`)) {
+        raw = this.invokeMerge(hook);
+        debugSilly('%s implements %s.decorate', fleck, hook);
+      }
+      // If only implementing, gather and decorate.
+      else if (this.fleckImplements(fleck, hook)) {
+        raw = this.invokeFleck(hook, fleck);
+        debugSilly('%s implements %s', fleck, hook);
+      }
+      if (raw) {
+        const decorated = this.checkAndDecorateRawGathered(hook, raw, check);
+        debug('updating gathered %s from %s... %O', hook, fleck, decorated);
+        const entries = Object.entries(decorated);
+        entries.forEach(([type, Class]) => {
           const {[type]: {[idProperty]: id}} = gathered;
           const Subclass = wrapGathered(Class, id, idProperty, type, typeProperty);
           // eslint-disable-next-line no-multi-assign
           gathered[type] = gathered[id] = gathered[ById][id] = gathered[ByType][type] = Subclass;
-          this.invoke('@flecks/core.hmr.gathered', Subclass, hook);
-        }
+          this.invoke('@flecks/core.hmr.gathered.class', Subclass, hook);
+        });
+        this.invoke('@flecks/core.hmr.gathered', gathered, hook);
       }
     }
   }

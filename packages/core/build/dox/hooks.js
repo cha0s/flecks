@@ -93,11 +93,20 @@ export const hooks = {
   },
 
   /**
+   * Invoked when a gathered set is HMR'd.
+   * @param {constructor} gathered The gathered set.
+   * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
+   */
+  '@flecks/core.hmr.gathered': (gathered, hook) => {
+    // Do something with the gathered set...
+  },
+
+  /**
    * Invoked when a gathered class is HMR'd.
    * @param {constructor} Class The class.
    * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
    */
-  '@flecks/core.hmr.gathered': (Class, hook) => {
+  '@flecks/core.hmr.gathered.class': (Class, hook) => {
     // Do something with Class...
   },
 

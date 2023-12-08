@@ -1,5 +1,6 @@
 import {createDatabaseConnection} from './connection';
 import containers from './containers';
+import register from './register';
 
 export {DataTypes as Types, Op, default as Sequelize} from 'sequelize';
 
@@ -36,6 +37,11 @@ export const hooks = {
      */
     username: undefined,
   }),
+  '@flecks/core.hmr.gathered': (gathered, hook, flecks) => {
+    if ('@flecks/db/server.models' === hook) {
+      register(gathered, flecks.get('$flecks/db/sequelize'));
+    }
+  },
   '@flecks/core.starting': (flecks) => {
     flecks.set('$flecks/db.models', flecks.gather(
       '@flecks/db/server.models',
