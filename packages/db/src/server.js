@@ -2,7 +2,12 @@ import {createDatabaseConnection} from './connection';
 import containers from './containers';
 import register from './register';
 
-export {DataTypes as Types, Op, default as Sequelize} from 'sequelize';
+export {
+  DataTypes as Types,
+  Op,
+  default as Sequelize,
+  Transaction,
+} from 'sequelize';
 
 export {default as Model} from './model';
 
