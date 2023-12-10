@@ -19,5 +19,23 @@ export const hooks = {
       ports: {3000: 3000},
     },
   }),
-};
 
+  /**
+   *
+   * @param {string} dockerfile The content of the Dockerfile.
+   *
+   * @returns The new content of the Dockerfile.
+   */
+  '@flecks/docker.Dockerfile': (dockerfile) => (
+    dockerfile.replace('DEBUG=*', 'DEBUG=*,-*:silly')
+  ),
+
+  /**
+   *
+   * @param {Object} config The object representing the docker compose configuration.
+   */
+  '@flecks/docker.docker-compose.yml': (config) => {
+    config.version = '3.1';
+  },
+
+};
