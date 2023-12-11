@@ -258,7 +258,7 @@ export default class Flecks {
    * @returns {boolean}
    */
   fleckImplements(fleck, hook) {
-    return !!this.hooks[hook].find(({fleck: candidate}) => fleck === candidate);
+    return !!this.hooks[hook]?.find(({fleck: candidate}) => fleck === candidate);
   }
 
   /**
