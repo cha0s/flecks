@@ -186,7 +186,7 @@ export const hooks = {
   '@flecks/core.starting': (flecks) => {
     debug('bootstrapping flecks...');
     const webFlecks = Flecks.bootstrap({
-      config: flecks.config,
+      config: flecks.aliasedConfig,
       platforms: ['client', '!server'],
     });
     debug('bootstrapped');

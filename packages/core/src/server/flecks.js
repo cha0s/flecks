@@ -40,6 +40,19 @@ export default class ServerFlecks extends Flecks {
     this.rcs = options.rcs || {};
   }
 
+  get aliasedConfig() {
+    const aliases = this.aliases();
+    return Object.fromEntries(
+      Object.entries(
+        this.config,
+      )
+        .map(([path, config]) => [
+          this.fleckIsAliased(path) ? `${path}:${aliases[path]}` : path,
+          config,
+        ]),
+    );
+  }
+
   aliases() {
     return this.constructor.aliases(this.rcs);
   }
@@ -413,6 +426,9 @@ export default class ServerFlecks extends Flecks {
         resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
       }
       else {
+        if (path.startsWith('.')) {
+          throw new Error(`non-aliased relative path '${path}' in configuration`);
+        }
         resolvedPath = path;
       }
       try {
