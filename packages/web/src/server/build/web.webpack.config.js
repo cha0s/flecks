@@ -18,6 +18,7 @@ const {
 } = process.env;
 
 module.exports = async (env, argv, flecks) => {
+  const {id} = flecks.get('@flecks/core');
   const {
     devHost,
     devPort,
@@ -102,6 +103,7 @@ module.exports = async (env, argv, flecks) => {
             styleFiles,
           };
         },
+        title: id,
         ...htmlTemplateConfig,
       }));
     });
