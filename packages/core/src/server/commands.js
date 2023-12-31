@@ -16,6 +16,8 @@ const debug = D('@flecks/core/commands');
 const debugSilly = debug.extend('silly');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
+export {Argument};
+
 export const processCode = (child) => new Promise((resolve, reject) => {
   child.on('error', reject);
   child.on('exit', (code) => {

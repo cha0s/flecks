@@ -19,6 +19,7 @@ defaultOptions.sorted = true;
 export {dump as dumpYml, load as loadYml} from 'js-yaml';
 
 export {
+  Argument,
   default as commands,
   processCode,
   spawnWith,

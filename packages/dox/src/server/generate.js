@@ -8,7 +8,7 @@ const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => 
 
 export const generateBuildConfigsPage = (buildConfigs) => {
   const source = [];
-  source.push('# Build configuration files');
+  source.push('# Build configuration');
   source.push('');
   source.push('This page documents all the build configuration files in this project.');
   source.push('');
@@ -27,38 +27,36 @@ export const generateBuildConfigsPage = (buildConfigs) => {
 
 export const generateConfigPage = (configs) => {
   const source = [];
-  source.push('# Configuration');
+  source.push("import CodeBlock from '@theme/CodeBlock';");
   source.push('');
-  source.push('This page documents all the configuration in this project.');
+  source.push('# Fleck configuration');
+  source.push('');
+  source.push('<style>td > .theme-code-block \\{ margin: 0; \\}</style>');
+  source.push('');
+  source.push('This page documents all configurable flecks in this project.');
   source.push('');
   Object.entries(configs)
     .sort(([l], [r]) => (l < r ? -1 : 1))
     .forEach(([fleck, configs]) => {
-      // source.push(`## \`${fleck}\``);
-      source.push('```javascript');
-      source.push(`'${fleck}': {`);
+      source.push(`## \`${fleck}\``);
+      source.push('|Name|Default|Description|');
+      source.push('|-|-|-|');
       configs.forEach(({comment, config, defaultValue}) => {
-        comment.split('\n').forEach((line) => {
-          source.push(`  // ${line}`);
-        });
-        const value = defaultValue
-          .split('\n')
-          .map((line, i, array) => {
-            let output = '';
-            if (array.length - 1 === i) {
-              output += '  ';
-            }
-            else if (0 !== i) {
-              output += '    ';
-            }
-            output += line.trim();
-            return output;
-          })
-          .join('\n');
-        source.push(`  ${config}: ${value}`);
+        // Leading and trailing empty cell to make table rendering easier.
+        const row = ['', config];
+        let code = defaultValue.replace(/`/g, '\\`');
+        // Multiline code. Fix indentation.
+        if (defaultValue.includes('\n')) {
+          const defaultValueLines = code.split('\n');
+          const [first, ...rest] = defaultValueLines;
+          const indent = (rest[0].length - rest[0].trimStart().length) - 2;
+          code = [first, ...rest.map((line) => line.substring(indent))].join('\\n');
+        }
+        row.push(`<CodeBlock language="javascript">{\`${code}\`}</CodeBlock>`);
+        row.push(comment, '');
+        source.push(row.join('|'));
       });
-      source.push('}');
-      source.push('```');
+      source.push('');
     });
   return source.join('\n');
 };
@@ -74,27 +72,22 @@ export const generateHookPage = (hooks, flecks) => {
   Object.entries(hooks)
     .sort(([lhook], [rhook]) => (lhook < rhook ? -1 : 1))
     .forEach(([hook, {implementations = [], invocations = [], specification}]) => {
-      source.push(`## \`${hook}\``);
-      source.push('');
       const {description, example, params} = specification || {
         params: [],
       };
+      source.push(`## \`${hook}\``);
+      source.push('');
       if (description) {
-        description.split('\n').forEach((line) => {
-          source.push(`> ${line}`);
-        });
+        source.push(...description.split('\n'));
         source.push('');
       }
       if (params.length > 0) {
-        source.push('<details>');
-        source.push('<summary>Parameters</summary>');
-        source.push('<ul>');
         params.forEach(({description, name, type}) => {
-          source.push(`<li><strong><code>{${type}}</code></strong> <code>${name}</code>`);
-          source.push(`<blockquote>${description}</blockquote></li>`);
+          source.push(`### <code>${name}: ${type}</code>`);
+          source.push('');
+          source.push(`<p>${description.trim()}</p>`);
+          source.push('');
         });
-        source.push('</ul>');
-        source.push('</details>');
         source.push('');
       }
       if (implementations.length > 0) {
@@ -137,7 +130,7 @@ export const generateTodoPage = (todos, flecks) => {
   const {filenameRewriters} = flecks.get('@flecks/dox/server');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
-  source.push('# TODO');
+  source.push('# TODO list');
   source.push('');
   source.push('This page documents all the TODO items in this project.');
   source.push('');

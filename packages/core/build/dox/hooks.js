@@ -49,24 +49,28 @@ export const hooks = {
 
   /**
    * Define CLI commands.
+   * @param {[Command](https://github.com/tj/commander.js/tree/master#declaring-program-variable)} program The [Commander.js](https://github.com/tj/commander.js) program.
    */
-  '@flecks/core.commands': (program) => ({
-    // So this could be invoked like:
-    // npx flecks something -t --blow-up blah
-    something: {
-      action: (...args) => {
-        // Run the command...
+  '@flecks/core.commands': (program, flecks) => {
+    const {Argument} = flecks.fleck('@flecks/core/server');
+    return {
+      // So this could be invoked like:
+      // npx flecks something -t --blow-up blah
+      something: {
+        action: (...args) => {
+          // Run the command...
+        },
+        args: [
+          new Argument('<somearg>', 'some argument'),
+        ],
+        description: 'This command does tests and also blows up',
+        options: [
+          '-t, --test', 'Do a test',
+          '-b, --blow-up', 'Blow up instead of running the command',
+        ],
       },
-      args: [
-        '<somearg>',
-      ],
-      description: 'This command does tests and also blows up',
-      options: [
-        '-t, --test', 'Do a test',
-        '-b, --blow-up', 'Blow up instead of running the command',
-      ],
-    },
-  }),
+    };
+  },
 
   /**
    * Define configuration.

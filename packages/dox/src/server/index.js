@@ -1,5 +1,7 @@
 import commands from './commands';
 
+export {configDefaults} from './docusaurus';
+
 export const hooks = {
   '@flecks/core.commands': commands,
   '@flecks/core.config': () => ({

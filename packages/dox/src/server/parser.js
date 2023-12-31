@@ -23,8 +23,6 @@ import {require as R} from '@flecks/core/server';
 import {parse as parseComment} from 'comment-parser';
 import glob from 'glob';
 
-const flecksCorePath = dirname(__non_webpack_require__.resolve('@flecks/core/package.json'));
-
 class ParserState {
 
   constructor() {
@@ -170,7 +168,10 @@ const FlecksInvocations = (state, filename) => ({
         || (
           (
             isThisExpression(path.node.callee.object)
-            && (filename === join(flecksCorePath, 'src', 'flecks.js'))
+            && (
+              (filename === '@flecks/core/src/flecks.js')
+              || (filename === '@flecks/core/src/server/flecks.js')
+            )
           )
         )
       ) {
