@@ -1,0 +1,147 @@
+---
+title: Creating a fleck
+description: A fleck is a module but also so much more.
+---
+
+import InstallPackage from '@site/helpers/install-package';
+
+So you want to create a fleck. Think you got what it takes?
+
+If you are following along from the previous getting started
+[configuration page](./configuration), you have an application with 3 flecks:
+
+- `@flecks/core`
+- `@flecks/server`
+- `@flecks/web`
+
+<details>
+  <summary>About that "3 flecks" thing...</summary>
+
+  Actually, your application has 6 flecks at this point:
+
+  - `@flecks/core`
+  - `@flecks/core/server`
+  - `@flecks/server`
+  - `@flecks/server/server`
+  - `@flecks/web`
+  - `@flecks/web/server`
+
+  flecks will load the `[...]/server` fleck under any fleck that is loaded on the server. This is
+  also the case when using `@flecks/web` which will automatically load `[...]/client` flecks
+  which are only loaded in the browser. We'll be exploring this specifically in the next section.
+  If you're intersted in diving deeper, see [the platforms concept page](#todo).
+
+  Some frameworks make it a little cheesier to work with isomorphic code, but the flecks
+  philosophy is that visibility is believability: you'll have to be explicit about which code
+  runs where.
+</details>
+
+## Your first fleck
+
+Let's make your website greet the user with a good ol' **hello world**.
+
+To do this, you'll be creating your own little fleck. You'll create the fleck at `src/hello-world`.
+A fleck is just a package, so we'll need to add a `package.json`. Nothing much; a name will suffice:
+
+### `package.json`
+
+```json
+{
+  "name": "hello-world",
+}
+```
+
+and we'll add our little source file:
+
+### `index.js`
+
+```javascript
+exports.hooks = {
+  '@flecks/web/client.up': async () => {
+    window.document.body.append('hello world');
+  },
+};
+```
+
+You should now have a `src` directory that looks like this:
+
+```
+src
+└── hello-world
+    ├── index.js
+    └── package.json
+```
+
+Good? Good! Now, let's add this to our `flecks.yml`:
+
+```yml
+'@flecks/core':
+  id: 'hello_world'
+'@flecks/server': {}
+'@flecks/web': {}
+// highlight-next-line
+'hello-world:./src/hello-world': {}
+```
+
+### Aliasing for the win
+
+Notice there's a colon separating the path for this one. This is because this is an
+[aliased fleck](#todo). The part before the colon is the alias and the part after is the
+path to the package.
+
+Now, restart your application and visit your website. Glorious, isn't it?
+
+By the way, your other application code can import the alias (e.g. `require('hello-world');`)
+[as if it were a package](https://webpack.js.org/configuration/resolve/#resolvealias).
+
+<details>
+  <summary>Wait, my flecks don't have to be in <code>node_modules</code>?</summary>
+
+  Nope! That's an intentional feature. When you're developing applications, it can be real nice to
+  just pull in local source "packages". If you're wondering how this works, see
+  [the alias concept page](#todo).
+
+  You probably shouldn't do things like name an alias the same thing as a package that actually
+  exists in your `node_modules` directory. If you'd like to help define what happens in that case
+  you could always [submit a pull request](https://github.com/cha0s/flecks/compare).
+
+  That being said, sharing your package on npm is a cool thing to do, so be rad and share your
+  awesome flecks with the rest of us!
+</details>
+
+## Everything so far... plus Electron!
+
+Let's add another core fleck. flecks ships with a core fleck `@flecks/electron`. This runs your
+application inside of an instance of [Electron](https://www.electronjs.org/). You'll add the fleck:
+
+<InstallPackage pkg="@flecks/electron" />
+
+Then you'll update your `flecks.yml` like so:
+
+```yml
+'@flecks/core':
+  id: 'hello_world'
+// highlight-start
+'@flecks/electron': {}
+'@flecks/server':
+  up:
+    - '...'
+    - '@flecks/web'
+    - '@flecks/electron'
+// highlight-end
+'@flecks/web': {}
+'hello-world:./src/hello-world': {}
+```
+
+### ~~flecking~~ pecking order
+
+Did you notice we added some configuration to `@flecks/server`? The `up` key configures the order in
+which flecks are initialized when the server comes up. We make sure `@flecks/web` initializes
+before `@flecks/electron` so there's a webpage to visit. There are future plans to make this the
+default with no configuration required.
+
+Finally `npm start` and you should see something like this:
+
+![An image of our simple hello world application running inside an Electron window](./flecks-electron.png)
+
+Cool, huh?

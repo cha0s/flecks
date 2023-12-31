@@ -1,0 +1,61 @@
+---
+description: flecks makes a joy of JavaScript app development.
+slug: /
+---
+
+# Introduction
+
+⚡️ flecks will help you build a **flexible and powerful application in no time**.
+
+💸 Save time and money and don't duplicate effort. Instead, **lean on infrastructure that already exists** to solve your problems.
+
+💥 Ready for more? Use **advanced features** like [running flecks on your toaster](#todo)
+
+🧐 Flecks is an **exceptionally-extensible fullstack application production system**. Its true purpose
+is to make application development a more joyful endeavor. Intelligent defaults combined with
+a highly dynamic structure motivate consistency while allowing you to easily express your own
+opinions.
+
+## Features {#features}
+
+flecks is built with supreme attention to the developer and end-user experience.
+
+- 🧩 **Small but pluggable**
+  - The simplest application is two flecks, `core` and `server`: you don't pay for what you don't buy
+  - Endlessly configurable through built-in hooks and then your own
+- 🛠️ **Ready to build real applications**
+  - babel + Webpack 5
+  - [React](#todo)/[redux](#todo)
+  - [Database](#todo)
+  - [electron](#todo)
+  - [docker](#todo)
+  - [REPL](#todo)
+  - [websockets](#todo) with lots of goodies like binary packing and packet dispatching out of the box
+  - [docusaurus](#todo): This documentation website you're looking at, available to your own apps for your own documentation by simply adding [`@flecks/dox`](#todo) to your own application
+- 👷 **Developers, developers, developers**
+  - 🪄 Easy to create a fleck; no need to publish packages or use voodoo
+  - Write server or client (or both) tests, run on server/in browser/[your own custom platform](#todo)
+  - HMR (even on the server)
+  - Create a fleck with your [redux slice](https://redux-toolkit.js.org/api/createslice/) provided through a hook. Finally, real [ducks](https://github.com/erikras/ducks-modular-redux)!
+  - Easily spin up a database or redis server ([or...](/docs/flecks/hooks#flecksdockercontainers)) using [Docker](#todo) during development, and generate a `Dockerfile` and `docker-compose.yml` automatically for production
+  - Small hookable core means less exposed wires. You could always help by [submitting a pull request](https://github.com/cha0s/flecks/compare) though.
+
+Our shared goal—to help you quickly develop your application. We share our best practices to help you build your application right and well.
+
+## Design principles {#design-principles}
+
+- **Little to learn**. flecks should be easy to learn and use as the API is quite small. Most things will still be achievable by users, even if it takes them more code and more time to write. Not having abstractions is better than having the wrong abstractions, and we don't want users to have to hack around the wrong abstractions. Mandatory talk—[Minimal API Surface Area](https://www.youtube.com/watch?v=4anAwXYqLG8).
+- **Intuitive**. Users will not feel overwhelmed when looking at the project directory of a flecks project or adding new features. It should look intuitive and easy to build on top of, using approaches they are familiar with.
+- **Modular**. flecks is built from the ground up with separation of concerns as a first-class concern.
+- **Sensible defaults**. Common and popular performance optimizations and configurations will be done for users but they are given the option to override them.
+- **No vendor lock-in**. Users are not required to use the default flecks, although they are highly encouraged to.
+
+We believe that, as developers, knowing how a library works helps us become better at using it. Hence we're dedicating effort to explaining the architecture and various aspects of flecks with the hope that users reading it will gain a deeper understanding and be even more proficient in using it.
+
+## Staying informed {#staying-informed}
+
+- [GitHub](https://github.com/cha0s/flecks)
+
+## Something missing? {#something-missing}
+
+If you find issues with the documentation or have suggestions on how to improve the documentation or the project in general, please [file an issue](https://github.com/cha0s/flecks/issues/new) for us.

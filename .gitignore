@@ -116,11 +116,7 @@ dist
 .pnp.*
 
 # local
-/build
 /yarn.lock
 
 # package-locals
 /packages/*/yarn.lock
-
-# Generated documentation
-/dox

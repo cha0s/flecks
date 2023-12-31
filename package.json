@@ -8,15 +8,29 @@
     "bfp": "for i in $(npx lerna exec pwd); do cd $i; bfp || break; done; cd ../..",
     "build": "lerna run build",
     "clean": "for i in $(npx lerna exec pwd); do cd $i; rm -rf yarn.lock node_modules; yarn; done; cd ../..",
-    "dox": "FLECKS_ENV_FLECKS_DOX_SERVER_filenameRewriters=\"{\\\"^@flecks/(.*):([0-9]+):([0-9]+)\\\": \\\"<a href='https://github.com/cha0s/flecks/tree/$(git rev-parse --short HEAD)/packages/\\$1#L\\$2'>@flecks/\\$1:\\$2:\\$3</a>\\\"}\" yarn flecks dox",
     "lint": "lerna run lint",
     "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org",
     "refresh": "npm run clean && npm run bfp",
     "test": "lerna run test --no-bail -- --silent"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@flecks/core": "*",
+    "@flecks/core": "^2.0.3",
+    "@flecks/create-app": "*",
+    "@flecks/create-fleck": "*",
+    "@flecks/db": "*",
+    "@flecks/docker": "*",
+    "@flecks/dox": "^2.0.3",
+    "@flecks/electron": "*",
+    "@flecks/fleck": "*",
+    "@flecks/governor": "*",
+    "@flecks/react": "*",
+    "@flecks/redis": "*",
+    "@flecks/redux": "*",
+    "@flecks/repl": "*",
+    "@flecks/server": "*",
+    "@flecks/socket": "*",
+    "@flecks/user": "*",
+    "@flecks/web": "*",
     "lerna": "^7.4.2"
   }
 }

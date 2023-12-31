@@ -12,7 +12,7 @@
 
   This is largely untested software. There are undoubtedly many bugs that haven't yet been found.
   
-  I reserve the right to break all semantic versioning guarantees as long as the project is v1.x.x! 😈
+  I reserve the right to break all semantic versioning guarantees as long as there is a critical need for fundamental changes that significantly improve the project's architecture, performance, or address security vulnerabilities, and these modifications are deemed essential for the long-term stability, innovation, and overall betterment of the software. The project is young enough that I can get away with that. This will be revisited.
   
   **You've been warned!**
 

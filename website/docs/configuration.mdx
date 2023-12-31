@@ -1,0 +1,84 @@
+---
+title: Configuration
+description: Configure `flecks.yml` and your application.
+---
+
+import InstallPackage from '@site/helpers/install-package';
+
+You have a flecks application! ...but it doesn't do much. This is because a flecks application is
+composed of individual flecks. By default, your application will have two flecks: `@flecks/core` and
+`@flecks/server`. Each fleck may have configuration that can be set through `flecks.yml`. For a
+list of configurable core flecks, see [the generated configuration page](/docs/flecks/config).
+
+## First steps
+
+A good first configuration step is to set the ID of your application.
+
+Your `flecks.yml` will look like this after you generate your application:
+
+```yml
+'@flecks/core': {}
+'@flecks/server': {}
+```
+
+Your application's ID is configured at the `id` key of `@flecks/core`'s configuration. To set your
+application's ID to `hello_world`, update your `flecks.yml` to look like this:
+
+```yml
+// highlight-start
+'@flecks/core':
+  id: 'hello_world'
+// highlight-end
+'@flecks/server': {}
+```
+
+## Getting somewhere
+
+If you were studious enough to take a peek at [the generated configuration page](/docs/flecks/config)
+above, you may have noticed that there were a bunch more flecks there than just the two in our
+application.
+
+For instance, there is a `@flecks/web` fleck that turns your little old server application into one
+that can build and serve a webpage. You can add it to your application in two steps.
+
+1. Add the package to your project using your favorite package manager:
+
+<InstallPackage pkg="@flecks/web" />
+
+2. Add the fleck to your `flecks.yml`:
+
+```yml
+'@flecks/core':
+  id: 'hello_world'
+'@flecks/server': {}
+// highlight-next-line
+'@flecks/web': {}
+```
+
+Now, if you run `npm start`, you'll see a line in the output:
+
+```
+  @flecks/web/server/http HTTP server up @ 0.0.0.0:32340!
+```
+
+## Finally... a white page?
+
+If you visit `localhost:32340` in your browser, you should now see... a blank white page! Don't fret
+though; if you open the devtools in your browser, you will see a little messaging from your
+application that will look something like:
+
+```
+[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.
+[HMR] Waiting for update signal from WDS...
+flecks client v2.0.3 loading runtime...
+```
+
+This is a good sign! This means we successfully added a web server with HMR enabled by default.
+Oh, the possibilities...
+
+## Proceed with the hooking
+
+How does flecks know to start the web server when the application starts? Great question! This is
+accomplished through the use of [hooks](#todo).
+
+Next, we'll learn how to create our own fleck and do a little hooking of our own. Take that, dad!
