@@ -1,4 +1,3 @@
-import commands from './commands';
 import FlecksDockerOutput from './plugin';
 import startContainer from './start-container';
 
@@ -15,7 +14,6 @@ export const hooks = {
      */
     enabled: true,
   }),
-  '@flecks/core.commands': commands,
   '@flecks/server.up': async (flecks) => {
     if (!flecks.get('@flecks/docker/server.enabled')) {
       return;
