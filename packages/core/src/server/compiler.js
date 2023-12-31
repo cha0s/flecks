@@ -143,7 +143,7 @@ class Compiler {
       [
         'prepend',
         {
-          prepend: 'const __non_webpack_require__ = require;',
+          prepend: '"undefined" === typeof global.__non_webpack_require__ && (global.__non_webpack_require__ = require);',
         },
         '__non_webpack_require__',
       ],
