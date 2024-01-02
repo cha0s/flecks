@@ -1,7 +1,7 @@
 import {
   stat,
 } from 'fs/promises';
-import {basename} from 'path';
+import {basename, dirname, join} from 'path';
 
 import {JsonStream, transform} from '@flecks/core/server';
 
@@ -33,7 +33,7 @@ export default async (name, source, destination, type, flecks) => {
   const {files} = fileTree;
   fileTree.glob('**/*.noconflict')
     .forEach((path) => {
-      files[basename(path, '.noconflict')] = files[path];
+      files[join(dirname(path), basename(path, '.noconflict'))] = files[path];
       delete files[path];
     });
   // Defaults.
