@@ -154,8 +154,8 @@ export default class ServerFlecks extends Flecks {
     return this.constructor.resolveBuildConfig(this.resolver, roots, paths);
   }
 
-  static environmentalize(key) {
-    return key
+  static environmentalize(path) {
+    return path
       // - `@flecks/core` -> `FLECKS_CORE`
       .replace(/[^a-zA-Z0-9]/g, '_')
       .replace(/_*(.*)_*/, '$1')
@@ -460,8 +460,8 @@ export default class ServerFlecks extends Flecks {
       // Reverse-sorting means e.g. `@flecks/core/server` comes before `@flecks/core`.
       // We want to select the most specific match.
       //
-      // `FLECKS_ENV_FLECKS_CORE_SERVER_VARIABLE` is ambiguous as it can equate to both:
-      // - `flecks.set('@flecks/core.server.variable');`
+      // `FLECKS_ENV_FLECKS_CORE_SERVER_variable` is ambiguous as it can equate to both:
+      // - `flecks.set('@flecks/core.SERVER.variable');`
       // - `flecks.set('@flecks/core/server.variable');`
       //
       // The latter will take precedence.
