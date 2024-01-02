@@ -1,0 +1,60 @@
+---
+title: Command-line interface
+description: Document your project.
+---
+
+# Command-line interface
+
+flecks has a command-line interface for building, linting, testing, and so much more.
+
+## Built-in commands
+
+### `build`
+
+Build a target in your application.
+
+```bash
+flecks build --help
+Usage: flecks build [options] [target]
+
+Arguments:
+  target               target (choices: "...")
+
+Options:
+  -d, --no-production  dev build
+  -h, --hot            build with hot module reloading
+  -w, --watch          watch for changes
+```
+
+### `lint`
+
+```bash
+Usage: flecks lint [options]
+
+run linter
+```
+
+### `docusaurus`
+(Implemented by `@flecks/dox`)
+
+```bash
+Usage: flecks docusaurus [options] <subcommand> [siteDir]
+
+create a documentation website for this project
+
+Arguments:
+  subcommand  Docusaurus command to run (choices: "build", "create", "start")
+  siteDir     Docusaurus directory (default: "website")
+```
+
+The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
+
+The `create` subcommand will create a documentation website starter template for you at `siteDir`
+which defaults to `website` if `siteDir` doesn't already exist. A `docusaurus.config.js`
+starter configuration will also be copied to your `build` directory, if it doesn't already exist.
+
+## Your commands
+
+You can implement your own command by implementing
+[`@flecks/core.commands`](/docs/flecks/@flecks/dox/hooks#fleckscorecommands) in your fleck.
+

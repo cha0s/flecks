@@ -22,8 +22,16 @@ export default {
       },
       collapsed: false,
       items: [
-        'documentation',
+        'cli',
+        'environment',
+        'database',
+        'sockets',
+        'react',
+        'electron',
         'isomorphism',
+        'redux',
+        'repl',
+        'documentation',
       ],
     },
     {

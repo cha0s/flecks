@@ -26,18 +26,18 @@ flecks is built with supreme attention to the developer and end-user experience.
 - 🛠️ **Ready to build real applications**
   - babel + Webpack 5
   - [React](#todo)/[redux](#todo)
-  - [Database](#todo)
+  - [Database](/docs/database)
   - [electron](#todo)
   - [docker](#todo)
   - [REPL](#todo)
   - [websockets](#todo) with lots of goodies like binary packing and packet dispatching out of the box
-  - [docusaurus](#todo): This documentation website you're looking at, available to your own apps for your own documentation by simply adding [`@flecks/dox`](#todo) to your own application
+  - [docusaurus](#todo): This documentation website you're looking at, [available to your own apps for your own documentation](/docs/documentation)
 - 👷 **Developers, developers, developers**
   - 🪄 Easy to create a fleck; no need to publish packages or use voodoo
   - Write server or client (or both) tests, run on server/in browser/[your own custom platform](#todo)
   - HMR (even on the server)
-  - Create a fleck with your [redux slice](https://redux-toolkit.js.org/api/createslice/) provided through a hook. Finally, real [ducks](https://github.com/erikras/ducks-modular-redux)!
-  - Easily spin up a database or redis server ([or...](/docs/flecks/hooks#flecksdockercontainers)) using [Docker](#todo) during development, and generate a `Dockerfile` and `docker-compose.yml` automatically for production
+  - [redux slices](https://redux-toolkit.js.org/api/createslice/) provided through hook!
+  - Easily spin up a database or redis server ([or...](/docs/flecks/@flecks/dox/hooks#flecksdockercontainers)) using [Docker](#todo) during development, and generate a `Dockerfile` and `docker-compose.yml` automatically for production
   - Small hookable core means less exposed wires. You could always help by [submitting a pull request](https://github.com/cha0s/flecks/compare) though.
 
 Our shared goal—to help you quickly develop your application. We share our best practices to help you build your application right and well.
@@ -49,6 +49,7 @@ Our shared goal—to help you quickly develop your application. We share our bes
 - **Modular**. flecks is built from the ground up with separation of concerns as a first-class concern.
 - **Sensible defaults**. Common and popular performance optimizations and configurations will be done for users but they are given the option to override them.
 - **No vendor lock-in**. Users are not required to use the default flecks, although they are highly encouraged to.
+- **Minimize duplicated effort**. For instance, we ripped a lot of this wording off of the Docusaurus introduction page. :dancer:
 
 We believe that, as developers, knowing how a library works helps us become better at using it. Hence we're dedicating effort to explaining the architecture and various aspects of flecks with the hope that users reading it will gain a deeper understanding and be even more proficient in using it.
 

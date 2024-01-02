@@ -1,14 +1,92 @@
 ---
-title: Documentation
+title: Documentation website
 description: Document your project.
 ---
 
-# Documentation
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ImageRow from '@site/helpers/image-row';
+import InstallPackage from '@site/helpers/install-package';
+import ThemedImage from '@theme/ThemedImage';
+
+# Documentation website
 
 Ah, the most ~~boring~~ awesome part of development.
 
 flecks provides a fleck called `@flecks/dox` that helps you generate a documentation website for
 your project. In fact, this very website you're viewing now has been built with the same tooling!
 
-`@flecks/dox` implements a [CLI command](/flecks/docs/flecks/@flecks/dox/hooks#fleckscorecommands)
-to run [Docusaurus](https://docusaurus.io/) and generate a documentation site for your project.
+## Install `@flecks/dox`
+
+To get started, install `@flecks/dox` in your project:
+
+<InstallPackage pkg="@flecks/dox" />
+
+Then, add it to your `build/flecks.yml`:
+
+```yml
+'@flecks/core': {}
+// highlight-next-line
+'@flecks/dox': {}
+'@flecks/server': {}
+```
+
+## Spin up a starter website
+
+Next, run:
+
+```bash
+npx flecks docusaurus create
+```
+
+You should now have a starter configuration in `build/docusaurus.config.js` and a new directory
+in your project: `website`. See [the command documentation](/docs/cli#docusaurus) to discover more
+options.
+
+Now, start your documentation website's development server with:
+
+```
+npx flecks docusaurus start
+```
+
+You should now see a message similar to:
+
+```bash
+[SUCCESS] Docusaurus website is running at: http://localhost:3000/
+```
+
+Go and have a look!
+
+<ImageRow>
+  <ThemedImage
+    alt="Screenshot of the front page of the generated documentation site"
+    sources={{
+      light: useBaseUrl('/flecks-dox-1-light.png'),
+      dark: useBaseUrl('/flecks-dox-1.png'),
+    }}
+  />
+  <ThemedImage
+    alt="Screenshot of the documentation introduction page of the generated documentation site"
+    sources={{
+      light: useBaseUrl('/flecks-dox-2-light.png'),
+      dark: useBaseUrl('/flecks-dox-2.png'),
+    }}
+  />
+</ImageRow>
+
+Not bad, huh?
+
+## Building it out
+
+It's only a starter template, of course. You'll want to pop over to
+[the Docusaurus guides page](https://docusaurus.io/docs/category/guides) to build out your new
+website. Have fun!
+
+## Production-ready
+
+When you're ready to build for production, just run
+
+```bash
+npx flecks docusaurus build
+```
+
+After successfully building, your website files will be located at `dist/dox`.

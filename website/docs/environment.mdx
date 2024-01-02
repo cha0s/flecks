@@ -1,0 +1,74 @@
+---
+title: Environment Variables
+description: Configure your application with environment variables.
+---
+
+# Environment Variables
+
+flecks has first-class support for configuring your application through environment variables.
+
+## Example
+
+`@flecks/core` defines a configuration key `id`. We've already seen how it can be configured like
+so:
+
+```yml
+'@flecks/core':
+  id: 'foobar'
+```
+
+When running your application in different execution environments (say, production) you may want to
+override configuration such as this. This is done by using the a prefix followed by the
+fleck name and the key. The template literal for such a transformation would look like:
+
+### Syntax
+
+```javascript
+`FLECKS_ENV_${Flecks.environmentalize(path)}_${key}`
+```
+
+:::note
+
+Notice the `environmentalize` transformation: `@flecks/core`'s `id` key is set using the
+following variable:
+
+```bash
+FLECKS_ENV_FLECKS_CORE_id=foobar
+```
+
+<details>
+  <summary>`Flecks.environmentalize`</summary>
+  ```javascript
+    static environmentalize(path) {
+      return path
+        // - `@flecks/core` -> `FLECKS_CORE`
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .replace(/_*(.*)_*/, '$1')
+        .toUpperCase();
+    }
+  ```
+</details>
+
+
+
+Also note that the key is still case-sensitive. This is because configuration keys are
+user-defined.
+
+:::
+
+## Resolution Order
+
+There is a possibility for ambiguity arising from the fact that flecks may be contained within a
+subpath of another fleck. For instance:
+
+```bash
+FLECKS_ENV_FLECKS_CORE_SERVER_variable=something
+```
+
+Could be configuring a key at `@flecks/core/server.variable`, but it could also be configuring a
+key at `@flecks/core.SERVER.variable`.
+
+To resolve this ambiguity, candidate paths are reverse-sorted alphabetically, so that the longer
+fleck path will be preferred.
+
+In the above case, it is `@flecks/core/server.variable` which receives the configuration.

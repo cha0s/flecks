@@ -1,0 +1,395 @@
+---
+title: Database
+description: How to define models and connect to a database.
+---
+
+import Create from '@site/helpers/create';
+import InstallPackage from '@site/helpers/install-package';
+
+# Database
+
+flecks provides database connection through [Sequelize](https://sequelize.org/) and database
+server instances through either flat SQLite databases or [Docker](https://www.docker.com/)ized
+database servers.
+
+## Install and configure
+
+We'll start from scratch as an example. Create a new flecks application:
+
+<Create pkg="db_test" type="app" />
+
+Now in your new application directory, install `@flecks/db`:
+
+<InstallPackage pkg="@flecks/db" />
+
+Then, add the fleck to your `build/flecks.yml`:
+
+```yml
+'@flecks/core': {}
+// highlight-next-line
+'@flecks/db': {}
+'@flecks/server': {}
+```
+
+Finally, `npm start` your application and you will see lines like the following in the logs:
+
+```
+  @flecks/db/server/connection config: { dialect: 'sqlite', storage: ':memory:' } +0ms
+  @flecks/db/server/connection synchronizing... +107ms
+  @flecks/db/server/connection synchronized +2ms
+```
+
+By default, flecks will connect to an in-memory SQLite database to get you started instantly.
+
+## Your models
+
+Astute observers may have noticed a line preceding the ones earlier:
+
+```
+  @flecks/core/flecks gathered '@flecks/db/server.models': [] +0ms
+```
+
+Let's create a fleck that makes a model so we can get a feel for how it works.
+
+First, create a fleck in your application:
+
+<Create pkg="tags" type="fleck" />
+
+Then, add it to `build/flecks.yml`:
+
+```yml
+'@flecks/core': {}
+'@flecks/db': {}
+'@flecks/server': {}
+// highlight-next-line
+'@db_test/tags:./packages/tags': {}
+```
+
+Now, let's hop into `packages/tags/src/index.js` and add a hook implementation:
+
+```javascript
+export const hooks = {
+  '@flecks/db/server.models': (flecks) => {
+    const {Model, Types} = flecks.fleck('@flecks/db/server');
+    class Tags extends Model {
+      static get attributes() {
+        return {
+          key: {
+            type: Types.STRING,
+            allowNull: false,
+          },
+          value: {
+            type: Types.STRING,
+            allowNull: false,
+          },
+        };
+      }
+    };
+    return {
+      Tags,
+    };
+  },
+}
+```
+
+:::note
+
+The static `attributes` method above is sugar on top of
+[`sequelize.define`](https://sequelize.org/docs/v6/core-concepts/model-basics/#using-sequelizedefine)
+and you should consult that documentation for details on how to define your models.
+
+To implement associations between models, there is a static `associate` method. Suppose you also
+had a `Post` model along with your `Tags` model. You might do something like this in your `Tags`
+model:
+
+```
+static associate({Post}) {
+  Post.hasMany(this);
+}
+```
+
+:::
+
+Now, `npm start` your application and you will see that line looks different:
+
+```
+  @flecks/core/flecks gathered '@flecks/db/server.models': [ 'Tags' ] +0ms
+```
+
+Our model is recognized! Let's do something with it. Edit `packages/tags/src/index.js` again like
+so:
+
+```javascript
+export const hooks = {
+  // highlight-start
+  '@flecks/server.up': async (flecks) => {
+    const {Tags} = flecks.get('$flecks/db.models');
+    console.log('There were', await Tags.count(), 'tags.');
+  },
+  // highlight-end
+  '@flecks/db/server.models': (flecks) => {
+    // Omitted for clarity...
+  },
+}
+```
+
+Now, another `npm start` will greet us with this line in the output:
+
+```
+There were 0 tags.
+```
+
+Not very interesting. Let's add some, but only if there aren't any tags yet:
+
+```javascript
+export const hooks = {
+  '@flecks/server.up': async (flecks) => {
+    const {Tags} = flecks.get('$flecks/db.models');
+    console.log('There were', await Tags.count(), 'tags.');
+    // highlight-start
+    if (0 === await Tags.count()) {
+      await Tags.create({key: 'foo', value: 'bar'});
+      await Tags.create({key: 'another', value: 'thing'});
+    }
+    console.log('There are', await Tags.count(), 'tags.');
+    // highlight-end
+  },
+  '@flecks/db/server.models': (flecks) => {
+    // Omitted for clarity...
+  },
+}
+```
+
+Another `npm start` and we see the tags created!
+
+## Persistence
+
+You'll notice that if you run it again, it will always say
+
+```
+There were 0 tags.
+There are 2 tags.
+```
+
+What's up with that? Remember in the beginning:
+
+> By default, flecks will connect to an in-memory SQLite database to get you started instantly.
+
+This means that the database will only persist as long as the life of your application. When you
+restart it, you'll get a fresh new database every time. Obviously, this isn't very helpful for
+any real purpose. Let's make a change to our `build/flecks.yml`:
+
+```yml
+'@flecks/core': {}
+'@flecks/db': {}
+// highlight-start
+'@flecks/db/server':
+  database: './persistent.sql'
+// highlight-end
+'@flecks/server': {}
+'@db_test/tags:./packages/tags': {}
+```
+
+Now `npm start` again. You'll see our old familiar message:
+
+```
+There were 0 tags.
+There are 2 tags.
+```
+
+This time though, our application wrote the SQLite database to disk at `./persistent.sql`. If we
+give it one more go, we'll finally see what we expect:
+
+```
+There were 2 tags.
+There are 2 tags.
+```
+
+A persistent database!
+
+## Containerization
+
+Sure, our database is persistent... kinda. That `persistent.sql` file is a bit of a kludge and
+isn't much of a long-term (or production) solution. Let's remove it:
+
+```
+rm persistent.sql
+```
+
+Our small-core philosophy means that you don't pay for spinning up a database by default. However,
+it's trivial to accomplish a *"real"* database connection if you have Docker installed on your
+machine.
+
+<details>
+  <summary>How do I know if I have Docker running on my machine?</summary>
+
+  A decent way to test if your machine is ready to continue with this guide is to run the following
+  command:
+
+  `docker run -e POSTGRES_PASSWORD=password postgres`
+
+  if the command appears to spin up a database, you're in good shape!
+
+  If not, follow the [Docker installation documentation](https://docs.docker.com/engine/install/)
+  before proceeding.
+</details>
+
+Let's add another fleck to our project:
+
+<InstallPackage pkg="@flecks/docker" />
+
+Configure `build/flecks.yml`:
+
+```yml
+'@flecks/core': {}
+'@flecks/db': {}
+// highlight-start
+'@flecks/db/server':
+  database: db
+  dialect: postgres
+  password: THIS_PASSWORD_IS_UNSAFE
+  username: postgres
+'@flecks/docker': {}
+'@flecks/server':
+  up:
+    - '@flecks/docker'
+    - '@flecks/db'
+    - '@db_test/tags'
+// highlight-end
+'@db_test/tags:./packages/tags': {}
+```
+
+Notice that we configured `@flecks/server.up` to make sure to enforce a specific order in which
+our server flecks come up: first `@flecks/docker` to spin up the database, then
+`@flecks/db` to connect to the database, and finally our `@db_test/tags` fleck to interact with
+the database. This is important!
+
+Now `npm start` will reveal the following message in the logs:
+
+```
+  @flecks/server/entry Error: Please install pg package manually
+```
+
+Pretty straightforward how to proceed:
+
+<InstallPackage pkg="pg" />
+
+Remember, **small core**! :smile: Now `npm start` again and you will see some new lines in the
+logs:
+
+```
+  @flecks/docker/container creating datadir '/tmp/flecks/flecks/docker/sequelize' +0ms
+  @flecks/docker/container launching: docker run --name flecks_sequelize -d --rm -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_DB=db -e POSTGRES_PASSWORD=THIS_PASSWORD_IS_UNSAFE -v /tmp/flecks/flecks/docker/sequelize:/var/lib/postgresql/data postgres +0ms
+  @flecks/docker/container 'sequelize' started +372ms
+  @flecks/db/server/connection config: { database: 'db', dialect: 'postgres', host: undefined, password: '*** REDACTED ***', port: undefined, username: 'postgres' } +0ms
+  @flecks/db/server/connection synchronizing... +2s
+  @flecks/db/server/connection synchronized +3ms
+```
+
+and of course, we see:
+
+```
+There were 0 tags.
+There are 2 tags.
+```
+
+because we just created a new postgres database from scratch just then! Kill the application and
+run `npm start` one more time and then you will see what you expect:
+
+```
+There were 2 tags.
+There are 2 tags.
+```
+
+Awesome, we have a connection to a real postgres database!
+
+<details>
+  <summary>Where is the docker container?</summary>
+
+  You may notice that the first time you start your application there is a delay while Docker spins
+  up your new database server. This is normal. You may have also noticed that subsequent runs speed
+  up to near-instantaneous. This is also normal!
+
+  `@flecks/docker` runs your container in a manner that outlives your application. If you kill your
+  application and then run:
+
+  ```
+  docker ps
+  ```
+
+  You will see a line for your postgres database looking something like:
+
+  ```
+  CONTAINER ID   IMAGE     COMMAND                 CREATED        STATUS        PORTS                                      NAMES
+  <SOME_ID>      postgres  "docker-entrypoint.s…"  5 minutes ago  Up 5 minutes  0.0.0.0:5432->5432/tcp, :::5432->5432/tcp  flecks_sequelize
+  ```
+
+  You'll see under the `NAMES` column heading, there is an entry called `flecks_sequelize`. That's
+  our database! You can always
+
+  ```
+  docker kill flecks_sequelize
+  ```
+
+  to free up any resources being used. flecks keeps the containers running so that you get a nice
+  fast application start.
+
+  :::note
+
+  The container name is based off of `@flecks/core.id` which by default is `flecks`. If you change
+  your application's ID, the container name will be different.
+
+  :::
+
+</details>
+
+## Production
+
+Sure, spinning up a database like magic is spiffy for development, but you probably want to be a
+little less freewheeling on your production server.
+
+Build the application we've built so far:
+
+```
+npm run build
+```
+
+Then, take a look in the `dist` directory. You'll see a file there called `docker-compose.yml`.
+`@flecks/docker` automatically emits this file when you build your application for production to
+make container orchestration easier. Let's take a look:
+
+```yml
+version: '3'
+services:
+  flecks_app:
+    build:
+      context: ..
+      dockerfile: dist/Dockerfile
+    environment:
+      FLECKS_ENV_FLECKS_DOCKER_SERVER_enabled: 'false'
+      // highlight-next-line
+      FLECKS_ENV_FLECKS_DB_SERVER_host: sequelize
+    volumes:
+      - ../node_modules:/var/www/node_modules
+  // highlight-start
+  sequelize:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: THIS_PASSWORD_IS_UNSAFE
+  // highlight-end
+```
+
+Notice our database container is included and already prepopulated with the configuration we
+specified!
+
+You can run (after you [install Docker Compose](https://docs.docker.com/compose/install/) if
+necessary):
+
+```
+docker-compose -f dist/docker-compose.yml up
+```
+
+This demonstrates that your application is now being orchestrated by Docker Compose and is
+chugging right along!

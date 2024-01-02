@@ -14,7 +14,7 @@ export default async function flecksDocusaurus() {
     ...defaults,
     title: 'flecks',
     tagline: 'not static',
-    // favicon: 'img/flecks.svg',
+    favicon: 'flecks.png',
     url: 'https://cha0s.github.io',
     baseUrl: '/flecks/',
     organizationName: 'cha0s', // Usually your GitHub org/user name.
@@ -25,10 +25,10 @@ export default async function flecksDocusaurus() {
         ...defaults.themeConfig,
         navbar: {
           title: 'flecks',
-          // logo: {
-          //   alt: 'flecks logo',
-          //   src: 'img/flecks.svg',
-          // },
+          logo: {
+            alt: 'flecks logo',
+            src: 'flecks.png',
+          },
           items: [
             {
               href: 'https://github.com/cha0s/flecks',
