@@ -13,12 +13,15 @@ const {
 const cwd = normalize(FLECKS_CORE_ROOT);
 
 const create = async (flecks) => {
-  const name = process.argv[2];
+  let name = process.argv[2];
   const {errors} = validate(name);
   if (errors) {
     throw new Error(`@flecks/create-app: invalid app name: ${errors.join(', ')}`);
   }
   const destination = join(cwd, name);
+  if (!name.startsWith('@')) {
+    name = `@${name}/monorepo`;
+  }
   await move(name, join(__dirname, 'template'), destination, 'app', flecks);
   await build(destination);
 };
