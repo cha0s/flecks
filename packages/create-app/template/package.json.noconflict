@@ -3,10 +3,10 @@
   "scripts": {
     "build": "FLECKS_ENV_FLECKS_SERVER_start=0 npm run build:only",
     "build:only": "flecks build",
-    "debug": "DEBUG=*,-babel* npm run dev",
+    "debug": "DEBUG=*,-babel*,-eslint* npm run dev",
     "dev": "npm run -- build:only -h",
     "repl": "npx flecks repl --rlwrap",
-    "start": "DEBUG=@flecks*,flecks*,-@flecks/core/flecks* npm run dev"
+    "start": "DEBUG=@flecks/*,-*:silly npm run dev"
   },
   "dependencies": {
     "@flecks/core": "^2.0.0",
