@@ -27,7 +27,7 @@ export default async function flecksDocusaurus() {
           title: 'flecks',
           logo: {
             alt: 'flecks logo',
-            src: 'flecks.png',
+            src: 'flecks-textless.png',
           },
           items: [
             {
@@ -39,7 +39,7 @@ export default async function flecksDocusaurus() {
         },
         footer: {
           style: 'dark',
-          copyright: `Copyright © ${new Date().getFullYear()} cha0s. Built with Docusaurus.`,
+          copyright: `Copyright © ${new Date().getFullYear()} cha0s. Built with flecks and Docusaurus.`,
         },
       }),
   };

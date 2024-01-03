@@ -31,6 +31,9 @@
 - [ ] @babel/register@7.18.x has a bug
 - [ ] `$flecks/db/sequelize` should be `$flecks/db.sequelize`
 - [x] `url()` in styles breaks HMR
+- [ ] 2 underscores for `FLECKS_ENV` variables
+- [ ] flecks add
+
 # Next
 
 # Webpack 5

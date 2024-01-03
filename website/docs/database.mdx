@@ -1,6 +1,6 @@
 ---
 title: Database
-description: How to define models and connect to a database.
+description: Define models and connect to a database.
 ---
 
 import Create from '@site/helpers/create';
@@ -9,7 +9,7 @@ import InstallPackage from '@site/helpers/install-package';
 # Database
 
 flecks provides database connection through [Sequelize](https://sequelize.org/) and database
-server instances through either flat SQLite databases or [Docker](https://www.docker.com/)ized
+server instances through either flat SQLite databases or [Docker](https://www.docker.com/)-ized
 database servers.
 
 ## Install and configure
@@ -24,7 +24,7 @@ Now in your new application directory, install `@flecks/db`:
 
 Then, add the fleck to your `build/flecks.yml`:
 
-```yml
+```yml title="build/flecks.yml"
 '@flecks/core': {}
 // highlight-next-line
 '@flecks/db': {}
@@ -57,7 +57,7 @@ First, create a fleck in your application:
 
 Then, add it to `build/flecks.yml`:
 
-```yml
+```yml title="build/flecks.yml"
 '@flecks/core': {}
 '@flecks/db': {}
 '@flecks/server': {}
@@ -67,7 +67,7 @@ Then, add it to `build/flecks.yml`:
 
 Now, let's hop into `packages/tags/src/index.js` and add a hook implementation:
 
-```javascript
+```javascript title="packages/tags/src/index.js"
 export const hooks = {
   '@flecks/db/server.models': (flecks) => {
     const {Model, Types} = flecks.fleck('@flecks/db/server');
@@ -116,10 +116,61 @@ Now, `npm start` your application and you will see that line looks different:
   @flecks/core/flecks gathered '@flecks/db/server.models': [ 'Tags' ] +0ms
 ```
 
-Our model is recognized! Let's do something with it. Edit `packages/tags/src/index.js` again like
+Our model is recognized!
+
+## Gathering models
+
+If we stuff all of our models into that file, things are going to start getting unwieldy. Let's
+create a `src/models` directory in our `packages/tags` fleck and add a `tags.js` source file with the following
+code:
+
+```javascript title="packages/tags/src/models/tags.js"
+export default (flecks) => {
+  const {Model, Types} = flecks.fleck('@flecks/db/server');
+  return class Tags extends Model {
+    static get attributes() {
+      return {
+        key: {
+          type: Types.STRING,
+          allowNull: false,
+        },
+        value: {
+          type: Types.STRING,
+          allowNull: false,
+        },
+      };
+    }
+  };
+}
+```
+
+Notice that this looks very similar to how we defined the model above, but this time we're only
+returning the class.
+
+Now, hop over to `src/index.js` and let's rewrite the hook implementation:
+
+```javascript title="packages/tags/src/index.js"
+export const hooks = {
+  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+}
+```
+
+We're passing the path to our models directory to `require.context` which is then passed to
+`Flecks.provide`. This is completely equivalent to our original code, but now we can add more
+models and keep things tidy.
+
+:::info
+
+For a more detailed treatment of gathering in flecks, see [the gathering guide](#todo).
+
+:::
+
+## Working with models
+
+Let's do something with it. Edit `packages/tags/src/index.js` again like
 so:
 
-```javascript
+```javascript title="packages/tags/src/index.js"
 export const hooks = {
   // highlight-start
   '@flecks/server.up': async (flecks) => {
@@ -127,9 +178,7 @@ export const hooks = {
     console.log('There were', await Tags.count(), 'tags.');
   },
   // highlight-end
-  '@flecks/db/server.models': (flecks) => {
-    // Omitted for clarity...
-  },
+  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
 }
 ```
 
@@ -141,7 +190,7 @@ There were 0 tags.
 
 Not very interesting. Let's add some, but only if there aren't any tags yet:
 
-```javascript
+```javascript title="packages/tags/src/index.js"
 export const hooks = {
   '@flecks/server.up': async (flecks) => {
     const {Tags} = flecks.get('$flecks/db.models');
@@ -154,9 +203,7 @@ export const hooks = {
     console.log('There are', await Tags.count(), 'tags.');
     // highlight-end
   },
-  '@flecks/db/server.models': (flecks) => {
-    // Omitted for clarity...
-  },
+  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
 }
 ```
 
@@ -179,7 +226,7 @@ This means that the database will only persist as long as the life of your appli
 restart it, you'll get a fresh new database every time. Obviously, this isn't very helpful for
 any real purpose. Let's make a change to our `build/flecks.yml`:
 
-```yml
+```yml title="build/flecks.yml"
 '@flecks/core': {}
 '@flecks/db': {}
 // highlight-start
@@ -240,7 +287,7 @@ Let's add another fleck to our project:
 
 Configure `build/flecks.yml`:
 
-```yml
+```yml title="build/flecks.yml"
 '@flecks/core': {}
 '@flecks/db': {}
 // highlight-start
@@ -358,7 +405,7 @@ Then, take a look in the `dist` directory. You'll see a file there called `docke
 `@flecks/docker` automatically emits this file when you build your application for production to
 make container orchestration easier. Let's take a look:
 
-```yml
+```yml title="dist/docker-compose.yml"
 version: '3'
 services:
   flecks_app:
@@ -393,3 +440,8 @@ docker-compose -f dist/docker-compose.yml up
 
 This demonstrates that your application is now being orchestrated by Docker Compose and is
 chugging right along!
+
+## Going further
+
+`@flecks/db` uses Sequelize under the hood. You can dive into
+[their documentation](https://sequelize.org/docs/v6/getting-started/) to learn even more.

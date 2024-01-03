@@ -1,7 +1,9 @@
 ---
 title: Command-line interface
-description: Document your project.
+description: Use built-in commands and write your own.
 ---
+
+import Create from '@site/helpers/create';
 
 # Command-line interface
 
@@ -56,5 +58,178 @@ starter configuration will also be copied to your `build` directory, if it doesn
 ## Your commands
 
 You can implement your own command by implementing
-[`@flecks/core.commands`](/docs/flecks/@flecks/dox/hooks#fleckscorecommands) in your fleck.
+[`@flecks/core.commands`](/docs/flecks/@flecks/dox/hooks#fleckscorecommands) in your fleck. Let's
+run through the process.
+
+### Implement <code>@flecks/core&#8203;.commands</code>
+
+First, create an application:
+
+<Create type="app" pkg="cli_test" />
+
+Move into the new project and create a fleck:
+
+<Create type="app" pkg="fortune" />
+
+We're going to be creating a fortune teller command that will tell you when you will find love.
+:heart_eyes:
+
+Edit your `build/flecks.yml` and add your new fleck:
+
+```yml
+'@flecks/core': {}
+'@flecks/server': {}
+// highlight-next-line
+'@cli_test/fortune:./packages/fortune/src': {}
+```
+
+### Create a command that takes an option
+
+Now, edit `packages/fortune/src/index.js` to look like this:
+
+```javascript
+export const hooks = {
+  '@flecks/core.commands': () => ({
+    fortune: {
+      options: [
+        ['-n, --be-nice', 'be nice'],
+      ],
+      description: 'find your true love',
+      action: async ({beNice}) => {
+        console.log(`It will be ${Math.floor(Math.random() * 10) + 2} days until you meet your true love!`);
+        if (!beNice) {
+          console.log('You might also stub your toe.');
+        }
+      },
+    },
+  }),
+};
+```
+
+### Inspect and invoke your command
+
+Now, invoke flecks like so:
+
+```bash
+npx flecks --help
+```
+
+You will see among the commands listed:
+
+```
+  fortune [options]         find your true love
+```
+
+Run the command with the `--help` option:
+
+```bash
+npx flecks fortune --help
+```
+
+You will see this output:
+
+```
+Usage: flecks fortune [options]
+
+find your true love
+
+Options:
+  -n, --be-nice  be nice
+```
+
+Let's try it!
+
+```bash
+npx flecks fortune --be-nice
+```
+
+You will see something like:
+
+```
+It will be 11 days until you meet your true love!
+```
+
+How about without our option:
+
+```bash
+npx flecks fortune
+```
+
+You will see something like:
+
+```
+It will be 7 days until you meet your true love!
+You might also stub your toe.
+```
+
+### Define arguments
+
+You can also define arguments in addition to options. Let's add an argument that takes the user's
+name to personalize the output:
+
+```javascript
+export const hooks = {
+  // highlight-start
+  '@flecks/core.commands': (program, flecks) => {
+    const {Argument} = flecks.fleck('@flecks/core/server');
+    return {
+    // highlight-end
+      fortune: {
+        // highlight-start
+        args: [
+          new Argument('[name]', 'your name')
+        ],
+        // highlight-end
+        options: [
+          ['-n, --be-nice', 'be nice'],
+        ],
+        description: 'find your true love',
+        // highlight-next-line
+        action: async (name = 'person', {beNice}) => {
+          // highlight-next-line
+          console.log(`Hey, ${name}. It will be ${Math.floor(Math.random() * 10) + 2} days until you meet your true love!`);
+          if (!beNice) {
+            console.log('You might also stub your toe.');
+          }
+        },
+      },
+    // highlight-start
+    };
+  },
+  // highlight-end
+};
+```
+
+Notice that we added the argument to... the arguments.
+
+Try it again:
+
+```bash
+npx flecks fortune --be-nice
+```
+
+You will see e.g.:
+
+```
+Hey, person. It will be 7 days until you meet your true love!
+```
+
+That's because we set the default name to `'person'` in the code above. Let's try passing in a
+name:
+
+```bash
+npx flecks fortune cha0s
+```
+
+Now the output looks like:
+
+```
+Hey, cha0s. It will be 7 days until you meet your true love!
+You might also stub your toe.
+```
+
+### Going further
+
+flecks uses [Commander.js](https://github.com/tj/commander.js#quick-start) under the hood to build its CLI.
+It might be worth checking out their documentation for any more advanced usage.
 
