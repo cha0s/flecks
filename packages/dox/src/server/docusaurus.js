@@ -38,15 +38,6 @@ export function configDefaults() {
       }],
     ],
     themeConfig: {
-      // navbar: {
-      //   title: 'flecks',
-      //   logo: {
-      //     alt: 'flecks logo',
-      //     src: 'img/flecks.svg',
-      //   },
-      //   items: [
-      //   ],
-      // },
       footer: {
         style: 'dark',
         copyright: 'Built with flecks and Docusaurus.',
