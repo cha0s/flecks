@@ -20,7 +20,7 @@ const {
 export default (program, flecks) => {
   const {Argument} = flecks.fleck('@flecks/core/server');
   const commands = {};
-  const siteDirArgument = new Argument('[siteDir]', 'Docusaurus directory', 'website');
+  const siteDirArgument = new Argument('[siteDir]', 'Docusaurus directory');
   siteDirArgument.defaultValue = 'website';
   commands.docusaurus = {
     description: 'create a documentation website for this project',
