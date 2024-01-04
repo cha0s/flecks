@@ -3,8 +3,6 @@ title: Creating a fleck
 description: A fleck is a module but also so much more.
 ---
 
-import Create from '@site/helpers/create';
-
 If you are following along from the previous getting started
 [configuration page](./configuration), you have an application with 3 flecks:
 
@@ -54,7 +52,9 @@ This isn't any hard requirement, it's only a suggestion.
 
 Let's create our little fleck:
 
-<Create type="fleck" pkg="say-hello" />
+```bash
+npx create-fleck say-hello
+```
 
 After some output, you'll find your new fleck at `packages/say-hello`. Let's inspect our
 `build/flecks.yml`:

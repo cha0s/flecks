@@ -11,12 +11,22 @@ flecks has a command-line interface for building, linting, testing, and so much 
 
 ## Built-in commands
 
+### `add`
+
+Add a fleck to your application.
+
+```
+Usage: flecks add [options] <fleck>
+
+Arguments:
+  fleck       fleck
+```
+
 ### `build`
 
 Build a target in your application.
 
-```bash
-flecks build --help
+```
 Usage: flecks build [options] [target]
 
 Arguments:
@@ -30,19 +40,19 @@ Options:
 
 ### `lint`
 
-```bash
-Usage: flecks lint [options]
+Run linter.
 
-run linter
+```
+Usage: flecks lint [options]
 ```
 
 ### `docusaurus`
 (Implemented by `@flecks/dox`)
 
-```bash
-Usage: flecks docusaurus [options] <subcommand> [siteDir]
+Create a documentation website for this project.
 
-create a documentation website for this project
+```
+Usage: flecks docusaurus [options] <subcommand> [siteDir]
 
 Arguments:
   subcommand  Docusaurus command to run (choices: "build", "create", "start")
@@ -52,8 +62,8 @@ Arguments:
 The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
 
 The `create` subcommand will create a documentation website starter template for you at `siteDir`
-which defaults to `website` if `siteDir` doesn't already exist. A `docusaurus.config.js`
-starter configuration will also be copied to your `build` directory, if it doesn't already exist.
+if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`
+starter configuration will also be copied to your `build` directory if it doesn't already exist.
 
 ## Your commands
 
@@ -69,19 +79,12 @@ First, create an application:
 
 Move into the new project and create a fleck:
 
-<Create type="app" pkg="fortune" />
+```bash
+npx create-fleck fortune
+```
 
 We're going to be creating a fortune teller command that will tell you when you will find love.
 :heart_eyes:
-
-Edit your `build/flecks.yml` and add your new fleck:
-
-```yml
-'@flecks/core': {}
-'@flecks/server': {}
-// highlight-next-line
-'@cli_test/fortune:./packages/fortune/src': {}
-```
 
 ### Create a command that takes an option
 
@@ -224,7 +227,7 @@ npx flecks fortune cha0s
 Now the output looks like:
 
 ```
-Hey, cha0s. It will be 7 days until you meet your true love!
+Hey, cha0s. It will be 4 days until you meet your true love!
 You might also stub your toe.
 ```
 

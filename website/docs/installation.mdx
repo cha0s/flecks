@@ -12,6 +12,24 @@ creation utility:
 
 <Create type="app" pkg="hello-world" />
 
+:::tip
+
+You may also inspect the utility command options:
+
+<Create type="app" pkg="--help" />
+
+```
+Usage: create-app [options] <app>
+
+Arguments:
+  app                         name of the app to create
+
+Options:
+  --package-manager <binary>  package manager binary (choices: "npm", "bun", "yarn", default: "npm")
+```
+
+:::
+
 ## Start your application
 
 Now, move into your new project directory and run `npm start`. You'll see a bunch of output, but the
