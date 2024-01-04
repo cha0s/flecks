@@ -5,13 +5,9 @@
     "url": "https://github.com/cha0s/flecks.git"
   },
   "scripts": {
-    "bfp": "for i in $(npx lerna exec pwd); do cd $i; bfp || break; done; cd ../..",
     "build": "lerna run build",
-    "clean": "for i in $(npx lerna exec pwd); do cd $i; rm -rf yarn.lock node_modules; yarn; done; cd ../..",
     "lint": "lerna run lint",
-    "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org",
-    "refresh": "npm run clean && npm run bfp",
-    "test": "lerna run test --no-bail -- --silent"
+    "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org"
   },
   "devDependencies": {
     "@flecks/core": "^2.0.3",
