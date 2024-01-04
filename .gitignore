@@ -117,6 +117,8 @@ dist
 
 # local
 /yarn.lock
+/bun.lockb
 
 # package-locals
 /packages/*/yarn.lock
+/packages/*/bun.lockb

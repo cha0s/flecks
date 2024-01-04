@@ -1,19 +1,21 @@
 import {stat} from 'fs/promises';
-import {join, normalize} from 'path';
+import {join} from 'path';
 
-import {build, move, validate} from '@flecks/create-app/server';
-import {Flecks} from '@flecks/core/server';
-import {confirm} from '@inquirer/prompts';
+import {
+  build,
+  move,
+  testDestination,
+  validate,
+} from '@flecks/create-app/server';
+import {Flecks, program} from '@flecks/core/server';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const cwd = normalize(FLECKS_CORE_ROOT);
-
-const checkIsMonorepo = async (cwd) => {
+const checkIsMonorepo = async () => {
   try {
-    await stat(join(cwd, 'packages'));
+    await stat(join(FLECKS_CORE_ROOT, 'packages'));
     return true;
   }
   catch (error) {
@@ -24,9 +26,9 @@ const checkIsMonorepo = async (cwd) => {
   }
 };
 
-const monorepoScope = async (cwd) => {
+const monorepoScope = async () => {
   try {
-    const {name} = __non_webpack_require__(join(cwd, 'package.json'));
+    const {name} = __non_webpack_require__(join(FLECKS_CORE_ROOT, 'package.json'));
     const [scope] = name.split('/');
     return scope;
   }
@@ -38,45 +40,57 @@ const monorepoScope = async (cwd) => {
   }
 };
 
-const target = async (name) => {
-  const {errors} = validate(name);
+const target = async (fleck) => {
+  const {errors} = validate(fleck);
   if (errors) {
     throw new Error(`@flecks/create-fleck: invalid fleck name: ${errors.join(', ')}`);
   }
-  const parts = name.split('/');
+  const parts = fleck.split('/');
   let pkg;
   let scope;
   if (1 === parts.length) {
-    pkg = name;
-    if (await checkIsMonorepo(cwd)) {
-      scope = await monorepoScope(cwd);
+    pkg = fleck;
+    if (await checkIsMonorepo()) {
+      scope = await monorepoScope();
     }
     return [scope, pkg];
   }
   return parts;
 };
 
-const create = async (flecks) => {
-  const isMonorepo = await checkIsMonorepo(cwd);
-  const [scope, pkg] = await target(process.argv[2]);
-  const path = scope && isMonorepo ? join(cwd, 'packages') : cwd;
-  const name = [scope, pkg].filter((e) => !!e).join('/');
-  const destination = join(path, pkg);
-  await move(name, join(__dirname, 'template'), destination, 'fleck', flecks);
-  await build(destination);
-  if (isMonorepo && await confirm({message: 'Add fleck to `build/flecks.yml`?'})) {
-    await Flecks.addFleckToYml(name, pkg);
-  }
-};
-
 (async () => {
-  const flecks = await Flecks.bootstrap();
-  try {
-    await create(flecks);
-  }
-  catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error.message);
-    process.exitCode = 1;
-  }
+  program.argument('<fleck>', 'name of the fleck to create');
+  program.option('--no-add', 'do not add an entry to `build/flecks.yml`');
+  program.action(async (fleck, {add}) => {
+    try {
+      const flecks = await Flecks.bootstrap();
+      const {packageManager} = flecks.get('@flecks/core/server');
+      const isMonorepo = await checkIsMonorepo();
+      const [scope, pkg] = await target(fleck);
+      const name = [scope, pkg].filter((e) => !!e).join('/');
+      const destination = join(
+        join(...[FLECKS_CORE_ROOT].concat(isMonorepo ? ['packages'] : [])),
+        pkg,
+      );
+      if (!await testDestination(destination)) {
+        const error = new Error(
+          `@flecks/create-fleck: destination '${destination} already exists: aborting`,
+        );
+        error.code = 129;
+        throw error;
+      }
+      const fileTree = await move(name, join(__dirname, 'template'), 'fleck', flecks);
+      // Write the tree.
+      await fileTree.writeTo(destination);
+      await build(packageManager, destination);
+      if (isMonorepo && add) {
+        await Flecks.addFleckToYml(name, pkg);
+      }
+    }
+    catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Creation failed:', error);
+    }
+  });
+  await program.parseAsync(process.argv);
 })();

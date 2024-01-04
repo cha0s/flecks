@@ -21,7 +21,9 @@ export {dump as dumpYml, load as loadYml} from 'js-yaml';
 export {
   Argument,
   default as commands,
+  Option,
   processCode,
+  program,
   spawnWith,
 } from './commands';
 export {default as Flecks} from './flecks';
@@ -101,6 +103,10 @@ export const hooks = {
      * Build targets to exclude from ESLint.
      */
     'eslint.exclude': [],
+    /**
+     * The package manager used for tasks.
+     */
+    packageManager: 'npm',
     /**
      * Build targets to profile with `webpack.debug.ProfilingPlugin`.
      */

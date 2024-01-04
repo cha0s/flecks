@@ -3,11 +3,14 @@ import {
 } from 'fs/promises';
 import {basename, dirname, join} from 'path';
 
-import {JsonStream, transform} from '@flecks/core/server';
+import {
+  JsonStream,
+  transform,
+} from '@flecks/core/server';
 
 import FileTree from './tree';
 
-const testDestination = async (destination) => {
+export const testDestination = async (destination) => {
   try {
     await stat(destination);
     return false;
@@ -20,14 +23,7 @@ const testDestination = async (destination) => {
   }
 };
 
-export default async (name, source, destination, type, flecks) => {
-  if (!await testDestination(destination)) {
-    const error = new Error(
-      `@flecks/create-fleck: destination '${destination} already exists: aborting`,
-    );
-    error.code = 129;
-    throw error;
-  }
+export default async (name, source, type, flecks) => {
   const fileTree = await FileTree.loadFrom(source);
   // Renamed to avoid conflicts.
   const {files} = fileTree;
@@ -56,6 +52,5 @@ export default async (name, source, destination, type, flecks) => {
     .forEach((path) => {
       fileTree.pipe(path, new JsonStream.PrettyPrint());
     });
-  // Write the tree.
-  await fileTree.writeTo(destination);
+  return fileTree;
 };

@@ -27,8 +27,7 @@
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",
-    "@flecks/create-app": "^2.0.3",
-    "@inquirer/prompts": "^3.3.0"
+    "@flecks/create-app": "^2.0.3"
   },
   "devDependencies": {
     "@flecks/fleck": "^2.0.3"

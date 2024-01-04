@@ -17,7 +17,7 @@ const debug = D('@flecks/core/commands');
 const debugSilly = debug.extend('silly');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
-export {Argument};
+export {Argument, Option, program} from 'commander';
 
 export const processCode = (child) => new Promise((resolve, reject) => {
   child.on('error', reject);
@@ -45,45 +45,46 @@ export const spawnWith = (cmd, opts = {}) => {
 };
 
 export default (program, flecks) => {
+  const {packageManager} = flecks.get('@flecks/core/server');
   const commands = {
     add: {
       args: [
-        new Argument('<fleck>>', 'fleck'),
+        new Argument('<fleck>', 'fleck'),
       ],
       description: 'add a fleck to your application',
       action: async (fleck, opts) => {
-        const {
-          noYarn,
-        } = opts;
-        await processCode(
-          noYarn
-            ? spawn('npm', ['install', fleck], {stdio: 'inherit'})
-            : spawn('yarn', ['add', fleck], {stdio: 'inherit'}),
-        );
+        const args = [];
+        if ('yarn' === packageManager) {
+          args.push('yarn', ['add', fleck]);
+        }
+        else {
+          args.push(packageManager, ['install', fleck]);
+        }
+        args.push({stdio: 'inherit'});
+        await processCode(spawn(...args));
         await Flecks.addFleckToYml(fleck);
       },
-      options: [
-        ['--no-yarn', 'use npm instead of yarn'],
-      ],
     },
     clean: {
       description: 'remove node_modules, lock file, build artifacts, then reinstall',
       action: (opts) => {
-        const {
-          noYarn,
-        } = opts;
         rimraf.sync(join(flecksRoot, 'dist'));
         rimraf.sync(join(flecksRoot, 'node_modules'));
-        if (noYarn) {
-          rimraf.sync(join(flecksRoot, 'package-lock.json'));
-          return spawn('npm', ['install'], {stdio: 'inherit'});
+        switch (packageManager) {
+          case 'yarn':
+            rimraf.sync(join(flecksRoot, 'yarn.lock'));
+            break;
+          case 'bun':
+            rimraf.sync(join(flecksRoot, 'bun.lockb'));
+            break;
+          case 'npm':
+            rimraf.sync(join(flecksRoot, 'package-lock.json'));
+            break;
+          default:
+            break;
         }
-        rimraf.sync(join(flecksRoot, 'yarn.lock'));
-        return spawn('yarn', [], {stdio: 'inherit'});
+        return spawn(packageManager, ['install'], {stdio: 'inherit'});
       },
-      options: [
-        ['--no-yarn', 'use npm instead of yarn'],
-      ],
     },
   };
   const targets = flatten(flecks.invokeFlat('@flecks/core.targets'));
