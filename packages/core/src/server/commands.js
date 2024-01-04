@@ -7,6 +7,7 @@ import flatten from 'lodash.flatten';
 import rimraf from 'rimraf';
 
 import D from '../debug';
+import Flecks from './flecks';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -45,6 +46,26 @@ export const spawnWith = (cmd, opts = {}) => {
 
 export default (program, flecks) => {
   const commands = {
+    add: {
+      args: [
+        new Argument('<fleck>>', 'fleck'),
+      ],
+      description: 'add a fleck to your application',
+      action: async (fleck, opts) => {
+        const {
+          noYarn,
+        } = opts;
+        await processCode(
+          noYarn
+            ? spawn('npm', ['install', fleck], {stdio: 'inherit'})
+            : spawn('yarn', ['add', fleck], {stdio: 'inherit'}),
+        );
+        await Flecks.addFleckToYml(fleck);
+      },
+      options: [
+        ['--no-yarn', 'use npm instead of yarn'],
+      ],
+    },
     clean: {
       description: 'remove node_modules, lock file, build artifacts, then reinstall',
       action: (opts) => {

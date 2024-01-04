@@ -1,8 +1,8 @@
-import {readFile, stat, writeFile} from 'fs/promises';
+import {stat} from 'fs/promises';
 import {join, normalize} from 'path';
 
 import {build, move, validate} from '@flecks/create-app/server';
-import {dumpYml, Flecks, loadYml} from '@flecks/core/server';
+import {Flecks} from '@flecks/core/server';
 import {confirm} from '@inquirer/prompts';
 
 const {
@@ -65,11 +65,7 @@ const create = async (flecks) => {
   await move(name, join(__dirname, 'template'), destination, 'fleck', flecks);
   await build(destination);
   if (isMonorepo && await confirm({message: 'Add fleck to `build/flecks.yml`?'})) {
-    const key = `${name}:${join('.', 'packages', pkg)}`;
-    const ymlPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
-    let yml = loadYml(await readFile(ymlPath));
-    yml = Object.fromEntries(Object.entries(yml).concat([[key, {}]]));
-    await writeFile(ymlPath, dumpYml(yml, {forceQuotes: true, sortKeys: true}));
+    await Flecks.addFleckToYml(name, pkg);
   }
 };
 

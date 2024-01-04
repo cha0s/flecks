@@ -3,6 +3,7 @@ import {
   realpathSync,
   statSync,
 } from 'fs';
+import {readFile, writeFile} from 'fs/promises';
 import {
   basename,
   dirname,
@@ -10,10 +11,12 @@ import {
   isAbsolute,
   join,
   resolve,
+  sep,
 } from 'path';
 
 import babelmerge from 'babel-merge';
 import enhancedResolve from 'enhanced-resolve';
+import {dump as dumpYml, load as loadYml} from 'js-yaml';
 import {addHook} from 'pirates';
 
 import D from '../debug';
@@ -38,6 +41,14 @@ export default class ServerFlecks extends Flecks {
     this.loadBuildConfigs();
     this.resolver = options.resolver || {};
     this.rcs = options.rcs || {};
+  }
+
+  static async addFleckToYml(fleck, path) {
+    const key = [fleck].concat(path ? `.${sep}${join('packages', path, 'src')}` : []).join(':');
+    const ymlPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
+    let yml = loadYml(await readFile(ymlPath));
+    yml = Object.fromEntries(Object.entries(yml).concat([[key, {}]]));
+    await writeFile(ymlPath, dumpYml(yml, {sortKeys: true}));
   }
 
   get aliasedConfig() {

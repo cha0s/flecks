@@ -32,7 +32,7 @@
 - [ ] `$flecks/db/sequelize` should be `$flecks/db.sequelize`
 - [x] `url()` in styles breaks HMR
 - [ ] 2 underscores for `FLECKS_ENV` variables
-- [ ] flecks add
+- [x] flecks add
 
 # Next
 
