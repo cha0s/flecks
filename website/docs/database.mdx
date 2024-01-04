@@ -402,9 +402,9 @@ services:
       context: ..
       dockerfile: dist/Dockerfile
     environment:
-      FLECKS_ENV_FLECKS_DOCKER_SERVER_enabled: 'false'
+      FLECKS_ENV__flecks_docker_server__enabled: 'false'
       // highlight-next-line
-      FLECKS_ENV_FLECKS_DB_SERVER_host: sequelize
+      FLECKS_ENV__flecks_db_server__host: sequelize
     volumes:
       - ../node_modules:/var/www/node_modules
   // highlight-start

@@ -118,7 +118,7 @@ export default (program, flecks) => {
           {
             env: {
               ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
-              ...(hot ? {FLECKS_ENV_FLECKS_SERVER_hot: 'true'} : {}),
+              ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
             },
           },
         );

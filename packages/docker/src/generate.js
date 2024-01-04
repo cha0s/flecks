@@ -29,7 +29,7 @@ export const generateComposeConfig = async (flecks) => {
         dockerfile: 'dist/Dockerfile',
       },
       environment: {
-        FLECKS_ENV_FLECKS_DOCKER_SERVER_enabled: 'false',
+        FLECKS_ENV__flecks_docker_server__enabled: 'false',
       },
       volumes: [
         '../node_modules:/var/www/node_modules',
@@ -46,7 +46,7 @@ export const generateComposeConfig = async (flecks) => {
               services[key] = {image: config.image, environment: {}, ...config.extra};
             });
           return [
-            `FLECKS_ENV_${flecks.constructor.environmentalize(fleck)}`,
+            `FLECKS_ENV__${flecks.constructor.environmentalize(fleck)}`,
             config,
           ];
         }),
@@ -61,7 +61,7 @@ export const generateComposeConfig = async (flecks) => {
               Object.entries(environment || {})
                 .forEach(([key, value]) => {
                   const [realKey, realService] = 'app' === configService
-                    ? [`${prefix}_${key}`, appServiceName]
+                    ? [`${prefix}__${key}`, appServiceName]
                     : [key, configService];
                   services[realService].environment[realKey] = value;
                 });

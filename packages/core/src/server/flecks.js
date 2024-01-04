@@ -167,10 +167,9 @@ export default class ServerFlecks extends Flecks {
 
   static environmentalize(path) {
     return path
-      // - `@flecks/core` -> `FLECKS_CORE`
+      // - `@flecks/core` -> `flecks_core`
       .replace(/[^a-zA-Z0-9]/g, '_')
-      .replace(/_*(.*)_*/, '$1')
-      .toUpperCase();
+      .replace(/_*(.*)_*/, '$1');
   }
 
   exts() {
@@ -468,25 +467,17 @@ export default class ServerFlecks extends Flecks {
     const keys = Object.keys(process.env);
     const seen = [];
     Object.keys(this.flecks)
-      // Reverse-sorting means e.g. `@flecks/core/server` comes before `@flecks/core`.
-      // We want to select the most specific match.
-      //
-      // `FLECKS_ENV_FLECKS_CORE_SERVER_variable` is ambiguous as it can equate to both:
-      // - `flecks.set('@flecks/core.SERVER.variable');`
-      // - `flecks.set('@flecks/core/server.variable');`
-      //
-      // The latter will take precedence.
       .sort((l, r) => (l < r ? 1 : -1))
       .forEach((fleck) => {
-        const prefix = `FLECKS_ENV_${this.constructor.environmentalize(fleck)}`;
+        const prefix = `FLECKS_ENV__${this.constructor.environmentalize(fleck)}`;
         keys
-          .filter((key) => key.startsWith(`${prefix}_`) && -1 === seen.indexOf(key))
+          .filter((key) => key.startsWith(`${prefix}__`) && -1 === seen.indexOf(key))
           .map((key) => {
             seen.push(key);
             debug('reading environment from %s...', key);
             return [key, process.env[key]];
           })
-          .map(([key, value]) => [key.slice(prefix.length + 1), value])
+          .map(([key, value]) => [key.slice(prefix.length + 2), value])
           .map(([subkey, value]) => [subkey.split('_'), value])
           .forEach(([path, jsonOrString]) => {
             try {

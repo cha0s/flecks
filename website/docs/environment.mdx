@@ -24,7 +24,7 @@ fleck name and the key. The template literal for such a transformation would loo
 ### Syntax
 
 ```javascript
-`FLECKS_ENV_${Flecks.environmentalize(path)}_${key}`
+`FLECKS_ENV__${Flecks.environmentalize(path)}__${key}`
 ```
 
 :::note
@@ -33,7 +33,7 @@ Notice the `environmentalize` transformation: `@flecks/core`'s `id` key is set u
 following variable:
 
 ```bash
-FLECKS_ENV_FLECKS_CORE_id=foobar
+FLECKS_ENV__flecks_core__id=foobar
 ```
 
 <details>
@@ -43,32 +43,12 @@ FLECKS_ENV_FLECKS_CORE_id=foobar
       return path
         // - `@flecks/core` -> `FLECKS_CORE`
         .replace(/[^a-zA-Z0-9]/g, '_')
-        .replace(/_*(.*)_*/, '$1')
-        .toUpperCase();
+        .replace(/_*(.*)_*/, '$1');
     }
   ```
 </details>
 
-
-
-Also note that the key is still case-sensitive. This is because configuration keys are
+Also note that the fleck path and key are still case-sensitive. This is because they are
 user-defined.
 
 :::
-
-## Resolution Order
-
-There is a possibility for ambiguity arising from the fact that flecks may be contained within a
-subpath of another fleck. For instance:
-
-```bash
-FLECKS_ENV_FLECKS_CORE_SERVER_variable=something
-```
-
-Could be configuring a key at `@flecks/core/server.variable`, but it could also be configuring a
-key at `@flecks/core.SERVER.variable`.
-
-To resolve this ambiguity, candidate paths are reverse-sorted alphabetically, so that the longer
-fleck path will be preferred.
-
-In the above case, it is `@flecks/core/server.variable` which receives the configuration.

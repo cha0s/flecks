@@ -13,7 +13,7 @@ export const hooks = {
      * See: http://expressjs.com/en/resources/middleware/cookie-parser.html
      */
     cookieSecret: (
-      'Set the FLECKS_ENV_FLECKS_USER_SESSION_SERVER_cookieSecret environment variable!'
+      'Set the FLECKS_ENV__flecks_user_session_server__cookieSecret environment variable!'
     ),
   }),
   '@flecks/web/server.request.route': (flecks) => {
