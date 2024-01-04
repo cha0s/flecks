@@ -52,7 +52,7 @@ export default (program, flecks) => {
         new Argument('<fleck>', 'fleck'),
       ],
       description: 'add a fleck to your application',
-      action: async (fleck, opts) => {
+      action: async (fleck) => {
         const args = [];
         if ('yarn' === packageManager) {
           args.push('yarn', ['add', fleck]);
@@ -67,7 +67,7 @@ export default (program, flecks) => {
     },
     clean: {
       description: 'remove node_modules, lock file, build artifacts, then reinstall',
-      action: (opts) => {
+      action: () => {
         rimraf.sync(join(flecksRoot, 'dist'));
         rimraf.sync(join(flecksRoot, 'node_modules'));
         switch (packageManager) {

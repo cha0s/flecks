@@ -61,7 +61,9 @@ const target = async (fleck) => {
 (async () => {
   program.argument('<fleck>', 'name of the fleck to create');
   program.option('--no-add', 'do not add an entry to `build/flecks.yml`');
-  program.action(async (fleck, {add}) => {
+  program.option('--no-alias', 'do not alias the fleck in `build/flecks.yml`');
+  program.action(async (fleck, o) => {
+    const {alias, add} = o;
     try {
       const flecks = await Flecks.bootstrap();
       const {packageManager} = flecks.get('@flecks/core/server');
@@ -84,7 +86,7 @@ const target = async (fleck) => {
       await fileTree.writeTo(destination);
       await build(packageManager, destination);
       if (isMonorepo && add) {
-        await Flecks.addFleckToYml(name, pkg);
+        await Flecks.addFleckToYml(...[name].concat(alias ? pkg : []));
       }
     }
     catch (error) {

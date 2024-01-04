@@ -1,4 +1,6 @@
 '@flecks/core': {}
+'@flecks/core/server':
+  packageManager: yarn
 '@flecks/create-app': {}
 '@flecks/create-fleck': {}
 '@flecks/db': {}

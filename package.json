@@ -10,12 +10,12 @@
     "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@flecks/core": "^2.0.3",
+    "@flecks/core": "*",
     "@flecks/create-app": "*",
     "@flecks/create-fleck": "*",
     "@flecks/db": "*",
     "@flecks/docker": "*",
-    "@flecks/dox": "^2.0.3",
+    "@flecks/dox": "*",
     "@flecks/electron": "*",
     "@flecks/fleck": "*",
     "@flecks/governor": "*",
