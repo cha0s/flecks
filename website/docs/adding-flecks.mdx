@@ -1,0 +1,41 @@
+---
+title: Adding flecks
+description: Add flecks to your application to extend its functionality.
+---
+
+# Adding flecks
+
+`@flecks/web` is a fleck that builds and serves a webpage. You can add it to your application
+using flecks:
+
+```bash
+npx flecks add @flecks/web
+```
+
+Now, if you run `npm start`, you'll see a line in the output:
+
+```
+  @flecks/web/server/http HTTP server up @ 0.0.0.0:32340!
+```
+
+## Finally... a white page?
+
+If you visit `localhost:32340` in your browser, you should now see... a blank white page! Don't fret
+though; if you open the devtools in your browser, you will see a little messaging from your
+application that will look something like:
+
+```
+[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.
+[HMR] Waiting for update signal from WDS...
+flecks client v2.0.3 loading runtime...
+```
+
+This is a good sign! This means we successfully added a web server with HMR enabled by default.
+Oh, the possibilities...
+
+## Proceed with the hooking
+
+How does flecks know to start the web server when the application starts? Great question! This is
+accomplished through the use of hooks. You'll see how to configure that hook in the next section.
+
+For now, we'll learn how to create our own fleck and do a little hooking of our own. Take that, dad!
