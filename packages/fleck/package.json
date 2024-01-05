@@ -11,9 +11,6 @@
   "version": "2.0.3",
   "author": "cha0s",
   "license": "MIT",
-  "bin": {
-    "flecks": "./cli.js"
-  },
   "scripts": {
     "build": "flecks build",
     "lint": "flecks lint",
