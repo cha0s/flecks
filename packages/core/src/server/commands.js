@@ -63,7 +63,7 @@ export default (program, flecks) => {
       },
     },
     clean: {
-      description: 'remove node_modules, lock file, build artifacts, then reinstall',
+      description: 'remove node_modules, lock file, and build artifacts',
       action: () => {
         rimraf.sync(join(flecksRoot, 'dist'));
         rimraf.sync(join(flecksRoot, 'node_modules'));
@@ -80,7 +80,6 @@ export default (program, flecks) => {
           default:
             break;
         }
-        return spawn(packageManager, ['install'], {stdio: 'inherit'});
       },
     },
   };
@@ -88,14 +87,14 @@ export default (program, flecks) => {
   if (targets.length > 0) {
     commands.build = {
       args: [
-        new Argument('[target]', 'target').choices(targets),
+        new Argument('[target]', 'build target').choices(targets),
       ],
       options: [
         ['-d, --no-production', 'dev build'],
         ['-h, --hot', 'build with hot module reloading'],
         ['-w, --watch', 'watch for changes'],
       ],
-      description: 'build',
+      description: 'build a target in your application',
       action: (target, opts) => {
         const {
           hot,
