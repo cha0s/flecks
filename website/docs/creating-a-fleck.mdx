@@ -4,30 +4,27 @@ description: A fleck is a module but also so much more.
 ---
 
 If you are following along from the previous getting started
-[configuration page](./configuration), you have an application with 3 flecks:
+[configuration page](./configuration), you have an application with 2 flecks:
 
 - `@flecks/core`
 - `@flecks/server`
-- `@flecks/web`
 
 <details>
-  <summary>About that "3 flecks" thing...</summary>
+  <summary>About that "2 flecks" thing...</summary>
 
-  Actually, your server application has 6 flecks at this point:
+  Actually, your server application has **4 flecks** at this point:
 
   - `@flecks/core`
   - `@flecks/core/server`
   - `@flecks/server`
   - `@flecks/server/server`
-  - `@flecks/web`
-  - `@flecks/web/server`
 
   flecks will load the `[...]/server` fleck under any fleck that is loaded on the server. This is
   also the case when using `@flecks/web` which will automatically load `[...]/client` flecks
   which are only loaded in the browser. We'll be exploring this specifically in the next section.
   If you're intersted in diving deeper, see [the platforms concept page](#todo).
 
-  Some frameworks make it a little cheesier to work with isomorphic code, but the flecks
+  Some frameworks make it a little more opaque to work with isomorphic code, but the flecks
   philosophy is that visibility is believability: you'll have to be explicit about which code
   runs where.
 </details>
@@ -63,7 +60,6 @@ After some output, you'll find your new fleck at `packages/say-hello`. Let's ins
 '@flecks/core':
   id: 'hello_world'
 '@flecks/server': {}
-'@flecks/web': {}
 // highlight-next-line
 '@hello-world/say-hello:./packages/say-hello/src': {}
 ```
@@ -107,68 +103,53 @@ There is a source file at `packages/say-hello/src/index.js` but for now it's emp
 out a bit:
 
 ```javascript title="packages/say-hello/src/index.js"
-exports.hooks = {
-  '@flecks/web/client.up': async () => {
-    window.document.body.append('hello world');
+export const hooks = {
+  '@flecks/server.up': async () => {
+    process.stdout.write('  hello server\n');
   },
 };
 ```
 
-Now, restart your application and visit your website. Glorious, isn't it?
-
-## Everything so far... plus Electron!
-
-Let's add another core fleck. flecks ships with a core fleck `@flecks/electron`. This runs your
-application inside of an instance of [Electron](https://www.electronjs.org/). You'll add the fleck:
+Now, restart your application:
 
 ```bash
-npx flecks add @flecks/electron
+npm run start
 ```
 
-Then you'll update your `build/flecks.yml` like so:
+You will be greeted by a line in the output:
 
-```yml
-'@flecks/core':
-  id: 'hello_world'
-'@flecks/electron': {}
-// highlight-start
-'@flecks/server':
-  up:
-    - '...'
-    - '@flecks/web'
-    - '@flecks/electron'
-// highlight-end
-'@flecks/web': {}
-'@hello-world/say-hello:./packages/say-hello/src': {}
+```terminal
+  hello server
 ```
 
-### ~~flecking~~ pecking order
+### flecks injection
 
-We added some configuration to `@flecks/server`. The `up` key configures the order in which flecks
-are initialized when the server comes up. We make sure `@flecks/web` serves a webpage before
-`@flecks/electron` tries to visit it.
+Hook implementations may receive arguments. After any arguments, the `flecks` instance is always
+passed.
 
-:::tip
+`@flecks/server.up` doesn't pass any arguments, so the `flecks` instance is the first argument.
+Let's see how to use the instance to read some configuration:
 
-`'...'` just means "everything else": if any other flecks implement that hook then they will run
-here. It is valid to provide entries both before and after `'...'`.
-
-The default configuration of
-`@flecks/server.up` is simply:
-
-```yml
-'@flecks/server':
-  up:
-    - '...'
+```javascript title="packages/say-hello/src/index.js"
+export const hooks = {
+  '@flecks/server.up': async (flecks) => {
+    const {id} = flecks.get('@flecks/core');
+    process.stdout.write(`  hello server: ID ${id}\n`);
+  },
+};
 ```
 
-However in this case the order of hook execution is undefined. That's why we configure it
-explicitly.
+This time, you will see:
+
+```terminal
+  hello server: ID hello-world
+```
+
+:::note
+
+...or whatever your application's ID is. We're assuming you're following along from
+[the configuration page](./configuration).
 
 :::
 
-Finally `npm start` and you will see something like this:
-
-![An image of our simple hello world application running inside an Electron window](./flecks-electron.png)
-
-Isn't it beautiful? :relieved:
+Next, we'll add and interact with some of the flecks shipped by default.

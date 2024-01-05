@@ -18,37 +18,35 @@ so:
 ```
 
 When running your application in different execution environments (say, production) you may want to
-override configuration such as this. This is done by using the a prefix followed by the
-fleck name and the key. The template literal for such a transformation would look like:
+override configuration such as this. This is done by like so:
 
 ### Syntax
 
 ```javascript
-`FLECKS_ENV__${Flecks.environmentalize(path)}__${key}`
+`FLECKS_ENV__${Flecks.environmentalize(fleck)}__${key}`
 ```
 
-:::note
+:::tip
 
-Notice the `environmentalize` transformation: `@flecks/core`'s `id` key is set using the
-following variable:
+As an example, `@flecks/core`'s `id` key is set using the following variable:
 
 ```bash
 FLECKS_ENV__flecks_core__id=foobar
 ```
 
 <details>
-  <summary>`Flecks.environmentalize`</summary>
+  <summary>`Flecks.environmentalize` implementation</summary>
   ```javascript
     static environmentalize(path) {
       return path
-        // - `@flecks/core` -> `FLECKS_CORE`
+        // - `@flecks/core` -> `flecks_core`
         .replace(/[^a-zA-Z0-9]/g, '_')
         .replace(/_*(.*)_*/, '$1');
     }
   ```
 </details>
 
-Also note that the fleck path and key are still case-sensitive. This is because they are
+Note that the fleck path and key are still case-sensitive. This is because they are
 user-defined.
 
 :::

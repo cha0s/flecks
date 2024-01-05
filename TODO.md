@@ -21,7 +21,7 @@
 - [x] Rename all hooks to dot-first notation; rewrite `lookupFlecks()`.
 - [x] ensureUniqueReduction moved into invokeMerge
 - [x] `bootstrap({without: ['badplatform']})` should be handled by passing `{platforms: ['!badplatform']}`
-- [ ] static documentation site generator
+- [x] documentation site generator
 - [ ] config validation
 - [ ] hints for hook types
 - [ ] user redux server hydrate fails if no user in req
@@ -31,7 +31,7 @@
 - [ ] @babel/register@7.18.x has a bug
 - [ ] `$flecks/db/sequelize` should be `$flecks/db.sequelize`
 - [x] `url()` in styles breaks HMR
-- [ ] 2 underscores for `FLECKS_ENV` variables
+- [x] 2 underscores for `FLECKS_ENV` variables
 - [x] flecks add
 
 # Next

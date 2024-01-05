@@ -11,8 +11,8 @@ export default {
       items: [
         'installation',
         'configuration',
-        'adding-a-fleck',
         'creating-a-fleck',
+        'adding-flecks',
       ],
     },
     {

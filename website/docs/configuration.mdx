@@ -5,8 +5,8 @@ description: Configure `build/flecks.yml` and your application.
 
 # Configuration
 
-You have a flecks application! ...but it doesn't do much. This is because a flecks application is
-composed of individual flecks and by default, your application will have only two flecks:
+You have a flecks application! ...but it doesn't do much. By default, your application will have
+only two flecks:
 `@flecks/core` and `@flecks/server`. Your `build/flecks.yml` file will look like this:
 
 ```yml title="build/flecks.yml"
@@ -20,24 +20,22 @@ For a deep dive of configurable core flecks, see
 
 ## `build/flecks.yml`
 
-A good first configuration step is to set the ID of your application.
+Your flecks application stores its build configuration in a directory located at `build`. By
+default, there is a single file located there: `flecks.yml`. This is where all the individual
+flecks are configured.
 
-Your application's ID is configured at the `id` key of `@flecks/core`'s configuration. To set your
-application's ID to `hello_world`, update your `build/flecks.yml` to look like this:
+Your application's ID is configured at the `id` key of `@flecks/core`'s configuration:
 
 ```yml title="build/flecks.yml"
 // highlight-start
 '@flecks/core':
-  id: 'hello_world'
+  id: 'hello-world'
 // highlight-end
 '@flecks/server': {}
 ```
 
-## Adding more
+Notice that the ID was set automatically by the app creation utility.
 
-If you were studious enough to take a peek at [the generated configuration page](/docs/flecks/@flecks/dox/config)
-above, you may have noticed that there were a lot more flecks there than just the two in our
-application.
+## Moving forward
 
-For instance, there is a `@flecks/web` fleck that turns your little old server application into one
-that can build and serve a webpage. We'll see how to add it in the next section.
+In the next section, we'll look at how to create a fleck.
