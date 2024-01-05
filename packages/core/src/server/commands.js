@@ -31,16 +31,13 @@ export const spawnWith = (cmd, opts = {}) => {
   debug("spawning: '%s'", cmd.join(' '));
   debugSilly('with options: %O', opts);
   const child = spawn(cmd[0], cmd.slice(1), {
+    stdio: 'inherit',
     ...opts,
     env: {
       ...process.env,
-      ...(opts.env || {}),
+      ...opts.env,
     },
   });
-  process.stderr.setMaxListeners(100);
-  process.stdout.setMaxListeners(100);
-  child.stderr.pipe(process.stderr);
-  child.stdout.pipe(process.stdout);
   return child;
 };
 
