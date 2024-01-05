@@ -6,7 +6,7 @@ import normalize from '../normalize';
 import createIntercom from './create-intercom';
 import ServerSocket from './socket';
 
-const debug = D('@flecks/socket/server/sockets');
+const debug = D('@flecks/socket/server');
 const debugSilly = debug.extend('silly');
 
 export default class SocketServer {
@@ -72,7 +72,7 @@ export default class SocketServer {
     const {req} = serverSocket;
     req.flecks = this.flecks;
     req.intercom = createIntercom(this, 'socket');
-    req.sockets = this;
+    req.server = this;
     this.flecks.invokeSequentialAsync('@flecks/socket/server.connect', serverSocket);
   }
 
