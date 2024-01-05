@@ -19,6 +19,7 @@ import enhancedResolve from 'enhanced-resolve';
 import {dump as dumpYml, load as loadYml} from 'js-yaml';
 import {addHook} from 'pirates';
 
+import compose from '../compose';
 import D from '../debug';
 import Flecks from '../flecks';
 import R from '../require';
@@ -124,13 +125,13 @@ export default class ServerFlecks extends Flecks {
     const rcs = this.loadRcs(resolver);
     this.installCompilers(rcs, resolver);
     // Load the flecks.
-    const flecks = Object.fromEntries(
-      Object.keys(resolver)
-        .map((path) => [path, R(this.resolve(resolver, path))]),
-    );
-    return new ServerFlecks({
+    const entries = Object.keys(resolver).map((path) => [path, R(this.resolve(resolver, path))]);
+    // Flecks mixins.
+    const mixins = entries.map(([, M]) => M.hooks?.['@flecks/core.mixin']).filter((e) => e);
+    const Class = compose(...mixins)(ServerFlecks);
+    return new Class({
       config,
-      flecks,
+      flecks: Object.fromEntries(entries),
       platforms,
       rcs,
       resolver,
