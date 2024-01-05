@@ -1,4 +1,4 @@
-import {compose, D, Flecks} from '@flecks/core';
+import {compose, D, Flecks as BaseFlecks} from '@flecks/core';
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 const {version} = require('@flecks/web/package.json');
@@ -56,8 +56,8 @@ const {version} = require('@flecks/web/package.json');
   const mixins = Object.entries(runtime.flecks)
     .map(([, M]) => M.hooks?.['@flecks/core.mixin'])
     .filter((e) => e);
-  const Class = compose(...mixins)(Flecks);
-  const flecks = new Class(runtime);
+  const Flecks = compose(...mixins)(BaseFlecks);
+  const flecks = new Flecks(runtime);
   window.flecks = flecks;
   try {
     await Promise.all(flecks.invokeFlat('@flecks/core.starting'));

@@ -24,12 +24,18 @@ export const hooks = {
       ttl: 30,
     },
   }),
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithGovernor extends Flecks {
+
+      governor = {}
+
+    }
+  ),
   '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
   '@flecks/web/server.request.route': (flecks) => {
     const {web} = flecks.get('@flecks/governor/server');
-    const limiter = flecks.get('$flecks/governor.web.limiter');
     return async (req, res, next) => {
-      const {Ban} = flecks.get('$flecks/db.models');
+      const {Ban} = flecks.db.Models;
       try {
         await Ban.check(req);
       }
@@ -43,7 +49,7 @@ export const hooks = {
         res.status(403).send(`<pre>${Ban.format([ban])}</pre>`);
       };
       try {
-        await limiter.consume(req.ip);
+        await flecks.governor.web.consume(req.ip);
         next();
       }
       catch (error) {
@@ -57,20 +63,18 @@ export const hooks = {
   '@flecks/server.up': async (flecks) => {
     if (flecks.fleck('@flecks/web/server')) {
       const {web} = flecks.get('@flecks/governor/server');
-      const limiter = await createLimiter(
+      flecks.governor.web = await createLimiter(
         flecks,
         {
           keyPrefix: '@flecks/governor.web.request.route',
           ...web,
         },
       );
-      flecks.set('$flecks/governor.web.limiter', limiter);
     }
     if (flecks.fleck('@flecks/socket/server')) {
-      const {[ByType]: Packets} = flecks.get('$flecks/socket.packets');
-      const limiters = Object.fromEntries(
+      flecks.governor.packet = Object.fromEntries(
         await Promise.all(
-          Object.entries(Packets)
+          Object.entries(flecks.socket.Packets[ByType])
             .filter(([, Packet]) => Packet.limit)
             .map(async ([name, Packet]) => (
               [
@@ -83,23 +87,20 @@ export const hooks = {
             )),
         ),
       );
-      flecks.set('$flecks/governor.packet.limiters', limiters);
       const {socket} = flecks.get('@flecks/governor/server');
-      const limiter = await createLimiter(
+      flecks.governor.socket = await createLimiter(
         flecks,
         {
           keyPrefix: '@flecks/governor.socket.request.socket',
           ...socket,
         },
       );
-      flecks.set('$flecks/governor.socket.limiter', limiter);
     }
   },
-  '@flecks/socket/server.request.socket': (flecks) => {
-    const limiter = flecks.get('$flecks/governor.socket.limiter');
-    return async (socket, next) => {
+  '@flecks/socket/server.request.socket': (flecks) => (
+    async (socket, next) => {
       const {handshake: req} = socket;
-      const {Ban} = flecks.get('$flecks/db.models');
+      const {Ban} = flecks.db.Models;
       try {
         await Ban.check(req);
       }
@@ -112,7 +113,7 @@ export const hooks = {
         socket.disconnect();
       };
       try {
-        await limiter.consume(req.ip);
+        await flecks.governor.socket.consume(req.ip);
         next();
       }
       catch (error) {
@@ -120,8 +121,8 @@ export const hooks = {
         await Ban.create(Ban.fromRequest(req, keys, ttl));
         next(error);
       }
-    };
-  },
+    }
+  ),
   '@flecks/socket.packets.decorate': (Packets, flecks) => (
     Object.fromEntries(
       Object.entries(Packets).map(([keyPrefix, Packet]) => [

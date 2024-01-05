@@ -4,8 +4,7 @@ export default (flecks, [name, Packet]) => {
 
     constructor(...args) {
       super(...args);
-      const {[name]: limiter} = flecks.get('$flecks/governor.packet.limiters');
-      this.limit = limiter;
+      this.limit = flecks.governor.packet[name];
     }
 
     static async validate(packet, socket) {

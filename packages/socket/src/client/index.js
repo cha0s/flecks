@@ -1,9 +1,22 @@
 import SocketClient from './socket';
 
 export const hooks = {
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithSocket extends Flecks {
+
+      constructor(...args) {
+        super(...args);
+        if (!this.socket) {
+          this.socket = {};
+        }
+        this.socket.client = undefined;
+      }
+
+    }
+  ),
   '@flecks/web/client.up': (flecks) => {
     const socket = new SocketClient(flecks);
-    flecks.set('$flecks/socket.socket', socket);
+    flecks.socket.client = socket;
     socket.connect();
     socket.listen();
   },

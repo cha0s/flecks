@@ -6,7 +6,7 @@ import {HistoryRouter as ReduxHistoryRouter} from 'redux-first-history/rr6';
 export const hooks = {
   '@flecks/react.providers': (req, flecks) => (
     flecks.fleck('@flecks/redux')
-      ? [ReduxHistoryRouter, {history: createReduxHistory(flecks.get('$flecks/redux.store'))}]
+      ? [ReduxHistoryRouter, {history: createReduxHistory(flecks.redux)}]
       : [HistoryRouter, {history}]
   ),
 };

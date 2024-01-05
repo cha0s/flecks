@@ -12,7 +12,7 @@ export default class Socket {
   }
 
   listen() {
-    const {[ByType]: PacketsByType} = this.flecks.get('$flecks/socket.packets');
+    const {[ByType]: PacketsByType} = this.flecks.socket.Packets;
     const Packets = Object.entries(PacketsByType);
     for (let i = 0; i < Packets.length; i++) {
       const [type, Packet] = Packets[i];

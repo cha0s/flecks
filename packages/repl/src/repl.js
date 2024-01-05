@@ -61,7 +61,7 @@ export async function createReplServer(flecks) {
     }
   }
   const socket = join(tmpdir(), 'flecks', id, 'repl', `${id}-${Date.now()}.sock`);
-  flecks.set('$flecks/repl.socket', socket);
+  flecks.repl = socket;
   await new Promise((resolve) => {
     netServer.listen(socket, resolve);
   });

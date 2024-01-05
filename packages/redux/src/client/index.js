@@ -5,13 +5,20 @@ import configureStore, {createReducer} from '../store';
 import localStorageEnhancer from './local-storage';
 
 export const hooks = {
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithRedux extends Flecks {
+
+      redux;
+
+    }
+  ),
   '@flecks/react.providers': async (req, flecks) => {
     const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
     const reducer = createReducer(flecks, slices);
     // Hydrate from server.
     const {preloadedState} = flecks.get('@flecks/redux/client');
     const store = await configureStore(flecks, reducer, {preloadedState});
-    flecks.set('$flecks/redux.store', store);
+    flecks.redux = store;
     return [Provider, {store}];
   },
   '@flecks/redux.store': ({enhancers}) => {

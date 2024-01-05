@@ -35,7 +35,6 @@ export default class SocketServer {
       ...await this.flecks.invokeMergeAsync('@flecks/socket.server'),
       serveClient: false,
     });
-    this.flecks.set('$flecks/socket.io', this.io);
     this.io.use(this.makeSocketMiddleware());
     this.io.on('@flecks/socket.intercom', this.localIntercom);
     this.flecks.invoke('@flecks/socket.server.io', this);

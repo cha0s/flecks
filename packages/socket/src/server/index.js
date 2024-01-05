@@ -1,25 +1,30 @@
 import createIntercom from './create-intercom';
 import SocketServer from './server';
 
-const flecksServers = new WeakMap();
-
-export const server = (flecks) => flecksServers.get(flecks);
-
 export const hooks = {
   '@flecks/web/server.request.socket': (flecks) => (req, res, next) => {
-    req.intercom = createIntercom(server(flecks), 'web');
+    req.intercom = createIntercom(flecks.socket.server, 'web');
     next();
   },
   '@flecks/web/server.up': async (httpServer, flecks) => {
     const server = new SocketServer(httpServer, flecks);
-    flecksServers.set(flecks, server);
+    flecks.socket.server = server;
     await server.connect();
   },
-  '@flecks/repl.context': (flecks) => ({
-    Packets: flecks.get('$flecks/socket.packets'),
-    socketServer: server(flecks),
-  }),
   '@flecks/socket.server': ({config: {'@flecks/core': {id}}}) => ({
     path: `/${id}/socket.io`,
   }),
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithSocketServer extends Flecks {
+
+      constructor(...args) {
+        super(...args);
+        if (!this.socket) {
+          this.socket = {};
+        }
+        this.socket.server = undefined;
+      }
+
+    }
+  ),
 };

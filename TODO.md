@@ -29,7 +29,6 @@
 - [ ] redux store provider fails if not in request
 - [ ] add building to publish process ...
 - [ ] @babel/register@7.18.x has a bug
-- [ ] `$flecks/db/sequelize` should be `$flecks/db.sequelize`
 - [x] `url()` in styles breaks HMR
 - [x] 2 underscores for `FLECKS_ENV` variables
 - [x] flecks add

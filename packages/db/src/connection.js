@@ -50,7 +50,7 @@ export async function createDatabaseConnection(flecks) {
       });
     }
   }
-  const Models = flecks.get('$flecks/db.models')[ByType];
+  const Models = flecks.db.Models[ByType];
   await register(Models, sequelize);
   debug('synchronizing...');
   await sequelize.sync();

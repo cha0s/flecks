@@ -2,7 +2,7 @@ import {Transform} from 'stream';
 
 const config = async (flecks, req) => {
   const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
-  const {config} = flecks.get('$flecks/web.flecks');
+  const {config} = flecks.web.flecks;
   const reducedConfig = Object.keys(config)
     .filter((path) => !path.startsWith('$'))
     .filter((path) => !path.endsWith('/server'))

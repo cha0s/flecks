@@ -29,7 +29,7 @@ export const hooks = {
     ];
   },
   '@flecks/repl.commands': (flecks) => {
-    const {User} = flecks.get('$flecks/db.models');
+    const {User} = flecks.db.Models;
     return {
       createUser: async (spec) => {
         const [email, maybePassword] = spec.split(' ', 2);
@@ -54,7 +54,7 @@ export const hooks = {
     passport.use(new LocalStrategy(
       {usernameField: 'email'},
       async (email, password, fn) => {
-        const {User} = flecks.get('$flecks/db.models');
+        const {User} = flecks.db.Models;
         try {
           const user = await User.findOne({where: {email}});
           fn(undefined, user && await user.validatePassword(password) && user);

@@ -13,7 +13,7 @@ export const hooks = {
       debugSilly('@flecks/web/server.request.route: passport.session()');
       passport.session()(req, res, () => {
         if (!req.user) {
-          const {User} = flecks.get('$flecks/db.models');
+          const {User} = flecks.db.Models;
           req.user = new User();
           req.user.id = 0;
         }
@@ -34,7 +34,7 @@ export const hooks = {
   '@flecks/server.up': (flecks) => {
     passport.serializeUser((user, fn) => fn(null, user.id));
     passport.deserializeUser(async (id, fn) => {
-      const {User} = flecks.get('$flecks/db.models');
+      const {User} = flecks.db.Models;
       try {
         fn(undefined, await User.findByPk(id));
       }
@@ -63,7 +63,7 @@ export const hooks = {
       debugSilly('@flecks/socket/server.request.socket: passport.session()');
       passport.session()(socket.handshake, undefined, async () => {
         if (!socket.handshake.user) {
-          const {User} = flecks.get('$flecks/db.models');
+          const {User} = flecks.db.Models;
           socket.handshake.user = new User();
           socket.handshake.user.id = 0;
         }

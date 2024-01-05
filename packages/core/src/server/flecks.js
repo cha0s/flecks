@@ -128,8 +128,8 @@ export default class ServerFlecks extends Flecks {
     const entries = Object.keys(resolver).map((path) => [path, R(this.resolve(resolver, path))]);
     // Flecks mixins.
     const mixins = entries.map(([, M]) => M.hooks?.['@flecks/core.mixin']).filter((e) => e);
-    const Class = compose(...mixins)(ServerFlecks);
-    return new Class({
+    const MixedServerFlecks = compose(...mixins)(ServerFlecks);
+    return new MixedServerFlecks({
       config,
       flecks: Object.fromEntries(entries),
       platforms,

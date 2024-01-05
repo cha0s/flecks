@@ -68,7 +68,7 @@ export default (flecks) => class BundlePacket extends PacketClass {
         packedPacket.writeUInt8(buffer.readUInt8(caret++), i++);
       }
       // Lookup packet.
-      const {[packetId]: Packet} = flecks.get('$flecks/socket.packets');
+      const {[packetId]: Packet} = flecks.socket.Packets;
       res.push(new Packet(Packet.decode(packedPacket)));
     }
     return res;

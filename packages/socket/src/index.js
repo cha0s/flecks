@@ -8,11 +8,21 @@ export * from './hooks';
 export {Packet, Packer, ValidationError} from './packet';
 
 export const hooks = {
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithSocket extends Flecks {
+
+      constructor(...args) {
+        super(...args);
+        if (!this.socket) {
+          this.socket = {};
+        }
+        this.socket.Packets = {};
+      }
+
+    }
+  ),
   '@flecks/core.starting': (flecks) => {
-    flecks.set('$flecks/socket.packets', flecks.gather(
-      '@flecks/socket.packets',
-      {check: badPacketsCheck},
-    ));
+    flecks.socket.Packets = flecks.gather('@flecks/socket.packets', {check: badPacketsCheck});
   },
   '@flecks/web.config': async (
     req,

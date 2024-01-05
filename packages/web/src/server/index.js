@@ -183,6 +183,16 @@ export const hooks = {
      */
     trust: false,
   }),
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithWeb extends Flecks {
+
+      web = {
+        flecks: undefined,
+        server: undefined,
+      }
+
+    }
+  ),
   '@flecks/core.starting': (flecks) => {
     debug('bootstrapping flecks...');
     const webFlecks = Flecks.bootstrap({
@@ -190,7 +200,7 @@ export const hooks = {
       platforms: ['client', '!server'],
     });
     debug('bootstrapped');
-    flecks.set('$flecks/web.flecks', webFlecks);
+    flecks.web.flecks = webFlecks;
   },
   '@flecks/core.targets': (flecks) => [
     'web',
@@ -208,7 +218,4 @@ export const hooks = {
   ],
   '@flecks/web/server.stream.html': inlineConfig,
   '@flecks/server.up': (flecks) => createHttpServer(flecks),
-  '@flecks/repl.context': (flecks) => ({
-    httpServer: flecks.get('$flecks/web/server.instance'),
-  }),
 };

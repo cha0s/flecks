@@ -32,7 +32,7 @@ export const createHttpServer = async (flecks) => {
   app.set('trust proxy', trust);
   const httpServer = createServer(app);
   httpServer.app = app;
-  flecks.set('$flecks/web/server.instance', httpServer);
+  flecks.web.server = httpServer;
   // Compression.                                         heheh
   app.use(compression({level: 'production' === NODE_ENV ? 6 : 9}));
   // Socket connection.

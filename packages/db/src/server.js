@@ -44,21 +44,32 @@ export const hooks = {
   }),
   '@flecks/core.hmr.gathered': (gathered, hook, flecks) => {
     if ('@flecks/db/server.models' === hook) {
-      register(gathered, flecks.get('$flecks/db/sequelize'));
+      register(gathered, flecks.db.sequelize);
     }
   },
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithDb extends Flecks {
+
+      db = {
+        Models: {},
+        $$sequelize: undefined,
+        get sequelize() {
+          return this.$$sequelize;
+        },
+        set sequelize(sequelize) {
+          this.$$sequelize = sequelize;
+          this.transaction = sequelize.transaction.bind(sequelize);
+        },
+        transaction: () => {},
+      }
+
+    }
+  ),
   '@flecks/core.starting': (flecks) => {
-    flecks.set('$flecks/db.models', flecks.gather(
-      '@flecks/db/server.models',
-      {typeProperty: 'name'},
-    ));
+    flecks.db.Models = flecks.gather('@flecks/db/server.models', {typeProperty: 'name'});
   },
   '@flecks/docker.containers': containers,
   '@flecks/server.up': async (flecks) => {
-    flecks.set('$flecks/db/sequelize', await createDatabaseConnection(flecks));
+    flecks.db.sequelize = await createDatabaseConnection(flecks);
   },
-  '@flecks/repl.context': (flecks) => ({
-    Models: flecks.get('$flecks/db.models'),
-    sequelize: flecks.get('$flecks/db/sequelize'),
-  }),
 };

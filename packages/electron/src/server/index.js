@@ -2,6 +2,8 @@ import {join} from 'path';
 
 import {banner} from '@flecks/core/server';
 
+const electron = __non_webpack_require__('electron');
+
 const {
   NODE_ENV,
 } = process.env;
@@ -9,7 +11,7 @@ const {
 let win;
 
 async function createWindow(flecks) {
-  const {BrowserWindow} = flecks.get('$flecks/electron');
+  const {BrowserWindow} = flecks.electron;
   const {browserWindowOptions} = flecks.get('@flecks/electron/server');
   win = new BrowserWindow(browserWindowOptions);
   await flecks.invokeSequentialAsync('@flecks/electron/server.window', win);
@@ -69,6 +71,13 @@ export const hooks = {
       }
     }
   },
+  '@flecks/core.mixin': (Flecks) => (
+    class FlecksWithElectron extends Flecks {
+
+      electron = electron.app ? electron : undefined;
+
+    }
+  ),
   '@flecks/electron/server.initialize': async (electron, flecks) => {
     electron.app.on('window-all-closed', () => {
       const {quitOnClosed} = flecks.get('@flecks/electron/server');
@@ -121,14 +130,6 @@ export const hooks = {
     },
   }),
   '@flecks/server.up': async (flecks) => {
-    // Local require because electron is kinda skittish.
-    // eslint-disable-next-line global-require
-    const electron = require('electron');
-    // `electron.app` will be undefined if we aren't running in an electron environment. Just bail.
-    if (!electron.app) {
-      return;
-    }
-    flecks.set('$flecks/electron', electron);
-    await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', electron);
+    await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', flecks.electron);
   },
 };
