@@ -23,14 +23,14 @@ const {version} = require('../package.json');
   debug('starting server...');
   // Make resolver.
   // Flecks mixins.
+  const resolver = BaseFlecks.makeResolver(config);
+  const rcs = BaseFlecks.loadRcs(resolver);
+  BaseFlecks.installCompilers(rcs, resolver);
   const flecks = await loadFlecks();
   const mixins = Object.entries(flecks)
     .map(([, M]) => M.hooks?.['@flecks/core.mixin'])
     .filter((e) => e);
   const Flecks = compose(...mixins)(BaseFlecks);
-  const resolver = Flecks.makeResolver(config);
-  const rcs = Flecks.loadRcs(resolver);
-  Flecks.installCompilers(rcs, resolver);
   global.flecks = new Flecks({
     config,
     flecks,

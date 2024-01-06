@@ -780,3 +780,6 @@ export default class Flecks {
   }
 
 }
+
+Flecks.get = get;
+Flecks.set = set;

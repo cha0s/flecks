@@ -117,8 +117,8 @@ export const hooks = {
   /**
    * Invoked when the application is starting. Use for order-independent initialization tasks.
    */
-  '@flecks/core.starting': (flecks) => {
-    flecks.set('$my-fleck/value', initializeMyValue());
+  '@flecks/core.starting': () => {
+    console.log('starting!');
   },
 
   /**

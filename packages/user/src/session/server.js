@@ -1,6 +1,6 @@
 import {D} from '@flecks/core';
 import express from 'express';
-import user.session from 'express-session';
+import expressSession from 'express-session';
 
 const debug = D('@flecks/user/session');
 const debugSilly = debug.extend('silly');
@@ -47,7 +47,7 @@ export const hooks = {
     };
   },
   '@flecks/server.up': async (flecks) => {
-    flecks.user.session = user.session({
+    flecks.user.session = expressSession({
       resave: false,
       sameSite: true,
       saveUninitialized: false,
