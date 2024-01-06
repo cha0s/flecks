@@ -231,7 +231,7 @@ import {Flecks} from '@flecks/core/server';
 export const hooks = {
   // highlight-start
   '@flecks/server.up': async (flecks) => {
-    const {Content, Tag} = flecks.get('$flecks/db.models');
+    const {Content, Tag} = flecks.db.Models;
     console.log(
       'There were',
       await Content.count(), 'pieces of content',
@@ -270,7 +270,7 @@ Not very interesting. Let's add some, but only if there aren't any yet:
 ```javascript title="packages/content/src/index.js"
 export const hooks = {
   '@flecks/server.up': async (flecks) => {
-    const {Tag} = flecks.get('$flecks/db.models');
+    const {Tag} = flecks.db.Models;
     console.log(
       'There were',
       await Content.count(), 'pieces of content',
