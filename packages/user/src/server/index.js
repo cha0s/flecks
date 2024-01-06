@@ -44,7 +44,7 @@ export const hooks = {
     });
   },
   '@flecks/socket.intercom': () => ({
-    '@flecks/user/users': async (sids, server) => {
+    '@flecks/user.users': async (sids, server) => {
       const sockets = await server.sockets();
       return sids
         .filter((sid) => sockets.has(sid))

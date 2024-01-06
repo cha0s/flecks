@@ -10,7 +10,7 @@ const decorate = compose(
   EventEmitter,
 );
 
-export default class SocketServer extends decorate(Socket) {
+export default class ServerSocket extends decorate(Socket) {
 
   constructor(flecks, socket) {
     super();
