@@ -12,11 +12,11 @@ export const hooks = {
    */
   '@flecks/socket.intercom': (req) => ({
     // This would have been called like:
-    // `const result = await req.intercom('someChannel', payload)`.
+    // `const result = await req.intercom('@my/fleck.key', payload)`.
     // `result` will be an `n`-length array, where `n` is the number of server instances. Each
     // element in the array will be the result of `someServiceSpecificInformation()` running
     // against that server instance.
-    someChannel: async (payload, server) => {
+    '@my/fleck.key': async (payload, server) => {
       return someServiceSpecificInformation();
     },
   }),
