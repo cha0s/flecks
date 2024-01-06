@@ -16,7 +16,10 @@
           "endsPattern": "compiled successfully$",
           "beginsPattern": "Compiling Client$",
         }
-      }
+      },
+      "runOptions": {
+        "runOn": "folderOpen",
+      },
     }
   ]
 }
