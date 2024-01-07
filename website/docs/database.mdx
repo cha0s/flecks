@@ -127,7 +127,7 @@ export const hooks = {
 }
 ```
 
-:::tip
+:::tip[Ess-Cue-Ell-ize-d]
 
 `@flecks/db` uses [Sequelize](https://sequelize.org/) under the hood. You can dive into
 [their documentation](https://sequelize.org/docs/v6/getting-started/) to learn even more.
@@ -213,7 +213,7 @@ We're passing the path to our models directory to `require.context` which is the
 `Flecks.provide`. This is completely equivalent to our original code, but now we can add more
 models by adding individual files in `packages/content/src/models` and keep things tidy.
 
-:::info
+:::info[Gather some more knowledge]
 
 For a more detailed treatment of gathering and providing in flecks, see
 [the gathering guide](#todo).
@@ -470,23 +470,23 @@ Awesome, we have a connection to a real postgres database!
 
   ```
   CONTAINER ID   IMAGE     COMMAND                 CREATED        STATUS        PORTS                                      NAMES
-  <SOME_ID>      postgres  "docker-entrypoint.s…"  5 minutes ago  Up 5 minutes  0.0.0.0:5432->5432/tcp, :::5432->5432/tcp  flecks_sequelize
+  <SOME_ID>      postgres  "docker-entrypoint.s…"  5 minutes ago  Up 5 minutes  0.0.0.0:5432->5432/tcp, :::5432->5432/tcp  db_test_sequelize
   ```
 
-  You'll see under the `NAMES` column heading, there is an entry called `flecks_sequelize`. That's
+  You'll see under the `NAMES` column heading, there is an entry called `db_test_sequelize`. That's
   our database! You can always
 
   ```
-  docker kill flecks_sequelize
+  docker kill db_test_sequelize
   ```
 
   to free up any resources being used. flecks keeps the containers running so that you get a nice
   fast application start.
 
-  :::note
+  :::note[What's in a name?]
 
   The container name is based off of `@flecks/core.id` which by default is `flecks`. If you change
-  your application's ID, the container name will be different.
+  your application's ID, the container name will be different!
 
   :::
 

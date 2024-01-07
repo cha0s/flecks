@@ -88,7 +88,7 @@ We added some configuration to `@flecks/server`. The `up` key configures the ord
 are initialized when the server comes up. We make sure `@flecks/web` serves a webpage before
 `@flecks/electron` tries to visit it.
 
-:::tip
+:::tip[...and Bob's your uncle]
 
 `'...'` just means "everything else": if any other flecks implement that hook then they will run
 here in an **undefined** order. It is valid to provide entries both before and after `'...'`, but

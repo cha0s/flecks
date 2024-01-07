@@ -54,7 +54,7 @@ socket.send(['Slap']);
 Notice that **a dehydrated packet is an array**. The first element of the array is the
 [gathered name](./gathering) of the packet.
 
-:::tip
+:::tip[Move the payload!]
 
 The second element is the `data` passed to the packet constructor. We'll see a couple more
 examples of sending dehydrated packets on this page to come.
@@ -202,7 +202,7 @@ The packet being responded to.
 
 The socket through which was sent the packet being responded to.
 
-:::note
+:::note[Full circle]
 
 The result from your `respond` acceptor method is serialized and transmitted and is ultimately the
 result of socket.send`:
@@ -253,7 +253,7 @@ The type of intercom call to make (e.g. `@flecks/user.users`).
 
 Arbitrary serializable data to send along with the intercom request.
 
-:::tip[Fun fact]
+:::tip[Putting the web in websockets]
 
 Intercom can also be called from an implementation of `@flecks/web/server.request.socket` through
 `req.intercom`.
@@ -288,9 +288,10 @@ export const hooks = {
 }
 ```
 
-:::note
+:::note[Is that really what I sound like?]
 
-Intercom **will** invoke the `@flecks/socket.intercom` implementation of the requesting node.
+Intercom **will** invoke the `@flecks/socket.intercom` implementation of the requesting node, not
+only the others.
 
 :::
 
