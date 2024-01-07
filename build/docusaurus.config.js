@@ -12,13 +12,17 @@ export default async function flecksDocusaurus() {
   /** @type {import('@docusaurus/types').Config} */
   const config = {
     ...defaults,
-    title: 'flecks',
-    tagline: 'not static',
-    favicon: 'flecks.png',
-    url: 'https://cha0s.github.io',
     baseUrl: '/flecks/',
+    favicon: 'flecks.png',
+    tagline: 'not static',
+    title: 'flecks',
+    url: 'https://cha0s.github.io',
+    markdown: {
+      mermaid: true,
+    },
     organizationName: 'cha0s', // Usually your GitHub org/user name.
     projectName: 'flecks', // Usually your repo name.
+    themes: ['@docusaurus/theme-mermaid'],
     themeConfig:
       /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
       ({

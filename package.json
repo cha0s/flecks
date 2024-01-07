@@ -28,5 +28,8 @@
     "@flecks/user": "*",
     "@flecks/web": "*",
     "lerna": "^7.4.2"
+  },
+  "dependencies": {
+    "@docusaurus/theme-mermaid": "3.0.1"
   }
 }
