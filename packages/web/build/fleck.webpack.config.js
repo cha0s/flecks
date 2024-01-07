@@ -18,7 +18,6 @@ module.exports = async (env, argv, flecks) => {
         {
           from: 'src/server/build/entry.js',
           to: 'server/build/entry.js',
-          info: { minimized: true },
         },
         {
           from: 'src/server/build/template.ejs',
