@@ -17,17 +17,10 @@ your project. In fact, this very website you're viewing now has been built with 
 
 ## Install `@flecks/dox`
 
-To get started, install `@flecks/dox` in your project:
+To get started, add `@flecks/dox` to your project:
 
-<InstallPackage pkg="@flecks/dox" />
-
-Then, add it to your `build/flecks.yml`:
-
-```yml
-'@flecks/core': {}
-// highlight-next-line
-'@flecks/dox': {}
-'@flecks/server': {}
+```bash
+npx flecks add @flecks/dox
 ```
 
 ## Spin up a starter website
@@ -81,7 +74,7 @@ It's only a starter template, of course. You'll want to pop over to
 [the Docusaurus guides page](https://docusaurus.io/docs/category/guides) to build out your new
 website. Have fun!
 
-## Production-ready
+:::tip[Ready to roll out!]
 
 When you're ready to build for production, just run
 
@@ -90,3 +83,5 @@ npx flecks docusaurus build
 ```
 
 After successfully building, your website files will be located at `dist/dox`.
+
+:::

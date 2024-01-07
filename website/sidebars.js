@@ -25,6 +25,7 @@ export default {
       items: [
         'cli',
         'environment',
+        'testing',
         'database',
         'sockets',
         'react',

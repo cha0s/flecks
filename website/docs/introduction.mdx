@@ -9,7 +9,7 @@ slug: /
 
 💸 Save time and money and don't duplicate effort. Instead, **lean on infrastructure that already exists** to solve your problems.
 
-💥 Ready for more? Use **advanced features** like [running flecks on your toaster](#todo)
+💥 Ready for more? Use **advanced features** like [inter-node socket communication](./sockets#intercom).
 
 🧐 Flecks is an **exceptionally-extensible fullstack application production system**. Its true purpose
 is to make application development a more joyful endeavor. Intelligent defaults combined with
@@ -22,23 +22,22 @@ flecks is built with supreme attention to the developer and end-user experience.
 
 - 🧩 **Small but pluggable**
   - The simplest application is two flecks, `core` and `server`: you don't pay for what you don't buy
-  - Endlessly configurable through built-in hooks and then your own
-- 🛠️ **Ready to build real applications**
-  - babel + Webpack 5
-  - [React](#todo)/[redux](#todo)
-  - [Database](/docs/database)
-  - [electron](#todo)
-  - [docker](#todo)
+  - Endlessly configurable through built-in [hooks](./flecks/@flecks/dox/hooks) and then your own
+  - Less exposed wires (though you could always help by [submitting a pull request](https://github.com/cha0s/flecks/compare)).
+- 🛠️ **Ready to build maintainable and performant production applications**
+  - [Documentation website](./documentation) generation for your project with no fuss
+  - [Write tests](./testing), run on server/in browser/...
+  - [React](#todo) / [redux](#todo)
+  - [Realtime sockets](./sockets) with lots of goodies like binary packing and packet dispatching
+  - [Databases](./database) using [Sequelize](https://sequelize.org/) to connect and [Docker](https://www.docker.com/) to easily persist
+  - [Electron](#todo)
+  - [Docker](#todo)
   - [REPL](#todo)
-  - [websockets](#todo) with lots of goodies like binary packing and packet dispatching out of the box
-  - [docusaurus](#todo): This documentation website you're looking at, [available to your own apps for your own documentation](/docs/documentation)
+  - babel + Webpack 5
 - 👷 **Developers, developers, developers**
-  - 🪄 Easy to create a fleck; no need to publish packages or use voodoo
-  - Write server or client (or both) tests, run on server/in browser/[your own custom platform](#todo)
+  - Easy to create a fleck; no need to publish packages or use voodoo
   - HMR (even on the server)
-  - [redux slices](https://redux-toolkit.js.org/api/createslice/) provided through hook!
-  - Easily spin up a database or redis server ([or...](/docs/flecks/@flecks/dox/hooks#flecksdockercontainers)) using [Docker](#todo) during development, and generate a `Dockerfile` and `docker-compose.yml` automatically for production
-  - Small hookable core means less exposed wires. You could always help by [submitting a pull request](https://github.com/cha0s/flecks/compare) though.
+  - Configured to get instantly up and running with a consistent path toward production
 
 Our shared goal—to help you quickly develop your application. We share our best practices to help you build your application right and well.
 
