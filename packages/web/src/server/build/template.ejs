@@ -12,6 +12,8 @@
   </head>
   <body>
     <div id="<%= htmlWebpackPlugin.options.appMountId %>"></div>
+    <!-- Prevent FOUC. -->
+    <script>window.document.querySelector('#root').style.display = 'none'</script>
     <script src="/flecks.config.js"></script>
     <%= htmlWebpackPlugin.tags.bodyTags %>
   </body>
