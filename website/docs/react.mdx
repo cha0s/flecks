@@ -2,3 +2,169 @@
 title: React
 description: Define root components, enable SSR, and more.
 ---
+
+# React
+
+## Getting started
+
+Let's create a little app to demonstrate how to use [React](https://react.dev/) in flecks:
+
+```
+create-app react-test
+```
+
+We'll add the `web` and `react` flecks:
+
+```
+npx flecks add @flecks/web
+npx flecks add @flecks/react
+```
+
+Finally, we'll create a fleck:
+
+```
+npx @flecks/create-fleck root
+```
+
+### Add a root component
+
+Let's implement a hook to add a component to `@flecks/react` root components:
+
+```js title="packages/root/src/index.js"
+import Component from './component';
+
+export const hooks = {
+  '@flecks/react.roots': () => Component,
+};
+```
+
+Let's also add our component source file:
+
+```jsx title="packages/root/src/component.jsx"
+import {React} from '@flecks/react';
+
+function Component() {
+  return <p>hello world (from React)</p>;
+}
+
+export default Component;
+```
+
+:::tip[Hey, where's my React?]
+
+You may notice we imported `React` from `@flecks/react` instead of `react`. This is provided as a
+convenience. flecks is a very dynamic system and it may also be possible to load multiple React
+versions on your page.
+
+Using `@flecks/react` makes sure your components are all using the same instance of `React`.
+
+:::
+
+Visit your website in your browser and you will see the hello world message!
+
+:::tip[Server-Side Rendering (SSR)]
+
+If you disable JavaScript in your browser and reload the page you will still see the message. This
+is because **Server-Side Rendering (SSR) is enabled by default**! If you don't want this, update your
+`build/flecks.yml`:
+
+```yml title="build/flecks.yml"
+'@flecks/core':
+  id: react-test
+// highlight-start
+'@flecks/react':
+  ssr: false
+// highlight-end
+'@flecks/server': {}
+'@flecks/web': {}
+'@react-test/root:./packages/root/src': {}
+```
+
+Now if you visit the page with JavaScript disabled, you will get a white page.
+
+:::
+
+### Hot module reloading
+
+This is cool, but you'll notice that if you edit your component, the changes are not immediately
+reflected on the page. This is because we have to add HMR support to our root component:
+
+```jsx title="packages/root/src/component.jsx"
+import {hot, React} from '@flecks/react';
+
+function Component() {
+  return <p>hello world (from React)</p>;
+}
+
+export default hot(module)(Component);
+```
+
+Now you can edit and your changes will be reflected on the page!
+
+:::tip
+
+Any components your root component uses will automatically be reloaded: only your root component
+requires the `hot` call.
+
+:::note[Help wanted]
+
+It is admittedly not so ergonomic to remember the `hot` call for your root components. React fast
+refresh would probably make this unnecessary, but it hasn't been implemented in flecks yet. We
+would very much appreciate a [pull request](https://github.com/cha0s/flecks/compare)!
+
+:::
+
+## Hooks
+
+### `useFlecks()`
+
+You may use this hook from your components to gain access to the `flecks` instance.
+
+Example:
+
+```jsx
+function Component() {
+  const flecks = useFlecks();
+  const id = flecks.get('@flecks/core.id');
+  return <p>Your application ID is {id}</p>;
+}
+```
+
+### `useEvent(object, eventName, fn)`
+
+#### `object`
+
+The event emitter to listen to
+
+#### `eventName`
+
+The name of the event to listen for.
+
+#### `fn`
+
+The event handler to call.
+
+Example:
+
+```jsx
+function Component() {
+  const flecks = useFlecks();
+  const {socket} = flecks;
+  const [isConnected, setIsConnected] = useState(false);
+  useEvent(socket, 'connect', () => {
+    setIsConnected(true);
+  });
+  useEvent(socket, 'disconnect', () => {
+    setIsConnected(false);
+  });
+  return <p>Socket is {isConnected ? 'connected' : 'disconnected'}.</p>;
+}
+```
+
+### `usePrevious(value)`
+
+#### `value`
+
+The value whose previous value we're interested in.
+
+See: https://blog.logrocket.com/accessing-previous-props-state-react-hooks/
