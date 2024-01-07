@@ -295,37 +295,30 @@ only the others.
 
 :::
 
+### Diagram
+
 ```mermaid
   sequenceDiagram
       actor Client
       participant Node-1
       participant Node-2
-      participant Node-3
       participant Node-N
-      Note right of Client: Client makes a request for position(P)
       Client->>Node-1: REQUEST: position(P)
       alt has position(P)
-        Note left of Node-1: Has position: no intercom necessary.
         Node-1->>Client: RESPONSE: {x, y, z}
       else doesn't have position(P)
-        Note right of Node-1: Doesn't have position: intercom necessary.
         Node-1->>Intercom: INTERCOM: @simulation/position.request(P)
         par
           Intercom-->>Node-1: INTERCOM: @simulation/position.request(P)
           Node-1-xIntercom: RESPONSE: undefined
-          Note right of Node-1: Doesn't have position: undefined.
         and
           Intercom-->>Node-2: INTERCOM: @simulation/position.request(P)
-          Node-2-xIntercom: RESPONSE: {x, y, z}
-          Note right of Node-2: Has position: {x, y, z}.
+          Node-2->>Intercom: RESPONSE: {x, y, z}
         and
           Intercom-->>Node-N: INTERCOM: @simulation/position.request(P)
           Node-N-xIntercom: RESPONSE: undefined
-          Note right of Node-N: Doesn't have position: undefined.
         end
-        Note left of Intercom: Return all results as an array.
         Intercom->>Node-1: RESPONSE: [undefined, {x, y, z}, undefined]
-        Note left of Node-1: Filter out and return the position from the results.
         Node-1->>Client: RESPONSE: {x, y, z}
       end
 ```
