@@ -384,7 +384,9 @@ machine.
 
 Let's add another fleck to our project:
 
-<InstallPackage pkg="@flecks/docker" />
+```bash
+npx flecks add @flecks/docker
+```
 
 Configure `build/flecks.yml`:
 
@@ -399,7 +401,9 @@ Configure `build/flecks.yml`:
   dialect: postgres
   password: THIS_PASSWORD_IS_UNSAFE
   username: postgres
+// highlight-end
 '@flecks/docker': {}
+// highlight-start
 '@flecks/server':
   up:
     - '@flecks/docker'
