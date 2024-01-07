@@ -13,10 +13,11 @@ export const hooks = {
     foo: 'bar',
   }),
   '@flecks/core/one/test-gather': (
-    Flecks.provide(require.context('./things', false, /\.js$/))
+    // @todo We have to explicitly start the pattern with a dot due to RequireContextPlugin.
+    Flecks.provide(require.context('./things', false, /^\..*\.js$/))
   ),
   '@flecks/core/one/test-gather.decorate': (
-    Flecks.decorate(require.context('./things/decorators', false, /\.js$/))
+    Flecks.decorate(require.context('./things/decorators', false, /\..*\.js$/))
   ),
   '@flecks/core/test/invoke': () => 69,
   '@flecks/core/test/invoke-parallel': (O) => {
