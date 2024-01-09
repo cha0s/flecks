@@ -4,6 +4,7 @@ import {Flecks} from '@flecks/core';
 
 const testOne = require('./one');
 const testTwo = require('./two');
+const testThree = require('./three');
 
 it('can make middleware', (done) => {
   const flecks = new Flecks({
@@ -39,7 +40,6 @@ it('respects explicit middleware configuration', (done) => {
       },
     },
     flecks: {
-      // Intentionally default to the wrong order...
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,
     },
@@ -62,7 +62,6 @@ it('respects middleware elision', (done) => {
       },
     },
     flecks: {
-      // Intentionally default to the wrong order...
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,
     },
@@ -73,4 +72,23 @@ it('respects middleware elision', (done) => {
     expect(foo.bar).to.equal(3);
     done();
   });
+});
+
+it('throws on elision graph cycle', () => {
+  const flecks = new Flecks({
+    config: {
+      '@flecks/core/test': {
+        middleware: [
+          '...',
+        ],
+      },
+    },
+    flecks: {
+      '@flecks/core/one': testOne,
+      '@flecks/core/two': testTwo,
+      '@flecks/core/three': testThree,
+    },
+  });
+  const tryMaking = () => flecks.makeMiddleware('@flecks/core/test.middleware');
+  expect(tryMaking).to.throw();
 });

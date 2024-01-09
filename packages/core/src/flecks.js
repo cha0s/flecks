@@ -276,7 +276,7 @@ export default class Flecks {
       without(all, ...before.concat(after))
         .forEach((fleck) => {
           graph.ensureTail(fleck);
-          const implementation = this.fleckImplementation(fleck, hook);
+          const {fn: implementation} = this.fleckImplementation(fleck, hook);
           if (implementation[HookOrder]) {
             if (implementation[HookOrder].before) {
               implementation[HookOrder].before.forEach((before) => {
