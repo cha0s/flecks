@@ -6,6 +6,11 @@ class Digraph {
     this.arcs.get(tail).add(head);
   }
 
+  addDependency(head, tail) {
+    this.ensureTail(head);
+    this.ensureTail(tail).add(head);
+  }
+
   detectCycles() {
     const cycles = [];
     const visited = new Set();
@@ -38,6 +43,7 @@ class Digraph {
     if (!this.arcs.has(tail)) {
       this.arcs.set(tail, new Set());
     }
+    return this.arcs.get(tail);
   }
 
   neighbors(vertex) {
@@ -71,6 +77,12 @@ class Digraph {
     return Array.from(scores.entries())
       .sort(([, l], [, r]) => l - r)
       .map(([vertex]) => vertex);
+  }
+
+  removeDependency(head, tail) {
+    if (this.arcs.has(tail)) {
+      this.arcs.get(tail).delete(head);
+    }
   }
 
   get tails() {

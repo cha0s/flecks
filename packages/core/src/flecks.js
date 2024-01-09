@@ -8,7 +8,6 @@ import {
 
 import get from 'lodash.get';
 import set from 'lodash.set';
-import without from 'lodash.without';
 
 import D from './debug';
 import Digraph from './digraph';
@@ -18,7 +17,7 @@ const debug = D('@flecks/core/flecks');
 const debugSilly = debug.extend('silly');
 
 // Symbol for hook ordering.
-const HookOrder = Symbol.for('@flecks/core.hookOrder');
+const HookPriority = Symbol.for('@flecks/core.hookPriority');
 
 // Symbols for Gathered classes.
 export const ById = Symbol.for('@flecks/core.byId');
@@ -63,6 +62,8 @@ export default class Flecks {
 
   config = {};
 
+  $$expandedFlecksCache = {};
+
   flecks = {};
 
   hooks = {};
@@ -93,40 +94,6 @@ export default class Flecks {
     }
     this.configureFlecksDefaults();
     debugSilly('config: %O', this.config);
-  }
-
-  /**
-   * Configure a hook implementation to run after another implementation.
-   *
-   * @param {string[]} after
-   * @param {function} implementation
-   */
-  static after(after, implementation) {
-    if (!implementation[HookOrder]) {
-      implementation[HookOrder] = {};
-    }
-    if (!implementation[HookOrder].after) {
-      implementation[HookOrder].after = [];
-    }
-    implementation[HookOrder].after.push(...after);
-    return implementation;
-  }
-
-  /**
-   * Configure a hook implementation to run before another implementation.
-   *
-   * @param {string[]} before
-   * @param {function} implementation
-   */
-  static before(before, implementation) {
-    if (!implementation[HookOrder]) {
-      implementation[HookOrder] = {};
-    }
-    if (!implementation[HookOrder].before) {
-      implementation[HookOrder].before = [];
-    }
-    implementation[HookOrder].before.push(...before);
-    return implementation;
   }
 
   /**
@@ -233,13 +200,15 @@ export default class Flecks {
    * @returns {string[]} The expanded list of flecks.
    */
   expandedFlecks(hook) {
+    if (this.$$expandedFlecksCache[hook]) {
+      return this.$$expandedFlecksCache[hook];
+    }
     const flecks = this.lookupFlecks(hook);
     let expanded = [];
+    // Expand configured flecks.
     for (let i = 0; i < flecks.length; ++i) {
       const fleck = flecks[i];
-      // Just the fleck.
       expanded.push(fleck);
-      // Platform-specific variants.
       for (let j = 0; j < this.platforms.length; ++j) {
         const platform = this.platforms[j];
         const variant = join(fleck, platform);
@@ -248,7 +217,7 @@ export default class Flecks {
         }
       }
     }
-    // Expand elided flecks.
+    // Handle elision.
     const index = expanded.findIndex((fleck) => '...' === fleck);
     if (-1 !== index) {
       if (-1 !== expanded.slice(index + 1).findIndex((fleck) => '...' === fleck)) {
@@ -256,23 +225,28 @@ export default class Flecks {
           `Illegal ordering specification: hook '${hook}' has multiple ellipses.`,
         );
       }
+      // Split at the elision point and remove the ellipses.
       const before = expanded.slice(0, index);
       const after = expanded.slice(index + 1);
+      expanded.splice(index, 1);
+      // Expand elided flecks.
+      const elided = [];
       const implementing = this.flecksImplementing(hook);
-      const all = [];
       for (let i = 0; i < implementing.length; ++i) {
         const fleck = implementing[i];
-        all.push(fleck);
+        if (!expanded.includes(fleck)) {
+          elided.push(fleck);
+        }
         for (let j = 0; j < this.platforms.length; ++j) {
           const platform = this.platforms[j];
           const variant = join(fleck, platform);
-          if (this.fleck(variant) && this.fleckImplementation(variant, hook)) {
-            all.push(variant);
+          if (this.fleck(variant) && !expanded.includes(variant)) {
+            elided.push(variant);
           }
         }
       }
-      // Map the elided fleck implementations to vertices in a dependency graph.
-      const graph = this.flecksHookGraph(without(all, ...before.concat(after)), hook);
+      // Map the fleck implementations to vertices in a dependency graph.
+      const graph = this.flecksHookGraph([...before, ...elided, ...after], hook);
       // Check for cycles.
       const cycles = graph.detectCycles();
       if (cycles.length > 0) {
@@ -284,8 +258,12 @@ export default class Flecks {
           }`,
         );
       }
-      // Sort the graph and place it.
-      expanded = [...before, ...graph.sort(), ...after];
+      // Sort the graph.
+      expanded = [
+        ...before,
+        ...graph.sort().filter((fleck) => !expanded.includes(fleck)),
+        ...after,
+      ];
     }
     // Build another graph, but add arcs connecting the final ordering. If cycles exist, the
     // ordering violated the expectation of one or more implementations.
@@ -299,7 +277,7 @@ export default class Flecks {
     if (cycles.length > 0) {
       cycles.forEach(([l, r]) => {
         const lImplementation = this.fleckImplementation(l, hook);
-        const {before: lBefore = [], after: lAfter = []} = lImplementation[HookOrder] || {};
+        const {before: lBefore = [], after: lAfter = []} = lImplementation?.[HookPriority] || {};
         const explanation = [hook];
         if (lBefore.includes(r)) {
           explanation.push(l, 'before', r);
@@ -308,19 +286,24 @@ export default class Flecks {
           explanation.push(l, 'after', r);
         }
         const rImplementation = this.fleckImplementation(r, hook);
-        const {before: rBefore = [], after: rAfter = []} = rImplementation[HookOrder] || {};
+        const {before: rBefore = [], after: rAfter = []} = rImplementation?.[HookPriority] || {};
         if (rBefore.includes(l)) {
           explanation.push(r, 'before', l);
         }
         if (rAfter.includes(l)) {
           explanation.push(r, 'after', l);
         }
-        debug("Suspicious ordering specification for '%s': '%s' expected to run %s '%s'!", ...explanation);
+        debug(
+          "Suspicious ordering specification for '%s': '%s' expected to run %s '%s'!",
+          ...explanation,
+        );
       });
     }
     // Filter unimplemented.
-    return expanded
+    this.$$expandedFlecksCache[hook] = expanded // eslint-disable-line no-return-assign
       .filter((fleck) => this.fleckImplementation(fleck, hook));
+    debugSilly("cached hook expansion for '%s': %O", hook, expanded);
+    return this.$$expandedFlecksCache[hook];
   }
 
   /**
@@ -374,20 +357,21 @@ export default class Flecks {
       .forEach((fleck) => {
         graph.ensureTail(fleck);
         const implementation = this.fleckImplementation(fleck, hook);
-        if (implementation[HookOrder]) {
-          if (implementation[HookOrder].before) {
-            implementation[HookOrder].before.forEach((before) => {
+        if (implementation?.[HookPriority]) {
+          if (implementation[HookPriority].before) {
+            implementation[HookPriority].before.forEach((before) => {
               graph.addArc(fleck, before);
             });
           }
-          if (implementation[HookOrder].after) {
-            implementation[HookOrder].after.forEach((after) => {
+          if (implementation[HookPriority].after) {
+            implementation[HookPriority].after.forEach((after) => {
               graph.ensureTail(after);
               graph.addArc(after, fleck);
             });
           }
         }
       });
+    this.invoke('@flecks/core.priority', graph, hook);
     return graph;
   }
 
@@ -733,6 +717,24 @@ export default class Flecks {
     debugSilly('middleware: %O', flecks);
     const instance = new Middleware(flecks.map((fleck) => this.invokeFleck(hook, fleck)));
     return instance.dispatch.bind(instance);
+  }
+
+  /**
+   * Scedule the priority of a hook implementation.
+   *
+   * @param {function} implementation
+   * @param {object} schedule
+   */
+  static priority(implementation, schedule = {}) {
+    const normalized = {};
+    if (schedule.after) {
+      normalized.after = Array.isArray(schedule.after) ? schedule.after : [schedule.after];
+    }
+    if (schedule.before) {
+      normalized.before = Array.isArray(schedule.before) ? schedule.before : [schedule.before];
+    }
+    implementation[HookPriority] = normalized;
+    return implementation;
   }
 
   /**

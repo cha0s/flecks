@@ -81,7 +81,6 @@
     "lodash.get": "^4.4.2",
     "lodash.intersectionby": "4.7.0",
     "lodash.set": "^4.3.2",
-    "lodash.without": "^4.4.0",
     "pirates": "^4.0.5",
     "rimraf": "^3.0.2",
     "source-map-loader": "4.0.1",

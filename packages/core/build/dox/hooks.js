@@ -115,6 +115,21 @@ export const hooks = {
   },
 
   /**
+   * Invoked when flecks is building a fleck dependency graph.
+   * @param {Digraph} graph The dependency graph.
+   * @param {string} hook The hook; e.g. `@flecks/db/server`.
+   */
+  '@flecks/core.priority': (graph, hook) => {
+    // Make `@flecks/user/server`'s `@flecks/server.up` implementation depend on
+    // `@flecks/db/server`'s:
+    if ('@flecks/server.up' === hook) {
+      graph.addDependency('@flecks/user/server', '@flecks/db/server');
+      // Remove a dependency.
+      graph.removeDependency('@flecks/user/server', '@flecks/db/server');
+    }
+  },
+
+  /**
    * Invoked when the application is starting. Use for order-independent initialization tasks.
    */
   '@flecks/core.starting': () => {

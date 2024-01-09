@@ -26,8 +26,11 @@ export const hooks = {
   '@flecks/core/test/invoke-merge-async': () => new Promise((resolve) => { resolve({foo: 69}); }),
   '@flecks/core/test/invoke-merge-unique': () => ({foo: 69}),
   '@flecks/core/test/invoke-merge-unique-async': () => new Promise((resolve) => { resolve({foo: 69}); }),
-  '@flecks/core/test.middleware': Flecks.after(['@flecks/core/two'], () => (foo, next) => {
-    foo.bar += 1;
-    next();
-  }),
+  '@flecks/core/test.middleware': Flecks.priority(
+    () => (foo, next) => {
+      foo.bar += 1;
+      next();
+    },
+    {after: '@flecks/core/two'},
+  ),
 };
