@@ -11,10 +11,14 @@ import set from 'lodash.set';
 import without from 'lodash.without';
 
 import D from './debug';
+import Digraph from './digraph';
 import Middleware from './middleware';
 
 const debug = D('@flecks/core/flecks');
 const debugSilly = debug.extend('silly');
+
+// Symbol for hook ordering.
+const HookOrder = Symbol.for('@flecks/core.hookOrder');
 
 // Symbols for Gathered classes.
 export const ById = Symbol.for('@flecks/core.byId');
@@ -89,6 +93,40 @@ export default class Flecks {
     }
     this.configureFlecksDefaults();
     debugSilly('config: %O', this.config);
+  }
+
+  /**
+   * Configure a hook implementation to run after another implementation.
+   *
+   * @param {string[]} after
+   * @param {function} implementation
+   */
+  static after(after, implementation) {
+    if (!implementation[HookOrder]) {
+      implementation[HookOrder] = {};
+    }
+    if (!implementation[HookOrder].after) {
+      implementation[HookOrder].after = [];
+    }
+    implementation[HookOrder].after.push(...after);
+    return implementation;
+  }
+
+  /**
+   * Configure a hook implementation to run before another implementation.
+   *
+   * @param {string[]} before
+   * @param {function} implementation
+   */
+  static before(before, implementation) {
+    if (!implementation[HookOrder]) {
+      implementation[HookOrder] = {};
+    }
+    if (!implementation[HookOrder].before) {
+      implementation[HookOrder].before = [];
+    }
+    implementation[HookOrder].before.push(...before);
+    return implementation;
   }
 
   /**
@@ -228,15 +266,49 @@ export default class Flecks {
         for (let j = 0; j < this.platforms.length; ++j) {
           const platform = this.platforms[j];
           const variant = join(fleck, platform);
-          if (this.fleck(variant)) {
+          if (this.fleck(variant) && this.fleckImplementation(variant, hook)) {
             all.push(variant);
           }
         }
       }
-      const rest = without(all, ...before.concat(after));
-      expanded = [...before, ...rest, ...after];
+      // Map the elided fleck implementations to vertices in a dependency graph.
+      const graph = new Digraph();
+      without(all, ...before.concat(after))
+        .forEach((fleck) => {
+          graph.ensureTail(fleck);
+          const implementation = this.fleckImplementation(fleck, hook);
+          if (implementation[HookOrder]) {
+            if (implementation[HookOrder].before) {
+              implementation[HookOrder].before.forEach((before) => {
+                graph.addArc(fleck, before);
+              });
+            }
+            if (implementation[HookOrder].after) {
+              implementation[HookOrder].after.forEach((after) => {
+                graph.ensureTail(after);
+                graph.addArc(after, fleck);
+              });
+            }
+          }
+
+        });
+      // Check for cycles.
+      const cycles = graph.detectCycles();
+      if (cycles.length > 0) {
+        throw new Error(
+          `Illegal ordering specification: hook '${
+            hook
+          }' has positioning cycles: ${
+            cycles.map(([l, r]) => `${l} <-> ${r}`).join(', ')
+          }`,
+        );
+      }
+      // Sort the graph and place it.
+      expanded = [...before, ...graph.sort(), ...after];
     }
-    return expanded;
+    // Filter unimplemented.
+    return expanded
+      .filter((fleck) => this.fleckImplementation(fleck, hook));
   }
 
   /**
@@ -251,14 +323,14 @@ export default class Flecks {
   }
 
   /**
-   * Test whether a fleck implements a hook.
+   * Get a fleck's implementation of a hook.
    *
    * @param {*} fleck
    * @param {string} hook
    * @returns {boolean}
    */
-  fleckImplements(fleck, hook) {
-    return !!this.hooks[hook]?.find(({fleck: candidate}) => fleck === candidate);
+  fleckImplementation(fleck, hook) {
+    return this.hooks[hook]?.find(({fleck: candidate}) => fleck === candidate);
   }
 
   /**
@@ -373,7 +445,6 @@ export default class Flecks {
       return initial;
     }
     return flecks
-      .filter((fleck) => this.fleckImplements(fleck, hook))
       .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), initial);
   }
 
@@ -391,7 +462,6 @@ export default class Flecks {
       return arg;
     }
     return flecks
-      .filter((fleck) => this.fleckImplements(fleck, hook))
       .reduce(async (r, fleck) => this.invokeFleck(hook, fleck, await r, ...args), arg);
   }
 
@@ -551,9 +621,7 @@ export default class Flecks {
     const results = [];
     while (flecks.length > 0) {
       const fleck = flecks.shift();
-      if (this.fleckImplements(fleck, hook)) {
-        results.push(this.invokeFleck(hook, fleck, ...args));
-      }
+      results.push(this.invokeFleck(hook, fleck, ...args));
     }
     return results;
   }
@@ -574,10 +642,8 @@ export default class Flecks {
     const results = [];
     while (flecks.length > 0) {
       const fleck = flecks.shift();
-      if (this.fleckImplements(fleck, hook)) {
-        // eslint-disable-next-line no-await-in-loop
-        results.push(await this.invokeFleck(hook, fleck, ...args));
-      }
+      // eslint-disable-next-line no-await-in-loop
+      results.push(await this.invokeFleck(hook, fleck, ...args));
     }
     return results;
   }
@@ -616,10 +682,8 @@ export default class Flecks {
     if (0 === flecks.length) {
       return (...args) => args.pop()();
     }
-    const middleware = flecks
-      .filter((fleck) => this.fleckImplements(fleck, hook));
-    debugSilly('middleware: %O', middleware);
-    const instance = new Middleware(middleware.map((fleck) => this.invokeFleck(hook, fleck)));
+    debugSilly('middleware: %O', flecks);
+    const instance = new Middleware(flecks.map((fleck) => this.invokeFleck(hook, fleck)));
     return instance.dispatch.bind(instance);
   }
 
@@ -703,12 +767,12 @@ export default class Flecks {
       } = current;
       let raw;
       // If decorating, gather all again
-      if (this.fleckImplements(fleck, `${hook}.decorate`)) {
+      if (this.fleckImplementation(fleck, `${hook}.decorate`)) {
         raw = this.invokeMerge(hook);
         debugSilly('%s implements %s.decorate', fleck, hook);
       }
       // If only implementing, gather and decorate.
-      else if (this.fleckImplements(fleck, hook)) {
+      else if (this.fleckImplementation(fleck, hook)) {
         raw = this.invokeFleck(hook, fleck);
         debugSilly('%s implements %s', fleck, hook);
       }

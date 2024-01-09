@@ -6,10 +6,7 @@ const testOne = require('./one');
 const testTwo = require('./two');
 
 it('can make middleware', (done) => {
-  let flecks;
-  let foo;
-  let mw;
-  flecks = new Flecks({
+  const flecks = new Flecks({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -23,29 +20,57 @@ it('can make middleware', (done) => {
       '@flecks/core/two': testTwo,
     },
   });
-  foo = {bar: 1};
-  mw = flecks.makeMiddleware('@flecks/core/test.middleware');
+  const foo = {bar: 1};
+  const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
   mw(foo, () => {
     expect(foo.bar).to.equal(4);
-    flecks = new Flecks({
-      config: {
-        '@flecks/core/test': {
-          middleware: [
-            '@flecks/core/two',
-            '@flecks/core/one',
-          ],
-        },
+    done();
+  });
+});
+
+it('respects explicit middleware configuration', (done) => {
+  const flecks = new Flecks({
+    config: {
+      '@flecks/core/test': {
+        middleware: [
+          '@flecks/core/two',
+          '@flecks/core/one',
+        ],
       },
-      flecks: {
-        '@flecks/core/one': testOne,
-        '@flecks/core/two': testTwo,
+    },
+    flecks: {
+      // Intentionally default to the wrong order...
+      '@flecks/core/one': testOne,
+      '@flecks/core/two': testTwo,
+    },
+  });
+  const foo = {bar: 1};
+  const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
+  mw(foo, () => {
+    expect(foo.bar).to.equal(3);
+    done();
+  });
+});
+
+it('respects middleware elision', (done) => {
+  const flecks = new Flecks({
+    config: {
+      '@flecks/core/test': {
+        middleware: [
+          '...',
+        ],
       },
-    });
-    foo = {bar: 1};
-    mw = flecks.makeMiddleware('@flecks/core/test.middleware');
-    mw(foo, () => {
-      expect(foo.bar).to.equal(3);
-      done();
-    });
+    },
+    flecks: {
+      // Intentionally default to the wrong order...
+      '@flecks/core/one': testOne,
+      '@flecks/core/two': testTwo,
+    },
+  });
+  const foo = {bar: 1};
+  const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
+  mw(foo, () => {
+    expect(foo.bar).to.equal(3);
+    done();
   });
 });

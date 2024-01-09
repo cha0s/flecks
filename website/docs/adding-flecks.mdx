@@ -65,49 +65,6 @@ application inside of an instance of [Electron](https://www.electronjs.org/). Yo
 npx flecks add @flecks/electron
 ```
 
-Then you'll update your `build/flecks.yml` like so:
-
-```yml
-'@flecks/core':
-  id: 'hello-world'
-'@flecks/electron': {}
-// highlight-start
-'@flecks/server':
-  up:
-    - '...'
-    - '@flecks/web'
-    - '@flecks/electron'
-// highlight-end
-'@flecks/web': {}
-'@hello-world/say-hello:./packages/say-hello/src': {}
-```
-
-### ~~flecking~~ pecking order
-
-We added some configuration to `@flecks/server`. The `up` key configures the order in which flecks
-are initialized when the server comes up. We make sure `@flecks/web` serves a webpage before
-`@flecks/electron` tries to visit it.
-
-:::tip[...and Bob's your uncle]
-
-`'...'` just means "everything else": if any other flecks implement that hook then they will run
-here in an **undefined** order. It is valid to provide entries both before and after `'...'`, but
-`'...'` must only appear one time per list.
-
-The default configuration of
-`@flecks/server.up` is simply:
-
-```yml
-'@flecks/server':
-  up:
-    - '...'
-```
-
-However in this case the order of hook execution is undefined. That's why we configure it
-explicitly.
-
-:::
-
 Finally `npm start` and you will see something like this:
 
 ![An image of our simple hello world application running inside an Electron window](./flecks-electron.png)
