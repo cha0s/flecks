@@ -272,26 +272,7 @@ export default class Flecks {
         }
       }
       // Map the elided fleck implementations to vertices in a dependency graph.
-      const graph = new Digraph();
-      without(all, ...before.concat(after))
-        .forEach((fleck) => {
-          graph.ensureTail(fleck);
-          const {fn: implementation} = this.fleckImplementation(fleck, hook);
-          if (implementation[HookOrder]) {
-            if (implementation[HookOrder].before) {
-              implementation[HookOrder].before.forEach((before) => {
-                graph.addArc(fleck, before);
-              });
-            }
-            if (implementation[HookOrder].after) {
-              implementation[HookOrder].after.forEach((after) => {
-                graph.ensureTail(after);
-                graph.addArc(after, fleck);
-              });
-            }
-          }
-
-        });
+      const graph = this.flecksHookGraph(without(all, ...before.concat(after)), hook);
       // Check for cycles.
       const cycles = graph.detectCycles();
       if (cycles.length > 0) {
@@ -305,6 +286,37 @@ export default class Flecks {
       }
       // Sort the graph and place it.
       expanded = [...before, ...graph.sort(), ...after];
+    }
+    // Build another graph, but add arcs connecting the final ordering. If cycles exist, the
+    // ordering violated the expectation of one or more implementations.
+    const graph = this.flecksHookGraph(expanded, hook);
+    expanded.forEach((fleck, i) => {
+      if (i < expanded.length - 1) {
+        graph.addArc(fleck, expanded[i + 1]);
+      }
+    });
+    const cycles = graph.detectCycles();
+    if (cycles.length > 0) {
+      cycles.forEach(([l, r]) => {
+        const lImplementation = this.fleckImplementation(l, hook);
+        const {before: lBefore = [], after: lAfter = []} = lImplementation[HookOrder] || {};
+        const explanation = [hook];
+        if (lBefore.includes(r)) {
+          explanation.push(l, 'before', r);
+        }
+        if (lAfter.includes(r)) {
+          explanation.push(l, 'after', r);
+        }
+        const rImplementation = this.fleckImplementation(r, hook);
+        const {before: rBefore = [], after: rAfter = []} = rImplementation[HookOrder] || {};
+        if (rBefore.includes(l)) {
+          explanation.push(r, 'before', l);
+        }
+        if (rAfter.includes(l)) {
+          explanation.push(r, 'after', l);
+        }
+        debug("Suspicious ordering specification for '%s': '%s' expected to run %s '%s'!", ...explanation);
+      });
     }
     // Filter unimplemented.
     return expanded
@@ -330,7 +342,14 @@ export default class Flecks {
    * @returns {boolean}
    */
   fleckImplementation(fleck, hook) {
-    return this.hooks[hook]?.find(({fleck: candidate}) => fleck === candidate);
+    if (!this.hooks[hook]) {
+      return undefined;
+    }
+    const found = this.hooks[hook]?.find(({fleck: candidate}) => fleck === candidate);
+    if (!found) {
+      return undefined;
+    }
+    return found.fn;
   }
 
   /**
@@ -341,6 +360,35 @@ export default class Flecks {
    */
   flecksImplementing(hook) {
     return this.hooks[hook]?.map(({fleck}) => fleck) || [];
+  }
+
+  /**
+   * Create a dependency graph from a list of flecks.
+   * @param {string[]} flecks
+   * @param {string} hook
+   * @returns {Digraph} graph
+   */
+  flecksHookGraph(flecks, hook) {
+    const graph = new Digraph();
+    flecks
+      .forEach((fleck) => {
+        graph.ensureTail(fleck);
+        const implementation = this.fleckImplementation(fleck, hook);
+        if (implementation[HookOrder]) {
+          if (implementation[HookOrder].before) {
+            implementation[HookOrder].before.forEach((before) => {
+              graph.addArc(fleck, before);
+            });
+          }
+          if (implementation[HookOrder].after) {
+            implementation[HookOrder].after.forEach((after) => {
+              graph.ensureTail(after);
+              graph.addArc(after, fleck);
+            });
+          }
+        }
+      });
+    return graph;
   }
 
   /**
