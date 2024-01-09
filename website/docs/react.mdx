@@ -149,12 +149,11 @@ Example:
 ```jsx
 function Component() {
   const flecks = useFlecks();
-  const {socket} = flecks;
   const [isConnected, setIsConnected] = useState(false);
-  useEvent(socket, 'connect', () => {
+  useEvent(flecks.socket, 'connect', () => {
     setIsConnected(true);
   });
-  useEvent(socket, 'disconnect', () => {
+  useEvent(flecks.socket, 'disconnect', () => {
     setIsConnected(false);
   });
   return <p>Socket is {isConnected ? 'connected' : 'disconnected'}.</p>;
