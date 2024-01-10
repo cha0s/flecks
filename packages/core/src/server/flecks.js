@@ -360,7 +360,7 @@ export default class ServerFlecks extends Flecks {
 
   loadBuildConfigs() {
     Object.entries(this.invoke('@flecks/core.build.config'))
-      .forEach(([fleck, configs]) => (
+      .forEach(([fleck, configs]) => {
         configs.forEach((config) => {
           const defaults = {
             fleck,
@@ -369,8 +369,8 @@ export default class ServerFlecks extends Flecks {
             this.registerBuildConfig(config[0], {...defaults, ...config[1]});
           }
           this.registerBuildConfig(config, defaults);
-        })
-      ));
+        });
+      });
   }
 
   static loadConfig(root) {
