@@ -28,8 +28,11 @@ module.exports = async (config, env, argv, flecks) => {
   const styles = (
     await Promise.all(
       roots
-        .map(([, path]) => {
+        .map(([fleck, path]) => {
           try {
+            if (webFlecks.fleckIsCompiled(fleck)) {
+              return [];
+            }
             const {files} = R(join(path, 'package.json'));
             return (
               files

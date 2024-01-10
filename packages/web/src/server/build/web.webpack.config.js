@@ -83,7 +83,7 @@ module.exports = async (env, argv, flecks) => {
           const styleChunk = Array.from(compilation.chunks).find((chunk) => (
             chunk.chunkReason?.match(/split chunk \(cache group: styles\)/)
           ));
-          if (isProduction && styleChunk) {
+          if (styleChunk) {
             for (let i = 0; i < assets.css.length; ++i) {
               const asset = compilation.assets[assets.css[i].substring(1)];
               if (asset) {
@@ -109,7 +109,9 @@ module.exports = async (env, argv, flecks) => {
       }));
     });
   // @todo dynamic extensions
-  const styleExtensionsRegex = regexFromExtensions(['.css', '.sass', '.scss']);
+  const styleExtensionsRegex = regexFromExtensions(
+    ['.css', '.sass', '.scss'].map((ext) => [ext, `.module${ext}`]).flat(),
+  );
   const config = defaultConfig(flecks, {
     devServer: {
       compress: false,
@@ -151,14 +153,13 @@ module.exports = async (env, argv, flecks) => {
       splitChunks: {
         cacheGroups: {
           styles: {
-            chunks: 'all',
             enforce: true,
-            priority: 100,
+            priority: 1000,
             test: styleExtensionsRegex,
           },
         },
         chunks: 'all',
-        ...(isProduction ? {name: false} : undefined),
+        name: 'flecks_styles',
       },
     },
     output: {

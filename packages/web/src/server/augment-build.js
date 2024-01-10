@@ -2,7 +2,6 @@ import {regexFromExtensions} from '@flecks/core/server';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const augmentBuild = (target, config, env, argv, flecks) => {
-  const isProduction = 'production' === argv.mode;
   let finalLoader;
   switch (target) {
     case 'fleck': {
@@ -15,13 +14,8 @@ const augmentBuild = (target, config, env, argv, flecks) => {
       break;
     }
     case 'web': {
-      if (isProduction) {
-        finalLoader = {loader: MiniCssExtractPlugin.loader};
-        config.plugins.push(new MiniCssExtractPlugin());
-      }
-      else {
-        finalLoader = {loader: 'style-loader', options: {injectType: 'styleTag'}};
-      }
+      finalLoader = {loader: MiniCssExtractPlugin.loader};
+      config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
       break;
     }
     default: break;
@@ -49,7 +43,7 @@ const augmentBuild = (target, config, env, argv, flecks) => {
         loaders,
         {
           modules: {
-            localIdentName: isProduction ? '[hash]' : '[path][name]__[local]',
+            localIdentName: '[hash:4]',
           },
         },
       ),
