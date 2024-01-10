@@ -60,43 +60,46 @@ export const hooks = {
       }
     };
   },
-  '@flecks/server.up': async (flecks) => {
-    if (flecks.fleck('@flecks/web/server')) {
-      const {web} = flecks.get('@flecks/governor/server');
-      flecks.governor.web = await createLimiter(
-        flecks,
-        {
-          keyPrefix: '@flecks/governor.web.request.route',
-          ...web,
-        },
-      );
-    }
-    if (flecks.fleck('@flecks/socket/server')) {
-      flecks.governor.packet = Object.fromEntries(
-        await Promise.all(
-          Object.entries(flecks.socket.Packets[ByType])
-            .filter(([, Packet]) => Packet.limit)
-            .map(async ([name, Packet]) => (
-              [
-                name,
-                await createLimiter(
-                  flecks,
-                  {keyPrefix: `@flecks/governor.packet.${name}`, ...Packet.limit},
-                ),
-              ]
-            )),
-        ),
-      );
-      const {socket} = flecks.get('@flecks/governor/server');
-      flecks.governor.socket = await createLimiter(
-        flecks,
-        {
-          keyPrefix: '@flecks/governor.socket.request.socket',
-          ...socket,
-        },
-      );
-    }
-  },
+  '@flecks/server.up': Flecks.priority(
+    async (flecks) => {
+      if (flecks.fleck('@flecks/web/server')) {
+        const {web} = flecks.get('@flecks/governor/server');
+        flecks.governor.web = await createLimiter(
+          flecks,
+          {
+            keyPrefix: '@flecks/governor.web.request.route',
+            ...web,
+          },
+        );
+      }
+      if (flecks.fleck('@flecks/socket/server')) {
+        flecks.governor.packet = Object.fromEntries(
+          await Promise.all(
+            Object.entries(flecks.socket.Packets[ByType])
+              .filter(([, Packet]) => Packet.limit)
+              .map(async ([name, Packet]) => (
+                [
+                  name,
+                  await createLimiter(
+                    flecks,
+                    {keyPrefix: `@flecks/governor.packet.${name}`, ...Packet.limit},
+                  ),
+                ]
+              )),
+          ),
+        );
+        const {socket} = flecks.get('@flecks/governor/server');
+        flecks.governor.socket = await createLimiter(
+          flecks,
+          {
+            keyPrefix: '@flecks/governor.socket.request.socket',
+            ...socket,
+          },
+        );
+      }
+    },
+    {after: '@flecks/redis/server'},
+  ),
   '@flecks/socket/server.request.socket': (flecks) => (
     async (socket, next) => {
       const {handshake: req} = socket;
