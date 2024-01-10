@@ -3,7 +3,7 @@ const globals = require('globals');
 
 const R = require('../../require');
 
-module.exports = async (flecks) => {
+module.exports = (flecks) => {
   const merging = [
     {
       plugins: [R.resolve('@babel/plugin-syntax-dynamic-import')],
@@ -86,7 +86,7 @@ module.exports = async (flecks) => {
         node: {},
       },
       react: {
-        version: '17.0.1',
+        version: '18.2.0',
       },
     },
   };
