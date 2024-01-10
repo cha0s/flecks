@@ -1,11 +1,9 @@
 import {join} from 'path';
 import {inspect} from 'util';
 
-import ESLintPlugin from 'eslint-webpack-plugin';
 import webpack from 'webpack';
 
 import commands from './commands';
-import R from '../require';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -36,40 +34,12 @@ export {webpack};
 export const hooks = {
   '@flecks/core.build': async (target, config, env, argv, flecks) => {
     const {
-      'eslint.exclude': exclude,
       profile,
     } = flecks.get('@flecks/core/server');
     if (profile.includes(target)) {
       config.plugins.push(
         new webpack.debug.ProfilingPlugin({
           outputPath: join(FLECKS_CORE_ROOT, `profile.build-${target}.json`),
-        }),
-      );
-    }
-    if (!exclude.includes(target)) {
-      const eslintConfigFn = R(flecks.buildConfig('default.eslint.config.js', target));
-      const eslint = await eslintConfigFn(flecks);
-      config.plugins.push(
-        new ESLintPlugin({
-          cache: true,
-          cwd: FLECKS_CORE_ROOT,
-          emitWarning: argv.mode !== 'production',
-          failOnError: argv.mode === 'production',
-          useEslintrc: false,
-          overrideConfig: {
-            ...eslint,
-            settings: {
-              ...eslint.settings,
-              'import/resolver': {
-                ...eslint.settings['import/resolver'],
-                webpack: {
-                  config: {
-                    resolve: config.resolve,
-                  },
-                },
-              },
-            },
-          },
         }),
       );
     }
@@ -99,10 +69,6 @@ export const hooks = {
   ],
   '@flecks/core.commands': commands,
   '@flecks/core.config': () => ({
-    /**
-     * Build targets to exclude from ESLint.
-     */
-    'eslint.exclude': [],
     /**
      * The package manager used for tasks.
      */
