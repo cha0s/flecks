@@ -83,7 +83,7 @@ module.exports = async (env, argv, flecks) => {
           const styleChunk = Array.from(compilation.chunks).find((chunk) => (
             chunk.chunkReason?.match(/split chunk \(cache group: styles\)/)
           ));
-          if (styleChunk) {
+          if (isProduction && styleChunk) {
             for (let i = 0; i < assets.css.length; ++i) {
               const asset = compilation.assets[assets.css[i].substring(1)];
               if (asset) {
