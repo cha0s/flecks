@@ -20,14 +20,14 @@ class Ssr extends Transform {
   async _transform(chunk, encoding, done) {
     const string = chunk.toString('utf8');
     const {appMountId} = this.flecks.get('@flecks/web/server');
-    if (-1 !== string.indexOf(`<div id="${appMountId}"></div>`)) {
+    if (-1 !== string.indexOf(`<div id="${appMountId}">`)) {
       try {
         const renderedRoot = ReactDOMServer.renderToString(
           React.createElement(await root(this.flecks, this.req)),
         );
         const rendered = string.replaceAll(
-          `<div id="${appMountId}"></div>`,
-          `<div id="${appMountId}">${renderedRoot}</div>`,
+          `<div id="${appMountId}">`,
+          `<div id="${appMountId}">${renderedRoot}`,
         );
         this.push(rendered);
       }

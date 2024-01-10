@@ -45,20 +45,18 @@ class InlineConfig extends Transform {
   async _transform(chunk, encoding, done) {
     const string = chunk.toString('utf8');
     const {appMountId} = this.flecks.get('@flecks/web/server');
-    if (-1 !== string.indexOf(`<div id="${appMountId}"></div>`)) {
-      const rendered = string.replaceAll(
+    const rendered = string.replaceAll(
+      '<body>',
+      [
+        '<body>',
+        `<div id="${appMountId}-container">`,
+        `<script>window.document.querySelector('#${appMountId}-container').style.display = 'none'</script>`,
+        `<script>${await configSource(this.flecks, this.req)}</script>`,
         `<div id="${appMountId}"></div>`,
-        [
-          `<div id="${appMountId}"></div>`,
-          `<script>window.document.querySelector('#${appMountId}').style.display = 'none'</script>`,
-          `<script>${await configSource(this.flecks, this.req)}</script>`,
-        ].join(''),
-      );
-      this.push(rendered);
-    }
-    else {
-      this.push(string);
-    }
+        '</div>',
+      ].join(''),
+    );
+    this.push(rendered);
     done();
   }
 

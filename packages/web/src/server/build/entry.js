@@ -63,8 +63,8 @@ const {version} = require('@flecks/web/package.json');
   try {
     await Promise.all(flecks.invokeFlat('@flecks/core.starting'));
     await flecks.invokeSequentialAsync('@flecks/web/client.up');
-    const appMountId = `#${config['@flecks/web/client'].appMountId}`;
-    window.document.querySelector(appMountId).style.display = 'block';
+    const appMountContainerId = `#${config['@flecks/web/client'].appMountId}-container`;
+    window.document.querySelector(appMountContainerId).style.display = 'block';
     debug('up!');
   }
   catch (error) {
