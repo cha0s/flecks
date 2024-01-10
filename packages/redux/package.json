@@ -29,7 +29,6 @@
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",
-    "@hot-loader/react-dom": "^17.0.1",
     "@reduxjs/toolkit": "^1.5.0",
     "debug": "^4.3.3",
     "lodash.throttle": "^4.1.1",

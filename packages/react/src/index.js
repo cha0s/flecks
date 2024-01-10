@@ -1,9 +1,8 @@
-export {default as ReactDom} from '@hot-loader/react-dom';
 export {default as classnames} from 'classnames';
 export {default as PropTypes} from 'prop-types';
 export {default as React} from 'react';
+export {default as ReactDom} from 'react-dom';
 export * from 'react';
-export {hot} from 'react-hot-loader';
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 export {default as FlecksContext} from '@flecks/react/context';

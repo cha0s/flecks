@@ -2,7 +2,7 @@ import {Transform} from 'stream';
 
 import {D} from '@flecks/core';
 import React from 'react';
-import ReactDOMServer from '@hot-loader/react-dom/server';
+import ReactDOMServer from 'react-dom/server';
 
 import root from './root';
 

@@ -1,16 +1,15 @@
 import {Flecks} from '@flecks/core';
 import {augmentBuild} from '@flecks/web/server';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import ssr from './ssr';
 
 export const hooks = {
   '@flecks/core.build': (target, config, env, argv, flecks) => {
     const isProduction = 'production' === argv.mode;
-    config.resolve.alias['react-native'] = 'react-native-web';
-    config.resolve.alias['react-hot-loader'] = isProduction
-      ? 'react-hot-loader/dist/react-hot-loader.production.min'
-      : 'react-hot-loader/dist/react-hot-loader.development';
-    config.resolve.extensions.unshift(...['.web.js', '.web.jsx']);
+    if (!isProduction) {
+      config.plugins.push(new ReactRefreshWebpackPlugin());
+    }
     // Augment the build on behalf of a missing `@flecks/web`.
     if (!flecks.fleck('@flecks/web/server')) {
       flecks.registerBuildConfig('postcss.config.js', {fleck: '@flecks/web/server'});

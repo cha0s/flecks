@@ -1,6 +1,6 @@
 import {D} from '@flecks/core';
-import {hydrate, render} from '@hot-loader/react-dom';
 import React from 'react';
+import {createRoot, hydrateRoot} from 'react-dom/client';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import FlecksContext from '@flecks/react/context';
@@ -14,15 +14,19 @@ export const hooks = {
   '@flecks/web/client.up': async (flecks) => {
     const {ssr} = flecks.get('@flecks/react');
     const {appMountId} = flecks.get('@flecks/web/client');
+    const container = window.document.getElementById(appMountId);
     debug('%sing...', ssr ? 'hydrat' : 'render');
-    (ssr ? hydrate : render)(
-      React.createElement(
-        React.StrictMode,
-        {},
-        [React.createElement(await root(flecks), {key: 'root'})],
-      ),
-      window.document.getElementById(appMountId),
+    const RootComponent = React.createElement(
+      React.StrictMode,
+      {},
+      [React.createElement(await root(flecks), {key: 'root'})],
     );
+    if (ssr) {
+      hydrateRoot(container, RootComponent);
+    }
+    else {
+      createRoot(container).render(RootComponent);
+    }
     debug('rendered');
   },
 };

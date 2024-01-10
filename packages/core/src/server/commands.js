@@ -113,6 +113,7 @@ export default (program, flecks) => {
           cmd,
           {
             env: {
+              FLECKS_CORE_IS_PRODUCTION: production,
               ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
               ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
             },

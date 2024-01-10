@@ -86,33 +86,8 @@ Now if you visit the page with JavaScript disabled, you will get a white page.
 
 ### Hot module reloading
 
-This is cool, but you'll notice that if you edit your component, the changes are not immediately
-reflected on the page. This is because we have to add HMR support to our root component:
-
-```jsx title="packages/root/src/component.jsx"
-import {hot, React} from '@flecks/react';
-
-function Component() {
-  return <p>hello world (from React)</p>;
-}
-
-export default hot(module)(Component);
-```
-
-Now you can edit and your changes will be reflected on the page!
-
-:::tip
-
-Any components your root component uses will automatically be reloaded: only your root component
-requires the `hot` call.
-
-:::note[Help wanted]
-
-It is admittedly not so ergonomic to remember the `hot` call for your root components. React fast
-refresh would probably make this unnecessary, but it hasn't been implemented in flecks yet. We
-would very much appreciate a [pull request](https://github.com/cha0s/flecks/compare)!
-
-:::
+You'll notice that if you edit your component, the changes are immediately reflected on the page.
+This is because we have HMR support in our application!
 
 ## Hooks
 

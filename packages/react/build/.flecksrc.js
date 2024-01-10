@@ -1,8 +1,16 @@
+const plugins = [];
+
+const {
+  FLECKS_CORE_IS_PRODUCTION,
+} = process.env;
+
+if ('true' !== FLECKS_CORE_IS_PRODUCTION) {
+  plugins.push('react-refresh/babel');
+}
+
 module.exports = {
-  aliases: {
-    'react-dom': '@hot-loader/react-dom',
-  },
   babel: {
+    plugins,
     presets: [
       '@babel/preset-react',
     ],

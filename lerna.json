@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "useNx": true,
+  "version": "2.0.3"
+}
+

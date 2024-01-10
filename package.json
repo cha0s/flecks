@@ -1,5 +1,6 @@
 {
   "name": "@flecks/monorepo",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/cha0s/flecks.git"
@@ -26,10 +27,10 @@
     "@flecks/server": "*",
     "@flecks/socket": "*",
     "@flecks/user": "*",
-    "@flecks/web": "*",
-    "nx": "^17.2.8"
+    "@flecks/web": "*"
   },
   "dependencies": {
-    "@docusaurus/theme-mermaid": "3.0.1"
+    "@docusaurus/theme-mermaid": "3.0.1",
+    "lerna": "^8.0.2"
   }
 }

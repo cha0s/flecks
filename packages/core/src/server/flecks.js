@@ -331,7 +331,7 @@ export default class ServerFlecks extends Flecks {
           ignore: [ignore],
           only: [only],
         };
-        debugSilly('compiling %O with %j', compiling, config);
+        debugSilly('compiling %O with %j at %s', compiling, config, only);
         compilations.push({
           ignore,
           only,
@@ -395,7 +395,8 @@ export default class ServerFlecks extends Flecks {
     const roots = Array.from(new Set(
       Object.keys(resolver)
         .map((path) => this.root(resolver, path))
-        .filter((e) => !!e),
+        .filter((e) => !!e)
+        .concat(FLECKS_CORE_ROOT),
     ));
     for (let i = 0; i < roots.length; ++i) {
       const root = roots[i];
