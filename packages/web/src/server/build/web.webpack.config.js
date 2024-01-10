@@ -153,13 +153,12 @@ module.exports = async (env, argv, flecks) => {
       splitChunks: {
         cacheGroups: {
           styles: {
+            chunks: 'all',
             enforce: true,
-            priority: 1000,
+            priority: 100,
             test: styleExtensionsRegex,
           },
         },
-        chunks: 'all',
-        name: 'flecks_styles',
       },
     },
     output: {
