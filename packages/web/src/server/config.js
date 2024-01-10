@@ -43,15 +43,18 @@ class InlineConfig extends Transform {
 
   // eslint-disable-next-line no-underscore-dangle
   async _transform(chunk, encoding, done) {
-    const string = chunk
-      .toString('utf8');
-    if (-1 !== string.indexOf('<script src="/flecks.config.js"></script>')) {
-      this.push(
-        string.replace(
-          '<script src="/flecks.config.js"></script>',
+    const string = chunk.toString('utf8');
+    const {appMountId} = this.flecks.get('@flecks/web/server');
+    if (-1 !== string.indexOf(`<div id="${appMountId}"></div>`)) {
+      const rendered = string.replaceAll(
+        `<div id="${appMountId}"></div>`,
+        [
+          `<div id="${appMountId}"></div>`,
+          `<script>window.document.querySelector('#${appMountId}').style.display = 'none'</script>`,
           `<script>${await configSource(this.flecks, this.req)}</script>`,
-        ),
+        ].join(''),
       );
+      this.push(rendered);
     }
     else {
       this.push(string);

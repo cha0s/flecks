@@ -119,6 +119,10 @@ export const hooks = {
   ],
   '@flecks/core.config': () => ({
     /**
+     * The ID of the root element on the page.
+     */
+    appMountId: 'root',
+    /**
      * (webpack-dev-server) Disable the host check.
      *
      * See: https://github.com/webpack/webpack-dev-server/issues/887
@@ -206,6 +210,11 @@ export const hooks = {
     'web',
     ...(flecks.get('@flecks/web/server.dll').length > 0 ? ['web-vendor'] : []),
   ],
+  '@flecks/web.config': async (req, flecks) => ({
+    '@flecks/web/client': {
+      appMountId: flecks.get('@flecks/web/server.appMountId'),
+    },
+  }),
   '@flecks/web.routes': (flecks) => [
     {
       method: 'get',

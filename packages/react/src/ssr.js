@@ -19,14 +19,15 @@ class Ssr extends Transform {
   // eslint-disable-next-line no-underscore-dangle
   async _transform(chunk, encoding, done) {
     const string = chunk.toString('utf8');
-    if (-1 !== string.indexOf('<div id="root"></div>')) {
+    const {appMountId} = this.flecks.get('@flecks/web/server');
+    if (-1 !== string.indexOf(`<div id="${appMountId}"></div>`)) {
       try {
         const renderedRoot = ReactDOMServer.renderToString(
           React.createElement(await root(this.flecks, this.req)),
         );
         const rendered = string.replaceAll(
-          '<div id="root"></div>',
-          `<div id="root">${renderedRoot}</div>`,
+          `<div id="${appMountId}"></div>`,
+          `<div id="${appMountId}">${renderedRoot}</div>`,
         );
         this.push(rendered);
       }

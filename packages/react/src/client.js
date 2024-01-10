@@ -13,6 +13,7 @@ export {FlecksContext};
 export const hooks = {
   '@flecks/web/client.up': async (flecks) => {
     const {ssr} = flecks.get('@flecks/react');
+    const {appMountId} = flecks.get('@flecks/web/client');
     debug('%sing...', ssr ? 'hydrat' : 'render');
     (ssr ? hydrate : render)(
       React.createElement(
@@ -20,7 +21,7 @@ export const hooks = {
         {},
         [React.createElement(await root(flecks), {key: 'root'})],
       ),
-      window.document.getElementById('root'),
+      window.document.getElementById(appMountId),
     );
     debug('rendered');
   },

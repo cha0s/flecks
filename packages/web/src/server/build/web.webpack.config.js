@@ -20,6 +20,7 @@ const {
 module.exports = async (env, argv, flecks) => {
   const {id} = flecks.get('@flecks/core');
   const {
+    appMountId,
     devHost,
     devPort,
     devStats,
@@ -71,7 +72,7 @@ module.exports = async (env, argv, flecks) => {
       // @todo source maps working?
       entry[name] = [entryPoint];
       plugins.push(new HtmlWebpackPlugin({
-        appMountId: 'root',
+        appMountId,
         chunks: [name],
         filename: `${name}.html`,
         inject: false,

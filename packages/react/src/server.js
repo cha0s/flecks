@@ -1,3 +1,4 @@
+import {Flecks} from '@flecks/core';
 import {augmentBuild} from '@flecks/web/server';
 
 import ssr from './ssr';
@@ -17,7 +18,10 @@ export const hooks = {
       augmentBuild(target, config, env, argv, flecks);
     }
   },
-  '@flecks/web/server.stream.html': (stream, req, flecks) => (
-    flecks.get('@flecks/react.ssr') ? ssr(stream, req, flecks) : stream
+  '@flecks/web/server.stream.html': Flecks.priority(
+    (stream, req, flecks) => (
+      flecks.get('@flecks/react.ssr') ? ssr(stream, req, flecks) : stream
+    ),
+    {after: '@flecks/web/server'},
   ),
 };
