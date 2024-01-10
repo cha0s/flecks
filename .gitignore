@@ -122,3 +122,5 @@ dist
 # package-locals
 /packages/*/yarn.lock
 /packages/*/bun.lockb
+
+/.nx/cache
