@@ -5,10 +5,6 @@ import ReactDOMServer from '@hot-loader/react-dom/server';
 
 import root from './root';
 
-const {
-  NODE_ENV,
-} = process.env;
-
 class Ssr extends Transform {
 
   constructor(flecks, req) {
@@ -19,24 +15,21 @@ class Ssr extends Transform {
 
   // eslint-disable-next-line no-underscore-dangle
   async _transform(chunk, encoding, done) {
-    const string = chunk
-      .toString('utf8');
+    const string = chunk.toString('utf8');
     if (-1 !== string.indexOf('<div id="root"></div>')) {
-      let output;
       try {
-        output = ReactDOMServer.renderToString(
-          React.createElement(await root(this.flecks, this.req)),
+        this.push(
+          string.replace(
+            '<div id="root"></div>',
+            `<div id="root">${
+              ReactDOMServer.renderToString(React.createElement(await root(this.flecks, this.req)))
+            }</div>`,
+          ),
         );
       }
       catch (e) {
-        output = '';
+        this.push(string);
       }
-      this.push(
-        string.replace(
-          '<div id="root"></div>',
-          `<div id="root">${output}</div>`,
-        ),
-      );
     }
     else {
       this.push(string);
