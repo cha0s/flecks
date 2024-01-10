@@ -2,10 +2,6 @@ class Digraph {
 
   arcs = new Map();
 
-  addArc(tail, head) {
-    this.arcs.get(tail).add(head);
-  }
-
   addDependency(head, tail) {
     this.ensureTail(head);
     this.ensureTail(tail).add(head);

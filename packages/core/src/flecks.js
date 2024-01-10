@@ -201,7 +201,7 @@ export default class Flecks {
    */
   expandedFlecks(hook) {
     if (this.$$expandedFlecksCache[hook]) {
-      return this.$$expandedFlecksCache[hook];
+      return [...this.$$expandedFlecksCache[hook]];
     }
     const flecks = this.lookupFlecks(hook);
     let expanded = [];
@@ -265,12 +265,12 @@ export default class Flecks {
         ...after,
       ];
     }
-    // Build another graph, but add arcs connecting the final ordering. If cycles exist, the
-    // ordering violated the expectation of one or more implementations.
+    // Build another graph, but add dependencies connecting the final ordering. If cycles exist,
+    // the ordering violated the expectation of one or more implementations.
     const graph = this.flecksHookGraph(expanded, hook);
     expanded.forEach((fleck, i) => {
       if (i < expanded.length - 1) {
-        graph.addArc(fleck, expanded[i + 1]);
+        graph.addDependency(expanded[i + 1], fleck);
       }
     });
     const cycles = graph.detectCycles();
@@ -303,7 +303,7 @@ export default class Flecks {
     this.$$expandedFlecksCache[hook] = expanded // eslint-disable-line no-return-assign
       .filter((fleck) => this.fleckImplementation(fleck, hook));
     debugSilly("cached hook expansion for '%s': %O", hook, expanded);
-    return this.$$expandedFlecksCache[hook];
+    return [...this.$$expandedFlecksCache[hook]];
   }
 
   /**
@@ -360,13 +360,12 @@ export default class Flecks {
         if (implementation?.[HookPriority]) {
           if (implementation[HookPriority].before) {
             implementation[HookPriority].before.forEach((before) => {
-              graph.addArc(fleck, before);
+              graph.addDependency(before, fleck);
             });
           }
           if (implementation[HookPriority].after) {
             implementation[HookPriority].after.forEach((after) => {
-              graph.ensureTail(after);
-              graph.addArc(after, fleck);
+              graph.addDependency(fleck, after);
             });
           }
         }
@@ -473,9 +472,6 @@ export default class Flecks {
       return initial;
     }
     const flecks = this.expandedFlecks(hook);
-    if (0 === flecks.length) {
-      return initial;
-    }
     return flecks
       .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), initial);
   }
@@ -490,9 +486,6 @@ export default class Flecks {
       return arg;
     }
     const flecks = this.expandedFlecks(hook);
-    if (0 === flecks.length) {
-      return arg;
-    }
     return flecks
       .reduce(async (r, fleck) => this.invokeFleck(hook, fleck, await r, ...args), arg);
   }
@@ -646,11 +639,8 @@ export default class Flecks {
     if (!this.hooks[hook]) {
       return [];
     }
-    const flecks = this.expandedFlecks(hook);
-    if (0 === flecks.length) {
-      return [];
-    }
     const results = [];
+    const flecks = this.expandedFlecks(hook);
     while (flecks.length > 0) {
       const fleck = flecks.shift();
       results.push(this.invokeFleck(hook, fleck, ...args));
@@ -667,11 +657,8 @@ export default class Flecks {
     if (!this.hooks[hook]) {
       return [];
     }
-    const flecks = this.expandedFlecks(hook);
-    if (0 === flecks.length) {
-      return [];
-    }
     const results = [];
+    const flecks = this.expandedFlecks(hook);
     while (flecks.length > 0) {
       const fleck = flecks.shift();
       // eslint-disable-next-line no-await-in-loop
@@ -712,6 +699,7 @@ export default class Flecks {
     }
     const flecks = this.expandedFlecks(hook);
     if (0 === flecks.length) {
+      // No flecks, immediate dispatch.
       return (...args) => args.pop()();
     }
     debugSilly('middleware: %O', flecks);
