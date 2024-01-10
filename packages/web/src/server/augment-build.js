@@ -2,6 +2,7 @@ import {regexFromExtensions} from '@flecks/core/server';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const augmentBuild = (target, config, env, argv, flecks) => {
+  const isProduction = 'production' === argv.mode;
   let finalLoader;
   switch (target) {
     case 'fleck': {
@@ -66,13 +67,21 @@ const augmentBuild = (target, config, env, argv, flecks) => {
   config.module.rules.push(stylesWithModulesRule(['.css'], [postcss]));
   config.module.rules.push(stylesWithModulesRule(['.sass', '.scss'], [postcss, 'sass-loader']));
   // Fonts.
-  config.module.rules.push({
-    generator: {
-      filename: 'assets/[hash][ext][query]',
-    },
-    test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-    type: 'asset',
-  });
+  if (isProduction) {
+    config.module.rules.push({
+      generator: {
+        filename: 'assets/[hash][ext][query]',
+      },
+      test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+      type: 'asset',
+    });
+  }
+  else {
+    config.module.rules.push({
+      test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+      type: 'asset/inline',
+    });
+  }
   // Images.
   config.module.rules.push({
     generator: {
