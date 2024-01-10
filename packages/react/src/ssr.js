@@ -1,9 +1,12 @@
 import {Transform} from 'stream';
 
+import {D} from '@flecks/core';
 import React from 'react';
 import ReactDOMServer from '@hot-loader/react-dom/server';
 
 import root from './root';
+
+const debug = D('@flecks/react/root');
 
 class Ssr extends Transform {
 
@@ -18,16 +21,17 @@ class Ssr extends Transform {
     const string = chunk.toString('utf8');
     if (-1 !== string.indexOf('<div id="root"></div>')) {
       try {
-        this.push(
-          string.replace(
-            '<div id="root"></div>',
-            `<div id="root">${
-              ReactDOMServer.renderToString(React.createElement(await root(this.flecks, this.req)))
-            }</div>`,
-          ),
+        const renderedRoot = ReactDOMServer.renderToString(
+          React.createElement(await root(this.flecks, this.req)),
         );
+        const rendered = string.replaceAll(
+          '<div id="root"></div>',
+          `<div id="root">${renderedRoot}</div>`,
+        );
+        this.push(rendered);
       }
-      catch (e) {
+      catch (error) {
+        debug('React SSR failed: %O', error);
         this.push(string);
       }
     }
