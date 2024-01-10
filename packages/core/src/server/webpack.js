@@ -112,7 +112,7 @@ exports.executable = () => ([
 exports.externals = nodeExternals;
 
 exports.regexFromExtensions = (exts) => (
-  new RegExp(String.raw`(?:${exts.map((ext) => ext.replace('.', '\\.')).join('|')})$`)
+  new RegExp(String.raw`(?:${exts.map((ext) => ext.replaceAll('.', '\\.')).join('|')})$`)
 );
 
 exports.webpack = webpack;
