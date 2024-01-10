@@ -1,5 +1,6 @@
 import {join} from 'path';
 
+import {Flecks} from '@flecks/core';
 import {banner} from '@flecks/core/server';
 
 const electron = __non_webpack_require__('electron');
@@ -129,7 +130,10 @@ export const hooks = {
       createWindow: () => createWindow(flecks),
     },
   }),
-  '@flecks/server.up': async (flecks) => {
-    await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', flecks.electron);
-  },
+  '@flecks/server.up': Flecks.priority(
+    async (flecks) => {
+      await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', flecks.electron);
+    },
+    {after: '@flecks/web/server', before: '@flecks/repl/server'},
+  ),
 };

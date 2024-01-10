@@ -1,4 +1,4 @@
-import {D} from '@flecks/core';
+import {D, Flecks} from '@flecks/core';
 import express from 'express';
 import expressSession from 'express-session';
 
@@ -25,42 +25,51 @@ export const hooks = {
 
     }
   ),
-  '@flecks/web/server.request.route': (flecks) => {
-    const urle = express.urlencoded({extended: true});
-    return (req, res, next) => {
-      debugSilly('@flecks/web/server.request.route: express.urlencoded()');
-      urle(req, res, (error) => {
-        if (error) {
-          next(error);
-          return;
-        }
-        debugSilly('@flecks/web/server.request.route: session()');
-        flecks.user.session(req, res, (error) => {
+  '@flecks/web/server.request.route': Flecks.priority(
+    (flecks) => {
+      const urle = express.urlencoded({extended: true});
+      return (req, res, next) => {
+        debugSilly('@flecks/web/server.request.route: express.urlencoded()');
+        urle(req, res, (error) => {
           if (error) {
             next(error);
             return;
           }
-          debugSilly('session ID: %s', req.session.id);
-          next();
+          debugSilly('@flecks/web/server.request.route: session()');
+          flecks.user.session(req, res, (error) => {
+            if (error) {
+              next(error);
+              return;
+            }
+            debugSilly('session ID: %s', req.session.id);
+            next();
+          });
         });
+      };
+    },
+    {before: '@flecks/user/server'},
+  ),
+  '@flecks/server.up': Flecks.priority(
+    async (flecks) => {
+      flecks.user.session = expressSession({
+        resave: false,
+        sameSite: true,
+        saveUninitialized: false,
+        secret: flecks.get('@flecks/user/session/server.cookieSecret'),
+        ...await flecks.invokeMergeAsync('@flecks/user.session'),
       });
-    };
-  },
-  '@flecks/server.up': async (flecks) => {
-    flecks.user.session = expressSession({
-      resave: false,
-      sameSite: true,
-      saveUninitialized: false,
-      secret: flecks.get('@flecks/user/session/server.cookieSecret'),
-      ...await flecks.invokeMergeAsync('@flecks/user.session'),
-    });
-  },
-  '@flecks/socket/server.request.socket': (flecks) => (socket, next) => {
-    debugSilly('@flecks/socket/server.request.socket: session()');
-    flecks.user.session(socket.handshake, {}, () => {
-      const id = socket.handshake.session?.id;
-      socket.join(id);
-      next();
-    });
-  },
+    },
+    {after: ['@flecks/governor/server', '@flecks/user/server']},
+  ),
+  '@flecks/socket/server.request.socket': Flecks.priority(
+    (flecks) => (socket, next) => {
+      debugSilly('@flecks/socket/server.request.socket: session()');
+      flecks.user.session(socket.handshake, {}, () => {
+        const id = socket.handshake.session?.id;
+        socket.join(id);
+        next();
+      });
+    },
+    {before: '@flecks/user/server'},
+  ),
 };

@@ -12,15 +12,18 @@ export const hooks = {
 
     }
   ),
-  '@flecks/react.providers': async (req, flecks) => {
-    const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
-    const reducer = createReducer(flecks, slices);
-    // Hydrate from server.
-    const {preloadedState} = flecks.get('@flecks/redux/client');
-    const store = await configureStore(flecks, reducer, {preloadedState});
-    flecks.redux = store;
-    return [Provider, {store}];
-  },
+  '@flecks/react.providers': Flecks.priority(
+    async (req, flecks) => {
+      const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
+      const reducer = createReducer(flecks, slices);
+      // Hydrate from server.
+      const {preloadedState} = flecks.get('@flecks/redux/client');
+      const store = await configureStore(flecks, reducer, {preloadedState});
+      flecks.redux = store;
+      return [Provider, {store}];
+    },
+    {before: '@flecks/react/router/client'},
+  ),
   '@flecks/redux.store': ({enhancers}) => {
     // Hydrate from and subscribe to localStorage.
     enhancers.push(localStorageEnhancer);

@@ -31,18 +31,21 @@ export const hooks = {
       },
     },
   ],
-  '@flecks/server.up': (flecks) => {
-    passport.serializeUser((user, fn) => fn(null, user.id));
-    passport.deserializeUser(async (id, fn) => {
-      const {User} = flecks.db.Models;
-      try {
-        fn(undefined, await User.findByPk(id));
-      }
-      catch (error) {
-        fn(error);
-      }
-    });
-  },
+  '@flecks/server.up': Flecks.priority(
+    (flecks) => {
+      passport.serializeUser((user, fn) => fn(null, user.id));
+      passport.deserializeUser(async (id, fn) => {
+        const {User} = flecks.db.Models;
+        try {
+          fn(undefined, await User.findByPk(id));
+        }
+        catch (error) {
+          fn(error);
+        }
+      });
+    },
+    {before: '@flecks/web/server', after: ['@flecks/db/server', '@flecks/governor/server']},
+  ),
   '@flecks/socket.intercom': () => ({
     '@flecks/user.users': async (sids, server) => {
       const sockets = await server.sockets();
@@ -57,25 +60,28 @@ export const hooks = {
         );
     },
   }),
-  '@flecks/socket/server.request.socket': (flecks) => (socket, next) => {
-    debugSilly('@flecks/socket/server.request.socket: passport.initialize()');
-    passport.initialize()(socket.handshake, undefined, () => {
-      debugSilly('@flecks/socket/server.request.socket: passport.session()');
-      passport.session()(socket.handshake, undefined, async () => {
-        if (!socket.handshake.user) {
-          const {User} = flecks.db.Models;
-          socket.handshake.user = new User();
-          socket.handshake.user.id = 0;
-        }
-        socket.handshake.login = LogOps.logIn;
-        socket.handshake.logIn = LogOps.logIn;
-        socket.handshake.logout = LogOps.logOut;
-        socket.handshake.logOut = LogOps.logOut;
-        socket.handshake.isAuthenticated = LogOps.isAuthenticated;
-        socket.handshake.isUnauthenticated = LogOps.isUnauthenticated;
-        await socket.join(`/u/${socket.handshake.user.id}`);
-        next();
+  '@flecks/socket/server.request.socket': Flecks.priority(
+    (flecks) => (socket, next) => {
+      debugSilly('@flecks/socket/server.request.socket: passport.initialize()');
+      passport.initialize()(socket.handshake, undefined, () => {
+        debugSilly('@flecks/socket/server.request.socket: passport.session()');
+        passport.session()(socket.handshake, undefined, async () => {
+          if (!socket.handshake.user) {
+            const {User} = flecks.db.Models;
+            socket.handshake.user = new User();
+            socket.handshake.user.id = 0;
+          }
+          socket.handshake.login = LogOps.logIn;
+          socket.handshake.logIn = LogOps.logIn;
+          socket.handshake.logout = LogOps.logOut;
+          socket.handshake.logOut = LogOps.logOut;
+          socket.handshake.isAuthenticated = LogOps.isAuthenticated;
+          socket.handshake.isUnauthenticated = LogOps.isUnauthenticated;
+          await socket.join(`/u/${socket.handshake.user.id}`);
+          next();
+        });
       });
-    });
-  },
+    },
+    {before: '@flecks/governor/server'},
+  ),
 };

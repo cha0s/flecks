@@ -1,4 +1,4 @@
-import {D} from '@flecks/core';
+import {D, Flecks} from '@flecks/core';
 import {Provider} from 'react-redux';
 
 import {hydrateServer} from './actions';
@@ -30,5 +30,8 @@ export const hooks = {
       preloadedState: req.redux.getState(),
     },
   }),
-  '@flecks/react.providers': (req) => [Provider, {store: req.redux}],
+  '@flecks/react.providers': Flecks.priority(
+    (req) => [Provider, {store: req.redux}],
+    {before: '@flecks/react/router/server'},
+  ),
 };

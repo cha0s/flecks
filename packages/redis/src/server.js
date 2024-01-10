@@ -1,3 +1,5 @@
+import {Flecks} from '@flecks/core';
+
 import containers from './containers';
 import createClient from './create-client';
 
@@ -40,4 +42,17 @@ export const hooks = {
   '@flecks/repl.context': (flecks) => ({
     redisClient: createClient(flecks),
   }),
+  '@flecks/server.up': Flecks.priority(
+    async (flecks) => {
+      const client = createClient(flecks);
+      const promise = new Promise((resolve, reject) => {
+        client.on('ready', resolve);
+        client.on('error', reject);
+      });
+      await client.connect();
+      await promise;
+      await client.disconnect();
+    },
+    {after: '@flecks/docker/server'},
+  ),
 };

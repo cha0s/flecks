@@ -50,19 +50,22 @@ export const hooks = {
       },
     };
   },
-  '@flecks/server.up': (flecks) => {
-    passport.use(new LocalStrategy(
-      {usernameField: 'email'},
-      async (email, password, fn) => {
-        const {User} = flecks.db.Models;
-        try {
-          const user = await User.findOne({where: {email}});
-          fn(undefined, user && await user.validatePassword(password) && user);
-        }
-        catch (error) {
-          fn(error);
-        }
-      },
-    ));
-  },
+  '@flecks/server.up': Flecks.priority(
+    (flecks) => {
+      passport.use(new LocalStrategy(
+        {usernameField: 'email'},
+        async (email, password, fn) => {
+          const {User} = flecks.db.Models;
+          try {
+            const user = await User.findOne({where: {email}});
+            fn(undefined, user && await user.validatePassword(password) && user);
+          }
+          catch (error) {
+            fn(error);
+          }
+        },
+      ));
+    },
+    {after: '@flecks/user/server', before: '@flecks/repl/server'},
+  ),
 };
