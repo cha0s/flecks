@@ -8,6 +8,7 @@ const {
 } = require('@flecks/core/server');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {htmlTagObjectToString} = require('html-webpack-plugin/lib/html-tags');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 
 const runtime = require('./runtime');
@@ -79,17 +80,43 @@ module.exports = async (env, argv, flecks) => {
         lang: 'en',
         template: flecks.buildConfig('template.ejs', name),
         templateParameters: (compilation, assets, assetTags, options) => {
-          const styleFiles = [];
-          const styleChunk = Array.from(compilation.chunks).find((chunk) => (
-            chunk.chunkReason?.match(/split chunk \(cache group: styles\)/)
-          ));
-          if (isProduction && styleChunk) {
-            for (let i = 0; i < assets.css.length; ++i) {
-              const asset = compilation.assets[assets.css[i].substring(1)];
-              if (asset) {
-                styleFiles.push({content: asset.source(), href: assets.css[i]});
-                assetTags.headTags = assetTags.headTags
-                  .filter(({attributes}) => attributes?.href !== assets.css[i]);
+          if ('index' === name) {
+            const styleChunks = Array.from(compilation.chunks)
+              .filter((chunk) => chunk.idNameHints.has('flecksCompiled'));
+            for (let i = 0; i < styleChunks.length; ++i) {
+              const styleChunk = styleChunks[i];
+              const styleChunkFiles = Array.from(styleChunk.files)
+                .filter((file) => file.match(/\.css$/));
+              const styleAssets = styleChunkFiles.map((filename) => compilation.assets[filename]);
+              for (let j = 0; j < styleAssets.length; ++j) {
+                const asset = styleAssets[j];
+                if (asset) {
+                  assetTags.headTags = assetTags.headTags
+                    .filter(({attributes}) => attributes?.href !== styleChunkFiles[j]);
+                  let tag;
+                  if (isProduction) {
+                    tag = HtmlWebpackPlugin.createHtmlTagObject(
+                      'style',
+                      {'data-href': `/${styleChunkFiles[j]}`},
+                      asset.source(),
+                      {plugin: '@flecks/web/server'},
+                    );
+                  }
+                  else {
+                    tag = HtmlWebpackPlugin.createHtmlTagObject(
+                      'link',
+                      {
+                        href: `/${styleChunkFiles[j]}`,
+                        rel: 'stylesheet',
+                        type: 'text/css',
+                      },
+                      undefined,
+                      {plugin: '@flecks/web/server'},
+                    );
+                  }
+                  tag.toString = () => htmlTagObjectToString(tag, false);
+                  assetTags.headTags.unshift(tag);
+                }
               }
             }
           }
@@ -101,7 +128,6 @@ module.exports = async (env, argv, flecks) => {
               files: assets,
               options,
             },
-            styleFiles,
           };
         },
         title: id,
@@ -152,13 +178,16 @@ module.exports = async (env, argv, flecks) => {
       runtimeChunk: 'single',
       splitChunks: {
         cacheGroups: {
-          styles: {
+          applicationStyles: {
             chunks: 'all',
+            type: 'css/mini-extract',
             enforce: true,
+            name: 'applicationStyles',
             priority: 100,
-            test: styleExtensionsRegex,
+            test: 'index',
           },
         },
+        chunks: 'all',
       },
     },
     output: {

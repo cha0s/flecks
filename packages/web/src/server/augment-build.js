@@ -11,7 +11,8 @@ const augmentBuild = (target, config, env, argv, flecks) => {
       break;
     }
     case 'server': {
-      finalLoader = {loader: 'style-loader', options: {injectType: 'lazyStyleTag'}};
+      finalLoader = {loader: MiniCssExtractPlugin.loader, options: {emit: false}};
+      config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
       break;
     }
     case 'web': {
@@ -44,7 +45,9 @@ const augmentBuild = (target, config, env, argv, flecks) => {
         loaders,
         {
           modules: {
-            localIdentName: '[hash:4]',
+            localIdentName: isProduction
+              ? '[hash:base64:5]'
+              : '[path][name]__[local]',
           },
         },
       ),

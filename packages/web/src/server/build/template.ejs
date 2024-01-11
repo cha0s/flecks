@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <title><%= htmlWebpackPlugin.options.title %></title>
     <%= htmlWebpackPlugin.tags.headTags %>
-    <% styleFiles.forEach(({content, href}) => { %>
-      <style data-href="<%= href %>"><%= content %></style>
-    <% }); %>
   </head>
   <body>
     <%= htmlWebpackPlugin.tags.bodyTags %>
