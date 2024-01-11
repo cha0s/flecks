@@ -162,10 +162,6 @@ export const hooks = {
      */
     host: '0.0.0.0',
     /**
-     * Build path.
-     */
-    output: 'web',
-    /**
      * Port to bind.
      */
     port: 32340,

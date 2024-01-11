@@ -67,7 +67,7 @@ export const hooks = {
         const {exec} = plugin.options;
         plugin.options.exec = (compilation) => {
           plugin.options.args = [join(config.output.path, compilation.getPath(exec))];
-          return join('..', 'node_modules', '.bin', 'electron');
+          return join('..', '..', 'node_modules', '.bin', 'electron');
         };
       }
     }

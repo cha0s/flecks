@@ -25,7 +25,6 @@ export const createHttpServer = async (flecks) => {
     devHost,
     devPort,
     host,
-    output,
     port,
   } = flecks.get('@flecks/web/server');
   const app = express();
@@ -104,18 +103,18 @@ export const createHttpServer = async (flecks) => {
   }
   else {
     // Serve the document root, sans index.
-    app.use(express.static(join(FLECKS_CORE_ROOT, 'dist', output), {index: false}));
+    app.use(express.static(join(FLECKS_CORE_ROOT, 'dist', 'web'), {index: false}));
     // Tests bypass middleware and stream processing.
     app.get('/tests.html', (req, res) => {
       res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-      const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', output, 'tests.html'));
+      const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', 'web', 'tests.html'));
       stream.pipe(res);
     });
     // Fallback to serving HTML.
     app.get('*', routeMiddleware, async (req, res) => {
       if (req.accepts('text/html')) {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-        const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', output, 'index.html'));
+        const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', 'web', 'index.html'));
         deliverHtmlStream(stream, flecks, req, res);
       }
       else {

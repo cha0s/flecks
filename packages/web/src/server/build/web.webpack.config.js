@@ -193,7 +193,7 @@ module.exports = async (env, argv, flecks) => {
     output: {
       chunkFilename: isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js',
       filename: isProduction ? 'assets/[name].[contenthash:8].js' : 'assets/[name].js',
-      path: join(FLECKS_CORE_ROOT, 'dist', flecks.get('@flecks/web/server.output')),
+      path: join(FLECKS_CORE_ROOT, 'dist', 'web'),
       publicPath: '/',
     },
     plugins,

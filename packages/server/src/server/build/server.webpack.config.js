@@ -1,3 +1,5 @@
+const {join} = require('path');
+
 const {
   banner,
   defaultConfig,
@@ -6,6 +8,10 @@ const {
 
 const runtime = require('./runtime');
 const startServer = require('./start');
+
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
 module.exports = async (env, argv, flecks) => {
   const {
@@ -20,6 +26,7 @@ module.exports = async (env, argv, flecks) => {
     },
     output: {
       libraryTarget: 'commonjs2',
+      path: join(FLECKS_CORE_ROOT, 'dist', 'server'),
     },
     plugins: [
       banner({banner: "require('source-map-support').install();"}),
