@@ -132,7 +132,9 @@ export const hooks = {
   }),
   '@flecks/server.up': Flecks.priority(
     async (flecks) => {
-      await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', flecks.electron);
+      if (flecks.electron) {
+        await flecks.invokeSequentialAsync('@flecks/electron/server.initialize', flecks.electron);
+      }
     },
     {after: '@flecks/web/server', before: '@flecks/repl/server'},
   ),
