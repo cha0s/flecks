@@ -59,7 +59,20 @@ export default async (flecks, key, config) => {
   }
   args.push('-v', `${datadir}:${config.mount}`);
   args.push(config.image);
-  debug('launching: docker %s', args.join(' '));
+  debug(
+    'launching: docker %s',
+    args.map((arg, i) => {
+      if (i > 0 && '-e' === args[i - 1]) {
+        const parts = arg.split('=');
+        if (parts.length > 1) {
+          parts[1] = '...';
+        }
+        // eslint-disable-next-line no-param-reassign
+        arg = parts.join('=');
+      }
+      return arg;
+    }).join(' '),
+  );
   const child = spawn('docker', args, {
     detached: true,
     stdio: 'ignore',

@@ -432,7 +432,7 @@ logs:
 
 ```
   @flecks/docker/container creating datadir '/tmp/flecks/flecks/docker/sequelize' +0ms
-  @flecks/docker/container launching: docker run --name flecks_sequelize -d --rm -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_DB=db -e POSTGRES_PASSWORD=THIS_PASSWORD_IS_UNSAFE -v /tmp/flecks/flecks/docker/sequelize:/var/lib/postgresql/data postgres +0ms
+  @flecks/docker/container launching: docker run --name flecks_sequelize -d --rm -p 5432:5432 -e POSTGRES_USER=... -e POSTGRES_DB=... -e POSTGRES_PASSWORD=... -v /tmp/flecks/flecks/docker/sequelize:/var/lib/postgresql/data postgres +0ms
   @flecks/docker/container 'sequelize' started +372ms
   @flecks/db/server/connection config: { database: 'db', dialect: 'postgres', host: undefined, password: '*** REDACTED ***', port: undefined, username: 'postgres' } +0ms
   @flecks/db/server/connection synchronizing... +2s
