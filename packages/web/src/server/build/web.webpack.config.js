@@ -19,13 +19,16 @@ const {
 } = process.env;
 
 module.exports = async (env, argv, flecks) => {
-  const {id} = flecks.get('@flecks/core');
   const {
     appMountId,
+    base,
     devHost,
     devPort,
     devStats,
+    meta,
+    icon,
     port,
+    title,
   } = flecks.get('@flecks/web/server');
   const isProduction = 'production' === argv.mode;
   const plugins = [
@@ -73,13 +76,28 @@ module.exports = async (env, argv, flecks) => {
       // @todo source maps working?
       entry[name] = [entryPoint];
       plugins.push(new HtmlWebpackPlugin({
-        appMountId,
+        appMountId: flecks.interpolate(appMountId),
+        base: flecks.interpolate(base),
         chunks: [name],
         filename: `${name}.html`,
         inject: false,
         lang: 'en',
+        meta,
         template: flecks.buildConfig('template.ejs', name),
         templateParameters: (compilation, assets, assetTags, options) => {
+          function createTag(tagName, attributes, content) {
+            const tag = HtmlWebpackPlugin.createHtmlTagObject(
+              tagName,
+              attributes,
+              content,
+              {plugin: '@flecks/web/server'},
+            );
+            tag.toString = () => htmlTagObjectToString(tag, false);
+            return tag;
+          }
+          if (icon) {
+            assetTags.headTags.push('link', {rel: 'icon', href: icon});
+          }
           if ('index' === name) {
             const styleChunks = Array.from(compilation.chunks)
               .filter((chunk) => chunk.idNameHints.has('flecksCompiled'));
@@ -93,29 +111,24 @@ module.exports = async (env, argv, flecks) => {
                 if (asset) {
                   assetTags.headTags = assetTags.headTags
                     .filter(({attributes}) => attributes?.href !== styleChunkFiles[j]);
-                  let tag;
-                  if (isProduction) {
-                    tag = HtmlWebpackPlugin.createHtmlTagObject(
-                      'style',
-                      {'data-href': `/${styleChunkFiles[j]}`},
-                      asset.source(),
-                      {plugin: '@flecks/web/server'},
-                    );
-                  }
-                  else {
-                    tag = HtmlWebpackPlugin.createHtmlTagObject(
-                      'link',
-                      {
-                        href: `/${styleChunkFiles[j]}`,
-                        rel: 'stylesheet',
-                        type: 'text/css',
-                      },
-                      undefined,
-                      {plugin: '@flecks/web/server'},
-                    );
-                  }
-                  tag.toString = () => htmlTagObjectToString(tag, false);
-                  assetTags.headTags.unshift(tag);
+                  assetTags.headTags.unshift(
+                    createTag(
+                      ...isProduction
+                        ? [
+                          'style',
+                          {'data-href': `/${styleChunkFiles[j]}`},
+                          asset.source(),
+                        ]
+                        : [
+                          'link',
+                          {
+                            href: `/${styleChunkFiles[j]}`,
+                            rel: 'stylesheet',
+                            type: 'text/css',
+                          },
+                        ],
+                    ),
+                  );
                 }
               }
             }
@@ -130,7 +143,7 @@ module.exports = async (env, argv, flecks) => {
             },
           };
         },
-        title: id,
+        title: flecks.interpolate(title),
         ...htmlTemplateConfig,
       }));
     });

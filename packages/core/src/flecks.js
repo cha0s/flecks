@@ -445,6 +445,15 @@ export default class Flecks {
   }
 
   /**
+   * Interpolate a string with flecks configurtaion values.
+   * @param {string} string
+   * @returns The interpolated string.
+   */
+  interpolate(string) {
+    return string.replace(/\[(.*?)\]/g, (match) => this.get(match));
+  }
+
+  /**
    * Return an object whose keys are fleck paths and values are the result of invoking the hook.
    * @param {string} hook
    * @param {...any} args Arguments passed to each implementation.

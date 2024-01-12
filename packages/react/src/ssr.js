@@ -1,47 +1,93 @@
-import {Transform} from 'stream';
-
-import {D} from '@flecks/core';
+import {WritableStream} from 'htmlparser2/lib/WritableStream';
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import {renderToPipeableStream} from 'react-dom/server';
 
+import {configSource} from '@flecks/web/server';
+import Document from './document';
 import root from './root';
 
-const debug = D('@flecks/react/root');
-
-class Ssr extends Transform {
-
-  constructor(flecks, req) {
-    super();
-    this.flecks = flecks;
-    this.req = req;
-  }
-
-  // eslint-disable-next-line no-underscore-dangle
-  async _transform(chunk, encoding, done) {
-    const string = chunk.toString('utf8');
-    const {appMountId} = this.flecks.get('@flecks/web/server');
-    if (-1 !== string.indexOf(`<div id="${appMountId}">`)) {
-      try {
-        const renderedRoot = ReactDOMServer.renderToString(
-          React.createElement(await root(this.flecks, this.req)),
-        );
-        const rendered = string.replaceAll(
-          `<div id="${appMountId}">`,
-          `<div id="${appMountId}">${renderedRoot}`,
-        );
-        this.push(rendered);
+export default async (stream, req, flecks) => {
+  const {
+    appMountId,
+    base,
+    icon,
+    meta,
+    title,
+  } = flecks.get('@flecks/web/server');
+  // Extract assets.
+  const css = [];
+  let inline = '';
+  let isInScript = 0;
+  let isSkipping = false;
+  const js = [];
+  const parserStream = new WritableStream({
+    onclosetag(tagName) {
+      if ('script' === tagName) {
+        isInScript -= 1;
+        isSkipping = false;
       }
-      catch (error) {
-        debug('React SSR failed: %O', error);
-        this.push(string);
+    },
+    onopentag(tagName, attribs) {
+      if ('script' === tagName) {
+        isInScript += 1;
+        if ('ignore' === attribs?.['data-flecks']) {
+          isSkipping = true;
+        }
+        else if (attribs.src) {
+          js.push(attribs.src);
+        }
       }
-    }
-    else {
-      this.push(string);
-    }
-    done();
-  }
-
-}
-
-export default (stream, req, flecks) => stream.pipe(new Ssr(flecks, req));
+      if ('style' === tagName && attribs['data-href']) {
+        css.push(attribs['data-href']);
+      }
+      if ('link' === tagName && 'stylesheet' === attribs.rel && attribs.href) {
+        css.push(attribs.href);
+      }
+    },
+    ontext(text) {
+      if (isInScript > 0 && !isSkipping) {
+        inline += text;
+      }
+    },
+  });
+  await new Promise((resolve, reject) => {
+    const piped = stream.pipe(parserStream);
+    piped.on('error', reject);
+    piped.on('finish', resolve);
+  });
+  // Render document.
+  const DocumentElement = React.createElement(
+    Document,
+    {
+      appMountId: flecks.interpolate(appMountId),
+      base: flecks.interpolate(base),
+      config: React.createElement(
+        'script',
+        {dangerouslySetInnerHTML: {__html: await configSource(flecks, req)}},
+      ),
+      css,
+      icon,
+      meta,
+      root: React.createElement(await root(flecks, req)),
+      title: flecks.interpolate(title),
+    },
+  );
+  return new Promise((resolve) => {
+    const rendered = renderToPipeableStream(
+      DocumentElement,
+      {
+        bootstrapScripts: js,
+        bootstrapScriptContent: inline,
+        onError() {
+          resolve(stream);
+        },
+        onShellError() {
+          resolve(stream);
+        },
+        onShellReady() {
+          resolve(rendered);
+        },
+      },
+    );
+  });
+};

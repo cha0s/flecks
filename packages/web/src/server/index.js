@@ -14,7 +14,7 @@ const {
 
 const debug = D('@flecks/web/server');
 
-export {augmentBuild};
+export {augmentBuild, configSource};
 
 export const hooks = {
   '@flecks/core.build': augmentBuild,
@@ -123,6 +123,10 @@ export const hooks = {
      */
     appMountId: 'root',
     /**
+     * Base tag path.
+     */
+    base: '/',
+    /**
      * (webpack-dev-server) Disable the host check.
      *
      * See: https://github.com/webpack/webpack-dev-server/issues/887
@@ -162,9 +166,20 @@ export const hooks = {
      */
     host: '0.0.0.0',
     /**
+     * Path to icon.
+     */
+    icon: '',
+    /**
      * Port to bind.
      */
     port: 32340,
+    /**
+     * Meta tags.
+     */
+    meta: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, user-scalable=no',
+    },
     /**
      * Public path to server.
      */
@@ -176,6 +191,10 @@ export const hooks = {
       colors: true,
       errorDetails: true,
     },
+    /**
+     * HTML title.
+     */
+    title: '[@flecks/core.id]',
     /**
      * Proxies to trust.
      *

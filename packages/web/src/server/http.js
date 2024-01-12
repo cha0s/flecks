@@ -15,8 +15,8 @@ const {
 
 const debug = D('@flecks/web/server/http');
 
-const deliverHtmlStream = (stream, flecks, req, res) => {
-  flecks.invokeComposed('@flecks/web/server.stream.html', stream, req).pipe(res);
+const deliverHtmlStream = async (stream, flecks, req, res) => {
+  (await flecks.invokeComposedAsync('@flecks/web/server.stream.html', stream, req)).pipe(res);
 };
 
 export const createHttpServer = async (flecks) => {
