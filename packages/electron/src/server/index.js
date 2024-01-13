@@ -14,6 +14,7 @@ let win;
 async function createWindow(flecks) {
   const {BrowserWindow} = flecks.electron;
   const {browserWindowOptions} = flecks.get('@flecks/electron/server');
+  flecks.invoke('@flecks/electron/server.browserWindowOptions.alter', browserWindowOptions)
   win = new BrowserWindow(browserWindowOptions);
   await flecks.invokeSequentialAsync('@flecks/electron/server.window', win);
 }
