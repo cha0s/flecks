@@ -17,9 +17,6 @@
           "beginsPattern": "Compiling Client$",
         }
       },
-      "runOptions": {
-        "runOn": "folderOpen",
-      },
     }
   ]
 }
