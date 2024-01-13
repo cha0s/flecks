@@ -25,15 +25,27 @@ export default {
       items: [
         'cli',
         'environment',
-        'testing',
+        {
+          type: 'category',
+          label: 'Writing your code',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: false,
+          items: [
+            'testing',
+            'gathering',
+            'ordering',
+            'isomorphism',
+            'documentation',
+          ],
+        },
         'database',
         'sockets',
         'react',
         'electron',
-        'isomorphism',
         'redux',
         'repl',
-        'documentation',
       ],
     },
     {

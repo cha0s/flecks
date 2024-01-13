@@ -1,0 +1,252 @@
+---
+title: Gathering and Providing
+description: Easily gather and provide things like database models, socket packets, etc.
+---
+
+Gathering is useful when your fleck defines some sort of specification class, and then expects its
+sibling flecks to extend it. Some common examples:
+
+- Database models, defined through `@flecks/db/server.models`.
+- Socket packets, defined through `@flecks/socket.packets`.
+
+## Basics
+
+One constraint of using `flecks.gather()` is that whatever you are gathering must be able to be
+extended as a class. You can't `flecks.gather()` plain objects, numbers, strings... you get the
+idea.
+
+The most basic usage:
+
+```javascript
+const Gathered = flecks.gather('@my/fleck.whatever');
+```
+
+Suppose `@my/fleck.whatever` above resulted in gathering two classes, `Foo` and `Bar`. In this case,
+`Gathered` would be structured as:
+
+```javascript
+import {ById, ByType} from '@flecks/core';
+
+const Gathered = {
+  1: Bar,
+  2: Foo,
+  Bar,
+  Foo,
+  [ById]: {
+    1: Bar,
+    2: Foo,
+  },
+  [ByType]: {
+    Bar,
+    Foo,
+  },
+};
+```
+
+### IDs and types
+
+`flecks.gather()` gives each of your classes a numeric (nonzero) ID as well as a type name. It also
+merges all numeric keys and type labels together into the result, so `Gathered[1] === Gathered.Bar`
+would evaluate to `true` in the example above.
+
+The symbol keys `ById` and `ByType` are useful if you need to iterate over *either* all IDs or all
+types. Since the numeric IDs and types are merged, iterating over the entire `Gathered` object
+would otherwise result in duplicates.
+
+Each class gathered by `flecks.gather()` will be extended with two properties by default: `id`
+and `type`. These correspond to the ID and type referenced above.
+
+Following from the example above:
+
+```javascript
+const foo = new Gathered.Foo();
+assert(foo.id === 2);
+assert(foo.type === 'Foo');
+```
+
+### Options
+
+`flecks.gather()` also supports some options:
+
+```javascript
+{
+  // The property added when extending the class to return the numeric ID.
+  idProperty = 'id',
+  // The property added when extending the class to return the type.
+  typeProperty = 'type',
+  // A function called with the `Gathered` object to allow checking validity.
+  check = () => {},
+}
+```
+
+As an example, when `@flecks/db/server` gathers models, `typeProperty` is set to `name`, because
+Sequelize requires its model classes to have a unique `name` property.
+
+:::warning[Platform order]
+
+The numeric IDs are useful for efficient serialization between the client and server, but **if you
+are using this property, ensure that `flecks.gather()` is called equivalently on both the client
+and the server**.
+
+If you have serializable `Gathered`s (e.g. Socket packets), they should be invoked
+and defined in `@your/fleck`, and not in e.g. `@your/fleck/server`, so that they are included for
+every platform. If this is not possible, make extra sure to implement them consistently across
+platforms.
+
+:::
+
+### Providing through `Flecks.provide(context, options)`
+
+Complementary to above, `Flecks.provide()` helps you to ergonomically provide your
+flecks' implementations to a gather hook.
+
+Here's an example of how you could manually provide `@flecks/db/server.models` in your own fleck:
+
+```javascript title="src/index.js"
+import SomeModel from './models/some-model';
+import AnotherModel from './models/another-model';
+
+export const hooks = {
+  '@flecks/db/server.models': () => ({
+    SomeModel,
+    AnotherModel,
+  }),
+}
+```
+
+It will become a lot of typing to keep adding new models over time. `Flecks.provide()` exists to
+reduce this maintenance burden for you.
+
+Webpack provides an API called
+[require.context](https://webpack.js.org/guides/dependency-management/#requirecontext) which
+imports many files with a pattern. A call like this:
+
+Supposing our fleck is structured like so:
+
+```
+src
+├─index.js
+└─models/
+  ├─ some-model.js
+  └─ another-model.js
+```
+
+then, this `src/index.js`:
+
+```javascript title="src/index.js"
+import {Flecks} from '@flecks/core';
+
+export const hooks = {
+  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+};
+```
+
+is *exactly equivalent* to the `src/index.js` above. By default, `Flecks.provide()` *CamelCase*s
+the paths, so e.g. `some-model` becomes `SomeModel`.
+
+#### Options
+
+`Flecks.provide()` also supports some options:
+
+```javascript
+{
+  // Whether to invoke the default export as a function.
+  invoke = true,
+  // The transformation used on the path.
+  transformer = camelCase,
+}
+```
+
+:::tip[Batteries included]
+
+There is no hard requirement to use `Flecks.provide()`, it is merely a convenience.
+
+:::
+
+### Decorating with `Flecks.decorate(context, options)`
+
+When a Model (or any other) is gathered as above, an implicit hook is called: `${hook}.decorate`.
+This allows other flecks to decorate whatever has been gathered:
+
+```javascript
+export const hooks = {
+  '@flecks/db/server.models.decorate': (Models) => {
+    return {
+      ...Models,
+      User: class extends Models.User {
+
+        // Let's mix in some logging...
+        constructor(...args) {
+          super(...args);
+          console.log ('Another user decorated!');
+        }
+
+      },
+    };
+  },
+};
+```
+
+As with above, there exists an API for making the maintenance of decorators more ergonomic.
+
+Supposing our fleck is structured like so:
+
+```
+src
+├─index.js
+└─models/
+  └─ decorators/
+     └─ user.js
+```
+
+and supposing that `src/models/decorators/user.js` is written like so:
+
+```javascript title="src/models/decorators/user.js"
+export default (User) => {
+  return class extends User {
+
+    // Let's mix in some logging...
+    constructor(...args) {
+      super(...args);
+      console.log ('Another user decorated!');
+    }
+
+  };
+};
+```
+
+then, this `src/index.js`:
+
+```javascript title="src/index.js"
+import {Flecks} from '@flecks/core';
+
+export const hooks = {
+  '@flecks/db/server.models.decorate': (
+    Flecks.decorate(require.context('./models/decorators'))
+  ),
+};
+```
+
+is *exactly equivalent* to the `src/index.js` above.
+
+:::warning[Be aware of your context]
+
+If you have defined models in `src/models` and model decorators in `src/model/decorators` as
+illustrated, be mindful of how
+[require.context](https://webpack.js.org/guides/dependency-management/#requirecontext)
+is gathering your files: particularly the `useSubdirectories` flag which is `true` by default.
+
+:::
+
+#### Options
+
+`Flecks.decorate()` also supports some options:
+
+```javascript
+{
+  // The transformation used on the class path.
+  transformer = camelCase,
+}
+```
+
+Decorator hooks are [orderable](./ordering).
