@@ -13,8 +13,9 @@ function Document({
   base,
   config,
   css,
-  meta,
+  hasVendor,
   icon,
+  meta,
   root,
   title,
 }) {
@@ -37,6 +38,7 @@ function Document({
           {config}
           <div id={appMountId}>{root}</div>
         </div>
+        {hasVendor && <script src="/assets/web-vendor.js" />}
       </body>
     </html>
   );
@@ -47,6 +49,7 @@ Document.propTypes = {
   base: PropTypes.string.isRequired,
   config: PropTypes.element.isRequired,
   css: PropTypes.arrayOf(PropTypes.string).isRequired,
+  hasVendor: PropTypes.bool.isRequired,
   icon: PropTypes.string.isRequired,
   meta: PropTypes.objectOf(PropTypes.string).isRequired,
   root: PropTypes.element.isRequired,

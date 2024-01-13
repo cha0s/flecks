@@ -16,6 +16,7 @@ export default async (stream, req, flecks) => {
   } = flecks.get('@flecks/web/server');
   // Extract assets.
   const css = [];
+  let hasVendor = false;
   let inline = '';
   let isInScript = 0;
   let isSkipping = false;
@@ -34,7 +35,12 @@ export default async (stream, req, flecks) => {
           isSkipping = true;
         }
         else if (attribs.src) {
-          js.push(attribs.src);
+          if (attribs.src.match(/web-vendor\.js$/)) {
+            hasVendor = true;
+          }
+          else {
+            js.push(attribs.src);
+          }
         }
       }
       if ('style' === tagName && attribs['data-href']) {
@@ -66,6 +72,7 @@ export default async (stream, req, flecks) => {
         {dangerouslySetInnerHTML: {__html: await configSource(flecks, req)}},
       ),
       css,
+      hasVendor,
       icon,
       meta,
       root: React.createElement(await root(flecks, req)),
