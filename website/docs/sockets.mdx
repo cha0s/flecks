@@ -227,7 +227,7 @@ const result = await socket.send(['Whatever']);
   Whenever the client receives an `Action` packet, the action will be dispatched by
   the redux store.
 
-- `@flecks/user` implements a `validate` acceptor method for the `Logout` packet:
+- `@flecks/passport` implements a `validate` acceptor method for the `Logout` packet:
 
   ```javascript
       static validate(packet, {req}) {
@@ -247,7 +247,7 @@ parameters:
 
 ### `type`
 
-The type of intercom call to make (e.g. `@flecks/user.users`).
+The type of intercom call to make (e.g. `@flecks/passport.users`).
 
 ### `data`
 

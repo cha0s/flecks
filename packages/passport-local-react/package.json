@@ -1,0 +1,30 @@
+{
+  "name": "@flecks/passport-local-react",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
+    "directory": "packages/passport-local-react"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "2.0.3",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postversion": "cp package.json dist",
+    "test": "flecks test"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@flecks/core": "^2.0.0",
+    "@flecks/passport-local": "^2.0.0",
+    "@flecks/react": "^2.0.0"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^2.0.0"
+  }
+}

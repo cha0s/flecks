@@ -18,11 +18,11 @@ Our `flecks.yml` could be configured like so:
 ```yaml
 '@flecks/http/server':
   'request.route':
-    - '@flecks/user/session'
+    - '@flecks/session'
     - '@my-app/dark-mode-check'
 ```
 
-In this application, when `@flecks/http/server.request.route` is invoked, `@flecks/user/session`'s
+In this application, when `@flecks/http/server.request.route` is invoked, `@flecks/session`'s
 implementation is invoked (which reifies the user's session from cookies), followed by
 `@my-app/dark-mode-check`'s.
 
@@ -38,7 +38,7 @@ provides you with the ellipses entry:
 ```yaml
 '@flecks/http/server':
   'request.route':
-    - '@flecks/user/session'
+    - '@flecks/session'
     - '...'
     - '@my-app/finalize'
 ```
@@ -71,7 +71,7 @@ export const hooks = {
 }
 ```
 
-Then this is the same implementation but configured to run after `@flecks/user/session/server`:
+Then this is the same implementation but configured to run after `@flecks/session/server`:
 
 ```js
 export const hooks = {
@@ -81,7 +81,7 @@ export const hooks = {
         // ...
       }
     },
-    {after: '@flecks/user/session/server'},
+    {after: '@flecks/session/server'},
   ),
 }
 ```

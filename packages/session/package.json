@@ -1,0 +1,30 @@
+{
+  "name": "@flecks/session",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cha0s/flecks.git",
+    "directory": "packages/session"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "2.0.3",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postversion": "cp package.json dist",
+    "test": "flecks test"
+  },
+  "files": [
+    "server.js"
+  ],
+  "dependencies": {
+    "@flecks/core": "^2.0.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  },
+  "devDependencies": {
+    "@flecks/fleck": "^2.0.0"
+  }
+}

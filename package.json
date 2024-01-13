@@ -25,8 +25,12 @@
     "@flecks/redux": "*",
     "@flecks/repl": "*",
     "@flecks/server": "*",
+    "@flecks/session": "*",
     "@flecks/socket": "*",
-    "@flecks/user": "*",
+    "@flecks/passport": "*",
+    "@flecks/passport-local": "*",
+    "@flecks/passport-local-react": "*",
+    "@flecks/passport-react": "*",
     "@flecks/web": "*"
   },
   "dependencies": {

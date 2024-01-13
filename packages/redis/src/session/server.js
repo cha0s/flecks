@@ -13,10 +13,10 @@ const RedisStore = ConnectRedis(session);
 export const hooks = {
   '@flecks/core.priority': (graph, hook) => {
     if ('@flecks/server.up' === hook) {
-      graph.addDependency('@flecks/user/session/server', '@flecks/redis/server');
+      graph.addDependency('@flecks/session/server', '@flecks/redis/server');
     }
   },
-  '@flecks/user.session': async (flecks) => {
+  '@flecks/session.config': async (flecks) => {
     const client = createClient(flecks, {legacyMode: true});
     await client.connect();
     return {
