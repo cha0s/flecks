@@ -2,7 +2,6 @@ import {join} from 'path';
 
 import {
   dumpYml,
-  Flecks,
   loadYml,
   Option,
   program,
@@ -25,14 +24,6 @@ const {
       .default('npm'),
   );
   program.action(async (app, {packageManager}) => {
-    const flecks = await Flecks.bootstrap({
-      config: {
-        '@flecks/core': {},
-        '@flecks/core/server': {packageManager},
-        '@flecks/create-app': {},
-        '@flecks/fleck': {},
-      },
-    });
     try {
       const {errors} = validate(app);
       if (errors) {
@@ -47,7 +38,7 @@ const {
         error.code = 129;
         throw error;
       }
-      const fileTree = await move(name, join(__dirname, 'template'), 'app', flecks);
+      const fileTree = await move(name, join(__dirname, 'template'));
       fileTree.pipe(
         'build/flecks.yml',
         transform((chunk, encoding, done, stream) => {

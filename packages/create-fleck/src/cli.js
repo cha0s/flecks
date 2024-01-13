@@ -81,7 +81,7 @@ const target = async (fleck) => {
         error.code = 129;
         throw error;
       }
-      const fileTree = await move(name, join(__dirname, 'template'), 'fleck', flecks);
+      const fileTree = await move(name, join(__dirname, 'template'));
       // Write the tree.
       await fileTree.writeTo(destination);
       await build(packageManager, destination);

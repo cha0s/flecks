@@ -23,7 +23,7 @@ export const testDestination = async (destination) => {
   }
 };
 
-export default async (name, source, type, flecks) => {
+export default async (name, source) => {
   const fileTree = await FileTree.loadFrom(source);
   // Renamed to avoid conflicts.
   const {files} = fileTree;
@@ -32,13 +32,6 @@ export default async (name, source, type, flecks) => {
       files[join(dirname(path), basename(path, '.noconflict'))] = files[path];
       delete files[path];
     });
-  // Defaults.
-  flecks.set(
-    `@flecks/create-${type}.packager`,
-    flecks.get(`@flecks/create-${type}.packager`, ['...']),
-  );
-  // Send it out.
-  await flecks.invokeSequentialAsync(`@flecks/create-${type}/packager`, fileTree);
   // Add project name to `package.json`.
   fileTree.pipe(
     'package.json',
