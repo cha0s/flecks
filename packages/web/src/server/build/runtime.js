@@ -1,12 +1,13 @@
-const {readFile, realpath, stat} = require('fs/promises');
+const {access, readFile, realpath} = require('fs/promises');
 const {
+  basename,
   dirname,
+  extname,
   join,
 } = require('path');
 
 const {D} = require('@flecks/core');
-const {Flecks, require: R} = require('@flecks/core/server');
-const glob = require('glob');
+const {Flecks, glob, require: R} = require('@flecks/core/server');
 
 const debug = D('@flecks/web/runtime');
 
@@ -19,36 +20,23 @@ module.exports = async (config, env, argv, flecks) => {
   const rootMap = {};
   Object.keys(webFlecks.resolver)
     .forEach((fleck) => {
-      rootMap[webFlecks.root(fleck)] = fleck;
+      rootMap[fleck] = webFlecks.root(fleck);
     });
-  const roots = Object.entries(rootMap)
-    .map(([root, fleck]) => (
-      [fleck, dirname(R.resolve(join(root, 'package.json')))]
-    ));
   const styles = (
     await Promise.all(
-      roots
-        .map(([fleck, path]) => {
-          try {
-            if (webFlecks.fleckIsCompiled(fleck)) {
-              return [];
-            }
-            const {files} = R(join(path, 'package.json'));
-            return (
-              files
-                .filter((name) => name.match(/\.css$/))
-                .map((name) => join(path, name))
-            );
+      Object.entries(rootMap)
+        .map(async ([fleck, root]) => {
+          // Compiled? It will be included with the compilation.
+          if (webFlecks.fleckIsCompiled(fleck)) {
+            return undefined;
           }
-          catch (error) {
-            return [];
-          }
-        })
-        .flat()
-        .map(async (filename) => {
+          const fleckResolved = R.resolve(fleck);
+          const rootResolved = dirname(R.resolve(join(root, 'package.json')));
+          const sub = fleckResolved.slice(rootResolved.length + 1);
+          const style = join(rootResolved, 'assets', `${basename(sub, extname(sub))}.css`);
           try {
-            await stat(filename);
-            return filename;
+            await access(style);
+            return style;
           }
           catch (error) {
             return undefined;
@@ -112,25 +100,26 @@ module.exports = async (config, env, argv, flecks) => {
       });
   }
   // Styles.
-  // @todo Not necessary for compiled flecks.
   config.entry.index.push(...styles);
   // Tests.
   if (!isProduction) {
-    const testPaths = [];
-    roots.forEach(([fleck, root]) => {
-      testPaths.push(...(
-        glob.sync(join(root, 'test/*.js'))
-          .map((path) => [fleck, path])
-      ));
-      for (let i = 0; i < webFlecks.platforms.length; ++i) {
-        testPaths.push(
-          ...(
-            glob.sync(join(root, `test/platforms/${webFlecks.platforms[i]}/*.js`))
-              .map((path) => [fleck, path])
-          ),
+    // const testPaths = [];
+    const roots = Array.from(new Set(Object.entries(rootMap).map(([root]) => root)));
+    const testEntries = await Promise.all(
+      roots.map(async (root) => {
+        const paths = [];
+        const resolved = dirname(__non_webpack_require__.resolve(root));
+        const rootTests = await glob(join(resolved, 'test', '*.js'));
+        paths.push(...rootTests);
+        const platformTests = await Promise.all(
+          webFlecks.platforms.map((platform) => (
+            glob(join(resolved, 'test', 'platforms', platform, '*.js'))
+          )),
         );
-      }
-    });
+        paths.push(...platformTests.flat());
+        return [root, paths];
+      }),
+    );
     const tests = await realpath(R.resolve(
       join(webFlecks.resolve('@flecks/web'), 'server', 'build', 'tests'),
     ));
@@ -142,30 +131,16 @@ module.exports = async (config, env, argv, flecks) => {
           loader: runtime,
           options: {
             source: testsSource.replace(
-              "await import('@flecks/web/tests');",
-              [
-                'const tests = {};',
-                Object.entries(
-                  testPaths
-                    .reduce(
-                      (r, [fleck, path]) => ({
-                        ...r,
-                        [fleck]: [...(r[fleck] || []), `require('${path}');`],
-                      }),
-                      {},
-                    ),
-                )
-                  .map(
-                    ([original, paths]) => (
-                      [
-                        `describe('${original}', () => {`,
-                        `  ${paths.join('\n  ')}`,
-                        '});',
-                      ].join('\n')
-                    ),
-                  ).join('\n'),
-                'await Promise.all(Object.values(tests));',
-              ].join('\n'),
+              "  await import('@flecks/web/tests');",
+              testEntries
+                .filter(([, paths]) => paths.length > 0)
+                .map(([root, paths]) => (
+                  [
+                    `  describe('${root}', () => {`,
+                    `    ${paths.map((path) => `require('${path}');`).join('\n    ')}`,
+                    '  });',
+                  ].join('\n')
+                )).join('\n\n'),
             ),
           },
         },

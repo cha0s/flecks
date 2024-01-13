@@ -225,6 +225,11 @@ export const hooks = {
     'web',
     ...(flecks.get('@flecks/web/server.dll').length > 0 ? ['web-vendor'] : []),
   ],
+  '@flecks/fleck/server.packageJson': (json, compilation) => {
+    if (Object.keys(compilation.assets).some((filename) => filename.match(/^assets\//))) {
+      json.files.push('assets');
+    }
+  },
   '@flecks/web.config': async (req, flecks) => ({
     '@flecks/web/client': {
       appMountId: flecks.get('@flecks/web/server.appMountId'),

@@ -7,7 +7,7 @@ const augmentBuild = (target, config, env, argv, flecks) => {
   switch (target) {
     case 'fleck': {
       finalLoader = {loader: MiniCssExtractPlugin.loader};
-      config.plugins.push(new MiniCssExtractPlugin({filename: '[name].css'}));
+      config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
       break;
     }
     case 'server': {

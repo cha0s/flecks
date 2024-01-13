@@ -211,6 +211,10 @@ module.exports = async (env, argv, flecks) => {
     },
     plugins,
     resolve: {
+      // Resolve the generated `url(assets/*)` style paths.
+      alias: {
+        assets: '.',
+      },
       fallback: {
         buffer: R.resolve('buffer'),
         child_process: false,
