@@ -112,9 +112,9 @@ module.exports = (env, argv, flecks) => {
   ];
   if (flecks) {
     merging.push({configFile: flecks.buildConfig('babel.config.js')});
-    const rcBabel = flecks.babel();
-    debugSilly('.flecksrc: babel: %j', rcBabel);
-    merging.push(...rcBabel.map(([, babel]) => babel));
+    const flecksBabelConfig = flecks.babel();
+    debugSilly('flecks.config.js: babel: %j', flecksBabelConfig);
+    merging.push(...flecksBabelConfig.map(([, babel]) => babel));
   }
   const babelConfig = babelmerge.all(merging);
   const extensionsRegex = regexFromExtensions(config.resolve.extensions);

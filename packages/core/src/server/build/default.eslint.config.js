@@ -23,8 +23,8 @@ module.exports = (flecks) => {
   ];
   if (flecks) {
     merging.push({configFile: flecks.buildConfig('babel.config.js')});
-    const rcBabel = flecks.babel();
-    merging.push(...rcBabel.map(([, babel]) => babel));
+    const flecksBabelConfig = flecks.babel();
+    merging.push(...flecksBabelConfig.map(([, babel]) => babel));
   }
   const babelConfig = babelmerge.all(merging);
   return {

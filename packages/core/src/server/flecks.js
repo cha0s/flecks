@@ -39,8 +39,8 @@ export default class ServerFlecks extends Flecks {
     this.overrideConfigFromEnvironment();
     this.buildConfigs = {};
     this.loadBuildConfigs();
+    this.flecksConfig = options.flecksConfig || {};
     this.resolver = options.resolver || {};
-    this.rcs = options.rcs || {};
   }
 
   static async addFleckToYml(fleck, path) {
@@ -65,15 +65,15 @@ export default class ServerFlecks extends Flecks {
   }
 
   aliases() {
-    return this.constructor.aliases(this.rcs);
+    return this.constructor.aliases(this.flecksConfig);
   }
 
-  static aliases(rcs) {
-    const keys = Object.keys(rcs);
+  static aliases(flecksConfig) {
+    const keys = Object.keys(flecksConfig);
     let aliases = {};
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      const config = rcs[key];
+      const config = flecksConfig[key];
       if (config.aliases && Object.keys(config.aliases).length > 0) {
         aliases = {...aliases, ...config.aliases};
       }
@@ -82,11 +82,11 @@ export default class ServerFlecks extends Flecks {
   }
 
   babel() {
-    return this.constructor.babel(this.rcs);
+    return this.constructor.babel(this.flecksConfig);
   }
 
-  static babel(rcs) {
-    return Object.entries(rcs)
+  static babel(flecksConfig) {
+    return Object.entries(flecksConfig)
       .filter(([, {babel}]) => babel)
       .map(([key, {babel}]) => [key, babel]);
   }
@@ -109,8 +109,12 @@ export default class ServerFlecks extends Flecks {
     }
     debug('bootstrap configuration (%s)', configType);
     debugSilly(config);
-    // Make resolver and load rcs.
-    const {rcs, resolver} = this.makeResolverAndLoadRcs(Object.keys(config), platforms, root);
+    // Make resolver and load flecksConfig.
+    const {flecksConfig, resolver} = this.makeResolverAndLoadRcs(
+      Object.keys(config),
+      platforms,
+      root,
+    );
     // Rewrite aliased config keys.
     // eslint-disable-next-line no-param-reassign
     config = Object.fromEntries(
@@ -120,7 +124,7 @@ export default class ServerFlecks extends Flecks {
           return [-1 !== index ? key.slice(0, index) : key, value];
         }),
     );
-    this.installCompilers(rcs, resolver);
+    this.installCompilers(flecksConfig, resolver);
     // Instantiate with mixins.
     return ServerFlecks.from({
       config,
@@ -129,7 +133,7 @@ export default class ServerFlecks extends Flecks {
           .map((path) => [path, R(this.resolve(resolver, path))]),
       ),
       platforms,
-      rcs,
+      flecksConfig,
       resolver,
     });
   }
@@ -170,15 +174,15 @@ export default class ServerFlecks extends Flecks {
   }
 
   exts() {
-    return this.constructor.exts(this.rcs);
+    return this.constructor.exts(this.flecksConfig);
   }
 
-  static exts(rcs) {
-    const keys = Object.keys(rcs);
+  static exts(flecksConfig) {
+    const keys = Object.keys(flecksConfig);
     const exts = [];
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      const config = rcs[key];
+      const config = flecksConfig[key];
       if (config.exts) {
         exts.push(...config.exts);
       }
@@ -212,9 +216,9 @@ export default class ServerFlecks extends Flecks {
     return realpath !== resolved;
   }
 
-  static installCompilers(rcs, resolver) {
+  static installCompilers(flecksConfig, resolver) {
     const paths = Object.keys(resolver);
-    debugSilly('rcs: %O', rcs);
+    debugSilly('flecksConfig: %O', flecksConfig);
     // Merge aliases;
     const aliases = Object.fromEntries(
       Object.entries({
@@ -228,20 +232,20 @@ export default class ServerFlecks extends Flecks {
           )
         ),
         // and from RCs.
-        ...this.aliases(rcs),
+        ...this.aliases(flecksConfig),
       })
         .map(([from, to]) => [from, to.endsWith('/index') ? to.slice(0, -6) : to]),
     );
     if (Object.keys(aliases).length > 0) {
       debugSilly('aliases: %O', aliases);
     }
-    const exts = this.exts(rcs);
+    const exts = this.exts(flecksConfig);
     const enhancedResolver = enhancedResolve.create.sync({
       extensions: exts,
       alias: aliases,
     });
     // Stub server-unfriendly modules.
-    const stubs = this.stubs(['server'], rcs);
+    const stubs = this.stubs(['server'], flecksConfig);
     if (stubs.length > 0) {
       debugSilly('stubbing: %O', stubs);
     }
@@ -278,8 +282,8 @@ export default class ServerFlecks extends Flecks {
       .filter((path) => this.fleckIsCompiled(resolver, path));
     if (needCompilation.length > 0) {
       // Augment the compilations with babel config from flecksrc.
-      const rcBabelConfig = babelmerge.all(this.babel(rcs).map(([, babel]) => babel));
-      debugSilly('.flecksrc: babel: %O', rcBabelConfig);
+      const flecksBabelConfig = babelmerge.all(this.babel(flecksConfig).map(([, babel]) => babel));
+      debugSilly('.flecksrc: babel: %O', flecksBabelConfig);
       // Key flecks needing compilation by their roots, so we can compile all common roots with a
       // single invocation of `@babel/register`.
       const compilationRootMap = {};
@@ -331,7 +335,7 @@ export default class ServerFlecks extends Flecks {
         compilations.push({
           ignore,
           only,
-          compiler: new Compiler(babelmerge(config, rcBabelConfig)),
+          compiler: new Compiler(babelmerge(config, flecksBabelConfig)),
         });
       });
     }
@@ -384,42 +388,6 @@ export default class ServerFlecks extends Flecks {
       }
       return ['barebones', {'@flecks/core': {}, '@flecks/fleck': {}}];
     }
-  }
-
-  static loadRcs(resolver) {
-    const rcs = {};
-    const rootsFrom = (paths) => (
-      Array.from(new Set(
-        paths
-          .map((path) => this.root(resolver, path))
-          .filter((e) => !!e),
-      ))
-    );
-    const roots = Array.from(new Set(
-      rootsFrom(Object.keys(resolver))
-        .concat(FLECKS_CORE_ROOT),
-    ));
-    let rootsToScan = roots;
-    while (rootsToScan.length > 0) {
-      const dependencies = [];
-      for (let i = 0; i < rootsToScan.length; ++i) {
-        const root = rootsToScan[i];
-        try {
-          rcs[root] = R(join(root, 'build', '.flecksrc'));
-          const {dependencies: rcDependencies = []} = rcs[root];
-          dependencies.push(...rcDependencies);
-          this.makeResolver(rcDependencies)
-        }
-        catch (error) {
-          if ('MODULE_NOT_FOUND' !== error.code) {
-            throw error;
-          }
-        }
-      }
-      rootsToScan = rootsFrom(dependencies)
-        .filter((root) => !rcs[root]);
-    }
-    return rcs;
   }
 
   static makeResolver(maybeAliasedPath, platforms, root) {
@@ -491,7 +459,7 @@ export default class ServerFlecks extends Flecks {
           resolver[path] = alias;
         });
     }
-    const rcs = {};
+    const flecksConfig = {};
     const roots = Array.from(new Set(
       rootsFrom(Object.keys(resolver))
         .concat(FLECKS_CORE_ROOT),
@@ -502,10 +470,10 @@ export default class ServerFlecks extends Flecks {
       for (let i = 0; i < rootsToScan.length; ++i) {
         const root = rootsToScan[i];
         try {
-          rcs[root] = R(join(root, 'build', '.flecksrc'));
-          const {dependencies: rcDependencies = []} = rcs[root];
-          dependencies.push(...rcDependencies);
-          rcDependencies.forEach((dependency) => {
+          flecksConfig[root] = R(join(root, 'build', 'flecks.config'));
+          const {dependencies: flecksConfigDependencies = []} = flecksConfig[root];
+          dependencies.push(...flecksConfigDependencies);
+          flecksConfigDependencies.forEach((dependency) => {
             Object.entries(this.makeResolver(dependency, platforms, root))
               .forEach(([path, alias]) => {
                 resolver[path] = alias;
@@ -519,9 +487,9 @@ export default class ServerFlecks extends Flecks {
         }
       }
       rootsToScan = rootsFrom(dependencies)
-        .filter((root) => !rcs[root]);
+        .filter((root) => !flecksConfig[root]);
     }
-    return {rcs, resolver};
+    return {flecksConfig, resolver};
   }
 
   overrideConfigFromEnvironment() {
@@ -553,8 +521,8 @@ export default class ServerFlecks extends Flecks {
       });
   }
 
-  rcs() {
-    return this.rcs;
+  flecksConfig() {
+    return this.flecksConfig;
   }
 
   registerBuildConfig(filename, config) {
@@ -639,8 +607,8 @@ export default class ServerFlecks extends Flecks {
     const needCompilation = Object.entries(resolver)
       .filter(([fleck]) => this.constructor.fleckIsCompiled(resolver, fleck));
     if (needCompilation.length > 0) {
-      const rcBabel = this.babel();
-      debugSilly('.flecksrc: babel: %O', rcBabel);
+      const flecksBabelConfig = this.babel();
+      debugSilly('flecks.config.js: babel: %O', flecksBabelConfig);
       // Alias and de-externalize.
       needCompilation
         .sort(([l], [r]) => (l < r ? 1 : -1))
@@ -672,8 +640,8 @@ export default class ServerFlecks extends Flecks {
           debugSilly('compiling: %s with %s', root, configFile);
           const babel = {
             configFile,
-            // Augment the compiler with babel config from flecksrc.
-            ...babelmerge.all(rcBabel.map(([, babel]) => babel)),
+            // Augment the compiler with babel config from `flecks.config.js`.
+            ...babelmerge.all(flecksBabelConfig.map(([, babel]) => babel)),
           };
           config.module.rules.push(
             {
@@ -734,15 +702,15 @@ export default class ServerFlecks extends Flecks {
   }
 
   stubs() {
-    return this.constructor.stubs(this.platforms, this.rcs);
+    return this.constructor.stubs(this.platforms, this.flecksConfig);
   }
 
-  static stubs(platforms, rcs) {
-    const keys = Object.keys(rcs);
+  static stubs(platforms, flecksConfig) {
+    const keys = Object.keys(flecksConfig);
     const stubs = [];
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      const config = rcs[key];
+      const config = flecksConfig[key];
       if (config.stubs) {
         Object.entries(config.stubs)
           .forEach(([platform, patterns]) => {

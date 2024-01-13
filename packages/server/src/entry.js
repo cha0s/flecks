@@ -23,14 +23,14 @@ const {version} = require('../package.json');
   debug('starting server...');
   // Make resolver.
   // Flecks mixins.
-  const {rcs, resolver} = Flecks.makeResolverAndLoadRcs(Object.keys(config));
-  Flecks.installCompilers(rcs, resolver);
+  const {flecksConfig, resolver} = Flecks.makeResolverAndLoadRcs(Object.keys(config));
+  Flecks.installCompilers(flecksConfig, resolver);
   global.flecks = Flecks.from({
     config,
     flecks: await loadFlecks(),
+    flecksConfig,
     platforms,
     resolver,
-    rcs,
   });
   try {
     await Promise.all(global.flecks.invokeFlat('@flecks/core.starting'));
