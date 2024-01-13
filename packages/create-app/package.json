@@ -21,9 +21,7 @@
   },
   "files": [
     "cli.js",
-    "cli.js.map",
     "server.js",
-    "server.js.map",
     "src",
     "template"
   ],

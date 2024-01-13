@@ -18,10 +18,7 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
     "server.js",
-    "server.js.map",
-    "src",
     "website"
   ],
   "dependencies": {

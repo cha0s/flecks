@@ -19,18 +19,11 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
     "entry.js",
-    "entry.js.map",
     "index.js",
-    "index.js.map",
     "runtime.js",
-    "runtime.js.map",
     "server/build/server.webpack.config.js",
-    "server/build/server.webpack.config.js.map",
-    "server.js",
-    "server.js.map",
-    "src"
+    "server.js"
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",

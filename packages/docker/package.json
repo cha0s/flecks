@@ -18,10 +18,7 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
-    "server.js",
-    "server.js.map",
-    "src"
+    "server.js"
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",

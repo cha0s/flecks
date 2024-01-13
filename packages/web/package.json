@@ -18,27 +18,15 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
     "entry.js",
-    "entry.js.map",
     "runtime.js",
-    "runtime.js.map",
     "server.js",
-    "server.js.map",
     "server/build/entry.js",
-    "server/build/entry.js.map",
     "server/build/postcss.config.js",
-    "server/build/postcss.config.js.map",
     "server/build/template.ejs",
     "server/build/tests.js",
-    "server/build/tests.js.map",
     "server/build/web.webpack.config.js",
-    "server/build/web.webpack.config.js.map",
-    "server/build/web-vendor.webpack.config.js",
-    "server/build/web-vendor.webpack.config.js.map",
-    "src",
-    "tests.js",
-    "tests.js.map"
+    "server/build/web-vendor.webpack.config.js"
   ],
   "dependencies": {
     "@babel/parser": "^7.17.0",

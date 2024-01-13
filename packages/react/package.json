@@ -19,26 +19,15 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
     "client.js",
-    "client.js.map",
     "context.js",
-    "context.js.map",
     "fake-context.js",
-    "fake-context.js.map",
     "index.js",
-    "index.js.map",
     "router/client.js",
-    "router/client.js.map",
     "router/context.js",
-    "router/context.js.map",
     "router/index.js",
-    "router/index.js.map",
     "router/server.js",
-    "router/server.js.map",
-    "server.js",
-    "server.js.map",
-    "src"
+    "server.js"
   ],
   "dependencies": {
     "@babel/preset-react": "^7.23.3",

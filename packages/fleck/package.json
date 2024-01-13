@@ -18,14 +18,8 @@
     "test": "flecks test"
   },
   "files": [
-    "build",
     "server/build/fleck.webpack.config.js",
-    "server/build/fleck.webpack.config.js.map",
-    "server.js",
-    "server.js.map",
-    "src",
-    "test.js",
-    "test.js.map"
+    "server.js"
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",
