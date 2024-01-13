@@ -39,6 +39,7 @@ export const createHttpServer = async (flecks) => {
   // Routes.
   const routeMiddleware = flecks.makeMiddleware('@flecks/web/server.request.route');
   const routes = flatten(flecks.invokeFlat('@flecks/web.routes'));
+  debug('routes: %O', routes);
   routes.forEach(({method, path, middleware}) => app[method](path, routeMiddleware, middleware));
   // In development mode, create a proxy to the webpack-dev-server.
   if ('production' !== NODE_ENV) {
