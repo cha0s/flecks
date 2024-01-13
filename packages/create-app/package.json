@@ -29,7 +29,6 @@
   ],
   "dependencies": {
     "@flecks/core": "^2.0.3",
-    "glob": "^7.2.0",
     "minimatch": "^5.0.1",
     "validate-npm-package-name": "^3.0.0"
   },

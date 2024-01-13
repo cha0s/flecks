@@ -1,7 +1,7 @@
 import {createReadStream, createWriteStream} from 'fs';
 import {mkdir, stat} from 'fs/promises';
 
-import glob from 'glob';
+import {glob} from '@flecks/core/server';
 import minimatch from 'minimatch';
 import {dirname, join} from 'path';
 
@@ -24,13 +24,7 @@ export default class FileTree {
   }
 
   static async loadFrom(cwd) {
-    const paths = await new Promise((r, e) => {
-      glob(
-        '**/*',
-        {cwd, dot: true},
-        (error, paths) => (error ? e(error) : r(paths)),
-      );
-    });
+    const paths = await glob('**/*', {cwd, dot: true});
     return new FileTree(
       await paths
         .reduce(

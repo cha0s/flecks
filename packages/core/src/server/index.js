@@ -14,6 +14,7 @@ defaultOptions.breakLength = 160;
 defaultOptions.compact = 6;
 defaultOptions.sorted = true;
 
+export {glob} from 'glob';
 export {dump as dumpYml, load as loadYml} from 'js-yaml';
 
 export {

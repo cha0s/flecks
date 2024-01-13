@@ -2,7 +2,7 @@ import {spawn} from 'child_process';
 import {join, normalize} from 'path';
 
 import {Argument} from 'commander';
-import glob from 'glob';
+import {glob} from 'glob';
 import flatten from 'lodash.flatten';
 import rimraf from 'rimraf';
 
@@ -127,12 +127,7 @@ export default (program, flecks) => {
     args: [],
     action: async () => {
       const promises = [];
-      const packages = await new Promise((r, e) => {
-        glob(
-          join('packages', '*'),
-          (error, result) => (error ? e(error) : r(result)),
-        );
-      });
+      const packages = await glob(join('packages', '*'));
       if (0 === packages.length) {
         packages.push('.');
       }

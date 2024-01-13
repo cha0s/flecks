@@ -2,12 +2,10 @@ import {stat, unlink} from 'fs/promises';
 import {join} from 'path';
 
 import {D} from '@flecks/core';
+import {commands as coreCommands, glob} from '@flecks/core/server';
 import chokidar from 'chokidar';
 import clearModule from 'clear-module';
-import glob from 'glob';
 import Mocha from 'mocha';
-
-import {commands as coreCommands} from '@flecks/core/server';
 
 const debug = D('@flecks/core.commands');
 
@@ -30,7 +28,7 @@ export default (program, flecks) => {
       } = opts;
       const {build} = coreCommands(program, flecks);
       const child = build.action(undefined, opts);
-      const testPaths = glob.sync(join(FLECKS_CORE_ROOT, 'test/*.js'));
+      const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
         console.log('No fleck tests found.');

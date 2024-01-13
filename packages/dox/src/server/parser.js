@@ -19,9 +19,8 @@ import {
   isThisExpression,
   isVariableDeclaration,
 } from '@babel/types';
-import {require as R} from '@flecks/core/server';
+import {glob, require as R} from '@flecks/core/server';
 import {parse as parseComment} from 'comment-parser';
-import glob from 'glob';
 
 class ParserState {
 
@@ -293,14 +292,7 @@ export const parseFile = async (filename, resolved, state) => {
   traverse(ast, FlecksTodos(state, resolved));
 };
 
-const fleckSources = async (path) => (
-  new Promise((r, e) => {
-    glob(
-      join(path, 'src', '**', '*.js'),
-      (error, result) => (error ? e(error) : r(result)),
-    );
-  })
-);
+const fleckSources = async (path) => glob(join(path, 'src', '**', '*.js'));
 
 export const parseFleckRoot = async (root, state) => {
   const resolved = dirname(R.resolve(join(root, 'package.json')));
