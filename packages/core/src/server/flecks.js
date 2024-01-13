@@ -109,8 +109,8 @@ export default class ServerFlecks extends Flecks {
     }
     debug('bootstrap configuration (%s)', configType);
     debugSilly(config);
-    // Make resolver.
-    const resolver = this.makeResolver(config, platforms, root);
+    // Make resolver and load rcs.
+    const {rcs, resolver} = this.makeResolverAndLoadRcs(Object.keys(config), platforms, root);
     // Rewrite aliased config keys.
     // eslint-disable-next-line no-param-reassign
     config = Object.fromEntries(
@@ -120,8 +120,6 @@ export default class ServerFlecks extends Flecks {
           return [-1 !== index ? key.slice(0, index) : key, value];
         }),
     );
-    // Load RCs.
-    const rcs = this.loadRcs(resolver);
     this.installCompilers(rcs, resolver);
     // Instantiate with mixins.
     return ServerFlecks.from({
@@ -390,77 +388,140 @@ export default class ServerFlecks extends Flecks {
 
   static loadRcs(resolver) {
     const rcs = {};
+    const rootsFrom = (paths) => (
+      Array.from(new Set(
+        paths
+          .map((path) => this.root(resolver, path))
+          .filter((e) => !!e),
+      ))
+    );
     const roots = Array.from(new Set(
-      Object.keys(resolver)
-        .map((path) => this.root(resolver, path))
-        .filter((e) => !!e)
+      rootsFrom(Object.keys(resolver))
         .concat(FLECKS_CORE_ROOT),
     ));
-    for (let i = 0; i < roots.length; ++i) {
-      const root = roots[i];
-      try {
-        rcs[root] = R(join(root, 'build', '.flecksrc'));
-      }
-      catch (error) {
-        if ('MODULE_NOT_FOUND' !== error.code) {
-          throw error;
+    let rootsToScan = roots;
+    while (rootsToScan.length > 0) {
+      const dependencies = [];
+      for (let i = 0; i < rootsToScan.length; ++i) {
+        const root = rootsToScan[i];
+        try {
+          rcs[root] = R(join(root, 'build', '.flecksrc'));
+          const {dependencies: rcDependencies = []} = rcs[root];
+          dependencies.push(...rcDependencies);
+          this.makeResolver(rcDependencies)
+        }
+        catch (error) {
+          if ('MODULE_NOT_FOUND' !== error.code) {
+            throw error;
+          }
         }
       }
+      rootsToScan = rootsFrom(dependencies)
+        .filter((root) => !rcs[root]);
     }
     return rcs;
   }
 
-  static makeResolver(config, platforms = ['server'], root = FLECKS_CORE_ROOT) {
+  static makeResolver(maybeAliasedPath, platforms, root) {
     const resolvedRoot = resolve(FLECKS_CORE_ROOT, root);
     const resolver = {};
-    const keys = Object.keys(config);
     // `!platform` excludes that platform.
     const without = platforms
       .filter((platform) => '!'.charCodeAt(0) === platform.charCodeAt(0))
       .map((platform) => platform.slice(1));
-    for (let i = 0; i < keys.length; ++i) {
-      const key = keys[i];
-      // Parse the alias (if any).
-      const index = key.indexOf(':');
-      const [path, alias] = -1 === index
-        ? [key, undefined]
-        : [key.slice(0, index), key.slice(index + 1)];
-      // Run it by the exception list.
-      if (-1 !== without.indexOf(path.split('/').pop())) {
-        // eslint-disable-next-line no-continue
-        continue;
+    // Parse the alias (if any).
+    const index = maybeAliasedPath.indexOf(':');
+    const [path, alias] = -1 === index
+      ? [maybeAliasedPath, undefined]
+      : [maybeAliasedPath.slice(0, index), maybeAliasedPath.slice(index + 1)];
+    // Run it by the exception list.
+    if (-1 !== without.indexOf(path.split('/').pop())) {
+      // eslint-disable-next-line no-continue
+      return {};
+    }
+    // Resolve the path (if necessary).
+    let resolvedPath;
+    if (alias) {
+      resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
+    }
+    else {
+      if (path.startsWith('.')) {
+        throw new Error(`non-aliased relative path '${path}' in configuration`);
       }
-      // Resolve the path (if necessary).
-      let resolvedPath;
-      if (alias) {
-        resolvedPath = isAbsolute(alias) ? alias : join(resolvedRoot, alias);
-      }
-      else {
-        if (path.startsWith('.')) {
-          throw new Error(`non-aliased relative path '${path}' in configuration`);
+      resolvedPath = path;
+    }
+    try {
+      R.resolve(resolvedPath);
+      resolver[path] = resolvedPath;
+    }
+    // eslint-disable-next-line no-empty
+    catch (error) {}
+    // Discover platform-specific variants.
+    if (platforms) {
+      platforms.forEach((platform) => {
+        try {
+          const resolvedPlatformPath = join(resolvedPath, platform);
+          R.resolve(resolvedPlatformPath);
+          resolver[join(path, platform)] = resolvedPlatformPath;
         }
-        resolvedPath = path;
-      }
-      try {
-        R.resolve(resolvedPath);
-        resolver[path] = resolvedPath;
-      }
-      // eslint-disable-next-line no-empty
-      catch (error) {}
-      // Discover platform-specific variants.
-      if (platforms) {
-        platforms.forEach((platform) => {
-          try {
-            const resolvedPlatformPath = join(resolvedPath, platform);
-            R.resolve(resolvedPlatformPath);
-            resolver[join(path, platform)] = resolvedPlatformPath;
-          }
-          // eslint-disable-next-line no-empty
-          catch (error) {}
-        });
-      }
+        // eslint-disable-next-line no-empty
+        catch (error) {}
+      });
     }
     return resolver;
+  }
+
+  static makeResolverAndLoadRcs(
+    maybeAliasedPaths,
+    platforms = ['server'],
+    root = FLECKS_CORE_ROOT,
+  ) {
+    const resolver = {};
+    const rootsFrom = (paths) => (
+      Array.from(new Set(
+        paths
+          .map((path) => this.root(resolver, path))
+          .filter((e) => !!e),
+      ))
+    );
+    for (let i = 0; i < maybeAliasedPaths.length; ++i) {
+      const maybeAliasedPath = maybeAliasedPaths[i];
+      Object.entries(this.makeResolver(maybeAliasedPath, platforms, root))
+        .forEach(([path, alias]) => {
+          resolver[path] = alias;
+        });
+    }
+    const rcs = {};
+    const roots = Array.from(new Set(
+      rootsFrom(Object.keys(resolver))
+        .concat(FLECKS_CORE_ROOT),
+    ));
+    let rootsToScan = roots;
+    while (rootsToScan.length > 0) {
+      const dependencies = [];
+      for (let i = 0; i < rootsToScan.length; ++i) {
+        const root = rootsToScan[i];
+        try {
+          rcs[root] = R(join(root, 'build', '.flecksrc'));
+          const {dependencies: rcDependencies = []} = rcs[root];
+          dependencies.push(...rcDependencies);
+          rcDependencies.forEach((dependency) => {
+            Object.entries(this.makeResolver(dependency, platforms, root))
+              .forEach(([path, alias]) => {
+                resolver[path] = alias;
+              });
+          });
+        }
+        catch (error) {
+          if ('MODULE_NOT_FOUND' !== error.code) {
+            throw error;
+          }
+        }
+      }
+      rootsToScan = rootsFrom(dependencies)
+        .filter((root) => !rcs[root]);
+    }
+    return {rcs, resolver};
   }
 
   overrideConfigFromEnvironment() {

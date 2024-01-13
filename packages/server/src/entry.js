@@ -23,8 +23,7 @@ const {version} = require('../package.json');
   debug('starting server...');
   // Make resolver.
   // Flecks mixins.
-  const resolver = Flecks.makeResolver(config);
-  const rcs = Flecks.loadRcs(resolver);
+  const {rcs, resolver} = Flecks.makeResolverAndLoadRcs(Object.keys(config));
   Flecks.installCompilers(rcs, resolver);
   global.flecks = Flecks.from({
     config,

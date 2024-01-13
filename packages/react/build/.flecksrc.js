@@ -15,5 +15,6 @@ module.exports = {
       '@babel/preset-react',
     ],
   },
+  dependencies: ['@flecks/web'],
   exts: ['.jsx'],
 };
