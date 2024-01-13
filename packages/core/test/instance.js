@@ -16,12 +16,12 @@ it('can create an empty instance', () => {
 
 it('can gather config', () => {
   let flecks;
-  flecks = new Flecks({
+  flecks = Flecks.from({
     flecks: {'@flecks/core/one': testOne},
   });
   expect(flecks.get(['@flecks/core/one']))
     .to.contain({foo: 'bar'});
-  flecks = new Flecks({
+  flecks = Flecks.from({
     config: {'@flecks/core/one': {foo: 'baz'}},
     flecks: {'@flecks/core/one': testOne},
   });

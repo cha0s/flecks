@@ -7,7 +7,7 @@ const testTwo = require('./two');
 const testThree = require('./three');
 
 it('can make middleware', (done) => {
-  const flecks = new Flecks({
+  const flecks = Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -30,7 +30,7 @@ it('can make middleware', (done) => {
 });
 
 it('respects explicit middleware configuration', (done) => {
-  const flecks = new Flecks({
+  const flecks = Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -53,7 +53,7 @@ it('respects explicit middleware configuration', (done) => {
 });
 
 it('respects middleware elision', (done) => {
-  const flecks = new Flecks({
+  const flecks = Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -75,7 +75,7 @@ it('respects middleware elision', (done) => {
 });
 
 it('throws on elision graph cycle', () => {
-  const flecks = new Flecks({
+  const flecks = Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [

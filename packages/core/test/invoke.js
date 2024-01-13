@@ -13,7 +13,7 @@ const testTwo = require('./two');
 let flecks;
 
 beforeEach(() => {
-  flecks = new Flecks({
+  flecks = Flecks.from({
     flecks: {
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,

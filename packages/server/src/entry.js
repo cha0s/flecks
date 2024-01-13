@@ -2,8 +2,8 @@ import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
 
-import {compose, D} from '@flecks/core';
-import {Flecks as BaseFlecks} from '@flecks/core/server';
+import {D} from '@flecks/core';
+import {Flecks} from '@flecks/core/server';
 
 const {version} = require('../package.json');
 
@@ -23,17 +23,12 @@ const {version} = require('../package.json');
   debug('starting server...');
   // Make resolver.
   // Flecks mixins.
-  const resolver = BaseFlecks.makeResolver(config);
-  const rcs = BaseFlecks.loadRcs(resolver);
-  BaseFlecks.installCompilers(rcs, resolver);
-  const flecks = await loadFlecks();
-  const mixins = Object.entries(flecks)
-    .map(([, M]) => M.hooks?.['@flecks/core.mixin'])
-    .filter((e) => e);
-  const Flecks = compose(...mixins)(BaseFlecks);
-  global.flecks = new Flecks({
+  const resolver = Flecks.makeResolver(config);
+  const rcs = Flecks.loadRcs(resolver);
+  Flecks.installCompilers(rcs, resolver);
+  global.flecks = Flecks.from({
     config,
-    flecks,
+    flecks: await loadFlecks(),
     platforms,
     resolver,
     rcs,

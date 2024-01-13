@@ -6,7 +6,7 @@ const testOne = require('./one');
 const testTwo = require('./two');
 
 it('can gather', () => {
-  const flecks = new Flecks({
+  const flecks = Flecks.from({
     flecks: {
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,

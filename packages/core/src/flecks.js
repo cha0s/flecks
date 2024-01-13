@@ -9,6 +9,7 @@ import {
 import get from 'lodash.get';
 import set from 'lodash.set';
 
+import compose from './compose';
 import D from './debug';
 import Digraph from './digraph';
 import Middleware from './middleware';
@@ -372,6 +373,20 @@ export default class Flecks {
       });
     this.invoke('@flecks/core.priority', graph, hook);
     return graph;
+  }
+
+  /**
+   * Create a mixed instance of flecks.
+   * @param {Object} config Configuration.
+   * @returns {Flecks} A flecks instance.
+   */
+  static from(config) {
+    const {flecks} = config;
+    const mixins = Object.entries(flecks)
+      .map(([, M]) => M.hooks?.['@flecks/core.mixin'])
+      .filter((e) => e);
+    const Flecks = compose(...mixins)(this);
+    return new Flecks(config);
   }
 
   /**
