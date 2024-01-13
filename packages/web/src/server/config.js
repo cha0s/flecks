@@ -51,7 +51,7 @@ class InlineConfig extends Transform {
         '<body>',
         `<div id="${appMountId}-container">`,
         `<script data-flecks="ignore">window.document.querySelector('#${appMountId}-container').style.display = 'none'</script>`,
-        `<script>${await configSource(this.flecks, this.req)}</script>`,
+        `<script data-flecks="ignore">${await configSource(this.flecks, this.req)}</script>`,
         `<div id="${appMountId}"></div>`,
         '</div>',
       ].join(''),
