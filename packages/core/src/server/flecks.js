@@ -588,7 +588,12 @@ export default class ServerFlecks extends Flecks {
       R.resolve(parts.join('/'));
     }
     catch (error) {
-      return undefined;
+      try {
+        R.resolve(join(parts.join('/'), 'build', 'flecks.config'));
+      }
+      catch (error) {
+        return undefined;
+      }
     }
     while (parts.length > 0) {
       try {
