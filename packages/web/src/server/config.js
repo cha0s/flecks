@@ -1,35 +1,27 @@
 import {Transform} from 'stream';
 
-const config = async (flecks, req) => {
+export const configSource = async (flecks, req) => {
+  req.onlyAllow = (object, keys) => (
+    Object.fromEntries(
+      Object.entries(object)
+        .map(([key, value]) => [key, keys.includes(key) ? value : undefined]),
+    )
+  );
   const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
-  const {config} = flecks.web.flecks;
-  const reducedConfig = Object.keys(config)
-    .filter((path) => !path.startsWith('$'))
-    .filter((path) => !path.endsWith('/server'))
-    .reduce(
-      (r, key) => ({
-        ...r,
-        [key]: {
-          ...(config[key] || {}),
-          ...(httpConfig[key] || {}),
-        },
-      }),
-      {},
-    );
+  const config = Object.fromEntries(
+    Object.entries(flecks.web.flecks.config)
+      .filter(([path]) => !path.endsWith('/server'))
+      .map(([path, config]) => [path, {...config, ...httpConfig[path]}]),
+  );
   // Fold in any bespoke configuration.
   Object.keys(httpConfig)
     .forEach((key) => {
-      if (!(key in reducedConfig)) {
-        reducedConfig[key] = httpConfig[key];
+      if (!(key in config)) {
+        config[key] = httpConfig[key];
       }
     });
-  return reducedConfig;
-};
-
-export const configSource = async (flecks, req) => {
-  const codedConfig = encodeURIComponent(JSON.stringify(await config(flecks, req)));
   return `window[Symbol.for('@flecks/web.config')] = JSON.parse(decodeURIComponent("${
-    codedConfig
+    encodeURIComponent(JSON.stringify(config))
   }"));`;
 };
 
@@ -44,7 +36,7 @@ class InlineConfig extends Transform {
   // eslint-disable-next-line no-underscore-dangle
   async _transform(chunk, encoding, done) {
     const string = chunk.toString('utf8');
-    const {appMountId} = this.flecks.get('@flecks/web/server');
+    const {appMountId} = this.flecks.get('@flecks/web');
     const rendered = string.replaceAll(
       '<body>',
       [

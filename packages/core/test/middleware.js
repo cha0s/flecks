@@ -2,9 +2,9 @@ import {expect} from 'chai';
 
 import {Flecks} from '@flecks/core';
 
-const testOne = require('./one');
-const testTwo = require('./two');
-const testThree = require('./three');
+const testOne = require('./packages/one');
+const testTwo = require('./packages/two');
+const testThree = require('./packages/three');
 
 it('can make middleware', (done) => {
   const flecks = Flecks.from({

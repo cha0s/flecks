@@ -1,9 +1,9 @@
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
+const clsx = require('clsx');
+const Link = require('@docusaurus/Link');
+const useDocusaurusContext = require('@docusaurus/useDocusaurusContext');
+const Layout = require('@theme/Layout');
 
-import Heading from '@theme/Heading';
+const Heading = require('@theme/Heading');
 import styles from './index.module.css';
 
 function HomepageHeader() {

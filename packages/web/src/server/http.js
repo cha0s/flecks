@@ -20,13 +20,13 @@ const deliverHtmlStream = async (stream, flecks, req, res) => {
 };
 
 export const createHttpServer = async (flecks) => {
-  const {trust} = flecks.get('@flecks/web/server');
+  const {trust} = flecks.get('@flecks/web');
   const {
     devHost,
     devPort,
     host,
     port,
-  } = flecks.get('@flecks/web/server');
+  } = flecks.get('@flecks/web');
   const app = express();
   app.set('trust proxy', trust);
   const httpServer = createServer(app);

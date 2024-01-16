@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -23,7 +23,7 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^2.0.3",
+    "@flecks/core": "^3.0.0",
     "@reduxjs/toolkit": "^1.5.0",
     "debug": "^4.3.3",
     "lodash.throttle": "^4.1.1",
@@ -31,6 +31,6 @@
     "reduce-reducers": "^1.0.4"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.3"
+    "@flecks/fleck": "^3.0.0"
   }
 }

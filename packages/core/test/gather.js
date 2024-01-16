@@ -2,8 +2,8 @@ import {expect} from 'chai';
 
 import {Flecks, ById, ByType} from '@flecks/core';
 
-const testOne = require('./one');
-const testTwo = require('./two');
+const testOne = require('./packages/one');
+const testTwo = require('./packages/two');
 
 it('can gather', () => {
   const flecks = Flecks.from({

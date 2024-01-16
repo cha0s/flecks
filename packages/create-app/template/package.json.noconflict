@@ -9,11 +9,11 @@
     "start": "DEBUG=@flecks/*,-*:silly npm run dev"
   },
   "dependencies": {
-    "@flecks/core": "^2.0.0",
-    "@flecks/server": "^2.0.0"
+    "@flecks/core": "3.0.0",
+    "@flecks/server": "3.0.0"
   },
   "devDependencies": {
-    "@flecks/create-fleck": "^2.0.0",
+    "@flecks/create-fleck": "3.0.0",
     "lerna": "^3.22.1"
   }
 }

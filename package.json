@@ -20,6 +20,10 @@
     "@flecks/electron": "*",
     "@flecks/fleck": "*",
     "@flecks/governor": "*",
+    "@flecks/passport": "*",
+    "@flecks/passport-local": "*",
+    "@flecks/passport-local-react": "*",
+    "@flecks/passport-react": "*",
     "@flecks/react": "*",
     "@flecks/redis": "*",
     "@flecks/redux": "*",
@@ -27,10 +31,6 @@
     "@flecks/server": "*",
     "@flecks/session": "*",
     "@flecks/socket": "*",
-    "@flecks/passport": "*",
-    "@flecks/passport-local": "*",
-    "@flecks/passport-local-react": "*",
-    "@flecks/passport-react": "*",
     "@flecks/web": "*"
   },
   "dependencies": {

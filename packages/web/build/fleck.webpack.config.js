@@ -1,6 +1,6 @@
 const {copy, externals} = require('@flecks/core/server');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const configFn = require('@flecks/fleck/server/build/fleck.webpack.config');
+const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 
 module.exports = async (env, argv, flecks) => {
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
@@ -18,10 +18,6 @@ module.exports = async (env, argv, flecks) => {
         {
           from: 'src/server/build/entry.js',
           to: 'server/build/entry.js',
-        },
-        {
-          from: 'src/server/build/template.ejs',
-          to: 'server/build/template.ejs',
           info: { minimized: true },
         },
         {

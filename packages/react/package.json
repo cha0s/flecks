@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -32,8 +32,8 @@
   ],
   "dependencies": {
     "@babel/preset-react": "^7.23.3",
-    "@flecks/core": "^2.0.3",
-    "@flecks/web": "^2.0.3",
+    "@flecks/core": "^3.0.0",
+    "@flecks/web": "^3.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "babel-merge": "^3.0.0",
     "classnames": "^2.3.1",
@@ -43,11 +43,12 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-refresh": "^0.14.0",
-    "react-router-dom": "6.20.0",
+    "react-router": "6.2.1",
+    "react-router-dom": "6.2.1",
     "react-tabs": "^6.0.2",
     "redux-first-history": "5.1.1"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.3"
+    "@flecks/fleck": "^3.0.0"
   }
 }

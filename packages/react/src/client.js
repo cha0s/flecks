@@ -13,7 +13,7 @@ export {FlecksContext};
 export const hooks = {
   '@flecks/web/client.up': async (flecks) => {
     const {ssr} = flecks.get('@flecks/react');
-    const {appMountId} = flecks.get('@flecks/web/client');
+    const {appMountId} = flecks.get('@flecks/web');
     const container = window.document.getElementById(appMountId);
     debug('%sing...', ssr ? 'hydrat' : 'render');
     const RootComponent = React.createElement(

@@ -2,7 +2,7 @@ import {expect} from 'chai';
 
 import {Flecks} from '@flecks/core';
 
-const testOne = require('./one');
+const testOne = require('./packages/one');
 
 it('can create an empty instance', () => {
   const flecks = new Flecks();

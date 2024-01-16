@@ -1,4 +1,0 @@
-'@flecks/core:../src': {}
-'@flecks/core/one:./one': {}
-'@flecks/core/one/server:./one/server': {}
-'@flecks/core/two:./two': {}

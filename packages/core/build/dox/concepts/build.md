@@ -68,7 +68,7 @@ Have fun!
 
 ## Resolution order 🤔
 
-The flecks server provides an interface (`flecks.buildConfig()`) for gathering configuration files
+The flecks server provides an interface (`flecks.resolveBuildConfig()`) for gathering configuration files
 from the `build` directory. The resolution order is determined by a few variables:
 
 - `filename` specifies the name of the configuration file, e.g. `server.webpack.config.js`.

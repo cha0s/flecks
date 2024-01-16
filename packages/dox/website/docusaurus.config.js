@@ -4,10 +4,9 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-// For some reason we get a webpack warning if we use import here...
-const {configDefaults} = require('@flecks/dox/server'); // eslint-disable-line import/no-extraneous-dependencies
+const {configDefaults} = require('@flecks/dox/build/docusaurus');
 
-export default async function flecksDocusaurus() {
+module.exports = async function flecksDocusaurus() {
   const defaults = configDefaults();
   /** @type {import('@docusaurus/types').Config} */
   const config = {
@@ -18,4 +17,4 @@ export default async function flecksDocusaurus() {
     baseUrl: '/',
   };
   return config;
-}
+};

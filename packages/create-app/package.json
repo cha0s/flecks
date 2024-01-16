@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "bin": {
     "create-app": "./cli.js"
   },
@@ -22,15 +22,14 @@
   "files": [
     "cli.js",
     "server.js",
-    "src",
     "template"
   ],
   "dependencies": {
-    "@flecks/core": "^2.0.3",
+    "@flecks/core": "^3.0.0",
     "minimatch": "^5.0.1",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.3"
+    "@flecks/fleck": "^3.0.0"
   }
 }

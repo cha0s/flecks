@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -17,12 +17,9 @@
     "postversion": "cp package.json dist",
     "test": "flecks test"
   },
-  "files": [
-    "server/build/fleck.webpack.config.js",
-    "server.js"
-  ],
+  "files": [],
   "dependencies": {
-    "@flecks/core": "^2.0.3",
+    "@flecks/core": "^3.0.0",
     "babel-merge": "^3.0.0",
     "chokidar": "^3.5.3",
     "clear-module": "^4.1.2",

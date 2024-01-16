@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
@@ -21,13 +21,13 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^2.0.3",
-    "@flecks/db": "^2.0.3",
-    "@flecks/redux": "^2.0.3",
-    "@flecks/session": "^2.0.3",
+    "@flecks/core": "^3.0.0",
+    "@flecks/db": "^3.0.0",
+    "@flecks/redux": "^3.0.0",
+    "@flecks/session": "^3.0.0",
     "passport": "^0.7.0"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.3"
+    "@flecks/fleck": "^3.0.0"
   }
 }

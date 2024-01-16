@@ -14,6 +14,10 @@ export {default as usePrevious} from './hooks/use-previous';
 export const hooks = {
   '@flecks/core.config': () => ({
     /**
+     * React providers.
+     */
+    providers: ['...'],
+    /**
      * Whether to enable server-side rendering.
      */
     ssr: true,

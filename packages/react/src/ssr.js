@@ -1,3 +1,5 @@
+import {Readable} from 'stream';
+
 import {WritableStream} from 'htmlparser2/lib/WritableStream';
 import React from 'react';
 import {renderToPipeableStream} from 'react-dom/server';
@@ -13,7 +15,7 @@ export default async (stream, req, flecks) => {
     icon,
     meta,
     title,
-  } = flecks.get('@flecks/web/server');
+  } = flecks.get('@flecks/web');
   // Extract assets.
   const css = [];
   let hasVendor = false;
@@ -56,6 +58,10 @@ export default async (stream, req, flecks) => {
       }
     },
   });
+  const chunks = [];
+  stream.on('data', (chunk) => {
+    chunks.push(chunk);
+  });
   await new Promise((resolve, reject) => {
     const piped = stream.pipe(parserStream);
     piped.on('error', reject);
@@ -85,11 +91,15 @@ export default async (stream, req, flecks) => {
       {
         bootstrapScripts: js,
         bootstrapScriptContent: inline,
-        onError() {
-          resolve(stream);
+        onError(error) {
+          // eslint-disable-next-line no-console
+          console.error('SSR error:', error);
+          resolve(Readable.from(Buffer.concat(chunks)));
         },
-        onShellError() {
-          resolve(stream);
+        onShellError(error) {
+          // eslint-disable-next-line no-console
+          console.error('SSR shell error:', error);
+          resolve(Readable.from(Buffer.concat(chunks)));
         },
         onShellReady() {
           resolve(rendered);

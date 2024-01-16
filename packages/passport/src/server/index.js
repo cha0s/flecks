@@ -1,6 +1,5 @@
 import {D, Flecks} from '@flecks/core';
 import passport from 'passport';
-import LogOps from 'passport/lib/http/request';
 
 const debug = D('@flecks/passport');
 const debugSilly = debug.extend('silly');
@@ -88,7 +87,7 @@ export const hooks = {
   }),
   '@flecks/socket/server.request.socket': Flecks.priority(
     (flecks) => (socket, next) => {
-      const {req} = socket;
+      const {handshake: req} = socket;
       flecks.passport.initialize(req, undefined, () => {
         flecks.passport.session(req, undefined, async () => {
           if (!req.user) {
@@ -99,12 +98,6 @@ export const hooks = {
           else {
             debugSilly('socket user ID: %s', req.user.id);
           }
-          req.login = LogOps.logIn;
-          req.logIn = LogOps.logIn;
-          req.logout = LogOps.logOut;
-          req.logOut = LogOps.logOut;
-          req.isAuthenticated = LogOps.isAuthenticated;
-          req.isUnauthenticated = LogOps.isUnauthenticated;
           await socket.join(`/u/${req.user.id}`);
           next();
         });

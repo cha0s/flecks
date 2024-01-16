@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.3",
+  "version": "3.0.0",
   "main": "index.js",
   "scripts": {
     "build": "flecks build",
@@ -22,16 +22,12 @@
     "runtime.js",
     "server.js",
     "server/build/entry.js",
-    "server/build/postcss.config.js",
-    "server/build/template.ejs",
-    "server/build/tests.js",
-    "server/build/web.webpack.config.js",
-    "server/build/web-vendor.webpack.config.js"
+    "server/build/tests.js"
   ],
   "dependencies": {
     "@babel/parser": "^7.17.0",
     "@babel/types": "^7.17.0",
-    "@flecks/core": "^2.0.3",
+    "@flecks/core": "^3.0.0",
     "@webpack-cli/serve": "^2.0.5",
     "add-asset-html-webpack-plugin": "^3.2.2",
     "assert": "^2.1.0",
@@ -61,6 +57,6 @@
     "webpack-dev-server": "^4.15.1"
   },
   "devDependencies": {
-    "@flecks/fleck": "^2.0.3"
+    "@flecks/fleck": "^3.0.0"
   }
 }

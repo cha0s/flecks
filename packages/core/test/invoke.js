@@ -7,8 +7,8 @@ chai.use(chaiAsPromised);
 
 const {expect} = chai;
 
-const testOne = require('./one');
-const testTwo = require('./two');
+const testOne = require('./packages/one');
+const testTwo = require('./packages/two');
 
 let flecks;
 
