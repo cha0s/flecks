@@ -16,13 +16,6 @@ export const hooks = {
       'Set the FLECKS_ENV__flecks_session_server__cookieSecret environment variable!'
     ),
   }),
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithSession extends Flecks {
-
-      session;
-
-    }
-  ),
   '@flecks/web/server.request.route': (flecks) => {
     const urle = express.urlencoded({extended: true});
     return (req, res, next) => {
@@ -59,4 +52,10 @@ export const hooks = {
       next();
     });
   },
+};
+
+export const mixin = (Flecks) => class FlecksWithSession extends Flecks {
+
+  session;
+
 };

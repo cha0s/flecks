@@ -1,19 +1,6 @@
 import SocketClient from './socket';
 
 export const hooks = {
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithSocket extends Flecks {
-
-      constructor(...args) {
-        super(...args);
-        if (!this.socket) {
-          this.socket = {};
-        }
-        this.socket.client = undefined;
-      }
-
-    }
-  ),
   '@flecks/web/client.up': (flecks) => {
     const socket = new SocketClient(flecks);
     flecks.socket.client = socket;
@@ -26,4 +13,16 @@ export const hooks = {
     },
     path: `/${id}/socket.io`,
   }),
+};
+
+export const mixin = (Flecks) => class FlecksWithSocket extends Flecks {
+
+  constructor(...args) {
+    super(...args);
+    if (!this.socket) {
+      this.socket = {};
+    }
+    this.socket.client = undefined;
+  }
+
 };

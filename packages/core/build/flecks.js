@@ -362,10 +362,10 @@ exports.Flecks = class Flecks {
    */
   static from(runtime) {
     const {flecks} = runtime;
-    const mixins = Object.entries(flecks)
-      .map(([, M]) => M.hooks?.['@flecks/core.mixin'])
-      .filter((e) => e);
-    const Flecks = compose(...mixins)(this);
+    const mixinDescription = Object.entries(flecks)
+      .map(([path, {mixin}]) => [path, mixin]).filter(([, mixin]) => mixin);
+    debugSilly('mixins: %O', mixinDescription.map(([path]) => path));
+    const Flecks = compose(...mixinDescription.map(([, mixin]) => mixin))(this);
     return new Flecks(runtime);
   }
 

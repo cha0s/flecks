@@ -8,19 +8,6 @@ export * from './hooks';
 export {Packet, Packer, ValidationError} from './packet';
 
 export const hooks = {
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithSocket extends Flecks {
-
-      constructor(...args) {
-        super(...args);
-        if (!this.socket) {
-          this.socket = {};
-        }
-        this.socket.Packets = {};
-      }
-
-    }
-  ),
   '@flecks/core.starting': (flecks) => {
     flecks.socket.Packets = flecks.gather('@flecks/socket.packets', {check: badPacketsCheck});
   },
@@ -39,4 +26,16 @@ export const hooks = {
     Redirect,
     Refresh,
   }),
+};
+
+export const mixin = (Flecks) => class FlecksWithSocket extends Flecks {
+
+  constructor(...args) {
+    super(...args);
+    if (!this.socket) {
+      this.socket = {};
+    }
+    this.socket.Packets = {};
+  }
+
 };

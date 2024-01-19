@@ -5,13 +5,6 @@ import configureStore, {createReducer} from '../store';
 import localStorageEnhancer from './local-storage';
 
 export const hooks = {
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithRedux extends Flecks {
-
-      redux;
-
-    }
-  ),
   '@flecks/react.providers': Flecks.priority(
     async (req, flecks) => {
       const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
@@ -31,4 +24,10 @@ export const hooks = {
   '@flecks/socket.packets.decorate': (
     Flecks.decorate(require.context('./packets/decorators', false, /\.js$/))
   ),
+};
+
+export const mixin = (Flecks) => class FlecksWithRedux extends Flecks {
+
+  redux;
+
 };

@@ -17,13 +17,6 @@ async function createWindow(flecks) {
 }
 
 export const hooks = {
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithElectron extends Flecks {
-
-      electron = electron.app ? electron : undefined;
-
-    }
-  ),
   '@flecks/electron/server.initialize': async (electron, flecks) => {
     electron.app.on('window-all-closed', () => {
       const {quitOnClosed} = flecks.get('@flecks/electron');
@@ -83,4 +76,10 @@ export const hooks = {
     },
     {after: '@flecks/web/server', before: '@flecks/repl/server'},
   ),
+};
+
+export const mixin = (Flecks) => class FlecksWithElectron extends Flecks {
+
+  electron = electron.app ? electron : undefined;
+
 };

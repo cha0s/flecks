@@ -19,13 +19,6 @@ export const hooks = {
      */
     successRedirect: '/',
   }),
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithSession extends Flecks {
-
-      passport;
-
-    }
-  ),
   '@flecks/db/server.models': Flecks.provide(require.context('./models')),
   '@flecks/socket.packets.decorate': Flecks.decorate(require.context('./packets/decorators')),
   '@flecks/web/server.request.route': Flecks.priority(
@@ -133,4 +126,10 @@ export const hooks = {
       });
     return routes;
   },
+};
+
+export const mixin = (Flecks) => class FlecksWithSession extends Flecks {
+
+  passport;
+
 };

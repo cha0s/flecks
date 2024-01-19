@@ -24,13 +24,6 @@ export const hooks = {
       ttl: 30,
     },
   }),
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithGovernor extends Flecks {
-
-      governor = {}
-
-    }
-  ),
   '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
   '@flecks/web/server.request.route': (flecks) => {
     const {web} = flecks.get('@flecks/governor/server');
@@ -134,4 +127,10 @@ export const hooks = {
       ]),
     )
   ),
+};
+
+export const mixin = (Flecks) => class FlecksWithGovernor extends Flecks {
+
+  governor = {}
+
 };

@@ -9,18 +9,6 @@ const debug = D('@flecks/web/server');
 export {configSource};
 
 export const hooks = {
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithWeb extends Flecks {
-
-      constructor(...args) {
-        super(...args);
-        if (!this.web) {
-          this.web = {flecks: undefined, server: undefined};
-        }
-      }
-
-    }
-  ),
   '@flecks/web.config': async ({onlyAllow}, flecks) => ({
     '@flecks/web': onlyAllow(flecks.get('@flecks/web'), ['appMountId', 'title']),
   }),
@@ -44,4 +32,15 @@ export const hooks = {
     debug('bootstrapped');
   },
   '@flecks/server.up': (flecks) => createHttpServer(flecks),
+};
+
+export const mixin = (Flecks) => class FlecksWithWeb extends Flecks {
+
+  constructor(...args) {
+    super(...args);
+    if (!this.web) {
+      this.web = {flecks: undefined, server: undefined};
+    }
+  }
+
 };

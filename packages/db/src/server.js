@@ -49,24 +49,6 @@ export const hooks = {
       register(gathered, flecks.db.sequelize);
     }
   },
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithDb extends Flecks {
-
-      db = {
-        Models: {},
-        $$sequelize: undefined,
-        get sequelize() {
-          return this.$$sequelize;
-        },
-        set sequelize(sequelize) {
-          this.$$sequelize = sequelize;
-          this.transaction = sequelize.transaction.bind(sequelize);
-        },
-        transaction: () => {},
-      }
-
-    }
-  ),
   '@flecks/core.starting': (flecks) => {
     flecks.db.Models = flecks.gather('@flecks/db/server.models', {typeProperty: 'name'});
   },
@@ -77,4 +59,21 @@ export const hooks = {
     },
     {after: '@flecks/docker/server'},
   ),
+};
+
+export const mixin = (Flecks) => class FlecksWithDb extends Flecks {
+
+  db = {
+    Models: {},
+    $$sequelize: undefined,
+    get sequelize() {
+      return this.$$sequelize;
+    },
+    set sequelize(sequelize) {
+      this.$$sequelize = sequelize;
+      this.transaction = sequelize.transaction.bind(sequelize);
+    },
+    transaction: () => {},
+  }
+
 };

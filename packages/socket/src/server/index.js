@@ -14,17 +14,16 @@ export const hooks = {
   '@flecks/socket.server': ({config: {'@flecks/core': {id}}}) => ({
     path: `/${id}/socket.io`,
   }),
-  '@flecks/core.mixin': (Flecks) => (
-    class FlecksWithSocketServer extends Flecks {
+};
 
-      constructor(...args) {
-        super(...args);
-        if (!this.socket) {
-          this.socket = {};
-        }
-        this.socket.server = undefined;
-      }
+export const mixin = (Flecks) => class FlecksWithSocketServer extends Flecks {
 
+  constructor(...args) {
+    super(...args);
+    if (!this.socket) {
+      this.socket = {};
     }
-  ),
+    this.socket.server = undefined;
+  }
+
 };
