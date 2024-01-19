@@ -12,21 +12,17 @@ If you are following along from the previous getting started
 <details>
   <summary>About that "2 flecks" thing...</summary>
 
-  Actually, your server application has **4 flecks** at this point:
+  Actually, your server application has **3 flecks** at this point:
 
   - `@flecks/core`
   - `@flecks/core/server`
   - `@flecks/server`
-  - `@flecks/server/server`
 
   flecks will load the `[...]/server` fleck under any fleck that is loaded on the server. This is
   also the case when using `@flecks/web` which will automatically load `[...]/client` flecks
   which are only loaded in the browser. We'll be exploring this specifically in the next section.
   If you're intersted in diving deeper, see [the platforms concept page](#todo).
 
-  Some frameworks make it a little more opaque to work with isomorphic code, but the flecks
-  philosophy is that visibility is believability: you'll have to be explicit about which code
-  runs where.
 </details>
 
 ## Your first fleck
