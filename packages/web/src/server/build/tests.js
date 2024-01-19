@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+require('source-map-support/register');
+
 const mochaDiv = window.document.createElement('div');
 mochaDiv.id = 'mocha';
 window.document.body.appendChild(mochaDiv);
