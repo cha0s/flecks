@@ -15,7 +15,7 @@ export const hooks = {
   }),
 };
 
-export const mixin = (Flecks) => class FlecksWithSocket extends Flecks {
+export const mixin = (Flecks) => class FlecksWithSocketClient extends Flecks {
 
   constructor(...args) {
     super(...args);
