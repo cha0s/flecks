@@ -31,9 +31,7 @@
     "src",
     "start.js",
     "start.js.map",
-    "test",
-    "test.js",
-    "test.js.map"
+    "test"
   ],
   "dependencies": {
     "@babel/core": "^7.12.10",

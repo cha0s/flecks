@@ -34,7 +34,7 @@ exports.hooks = {
     // Add tests if they exist.
     const testFiles = await glob(join(FLECKS_CORE_ROOT, 'test/**/*.js'));
     if (testFiles.length > 0) {
-      files.push('test', 'test.js');
+      files.push('test');
     }
     // Let others have a say.
     await flecks.invokeSequentialAsync('@flecks/fleck.packageJson', json, compilation);

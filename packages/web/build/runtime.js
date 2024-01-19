@@ -106,21 +106,30 @@ module.exports = async (config, env, argv, flecks) => {
   config.entry.index.push(...styles);
   // Tests.
   if (!isProduction) {
-    const testEntries = await Promise.all(
+    const testEntries = (await Promise.all(
       Object.entries(buildFlecks.roots)
         .map(async ([parent, {request}]) => {
-          const paths = [];
-          const rootTests = await glob(join(request, 'test', '*.js'));
-          paths.push(...rootTests);
+          const tests = [];
+          const resolved = dirname(await resolver.resolve(join(request, 'package.json')));
+          const rootTests = await glob(join(resolved, 'test', '*.js'));
+          tests.push(
+            ...rootTests
+              .map((test) => test.replace(resolved, parent)),
+          );
           const platformTests = await Promise.all(
             buildFlecks.platforms.map((platform) => (
-              glob(join(request, 'test', 'platforms', platform, '*.js'))
+              glob(join(resolved, 'test', 'platforms', platform, '*.js'))
             )),
           );
-          paths.push(...platformTests.flat());
-          return [parent, paths];
+          tests.push(
+            ...platformTests
+              .flat()
+              .map((test) => test.replace(resolved, parent)),
+          );
+          return [parent, tests];
         }),
-    );
+    ))
+      .filter(([, tests]) => tests.length > 0);
     const tests = await resolver.resolve(
       join('@flecks/web', 'server', 'build', 'tests'),
     );
@@ -134,11 +143,10 @@ module.exports = async (config, env, argv, flecks) => {
             source: testsSource.replace(
               "  await import('@flecks/web/tests');",
               testEntries
-                .filter(([, paths]) => paths.length > 0)
-                .map(([root, paths]) => (
+                .map(([root, tests]) => (
                   [
                     `  describe('${root}', () => {`,
-                    `    ${paths.map((path) => `require('${path}');`).join('\n    ')}`,
+                    `    ${tests.map((test) => `require('${test}');`).join('\n    ')}`,
                     '  });',
                   ].join('\n')
                 )).join('\n\n'),
