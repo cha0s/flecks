@@ -318,14 +318,8 @@ exports.parseFleckRoot = async (root, state) => {
 
 exports.parseFlecks = async (flecks) => {
   const state = new ParserState();
-  const paths = Object.keys(flecks.resolver);
-  const roots = Array.from(new Set(
-    paths
-      .map((path) => flecks.root(path))
-      .filter((e) => !!e),
-  ));
   await Promise.all(
-    roots
+    Object.keys(flecks.roots)
       .map(async (root) => {
         await exports.parseFleckRoot(root, state);
       }),
