@@ -88,9 +88,12 @@ We're going to be creating a fortune teller command that will tell you when you 
 
 ### Create a command that takes an option
 
-Now, edit `packages/fortune/src/index.js` to look like this:
+Commands are gathered during the [bootstrap phase](#todo) and therefore your hook must be
+implemented in a boostrap script.
 
-```javascript
+Edit your bootstrap script at `packages/fortune/build/flecks.boostrap.js` to look like this:
+
+```javascript title="packages/fortune/build/flecks.boostrap.js"
 export const hooks = {
   '@flecks/core.commands': () => ({
     fortune: {
@@ -170,11 +173,12 @@ You might also stub your toe.
 You can also define arguments in addition to options. Let's add an argument that takes the user's
 name to personalize the output:
 
-```javascript
+```javascript title="packages/fortune/build/flecks.boostrap.js"
+const {Argument} = require('@flecks/core/build/commands');
+
 export const hooks = {
   // highlight-start
   '@flecks/core.commands': (program, flecks) => {
-    const {Argument} = flecks.fleck('@flecks/core/server');
     return {
     // highlight-end
       fortune: {

@@ -507,17 +507,17 @@ Build the application we've built so far:
 npm run build
 ```
 
-Then, take a look in the `dist` directory. You'll see a file there called `docker-compose.yml`.
-`@flecks/docker` automatically emits this file when you build your application for production to
-make container orchestration easier. Let's take a look:
+Then, take a look in the `dist/server` directory. You'll see a file there called
+`docker-compose.yml`. `@flecks/docker` automatically emits this file when you build your
+application for production to make container orchestration easier. Let's take a look:
 
-```yml title="dist/docker-compose.yml"
+```yml title="dist/server/docker-compose.yml"
 version: '3'
 services:
   flecks_app:
     build:
       context: ..
-      dockerfile: dist/Dockerfile
+      dockerfile: dist/server/Dockerfile
     environment:
       FLECKS_ENV__flecks_docker_server__enabled: 'false'
       // highlight-next-line
@@ -541,7 +541,7 @@ You can run (after you [install Docker Compose](https://docs.docker.com/compose/
 necessary):
 
 ```
-docker-compose -f dist/docker-compose.yml up
+docker-compose -f dist/server/docker-compose.yml up
 ```
 
 This demonstrates that your application is now being orchestrated by Docker Compose and is
