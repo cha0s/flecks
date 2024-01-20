@@ -75,7 +75,7 @@ module.exports = async (config, env, argv, flecks) => {
   const nodeExternalsConfig = {
     allowlist,
   };
-  flecks.runtimeCompiler('server', config, nodeExternalsConfig);
+  await flecks.runtimeCompiler('server', config, nodeExternalsConfig);
   // Rewrite to signals for HMR.
   if ('production' !== argv.mode) {
     allowlist.push(/^webpack/);

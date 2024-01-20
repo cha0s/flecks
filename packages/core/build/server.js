@@ -1,5 +1,5 @@
 const {realpath} = require('fs/promises');
-const {join} = require('path');
+const {dirname, join} = require('path');
 
 const babelmerge = require('babel-merge');
 const set = require('lodash.set');
@@ -53,11 +53,13 @@ function environmentConfiguration(config) {
 
 module.exports = class Server extends Flecks {
 
+  aliased = {};
+
   buildConfigs = {};
 
   platforms = ['server'];
 
-  resolved = {};
+  compiled = {};
 
   resolver = new Resolver();
 
@@ -119,30 +121,85 @@ module.exports = class Server extends Flecks {
           .map(({path, request}) => [path, flecks[path] || explication.roots[request] || {}]),
       ),
     };
-    const resolved = {};
-    await Promise.all(
-      Object.entries(explication.descriptors)
-        .map(async ([, {path, request}]) => {
-          try {
-            if (path !== request || request !== await realpath(request)) {
-              resolved[path] = request;
-            }
-          }
-          // eslint-disable-next-line no-empty
-          catch (error) {}
-        }),
-    );
+    const aliased = {};
+    const compiled = {};
     const reverseRequest = Object.fromEntries(
       Object.entries(explication.descriptors)
         .map(([, {path, request}]) => [request, path]),
     );
+    const roots = Object.fromEntries(
+      (await Promise.all(Object.entries(explication.roots)
+        .map(async ([request, bootstrap]) => {
+          const packageRequest = await realpath(await resolver.resolve(join(request, 'package.json')));
+          const realDirname = dirname(packageRequest);
+          const {dependencies = {}, devDependencies = {}} = require(packageRequest);
+          let source;
+          let root;
+          // One of ours?
+          if (
+            [].concat(
+              Object.keys(dependencies),
+              Object.keys(devDependencies),
+            )
+              .includes('@flecks/fleck')
+            && realDirname.endsWith('/dist')
+          ) {
+            root = realDirname.slice(0, -5);
+            source = join(root, 'src');
+          }
+          else {
+            root = realDirname;
+            source = realDirname;
+          }
+          return [
+            reverseRequest[request],
+            {
+              bootstrap,
+              request,
+              root,
+              source,
+            },
+          ];
+        })))
+        // Reverse sort for greedy root matching.
+        .sort(([l], [r]) => (l < r ? 1 : -1)),
+    );
+    await Promise.all(
+      Object.entries(explication.descriptors)
+        .map(async ([, {path, request}]) => {
+          const [root, requestRoot] = Object.entries(roots)
+            .find(([, {request: rootRequest}]) => request.startsWith(rootRequest)) || [];
+          if (requestRoot && compiled[requestRoot.root]) {
+            return;
+          }
+          const resolvedRequest = await resolver.resolve(request);
+          if (!resolvedRequest) {
+            return;
+          }
+          const realResolvedRequest = await realpath(resolvedRequest);
+          if (path !== request || resolvedRequest !== realResolvedRequest) {
+            if (requestRoot) {
+              if (!compiled[requestRoot.root]) {
+                compiled[requestRoot.root] = {
+                  flecks: [],
+                  path: root,
+                  root: requestRoot.root,
+                  source: requestRoot.source,
+                };
+              }
+              compiled[requestRoot.root].flecks.push(path);
+            }
+            else {
+              aliased[path] = realResolvedRequest;
+            }
+          }
+        }),
+    );
     return {
-      resolved,
+      aliased,
+      compiled,
       resolver,
-      roots: Object.fromEntries(
-        Object.entries(explication.roots)
-          .map(([request, bootstrap]) => [reverseRequest[request], {bootstrap, request}]),
-      ),
+      roots,
       runtime,
     };
   }
@@ -171,15 +228,17 @@ module.exports = class Server extends Flecks {
     debug('bootstrap configuration (%s)', configType);
     debugSilly(originalConfig);
     const {
-      resolved,
+      aliased,
+      compiled,
       resolver,
       roots,
       runtime,
     } = await this.buildRuntime(originalConfig, platforms, configFlecks);
     const flecks = super.from(runtime);
-    flecks.roots = roots;
+    flecks.aliased = aliased;
+    flecks.compiled = compiled;
     flecks.platforms = platforms;
-    flecks.resolved = resolved;
+    flecks.roots = roots;
     flecks.resolver = resolver;
     flecks.loadBuildConfigs();
     return flecks;
@@ -214,42 +273,62 @@ module.exports = class Server extends Flecks {
   }
 
   async runtimeCompiler(runtime, config, {allowlist = []} = {}) {
-    // Compile.
-    const needCompilation = Object.entries(this.resolved);
+    // Compile?
+    const needCompilation = Object.entries(this.compiled);
     if (needCompilation.length > 0) {
       const babelConfig = await this.babel();
-      // const flecksBabelConfig = this.babel();
+      const includes = [];
       // Alias and de-externalize.
       await Promise.all(
         needCompilation
-          .map(async ([fleck, resolved]) => {
-            allowlist.push(fleck);
-            // Create alias.
-            config.resolve.alias[fleck] = resolved;
-            debugSilly('%s runtime de-externalized %s, alias: %s', runtime, fleck, resolved);
-            // Alias this compiled fleck's `node_modules` to the root `node_modules`.
-            config.resolve.alias[
-              join(resolved, 'node_modules')
-            ] = join(FLECKS_CORE_ROOT, 'node_modules');
-            config.module.rules.push(
-              {
-                test: /\.(m?jsx?)?$/,
-                include: [resolved],
-                use: [
-                  {
-                    loader: require.resolve('babel-loader'),
-                    options: {
-                      cacheDirectory: true,
-                      babelrc: false,
-                      configFile: false,
-                      ...babelConfig,
-                    },
-                  },
-                ],
-              },
-            );
+          .map(async ([
+            root,
+            {
+              flecks,
+              path,
+              resolved,
+              source,
+            },
+          ]) => {
+            flecks.forEach((fleck) => {
+              allowlist.push(fleck);
+            });
+            debugSilly('%s runtime de-externalized %s, alias: %s', runtime, root, resolved);
+            // Alias.
+            config.resolve.alias[path] = source || resolved;
+            // Root aliases.
+            if (root) {
+              config.resolve.alias[
+                join(root, 'node_modules')
+              ] = join(FLECKS_CORE_ROOT, 'node_modules');
+              config.resolve.fallback[path] = root;
+            }
+            includes.push(root || resolved);
           }),
       );
+      // Compile.
+      config.module.rules.push(
+        {
+          test: /\.(m?jsx?)?$/,
+          include: includes,
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                cacheDirectory: true,
+                babelrc: false,
+                configFile: false,
+                ...babelConfig,
+              },
+            },
+          ],
+        },
+      );
+      // Aliases.
+      Object.entries(this.aliased)
+        .forEach(([from, to]) => {
+          config.resolve.alias[from] = to;
+        });
       // Our very own lil' chunk.
       set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
         chunks: 'all',
@@ -257,7 +336,7 @@ module.exports = class Server extends Flecks {
         priority: 100,
         test: new RegExp(
           `(?:${
-            Object.keys(this.resolved)
+            includes
               .map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')
           })`,
         ),

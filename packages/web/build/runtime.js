@@ -19,18 +19,22 @@ module.exports = async (config, env, argv, flecks) => {
     .filter((fleck) => !['@flecks/server'].includes(fleck));
   const styles = (
     await Promise.all(
-      Object.entries(flecks.roots)
-        .map(async ([fleck, {request}]) => {
+      Object.keys(flecks.flecks)
+        .map(async (fleck) => {
+          // No root? How to infer?
+          const [root] = Object.entries(flecks.roots)
+            .find(([root]) => fleck.startsWith(root)) || [];
+          if (!root) {
+            return undefined;
+          }
           // Compiled? It will be included with the compilation.
-          if (flecks.resolved[fleck]) {
+          if (Object.entries(flecks.compiled).some(([, {flecks}]) => flecks.includes(fleck))) {
             return undefined;
           }
           try {
-            const fleckResolved = await resolver.resolve(fleck);
-            const parentResolved = dirname(await resolver.resolve(join(request, 'package.json')));
-            const sub = fleckResolved.slice(parentResolved.length + 1);
-            const style = join(parentResolved, 'assets', `${basename(sub, extname(sub))}.css`);
-            await access(style);
+            const sub = fleck.slice(root.length + 1) || 'index';
+            const style = join(root, 'assets', `${basename(sub, extname(sub))}.css`);
+            await access(await flecks.resolver.resolve(style));
             return style;
           }
           catch (error) {
@@ -96,12 +100,7 @@ module.exports = async (config, env, argv, flecks) => {
       },
     );
   });
-  buildFlecks.runtimeCompiler('web', config);
-  // Aliases.
-  Object.entries(buildFlecks.resolved)
-    .forEach(([from, to]) => {
-      config.resolve.alias[from] = to;
-    });
+  await buildFlecks.runtimeCompiler('web', config);
   // Styles.
   config.entry.index.push(...styles);
   // Tests.
