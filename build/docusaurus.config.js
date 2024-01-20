@@ -5,7 +5,7 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 // For some reason we get a webpack warning if we use import here...
-const {configDefaults} = require('@flecks/dox/server'); // eslint-disable-line import/no-extraneous-dependencies
+const {configDefaults} = require('@flecks/dox/build/docusaurus'); // eslint-disable-line import/no-extraneous-dependencies
 
 export default async function flecksDocusaurus() {
   const defaults = configDefaults();

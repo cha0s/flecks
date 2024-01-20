@@ -7,7 +7,7 @@ const {
 } = require('path');
 
 const {transformAsync} = require('@babel/core');
-const traverse = require('@babel/traverse');
+const {default: traverse} = require('@babel/traverse');
 const {
   isArrayExpression,
   isArrowFunctionExpression,
