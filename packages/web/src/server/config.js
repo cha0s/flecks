@@ -1,5 +1,9 @@
 import {Transform} from 'stream';
 
+const {
+  NODE_ENV,
+} = process.env;
+
 export const configSource = async (flecks, req) => {
   req.onlyAllow = (object, keys) => (
     Object.fromEntries(
@@ -42,7 +46,7 @@ class InlineConfig extends Transform {
       [
         '<body>',
         `<div id="${appMountId}-container">`,
-        `<script data-flecks="ignore">window.document.querySelector('#${appMountId}-container').style.display = 'none'</script>`,
+        `<script${'production' === NODE_ENV ? 'data-flecks="ignore"' : ''}>window.document.querySelector('#${appMountId}-container').style.display = 'none'</script>`,
         `<script data-flecks="ignore">${await configSource(this.flecks, this.req)}</script>`,
         `<div id="${appMountId}"></div>`,
         '</div>',

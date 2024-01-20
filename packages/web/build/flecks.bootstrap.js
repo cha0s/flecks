@@ -24,8 +24,13 @@ exports.hooks = {
         break;
       }
       case 'web': {
-        finalLoader = {loader: MiniCssExtractPlugin.loader};
-        config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
+        if (isProduction) {
+          finalLoader = {loader: MiniCssExtractPlugin.loader};
+          config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
+        }
+        else {
+          finalLoader = {loader: 'style-loader'};
+        }
         break;
       }
       default: break;
