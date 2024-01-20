@@ -21,8 +21,8 @@ The most basic usage:
 const Gathered = flecks.gather('@my/fleck.whatever');
 ```
 
-Suppose `@my/fleck.whatever` above resulted in gathering two classes, `Foo` and `Bar`. In this case,
-`Gathered` would be structured as:
+Suppose the flecks implementing the hook `@my/fleck.whatever` above returned two classes, `Foo` and
+`Bar`. In this case, `Gathered` would be structured as:
 
 ```javascript
 import {ById, ByType} from '@flecks/core';
@@ -119,7 +119,7 @@ reduce this maintenance burden for you.
 
 Webpack provides an API called
 [require.context](https://webpack.js.org/guides/dependency-management/#requirecontext) which
-imports many files with a pattern. A call like this:
+imports many files with a pattern.
 
 Supposing our fleck is structured like so:
 

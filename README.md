@@ -1,7 +1,7 @@
 <div align="center">
   <h1>flecks</h1>
   <p>
-    Flecks is an exceptionally extensible fullstack application production system. Its true purpose
+    flecks is an exceptionally extensible fullstack application production system. Its true purpose
     is to make application development a more joyful endeavor. Intelligent defaults combined with
     a highly dynamic structure encourage consistency while allowing you to easily express your own
     opinions.
@@ -85,9 +85,9 @@ Just to give you an idea of the power of hooks, some will be listed here:
 
 ### The `build` directory
 
-Flecks applications contain a `build` directory with a `flecks.yml` that defines the flecks use to compose the project, as well as build-time configuration.
+flecks applications contain a `build` directory with a `flecks.yml` that defines the flecks use to compose the project, as well as build-time configuration.
 
-Flecks strives to provide powerful defaults that minimize the need to override configuration.
+flecks strives to provide powerful defaults that minimize the need to override configuration.
 
 The simplest example of a flecks server application:
 
