@@ -4,10 +4,10 @@ const {stat} = require('fs/promises');
 const {join} = require('path');
 
 const addFleckToYml = require('@flecks/core/build/add-fleck-to-yml');
-const {Server, program} = require('@flecks/core/server');
+const {program} = require('@flecks/core/build/commands');
+const Server = require('@flecks/core/build/server');
 const build = require('@flecks/create-app/build/build');
-const move = require('@flecks/create-app/build/move');
-const testDestination = require('@flecks/create-app/build/testDestination');
+const {move, testDestination} = require('@flecks/create-app/build/move');
 const {validate} = require('@flecks/create-app/server');
 
 const {
@@ -29,7 +29,7 @@ const checkIsMonorepo = async () => {
 
 const monorepoScope = async () => {
   try {
-    const {name} = __non_webpack_require__(join(FLECKS_CORE_ROOT, 'package.json'));
+    const {name} = require(join(FLECKS_CORE_ROOT, 'package.json'));
     const [scope] = name.split('/');
     return scope;
   }
@@ -82,7 +82,7 @@ const target = async (fleck) => {
         error.code = 129;
         throw error;
       }
-      const fileTree = await move(name, join(__dirname, 'template'));
+      const fileTree = await move(name, join(__dirname, '..', 'template'));
       // Write the tree.
       await fileTree.writeTo(destination);
       await build(packageManager, destination);

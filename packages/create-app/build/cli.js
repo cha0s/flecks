@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 
-import {join} from 'path';
+const {join} = require('path');
 
-import {
-  dumpYml,
-  loadYml,
+const {
   Option,
   program,
+} = require('@flecks/core/build/commands');
+const {
+  dumpYml,
+  loadYml,
   transform,
-} from '@flecks/core/server';
-import validate from 'validate-npm-package-name';
+} = require('@flecks/core/server');
+const validate = require('validate-npm-package-name');
 
-import build from './build';
-import move, {testDestination} from './move';
+const build = require('./build');
+const {move, testDestination} = require('./move');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -40,15 +42,15 @@ const {
         error.code = 129;
         throw error;
       }
-      const fileTree = await move(name, join(__dirname, 'template'));
+      const fileTree = await move(name, join(__dirname, '..', 'template'));
       fileTree.pipe(
         'build/flecks.yml',
         transform((chunk, encoding, done, stream) => {
           const yml = loadYml(chunk);
-          if ('npm' !== packageManager) {
-            yml['@flecks/core/server'] = {packageManager};
-          }
           yml['@flecks/core'] = {id: app};
+          if ('npm' !== packageManager) {
+            yml['@flecks/core'].packageManager = packageManager;
+          }
           stream.push(dumpYml(yml, {forceQuotes: true, sortKeys: true}));
           done();
         }),

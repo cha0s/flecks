@@ -1,11 +1,11 @@
-import {createReadStream, createWriteStream} from 'fs';
-import {mkdir, stat} from 'fs/promises';
+const {createReadStream, createWriteStream} = require('fs');
+const {mkdir, stat} = require('fs/promises');
 
-import {glob} from '@flecks/core/server';
-import minimatch from 'minimatch';
-import {dirname, join} from 'path';
+const {glob} = require('@flecks/core/server');
+const minimatch = require('minimatch');
+const {dirname, join} = require('path');
 
-export default class FileTree {
+module.exports = class FileTree {
 
   constructor(files = {}) {
     this.files = files;
@@ -63,4 +63,4 @@ export default class FileTree {
     );
   }
 
-}
+};

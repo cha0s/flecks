@@ -1,11 +1,11 @@
-import {stat} from 'fs/promises';
-import {basename, dirname, join} from 'path';
+const {stat} = require('fs/promises');
+const {basename, dirname, join} = require('path');
 
-import {JsonStream, transform} from '@flecks/core/server';
+const {JsonStream, transform} = require('@flecks/core/server');
 
-import FileTree from './tree';
+const FileTree = require('./tree');
 
-export const testDestination = async (destination) => {
+exports.testDestination = async (destination) => {
   try {
     await stat(destination);
     return false;
@@ -18,7 +18,7 @@ export const testDestination = async (destination) => {
   }
 };
 
-export default async (name, source) => {
+exports.move = async (name, source) => {
   const fileTree = await FileTree.loadFrom(source);
   // Renamed to avoid conflicts.
   const {files} = fileTree;
