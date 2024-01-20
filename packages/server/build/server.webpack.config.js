@@ -17,6 +17,7 @@ module.exports = async (env, argv, flecks) => {
   const {
     hot,
     nodeArgs,
+    nodeEnv,
     start: isStarting,
   } = flecks.get('@flecks/server');
   const config = defaultConfig(flecks, {
@@ -49,6 +50,9 @@ module.exports = async (env, argv, flecks) => {
   config.entry.index.push('@flecks/server/entry');
   // Augment the application-starting configuration.
   if (isStarting) {
+    if (Object.entries(flecks.compiled).length > 0) {
+      nodeEnv.NODE_PRESERVE_SYMLINKS = 1;
+    }
     config.plugins.push(
       startServer({
         exec: 'index.js',

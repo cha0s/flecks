@@ -142,9 +142,8 @@ module.exports = class Server extends Flecks {
               Object.keys(devDependencies),
             )
               .includes('@flecks/fleck')
-            && realDirname.endsWith('/dist')
           ) {
-            root = realDirname.slice(0, -5);
+            root = realDirname.endsWith('/dist') ? realDirname.slice(0, -5) : realDirname;
             source = join(root, 'src');
           }
           else {
@@ -167,14 +166,20 @@ module.exports = class Server extends Flecks {
     await Promise.all(
       Object.entries(explication.descriptors)
         .map(async ([, {path, request}]) => {
+          if (path !== request) {
+            aliased[path] = request;
+          }
           const [root, requestRoot] = Object.entries(roots)
             .find(([, {request: rootRequest}]) => request.startsWith(rootRequest)) || [];
           if (requestRoot && compiled[requestRoot.root]) {
             return;
           }
-          const resolvedRequest = await resolver.resolve(request);
+          let resolvedRequest = await resolver.resolve(request);
           if (!resolvedRequest) {
-            return;
+            if (!requestRoot) {
+              return;
+            }
+            resolvedRequest = await resolver.resolve(join(requestRoot.root, 'package.json'));
           }
           const realResolvedRequest = await realpath(resolvedRequest);
           if (path !== request || resolvedRequest !== realResolvedRequest) {
@@ -188,9 +193,6 @@ module.exports = class Server extends Flecks {
                 };
               }
               compiled[requestRoot.root].flecks.push(path);
-            }
-            else {
-              aliased[path] = realResolvedRequest;
             }
           }
         }),
@@ -252,6 +254,16 @@ module.exports = class Server extends Flecks {
         });
       });
     debugSilly('build configs loaded: %O', this.buildConfigs);
+  }
+
+  get realiasedConfig() {
+    return Object.fromEntries(
+      Object.entries(this.config)
+        .map(([path, config]) => {
+          const alias = this.aliased[path];
+          return [alias ? `${path}:${alias}` : path, config];
+        }),
+    );
   }
 
   async resolveBuildConfig(config, override) {
@@ -327,7 +339,12 @@ module.exports = class Server extends Flecks {
       // Aliases.
       Object.entries(this.aliased)
         .forEach(([from, to]) => {
-          config.resolve.alias[from] = to;
+          if (
+            !Object.entries(this.compiled)
+              .some(([, {flecks}]) => flecks.includes(from))
+          ) {
+            config.resolve.alias[from] = to;
+          }
         });
       // Our very own lil' chunk.
       set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {

@@ -11,7 +11,7 @@ const {glob} = require('@flecks/core/server');
 
 module.exports = async (config, env, argv, flecks) => {
   const buildFlecks = await Server.from({
-    config: flecks.config,
+    config: flecks.realiasedConfig,
     platforms: ['client', '!server'],
   });
   const {resolver, flecks: webFlecks} = buildFlecks;
@@ -28,7 +28,10 @@ module.exports = async (config, env, argv, flecks) => {
             return undefined;
           }
           // Compiled? It will be included with the compilation.
-          if (Object.entries(flecks.compiled).some(([, {flecks}]) => flecks.includes(fleck))) {
+          if (
+            Object.entries(flecks.compiled)
+              .some(([, {flecks}]) => flecks.includes(fleck))
+          ) {
             return undefined;
           }
           try {

@@ -96,6 +96,12 @@ module.exports = async function explicate(
               request: join(descriptor.request, platform),
             });
           }
+          if (await resolver.resolve(join(descriptor.request, 'src', platform))) {
+            return doExplication({
+              path: join(descriptor.path, platform),
+              request: join(descriptor.request, 'src', platform),
+            });
+          }
           return undefined;
         }),
     );

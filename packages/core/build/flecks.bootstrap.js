@@ -18,6 +18,9 @@ exports.hooks = {
         }),
       );
     }
+    if (Object.entries(flecks.compiled).length > 0) {
+      config.resolve.symlinks = false;
+    }
   },
   '@flecks/core.build.config': () => [
     /**
