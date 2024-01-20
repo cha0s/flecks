@@ -1,8 +1,8 @@
-import {dumpYml} from '@flecks/core/server';
+const {dumpYml} = require('@flecks/core/server');
 
-import {generateComposeConfig, generateDockerFile} from './generate';
+const {generateComposeConfig, generateDockerFile} = require('./generate');
 
-class FlecksDockerOutput {
+module.exports = class FlecksDockerOutput {
 
   constructor(options) {
     this.options = options;
@@ -28,6 +28,4 @@ class FlecksDockerOutput {
     });
   }
 
-}
-
-export default FlecksDockerOutput;
+};

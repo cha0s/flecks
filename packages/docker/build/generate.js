@@ -1,4 +1,4 @@
-export const generateDockerFile = (flecks) => {
+exports.generateDockerFile = (flecks) => {
   const dockerfile = [
     'FROM node:20',
     '',
@@ -11,7 +11,7 @@ export const generateDockerFile = (flecks) => {
     'ENV DEBUG=*',
     'ENV NODE_ENV=production',
     '',
-    'CMD ["node", "./dist/index.js"]',
+    'CMD ["node", "./dist/server/index.js"]',
     '',
     'VOLUME /var/www/node_modules',
     '',
@@ -19,14 +19,14 @@ export const generateDockerFile = (flecks) => {
   return flecks.invokeComposed('@flecks/docker.Dockerfile', dockerfile);
 };
 
-export const generateComposeConfig = async (flecks) => {
+exports.generateComposeConfig = async (flecks) => {
   const id = flecks.get('@flecks/core.id');
   const appServiceName = `${id}_app`;
   const services = {
     [appServiceName]: {
       build: {
         context: '..',
-        dockerfile: 'dist/Dockerfile',
+        dockerfile: 'dist/server/Dockerfile',
       },
       environment: {
         FLECKS_ENV__flecks_docker_server__enabled: 'false',
