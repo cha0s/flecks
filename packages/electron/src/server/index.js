@@ -2,10 +2,6 @@ import {Flecks} from '@flecks/core';
 
 const electron = __non_webpack_require__('electron');
 
-const {
-  NODE_ENV,
-} = process.env;
-
 let win;
 
 async function createWindow(flecks) {
@@ -39,27 +35,15 @@ export const hooks = {
   },
   '@flecks/electron/server.window': async (win, flecks) => {
     const {public: $$public} = flecks.get('@flecks/web');
-    const {
-      installExtensions,
-      url = `http://${$$public}`,
-    } = flecks.get('@flecks/electron');
-    if (installExtensions && 'production' !== NODE_ENV) {
-      const {
-        default: installExtension,
-        REDUX_DEVTOOLS,
-        REACT_DEVELOPER_TOOLS,
-      } = __non_webpack_require__('electron-devtools-installer');
-      let extensions = installExtensions;
-      if (!Array.isArray(extensions)) {
-        extensions = [];
-        if (flecks.fleck('@flecks/react')) {
-          extensions.push(REACT_DEVELOPER_TOOLS);
-        }
-        if (flecks.fleck('@flecks/redux')) {
-          extensions.push(REDUX_DEVTOOLS);
-        }
-      }
-      await installExtension(extensions);
+    const {installExtensions, url = `http://${$$public}`} = flecks.get('@flecks/electron');
+    if (installExtensions) {
+      const installer = __non_webpack_require__('electron-devtools-installer');
+      const {default: installExtension} = installer;
+      await installExtension([
+        ...Array.isArray(installExtensions) ? installExtensions : [],
+        ...flecks.invokeFlat('@flecks/electron/server.extensions', installer)
+          .flat(),
+      ]);
     }
     await win.loadURL(url);
   },

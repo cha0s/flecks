@@ -24,11 +24,7 @@ exports.hooks = {
     /**
      * Install devtools extensions (by default).
      *
-     * If `true`, will install some devtools extensions based on which flecks are enabled.
-     *
      * You can pass an array of Chrome store IDs to install a list of custom extensions.
-     *
-     * Extensions will not be installed if `'production' === process.env.NODE_ENV`
      */
     installExtensions: true,
     /**
