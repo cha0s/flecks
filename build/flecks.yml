@@ -1,5 +1,4 @@
-'@flecks/core': {}
-'@flecks/core/server':
+'@flecks/core':
   packageManager: yarn
 '@flecks/create-app': {}
 '@flecks/create-fleck': {}
@@ -9,10 +8,10 @@
 '@flecks/electron': {}
 '@flecks/fleck': {}
 '@flecks/governor': {}
-'@flecks/passport-local-react': {}
-'@flecks/passport-local': {}
-'@flecks/passport-react': {}
 '@flecks/passport': {}
+'@flecks/passport-local': {}
+'@flecks/passport-local-react': {}
+'@flecks/passport-react': {}
 '@flecks/react': {}
 '@flecks/redis': {}
 '@flecks/redux': {}
