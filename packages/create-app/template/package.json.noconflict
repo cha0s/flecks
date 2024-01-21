@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "1.0.0",
   "scripts": {
     "build": "FLECKS_ENV__flecks_server__start=0 npm run build:only",
     "build:only": "flecks build",

@@ -6,6 +6,7 @@ const {join} = require('path');
 const addFleckToYml = require('@flecks/core/build/add-fleck-to-yml');
 const {program} = require('@flecks/core/build/commands');
 const Server = require('@flecks/core/build/server');
+const {transform} = require('@flecks/core/server');
 const build = require('@flecks/create-app/build/build');
 const {move, testDestination} = require('@flecks/create-app/build/move');
 const {validate} = require('@flecks/create-app/server');
@@ -83,6 +84,17 @@ const target = async (fleck) => {
         throw error;
       }
       const fileTree = await move(name, join(__dirname, '..', 'template'));
+      if (isMonorepo) {
+        const {version} = require(join(FLECKS_CORE_ROOT, 'package.json'));
+        // Inherit version from monorepo root.
+        fileTree.pipe(
+          'package.json',
+          transform((chunk, encoding, done, stream) => {
+            stream.push(JSON.stringify({...JSON.parse(chunk), version}));
+            done();
+          }),
+        );
+      }
       // Write the tree.
       await fileTree.writeTo(destination);
       await build(packageManager, destination);

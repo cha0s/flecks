@@ -1,7 +1,7 @@
 const {createReadStream, createWriteStream} = require('fs');
 const {mkdir, stat} = require('fs/promises');
 
-const {glob} = require('@flecks/core/server');
+const {glob, JsonStream} = require('@flecks/core/server');
 const minimatch = require('minimatch');
 const {dirname, join} = require('path');
 
@@ -46,6 +46,11 @@ module.exports = class FileTree {
   }
 
   async writeTo(destination) {
+    // Pretty print all JSON.
+    this.glob('**/*.json')
+      .forEach((path) => {
+        this.pipe(path, new JsonStream.PrettyPrint());
+      });
     return Promise.all(
       Object.entries(this.files)
         .map(async ([path, stream]) => {

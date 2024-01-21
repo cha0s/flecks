@@ -1,7 +1,7 @@
 const {stat} = require('fs/promises');
 const {basename, dirname, join} = require('path');
 
-const {JsonStream, transform} = require('@flecks/core/server');
+const {transform} = require('@flecks/core/server');
 
 const FileTree = require('./tree');
 
@@ -35,10 +35,5 @@ exports.move = async (name, source) => {
       done();
     }),
   );
-  // Pretty print all JSON.
-  fileTree.glob('**/*.json')
-    .forEach((path) => {
-      fileTree.pipe(path, new JsonStream.PrettyPrint());
-    });
   return fileTree;
 };
