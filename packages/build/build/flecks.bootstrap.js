@@ -10,6 +10,7 @@ const {
 
 exports.hooks = {
   '@flecks/build.extensions': () => ['.mjs', '.js', '.json', '.wasm'],
+  '@flecks/build.commands': commands,
   '@flecks/build.config': async (target, config, env, argv, flecks) => {
     if (flecks.get('@flecks/build.profile').includes(target)) {
       config.plugins.push(
@@ -45,7 +46,6 @@ exports.hooks = {
      */
     'fleck.webpack.config.js',
   ],
-  '@flecks/build.commands': commands,
   '@flecks/core.config': () => ({
     /**
      * The package manager used for tasks.

@@ -23,11 +23,11 @@
     "template"
   ],
   "dependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/core": "^3.0.0",
     "@flecks/create-app": "^3.0.0"
   },
   "devDependencies": {
-    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

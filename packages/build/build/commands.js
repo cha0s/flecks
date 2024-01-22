@@ -2,6 +2,7 @@ const {spawn} = require('child_process');
 const {join, normalize} = require('path');
 
 const D = require('@flecks/core/build/debug');
+const {processCode, spawnWith} = require('@flecks/core/server');
 const {Argument, Option, program} = require('commander');
 const {glob} = require('glob');
 const rimraf = require('rimraf');
@@ -33,7 +34,7 @@ exports.commands = (program, flecks) => {
           args.push(packageManager, ['install', fleck]);
         }
         args.push({stdio: 'inherit'});
-        await exports.processCode(spawn(...args));
+        await processCode(spawn(...args));
         await addFleckToYml(fleck);
       },
     },
@@ -85,7 +86,7 @@ exports.commands = (program, flecks) => {
           '--mode', (production && !hot) ? 'production' : 'development',
           ...((watch || hot) ? ['--watch'] : []),
         ];
-        return exports.spawnWith(
+        return spawnWith(
           cmd,
           {
             env: {
@@ -117,7 +118,7 @@ exports.commands = (program, flecks) => {
               '.',
             ];
             promises.push(new Promise((resolve, reject) => {
-              const child = exports.spawnWith(
+              const child = spawnWith(
                 cmd,
                 {
                   cwd,
@@ -154,28 +155,6 @@ exports.commands = (program, flecks) => {
     },
   };
   return commands;
-};
-
-exports.processCode = (child) => new Promise((resolve, reject) => {
-  child.on('error', reject);
-  child.on('exit', (code) => {
-    child.off('error', reject);
-    resolve(code);
-  });
-});
-
-exports.spawnWith = (cmd, opts = {}) => {
-  debug("spawning: '%s'", cmd.join(' '));
-  debugSilly('with options: %O', opts);
-  const child = spawn(cmd[0], cmd.slice(1), {
-    stdio: 'inherit',
-    ...opts,
-    env: {
-      ...process.env,
-      ...opts.env,
-    },
-  });
-  return child;
 };
 
 exports.Argument = Argument;

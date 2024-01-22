@@ -3,11 +3,8 @@
 const {join} = require('path');
 
 const {program} = require('@flecks/build/build/commands');
-const {
-  dumpYml,
-  loadYml,
-  transform,
-} = require('@flecks/core/server');
+const {dumpYml, loadYml} = require('@flecks/build/server');
+const {transform} = require('@flecks/core/server');
 const validate = require('validate-npm-package-name');
 
 const build = require('./build');

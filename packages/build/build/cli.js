@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 const D = require('@flecks/core/build/debug');
+const {processCode} = require('@flecks/core/server');
 const {Command} = require('commander');
 
 const Build = require('./build');
-const {processCode} = require('./commands');
 
 const debug = D('@flecks/build/build/cli');
 const debugSilly = debug.extend('silly');
