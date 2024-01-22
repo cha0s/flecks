@@ -1,7 +1,7 @@
 const FlecksDockerOutput = require('./plugin');
 
 exports.hooks = {
-  '@flecks/core.build': (target, config, env, argv, flecks) => {
+  '@flecks/build.config': (target, config, env, argv, flecks) => {
     if ('server' !== target) {
       return;
     }

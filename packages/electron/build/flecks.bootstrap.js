@@ -1,9 +1,9 @@
 const {join} = require('path');
 
-const {banner} = require('@flecks/core/server');
+const {banner} = require('@flecks/build/server');
 
 exports.hooks = {
-  '@flecks/core.build': (target, config) => {
+  '@flecks/build.config': (target, config) => {
     if ('server' === target) {
       config.plugins.push(
         banner({
@@ -38,7 +38,7 @@ exports.hooks = {
      */
     url: undefined,
   }),
-  '@flecks/core.build.alter': (configs) => {
+  '@flecks/build.config.alter': (configs) => {
     const {server: config} = configs;
     if (config) {
       const plugin = config.plugins.find(({pluginName}) => pluginName === 'StartServerPlugin');

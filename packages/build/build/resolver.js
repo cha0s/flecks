@@ -1,13 +1,12 @@
 const {join} = require('path');
 
+const D = require('@flecks/core/build/debug');
 const {CachedInputFileSystem, ResolverFactory} = require('enhanced-resolve');
 const AppendPlugin = require('enhanced-resolve/lib/AppendPlugin');
 const AliasPlugin = require('enhanced-resolve/lib/AliasPlugin');
 const fs = require('graceful-fs');
 
-const D = require('./debug');
-
-const debug = D('@flecks/core/build/resolver');
+const debug = D('@flecks/build/build/resolver');
 const debugSilly = debug.extend('silly');
 
 const {

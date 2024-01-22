@@ -20,7 +20,7 @@ exports.banner = (options) => (
 exports.copy = (options) => (new CopyPlugin(options));
 
 exports.defaultConfig = (flecks, specializedConfig) => {
-  const {extensions} = flecks;
+  const extensions = flecks.invokeFlat('@flecks/build.extensions').flat();
   const extensionsRegex = exports.regexFromExtensions(extensions);
   const defaults = {
     context: FLECKS_CORE_ROOT,
@@ -82,7 +82,7 @@ exports.defaultConfig = (flecks, specializedConfig) => {
 };
 
 // Include a shebang and set the executable bit..
-exports.executable = () => ([
+exports.executable = () => (
   new class Executable {
 
     // eslint-disable-next-line class-methods-use-this
@@ -95,8 +95,8 @@ exports.executable = () => ([
       );
     }
 
-  }(),
-]);
+  }()
+);
 
 exports.externals = nodeExternals;
 

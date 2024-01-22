@@ -1,5 +1,4 @@
 import {D} from '@flecks/core';
-import Server from '@flecks/core/build/server';
 
 import {configSource, inlineConfig} from './config';
 import {createHttpServer} from './http';
@@ -23,23 +22,15 @@ export const hooks = {
     },
   ],
   '@flecks/web/server.stream.html': inlineConfig,
-  '@flecks/web/server.up': async (server, flecks) => {
-    debug('bootstrapping flecks...');
-    flecks.web.flecks = await Server.from({
-      config: flecks.config,
-      platforms: ['client', '!server'],
-    });
-    debug('bootstrapped');
-  },
   '@flecks/server.up': (flecks) => createHttpServer(flecks),
 };
 
 export const mixin = (Flecks) => class FlecksWithWeb extends Flecks {
 
-  constructor(...args) {
-    super(...args);
+  constructor(runtime) {
+    super(runtime);
     if (!this.web) {
-      this.web = {flecks: undefined, server: undefined};
+      this.web = {config: runtime['@flecks/web'], server: undefined};
     }
   }
 

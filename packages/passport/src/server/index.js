@@ -38,7 +38,7 @@ export const hooks = {
         });
       });
     },
-    {after: '@flecks/session/server'},
+    {after: '@flecks/session/server', before: '@flecks/redux/server'},
   ),
   '@flecks/server.up': Flecks.priority(
     async (flecks) => {

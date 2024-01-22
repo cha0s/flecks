@@ -68,7 +68,7 @@ starter configuration will also be copied to your `build` directory if it doesn'
 ## Your commands
 
 You can implement your own command by implementing
-[`@flecks/core.commands`](/docs/flecks/@flecks/dox/hooks#fleckscorecommands) in your fleck. Let's
+[`@flecks/build.commands`](/docs/flecks/@flecks/dox/hooks#flecksbuildcommands) in your fleck. Let's
 run through the process.
 
 ### Implement <code>@flecks/core&#8203;.commands</code>
@@ -95,7 +95,7 @@ Edit your bootstrap script at `packages/fortune/build/flecks.bootstrap.js` to lo
 
 ```javascript title="packages/fortune/build/flecks.bootstrap.js"
 export const hooks = {
-  '@flecks/core.commands': () => ({
+  '@flecks/build.commands': () => ({
     fortune: {
       options: [
         ['-n, --be-nice', 'be nice'],
@@ -178,7 +178,7 @@ const {Argument} = require('@flecks/core/build/commands');
 
 export const hooks = {
   // highlight-start
-  '@flecks/core.commands': (program, flecks) => {
+  '@flecks/build.commands': (program, flecks) => {
     return {
     // highlight-end
       fortune: {

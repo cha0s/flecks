@@ -17,16 +17,14 @@ export const hooks = {
     }
   },
   '@flecks/session.config': async (flecks) => {
-    const client = createClient(flecks, {legacyMode: true});
-    await client.connect();
+    const client = await createClient(flecks, {legacyMode: true});
     return {
       store: new RedisStore({client}),
     };
   },
   '@flecks/socket.server': async (flecks) => {
-    const pubClient = createClient(flecks);
-    const subClient = createClient(flecks);
-    await Promise.all([pubClient.connect(), subClient.connect()]);
+    const pubClient = await createClient(flecks);
+    const subClient = await createClient(flecks);
     debugSilly('creating adapter');
     return {
       adapter: redisAdapter(pubClient, subClient),

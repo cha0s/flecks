@@ -6,11 +6,11 @@ const {
   join,
 } = require('path');
 
-const Server = require('@flecks/core/build/server');
+const Build = require('@flecks/build/build/build');
 const {glob} = require('@flecks/core/server');
 
 module.exports = async (config, env, argv, flecks) => {
-  const buildFlecks = await Server.from({
+  const buildFlecks = await Build.from({
     config: flecks.realiasedConfig,
     platforms: ['client', '!server'],
   });

@@ -19,11 +19,11 @@ exports.hooks = {
       '@babel/preset-react',
     ],
   }),
-  '@flecks/core.build': (target, config, env, argv) => {
+  '@flecks/build.config': (target, config, env, argv) => {
     const isProduction = 'production' === argv.mode;
     if (!isProduction) {
       config.plugins.push(new ReactRefreshWebpackPlugin());
     }
   },
-  '@flecks/core.exts': () => ['.jsx'],
+  '@flecks/build.extensions': () => ['.jsx'],
 };

@@ -1,9 +1,9 @@
 const {readFile} = require('fs/promises');
 const {join} = require('path');
 
-const D = require('./debug');
+const D = require('@flecks/core/build/debug');
 
-const debug = D('@flecks/core:load-config');
+const debug = D('@flecks/build/build/load-config');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -22,7 +22,11 @@ module.exports = async function loadConfig() {
       throw error;
     }
     const {name} = require(join(FLECKS_CORE_ROOT, 'package.json'));
-    const barebones = {'@flecks/core': {}, '@flecks/fleck': {}};
+    const barebones = {
+      '@flecks/build': {},
+      '@flecks/core': {},
+      '@flecks/fleck': {},
+    };
     if (barebones[name]) {
       delete barebones[name];
     }

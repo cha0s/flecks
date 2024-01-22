@@ -3,6 +3,8 @@ import {Flecks} from '@flecks/core';
 import containers from './containers';
 import createClient from './create-client';
 
+export {default as redis} from 'redis';
+
 export {createClient};
 
 const safeKeys = async (client, pattern, caret) => {
@@ -39,18 +41,12 @@ export const hooks = {
     port: 6379,
   }),
   '@flecks/docker.containers': containers,
-  '@flecks/repl.context': (flecks) => ({
-    redisClient: createClient(flecks),
+  '@flecks/repl.context': async (flecks) => ({
+    redisClient: await createClient(flecks),
   }),
   '@flecks/server.up': Flecks.priority(
     async (flecks) => {
-      const client = createClient(flecks);
-      const promise = new Promise((resolve, reject) => {
-        client.on('ready', resolve);
-        client.on('error', reject);
-      });
-      await client.connect();
-      await promise;
+      const client = await createClient(flecks);
       await client.disconnect();
     },
     {after: '@flecks/docker/server'},

@@ -24,10 +24,11 @@
   "dependencies": {
     "@flecks/core": "^3.0.0",
     "@flecks/db": "^3.0.0",
-    "rate-limiter-flexible": "^2.1.13",
-    "redis": "^3.1.2"
+    "@flecks/redis": "^3.0.0",
+    "rate-limiter-flexible": "^2.1.13"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

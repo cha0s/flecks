@@ -11,7 +11,7 @@ const debugSilly = debug.extend('silly');
 
 export async function createReplServer(flecks) {
   const {id} = flecks.get('@flecks/core');
-  const context = flecks.invokeFlat('@flecks/repl.context')
+  const context = (await Promise.all(flecks.invokeFlat('@flecks/repl.context')))
     .reduce((r, vars) => ({...r, ...vars}), {flecks});
   debug(
     'Object.keys(context) === %O',

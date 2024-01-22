@@ -1,4 +1,5 @@
 import {ByType, Flecks} from '@flecks/core';
+import {RateLimiterRes} from 'rate-limiter-flexible';
 
 import LimitedPacket from './limited-packet';
 import createLimiter from './limiter';
@@ -25,34 +26,41 @@ export const hooks = {
     },
   }),
   '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
-  '@flecks/web/server.request.route': (flecks) => {
-    const {web} = flecks.get('@flecks/governor/server');
-    return async (req, res, next) => {
-      const {Ban} = flecks.db.Models;
-      try {
-        await Ban.check(req);
-      }
-      catch (error) {
-        res.status(403).send(`<pre>${error.message}</pre>`);
-        return;
-      }
-      req.ban = async (keys, ttl = 0) => {
-        const ban = Ban.fromRequest(req, keys, ttl);
-        await Ban.create({...ban});
-        res.status(403).send(`<pre>${Ban.format([ban])}</pre>`);
+  '@flecks/web/server.request.route': Flecks.priority(
+    (flecks) => {
+      const {web} = flecks.get('@flecks/governor/server');
+      return async (req, res, next) => {
+        const {Ban} = flecks.db.Models;
+        try {
+          await Ban.check(req);
+        }
+        catch (error) {
+          res.status(403).send(`<pre>${error.message}</pre>`);
+          return;
+        }
+        req.ban = async (keys, ttl = 0) => {
+          const ban = Ban.fromRequest(req, keys, ttl);
+          await Ban.create({...ban});
+          res.status(403).send(`<pre>${Ban.format([ban])}</pre>`);
+        };
+        try {
+          await flecks.governor.web.consume(req.ip);
+          next();
+        }
+        catch (error) {
+          console.log(error);
+          if (!(error instanceof RateLimiterRes)) {
+            throw error;
+          }
+          const {ttl, keys} = web;
+          const ban = Ban.fromRequest(req, keys, ttl);
+          await Ban.create({...ban});
+          res.status(429).send(`<pre>${Ban.format([ban])}</pre>`);
+        }
       };
-      try {
-        await flecks.governor.web.consume(req.ip);
-        next();
-      }
-      catch (error) {
-        const {ttl, keys} = web;
-        const ban = Ban.fromRequest(req, keys, ttl);
-        await Ban.create({...ban});
-        res.status(429).send(`<pre>${Ban.format([ban])}</pre>`);
-      }
-    };
-  },
+    },
+    {after: '@flecks/passport/server'},
+  ),
   '@flecks/server.up': Flecks.priority(
     async (flecks) => {
       if (flecks.fleck('@flecks/web/server')) {
@@ -91,7 +99,7 @@ export const hooks = {
         );
       }
     },
-    {after: '@flecks/redis/server'},
+    {before: '@flecks/web/server', after: '@flecks/redis/server'},
   ),
   '@flecks/socket/server.request.socket': (flecks) => (
     async (socket, next) => {
@@ -113,6 +121,9 @@ export const hooks = {
         next();
       }
       catch (error) {
+        if (!(error instanceof RateLimiterRes)) {
+          throw error;
+        }
         const {ttl, keys} = socket;
         await Ban.create(Ban.fromRequest(req, keys, ttl));
         next(error);

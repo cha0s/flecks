@@ -1,13 +1,14 @@
 const {stat, unlink} = require('fs/promises');
 const {join} = require('path');
 
+const {commands: coreCommands} = require('@flecks/build/build/commands');
 const {D} = require('@flecks/core');
-const {commands: coreCommands, glob} = require('@flecks/core/server');
+const {glob} = require('@flecks/core/server');
 const chokidar = require('chokidar');
 const clearModule = require('clear-module');
 const Mocha = require('mocha');
 
-const debug = D('@flecks/core.commands');
+const debug = D('@flecks/build.commands');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

@@ -1,16 +1,13 @@
-import {createClient} from 'redis';
+import {createClient} from '@flecks/redis/server';
 import {RateLimiterRedis} from 'rate-limiter-flexible';
 
 export default async (flecks, options) => {
-  const {
-    host,
-    port,
-  } = flecks.get('@flecks/redis/server');
-  const storeClient = createClient({host, port});
-  // @todo node-redis@4
-  // await storeClient.connect();
+  const storeClient = await createClient(flecks);
+  const legacyClient = storeClient.duplicate({legacyMode: true});
+  await legacyClient.connect();
   return new RateLimiterRedis({
     ...options,
-    storeClient,
+    // @todo node-redis@4
+    storeClient: legacyClient,
   });
 };

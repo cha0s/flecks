@@ -1,9 +1,10 @@
 require('source-map-support/register');
 
-const D = require('./debug');
-const Server = require('./server');
+const D = require('@flecks/core/build/debug');
 
-const debug = D('@flecks/core/build/fleckspack.config.js');
+const Build = require('./build');
+
+const debug = D('@flecks/build/build/fleckspack.config.js');
 
 const {
   FLECKS_CORE_BUILD_LIST = '',
@@ -16,7 +17,7 @@ const buildList = FLECKS_CORE_BUILD_LIST
 
 module.exports = async (env, argv) => {
   debug('bootstrapping flecks...');
-  const flecks = await Server.from();
+  const flecks = await Build.from();
   debug('bootstrapped');
   debug('gathering configs');
   const {targets} = flecks;
@@ -43,11 +44,11 @@ module.exports = async (env, argv) => {
   ));
   await Promise.all(
     entries.map(async ([target, config]) => (
-      Promise.all(flecks.invokeFlat('@flecks/core.build', target, config, env, argv))
+      Promise.all(flecks.invokeFlat('@flecks/build.config', target, config, env, argv))
     )),
   );
   const webpackConfigs = Object.fromEntries(entries);
-  await Promise.all(flecks.invokeFlat('@flecks/core.build.alter', webpackConfigs, env, argv));
+  await Promise.all(flecks.invokeFlat('@flecks/build.config.alter', webpackConfigs, env, argv));
   const enterableWebpackConfigs = Object.values(webpackConfigs)
     .filter((webpackConfig) => {
       if (!webpackConfig.entry) {

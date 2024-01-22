@@ -1,7 +1,7 @@
-const {externals} = require('@flecks/core/server');
+const {externals} = require('@flecks/build/server');
 
 module.exports = async (config, env, argv, flecks) => {
-  const runtime = await flecks.resolver.resolve('@flecks/server/runtime');
+  const runtimePath = await flecks.resolver.resolve('@flecks/server/runtime');
   // Inject flecks configuration.
   const paths = Object.keys(flecks.flecks);
   const resolvedPaths = (await Promise.all(
@@ -9,19 +9,45 @@ module.exports = async (config, env, argv, flecks) => {
   ))
     .filter(([, resolved]) => resolved)
     .map(([path]) => path);
+  const runtime = {
+    config: JSON.stringify(flecks.config),
+    loadFlecks: [
+      'async () => (',
+      '  Object.fromEntries(',
+      '    (await Promise.all(',
+      '      [',
+      ...resolvedPaths.map((path) => [
+        '        (async () => {',
+        '          try {',
+        `            return ['${path}', await import('${path}')];`,
+        '          }',
+        '          catch (error) {',
+        '            if (!error.message.startsWith("Cannot find module")) {',
+        '              throw error;',
+        '            }',
+        '          }',
+        '        })(),',
+      ]).flat(),
+      '      ],',
+      '    ))',
+      '      .filter((entry) => entry),',
+      '  )',
+      ')',
+    ].join('\n'),
+    stubs: (
+      JSON.stringify(flecks.stubs.map((stub) => (
+        stub instanceof RegExp ? [stub.source, stub.flags] : stub
+      )))
+    ),
+    ...await flecks.invokeAsync('@flecks/server.runtime'),
+  };
+  const runtimeString = `{${
+    Object.entries(runtime)
+      .map(([key, value]) => `"${key}": ${value}`).join(', ')
+  }}`;
   const source = [
     "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
-    'module.exports = (async () => ({',
-    `  config: ${JSON.stringify(flecks.realiasedConfig)},`,
-    '  loadFlecks: async () => Object.fromEntries(await Promise.all([',
-    ...resolvedPaths.map((path) => (
-      `    ['${path}', import('${path}')],`
-    )),
-    '  ].map(async ([path, M]) => [path, await M]))),',
-    `  stubs: ${JSON.stringify(flecks.stubs.map((stub) => (
-      stub instanceof RegExp ? [stub.source, stub.flags] : stub
-    )))}`,
-    '}))();',
+    `module.exports = (async () => (${runtimeString}))();`,
   ];
   // HMR.
   source.push('if (module.hot) {');
@@ -55,10 +81,10 @@ module.exports = async (config, env, argv, flecks) => {
   // Create runtime.
   config.module.rules.push(
     {
-      test: runtime,
+      test: runtimePath,
       use: [
         {
-          loader: runtime,
+          loader: runtimePath,
           options: {
             source: source.join('\n'),
           },
@@ -71,14 +97,14 @@ module.exports = async (config, env, argv, flecks) => {
     '@flecks/server/runtime',
     /^@babel\/runtime\/helpers\/esm/,
   ];
-  config.resolve.alias['@flecks/server/runtime$'] = runtime;
+  config.resolve.alias['@flecks/server/runtime$'] = runtimePath;
   const nodeExternalsConfig = {
     allowlist,
   };
   await flecks.runtimeCompiler('server', config, nodeExternalsConfig);
   // Rewrite to signals for HMR.
   if ('production' !== argv.mode) {
-    allowlist.push(/^webpack/);
+    allowlist.push(/^webpack\/hot\/signal/);
   }
   // Externalize the rest.
   config.externals = externals(nodeExternalsConfig);

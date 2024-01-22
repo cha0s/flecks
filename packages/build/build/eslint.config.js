@@ -7,10 +7,11 @@ const {
 } = require('fs');
 const {join} = require('path');
 
-const D = require('./debug');
-const Server = require('./server');
+const D = require('@flecks/core/build/debug');
 
-const debug = D('@flecks/core/build/eslint.config.js');
+const Build = require('./build');
+
+const debug = D('@flecks/build/build/eslint.config.js');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -21,7 +22,7 @@ const {
 if (FLECKS_CORE_SYNC_FOR_ESLINT) {
   (async () => {
     debug('bootstrapping flecks...');
-    const flecks = await Server.from();
+    const flecks = await Build.from();
     debug('bootstrapped');
     // Load and finalize ESLint configuration.
     const eslintConfig = await require(
@@ -64,8 +65,14 @@ else {
       module.exports = parsed;
     }
     catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      if (error.message.match(/Unexpected .*? in JSON/)) {
+        // eslint-disable-next-line no-console
+        console.error('Expected JSON, got:\n%s', json);
+      }
+      else {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
     }
   }
 }

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
+const D = require('@flecks/core/build/debug');
 const {Command} = require('commander');
 
+const Build = require('./build');
 const {processCode} = require('./commands');
-const D = require('./debug');
-const Server = require('./server');
 
-const debug = D('@flecks/core/cli');
+const debug = D('@flecks/build/build/cli');
 const debugSilly = debug.extend('silly');
 
 // Asynchronous command process code forwarding.
@@ -38,10 +38,10 @@ program
 // Bootstrap.
 (async () => {
   debugSilly('bootstrapping flecks...');
-  const flecks = await Server.from();
+  const flecks = await Build.from();
   debugSilly('bootstrapped');
   // Register commands.
-  const commands = flecks.invokeMerge('@flecks/core.commands', program);
+  const commands = flecks.invokeMerge('@flecks/build.commands', program);
   const keys = Object.keys(commands).sort();
   for (let i = 0; i < keys.length; ++i) {
     const {

@@ -1,6 +1,6 @@
-const flecksConfigFn = require('@flecks/core/build/fleck.webpack.config');
+const flecksConfigFn = require('@flecks/build/build/fleck.webpack.config');
 
-const ProcessAssets = require('./process-assets');
+const {ProcessAssets} = require('@flecks/build/build/process-assets');
 
 module.exports = async (env, argv, flecks) => {
   const config = await flecksConfigFn(env, argv, flecks);

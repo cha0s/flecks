@@ -2,7 +2,7 @@ import {join} from 'path';
 
 import {expect} from 'chai';
 
-import Resolver from '@flecks/core/build/resolver';
+import Resolver from '@flecks/build/build/resolver';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

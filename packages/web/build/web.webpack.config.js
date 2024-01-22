@@ -4,7 +4,7 @@ const {
   defaultConfig,
   regexFromExtensions,
   webpack,
-} = require('@flecks/core/server');
+} = require('@flecks/build/server');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {htmlTagObjectToString} = require('html-webpack-plugin/lib/html-tags');
@@ -81,7 +81,7 @@ module.exports = async (env, argv, flecks) => {
       .map(async ([name, mainsConfig]) => {
         const {entry: entryPoint, ...htmlTemplateConfig} = mainsConfig;
         // @todo source maps working?
-        entry[name] = [entryPoint];
+        entry[name] = ['source-map-support/register', entryPoint];
         plugins.push(new HtmlWebpackPlugin({
           appMountId: flecks.interpolate(appMountId),
           base: flecks.interpolate(base),

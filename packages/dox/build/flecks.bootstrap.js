@@ -1,7 +1,7 @@
 const commands = require('./commands');
 
 exports.hooks = {
-  '@flecks/core.commands': commands,
+  '@flecks/build.commands': commands,
   '@flecks/core.config': () => ({
     /**
      * Rewrite the output filenames of source files.

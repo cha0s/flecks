@@ -1,4 +1,4 @@
-const {dumpYml} = require('@flecks/core/server');
+const {dumpYml} = require('@flecks/build/server');
 
 const {generateComposeConfig, generateDockerFile} = require('./generate');
 

@@ -25,6 +25,7 @@
     "debug": "^4.3.3"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

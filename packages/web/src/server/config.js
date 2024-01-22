@@ -13,7 +13,7 @@ export const configSource = async (flecks, req) => {
   );
   const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
   const config = Object.fromEntries(
-    Object.entries(flecks.web.flecks.config)
+    Object.entries(flecks.web.config)
       .filter(([path]) => !path.endsWith('/server'))
       .map(([path, config]) => [path, {...config, ...httpConfig[path]}]),
   );

@@ -96,7 +96,7 @@ const implementationVisitor = (fn) => ({
 
 const FlecksBuildConfigs = (state) => (
   implementationVisitor((property) => {
-    if ('@flecks/core.build.config' === property.key.value) {
+    if ('@flecks/build.files' === property.key.value) {
       if (isArrowFunctionExpression(property.value)) {
         if (isArrayExpression(property.value.body)) {
           property.value.body.elements.forEach((element) => {

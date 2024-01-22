@@ -1,6 +1,6 @@
 const {join} = require('path');
 
-const {defaultConfig, webpack} = require('@flecks/core/server');
+const {defaultConfig, webpack} = require('@flecks/build/server');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 const {

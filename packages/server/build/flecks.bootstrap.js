@@ -1,5 +1,5 @@
 exports.hooks = {
-  '@flecks/core.build.config': () => [
+  '@flecks/build.files': () => [
     /**
      * Server build configuration. See: https://webpack.js.org/configuration/
      */

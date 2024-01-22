@@ -28,6 +28,7 @@
     "passport": "^0.7.0"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

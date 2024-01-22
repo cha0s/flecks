@@ -1,12 +1,11 @@
 const {realpath} = require('fs/promises');
 const {dirname, join} = require('path');
 
+const D = require('@flecks/core/build/debug');
+const {Flecks} = require('@flecks/core/build/flecks');
 const babelmerge = require('babel-merge');
-const set = require('lodash.set');
 
-const D = require('./debug');
 const explicate = require('./explicate');
-const {Flecks} = require('./flecks');
 const loadConfig = require('./load-config');
 const Resolver = require('./resolver');
 
@@ -14,7 +13,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const debug = D('@flecks/core/build/bootstrap');
+const debug = D('@flecks/build/build/build');
 const debugSilly = debug.extend('silly');
 
 function environmentalize(path) {
@@ -39,11 +38,11 @@ function environmentConfiguration(config) {
         .map(([subkey, value]) => [subkey.split('_'), value])
         .forEach(([path, jsonOrString]) => {
           try {
-            set(config, [fleck, ...path], JSON.parse(jsonOrString));
+            Flecks.set(config, [fleck, ...path], JSON.parse(jsonOrString));
             debug('read (%s) as JSON', jsonOrString);
           }
           catch (error) {
-            set(config, [fleck, ...path], jsonOrString);
+            Flecks.set(config, [fleck, ...path], jsonOrString);
             debug('read (%s) as string', jsonOrString);
           }
         });
@@ -51,7 +50,7 @@ function environmentConfiguration(config) {
   return config;
 }
 
-module.exports = class Server extends Flecks {
+module.exports = class Build extends Flecks {
 
   aliased = {};
 
@@ -206,10 +205,6 @@ module.exports = class Server extends Flecks {
     };
   }
 
-  get extensions() {
-    return this.invokeFlat('@flecks/core.exts').flat();
-  }
-
   static async from(
     {
       config: configParameter,
@@ -247,7 +242,7 @@ module.exports = class Server extends Flecks {
   }
 
   loadBuildConfigs() {
-    Object.entries(this.invoke('@flecks/core.build.config'))
+    Object.entries(this.invoke('@flecks/build.files'))
       .forEach(([fleck, configs]) => {
         configs.forEach((config) => {
           this.buildConfigs[config] = fleck;
@@ -298,16 +293,16 @@ module.exports = class Server extends Flecks {
             {
               flecks,
               path,
-              resolved,
               source,
             },
           ]) => {
-            flecks.forEach((fleck) => {
-              allowlist.push(fleck);
-            });
-            debugSilly('%s runtime de-externalized %s, alias: %s', runtime, root, resolved);
+            allowlist.push(new RegExp(`^${path}`));
+            // flecks.forEach((fleck) => {
+            //   allowlist.push(fleck);
+            // });
+            debugSilly('%s runtime de-externalized %s, alias: %s', runtime, root, source || path);
             // Alias.
-            config.resolve.alias[path] = source || resolved;
+            config.resolve.alias[path] = source || path;
             // Root aliases.
             if (root) {
               config.resolve.alias[
@@ -315,7 +310,7 @@ module.exports = class Server extends Flecks {
               ] = join(FLECKS_CORE_ROOT, 'node_modules');
               config.resolve.fallback[path] = root;
             }
-            includes.push(root || resolved);
+            includes.push(root || path);
           }),
       );
       // Compile.
@@ -347,7 +342,7 @@ module.exports = class Server extends Flecks {
           }
         });
       // Our very own lil' chunk.
-      set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
+      Flecks.set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
         chunks: 'all',
         enforce: true,
         priority: 100,

@@ -32,6 +32,7 @@
     "socket.io-client": "^4.1.2"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

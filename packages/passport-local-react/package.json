@@ -22,9 +22,11 @@
   "dependencies": {
     "@flecks/core": "^3.0.0",
     "@flecks/passport-local": "^3.0.0",
+    "@flecks/passport-react": "^3.0.0",
     "@flecks/react": "^3.0.0"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

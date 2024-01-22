@@ -39,6 +39,7 @@
     "rimraf": "^5.0.5"
   },
   "devDependencies": {
+    "@flecks/build": "^3.0.0",
     "@flecks/fleck": "^3.0.0"
   }
 }

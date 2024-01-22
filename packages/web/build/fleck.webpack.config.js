@@ -1,4 +1,4 @@
-const {copy, externals} = require('@flecks/core/server');
+const {copy, externals} = require('@flecks/build/server');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 

@@ -1,55 +1,33 @@
 {
-  "name": "@flecks/core",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cha0s/flecks.git",
-    "directory": "packages/core"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
+  "name": "@flecks/build",
   "version": "3.0.0",
-  "main": "index.js",
-  "author": "cha0s",
-  "license": "MIT",
   "scripts": {
-    "build": "NODE_PATH=./node_modules webpack --config ./build/core.webpack.config.js --mode production",
-    "clean": "rm -rf yarn.lock && yarn",
-    "lint": "NODE_PATH=./node_modules eslint --config ../build/build/eslint.config.js .",
+    "build": "NODE_PATH=./node_modules webpack --config ./build/build.webpack.config.js --mode production",
+    "clean": "rm -rf dist yarn.lock && yarn",
+    "lint": "NODE_PATH=./node_modules eslint --config ./build/eslint.config.js .",
     "postversion": "cp package.json dist",
     "test": "npm run build -d && mocha -t 10000 --colors ./dist/test.js"
   },
+  "bin": {
+    "flecks": "./build/cli.js"
+  },
   "files": [
-    "build",
-    "index.js",
-    "index.js.map",
-    "server.js",
-    "server.js.map",
-    "src",
-    "start.js",
-    "start.js.map",
-    "test"
+    "server.js"
   ],
   "dependencies": {
-    "debug": "4.3.1",
-    "glob": "^10.3.10",
-    "jsonparse": "^1.3.1",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2",
-    "source-map-support": "0.5.19",
-    "supports-color": "9.2.1"
-  },
-  "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/eslint-parser": "^7.23.3",
     "@babel/eslint-plugin": "^7.22.10",
     "@babel/plugin-transform-regenerator": "^7.16.7",
     "@babel/preset-env": "^7.12.11",
+    "@flecks/core": "^3.0.0",
     "babel-loader": "^9.1.3",
     "babel-merge": "^3.0.0",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
+    "commander": "11.1.0",
     "copy-webpack-plugin": "^11.0.0",
+    "enhanced-resolve": "^5.9.2",
     "eslint": "^7.0.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -59,10 +37,14 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-webpack-plugin": "^3.2.0",
+    "glob": "^10.3.10",
     "globals": "^13.23.0",
+    "graceful-fs": "^4.2.11",
+    "js-yaml": "4.1.0",
     "mocha": "^8.3.2",
     "rimraf": "^3.0.2",
     "source-map-loader": "4.0.1",
+    "source-map-support": "0.5.19",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"

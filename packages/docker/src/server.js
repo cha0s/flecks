@@ -2,7 +2,7 @@ import startContainer from './start-container';
 
 export const hooks = {
   '@flecks/server.up': async (flecks) => {
-    if (!flecks.get('@flecks/docker/server.enabled')) {
+    if (!flecks.get('@flecks/docker.enabled')) {
       return;
     }
     const containers = await flecks.invokeMergeAsync('@flecks/docker.containers');

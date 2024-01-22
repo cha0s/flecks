@@ -37,9 +37,6 @@ module.exports = async function explicate(
     ) {
       return;
     }
-    if (path !== request) {
-      resolver.addAlias(path, request);
-    }
     descriptors[request] = descriptor;
   }
   async function getRootDescriptor(descriptor) {
@@ -86,23 +83,35 @@ module.exports = async function explicate(
     if (resolved) {
       await doExplication(descriptor);
     }
+    if (descriptor.path !== descriptor.request) {
+      resolver.addAlias(descriptor.path, descriptor.request);
+    }
     await Promise.all(
       platforms
         .filter((platform) => !platform.startsWith('!'))
         .map(async (platform) => {
           if (await resolver.resolve(join(descriptor.request, platform))) {
-            return doExplication({
-              path: join(descriptor.path, platform),
-              request: join(descriptor.request, platform),
-            });
+            const [path, request] = [
+              join(descriptor.path, platform),
+              join(descriptor.request, platform),
+            ];
+            await doExplication({path, request});
+            if (path !== request) {
+              resolver.addAlias(path, request);
+            }
+            return;
           }
           if (await resolver.resolve(join(descriptor.request, 'src', platform))) {
-            return doExplication({
-              path: join(descriptor.path, platform),
-              request: join(descriptor.request, 'src', platform),
-            });
+            const [path, request] = [
+              join(descriptor.path, platform),
+              join(descriptor.request, 'src', platform),
+            ];
+            await doExplication({path, request});
+            if (path !== request) {
+              resolver.addAlias(path, request);
+            }
+            return;
           }
-          return undefined;
         }),
     );
   }

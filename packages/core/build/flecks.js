@@ -463,6 +463,26 @@ exports.Flecks = class Flecks {
   }
 
   /**
+   * Return an object whose keys are fleck paths and values are the `await`ed result of invoking the hook.
+   * @param {string} hook
+   * @param {...any} args Arguments passed to each implementation.
+   * @returns {*}
+   */
+  async invokeAsync(hook, ...args) {
+    if (!this.hooks[hook]) {
+      return {};
+    }
+    return this.flecksImplementing(hook)
+      .reduce(
+        async (r, fleck) => ({
+          ...(await r),
+          [fleck]: await this.invokeFleck(hook, fleck, ...args),
+        }),
+        {},
+      );
+  }
+
+  /**
    * See: [function composition](https://www.educative.io/edpresso/function-composition-in-javascript).
    *
    * @configurable

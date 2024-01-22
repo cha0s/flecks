@@ -1,23 +1,23 @@
 const {spawn} = require('child_process');
 const {join, normalize} = require('path');
 
+const D = require('@flecks/core/build/debug');
 const {Argument, Option, program} = require('commander');
 const {glob} = require('glob');
 const rimraf = require('rimraf');
 
-const D = require('./debug');
 const addFleckToYml = require('./add-fleck-to-yml');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const debug = D('@flecks/core/commands');
+const debug = D('@flecks/build/build/commands');
 const debugSilly = debug.extend('silly');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
 exports.commands = (program, flecks) => {
-  const {packageManager} = flecks.get('@flecks/core');
+  const {packageManager} = flecks.get('@flecks/build');
   const commands = {
     add: {
       args: [
@@ -33,7 +33,7 @@ exports.commands = (program, flecks) => {
           args.push(packageManager, ['install', fleck]);
         }
         args.push({stdio: 'inherit'});
-        await module.exports.processCode(spawn(...args));
+        await exports.processCode(spawn(...args));
         await addFleckToYml(fleck);
       },
     },
@@ -62,7 +62,8 @@ exports.commands = (program, flecks) => {
   if (targets.length > 0) {
     commands.build = {
       args: [
-        new Argument('[target]', 'build target').choices(targets.map(([, target]) => target)),
+        program.createArgument('[target]', 'build target')
+          .choices(targets.map(([, target]) => target)),
       ],
       options: [
         ['-d, --no-production', 'dev build'],
@@ -84,7 +85,7 @@ exports.commands = (program, flecks) => {
           '--mode', (production && !hot) ? 'production' : 'development',
           ...((watch || hot) ? ['--watch'] : []),
         ];
-        return module.exports.spawnWith(
+        return exports.spawnWith(
           cmd,
           {
             env: {
@@ -116,7 +117,7 @@ exports.commands = (program, flecks) => {
               '.',
             ];
             promises.push(new Promise((resolve, reject) => {
-              const child = module.exports.spawnWith(
+              const child = exports.spawnWith(
                 cmd,
                 {
                   cwd,

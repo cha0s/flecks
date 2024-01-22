@@ -7,8 +7,6 @@ const {
 } = require('fs/promises');
 const {dirname, join} = require('path');
 
-const {Argument} = require('@flecks/core/build/commands');
-
 const {
   generate,
   resolveSiteDir,
@@ -21,7 +19,7 @@ const {
 
 module.exports = (program, flecks) => {
   const commands = {};
-  const siteDirArgument = new Argument('[siteDir]', 'Docusaurus directory');
+  const siteDirArgument = program.createArgument('[siteDir]', 'Docusaurus directory');
   siteDirArgument.defaultValue = 'website';
   commands.docusaurus = {
     description: 'create a documentation website for this project',
@@ -79,7 +77,8 @@ module.exports = (program, flecks) => {
       }
     },
     args: [
-      new Argument('subcommand', 'Docusaurus command to run').choices(['build', 'create', 'start']),
+      program.createArgument('subcommand', 'Docusaurus command to run')
+        .choices(['build', 'create', 'start']),
       siteDirArgument,
     ],
   };

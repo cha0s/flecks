@@ -1,7 +1,9 @@
 const {stat, unlink} = require('fs/promises');
 const {join} = require('path');
 
-const {regexFromExtensions, spawnWith} = require('@flecks/core/server');
+const Build = require('@flecks/build/build/build');
+const {spawnWith} = require('@flecks/build/build/commands');
+const {regexFromExtensions} = require('@flecks/build/server');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {
@@ -9,7 +11,7 @@ const {
 } = process.env;
 
 exports.hooks = {
-  '@flecks/core.build': async (target, config, env, argv, flecks) => {
+  '@flecks/build.config': async (target, config, env, argv, flecks) => {
     const isProduction = 'production' === argv.mode;
     let finalLoader;
     switch (target) {
@@ -107,7 +109,7 @@ exports.hooks = {
       type: 'asset',
     });
   },
-  '@flecks/core.build.alter': async (configs, env, argv, flecks) => {
+  '@flecks/build.config.alter': async (configs, env, argv, flecks) => {
     const isProduction = 'production' === argv.mode;
     // Only build vendor in dev.
     if (configs['web-vendor']) {
@@ -187,7 +189,7 @@ exports.hooks = {
     // Remove the build config since we're handing off to WDS.
     delete configs.web;
   },
-  '@flecks/core.build.config': () => [
+  '@flecks/build.files': () => [
     /**
      * Template file used to generate the client HTML.
      *
@@ -290,6 +292,11 @@ exports.hooks = {
      */
     trust: false,
   }),
+  '@flecks/build.packageJson': (json, compilation) => {
+    if (Object.keys(compilation.assets).some((filename) => filename.match(/^assets\//))) {
+      json.files.push('assets');
+    }
+  },
   '@flecks/core.targets': (flecks) => [
     'web',
     ...(flecks.get('@flecks/web.dll').length > 0 ? ['web-vendor'] : []),
@@ -300,10 +307,12 @@ exports.hooks = {
       targets.delete('web');
     }
   },
-  '@flecks/fleck.packageJson': (json, compilation) => {
-    if (Object.keys(compilation.assets).some((filename) => filename.match(/^assets\//))) {
-      json.files.push('assets');
-    }
+  '@flecks/server.runtime': async (flecks) => {
+    const {config} = await Build.from({
+      config: flecks.config,
+      platforms: ['client', '!server'],
+    });
+    return JSON.stringify(config);
   },
 };
 

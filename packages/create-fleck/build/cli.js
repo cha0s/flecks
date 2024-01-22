@@ -3,9 +3,9 @@
 const {stat} = require('fs/promises');
 const {join} = require('path');
 
-const addFleckToYml = require('@flecks/core/build/add-fleck-to-yml');
-const {program} = require('@flecks/core/build/commands');
-const Server = require('@flecks/core/build/server');
+const Build = require('@flecks/build/build/build');
+const addFleckToYml = require('@flecks/build/build/add-fleck-to-yml');
+const {program} = require('@flecks/build/build/commands');
 const {transform} = require('@flecks/core/server');
 const build = require('@flecks/create-app/build/build');
 const {move, testDestination} = require('@flecks/create-app/build/move');
@@ -67,7 +67,7 @@ const target = async (fleck) => {
   program.action(async (fleck, o) => {
     const {alias, add} = o;
     try {
-      const flecks = await Server.from();
+      const flecks = await Build.from();
       const {packageManager} = flecks.get('@flecks/core');
       const isMonorepo = await checkIsMonorepo();
       const [scope, pkg] = await target(fleck);

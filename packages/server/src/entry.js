@@ -2,13 +2,13 @@ import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
 
-import {D} from '@flecks/core';
-import Server from '@flecks/core/build/server';
+import {D, Flecks} from '@flecks/core';
 
 const {version} = require('../package.json');
 
 (async () => {
-  const {config, loadFlecks, stubs} = await __non_webpack_require__('@flecks/server/runtime');
+  const runtime = await __non_webpack_require__('@flecks/server/runtime');
+  const {config, loadFlecks, stubs} = runtime;
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {
@@ -26,7 +26,7 @@ const {version} = require('../package.json');
     debug('stubbing with %O', unserializedStubs);
     __non_webpack_require__('@flecks/core/build/stub')(unserializedStubs);
   }
-  global.flecks = await Server.from({config, flecks: await loadFlecks()});
+  global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
   try {
     await Promise.all(global.flecks.invokeFlat('@flecks/core.starting'));
     await global.flecks.invokeSequentialAsync('@flecks/server.up');
