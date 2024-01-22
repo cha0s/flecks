@@ -1,9 +1,5 @@
-import {D} from '@flecks/core';
-
 import {configSource, inlineConfig} from './config';
 import {createHttpServer} from './http';
-
-const debug = D('@flecks/web/server');
 
 export {configSource};
 

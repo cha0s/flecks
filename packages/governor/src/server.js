@@ -48,7 +48,6 @@ export const hooks = {
           next();
         }
         catch (error) {
-          console.log(error);
           if (!(error instanceof RateLimiterRes)) {
             throw error;
           }
@@ -142,6 +141,6 @@ export const hooks = {
 
 export const mixin = (Flecks) => class FlecksWithGovernor extends Flecks {
 
-  governor = {}
+  governor = {};
 
 };

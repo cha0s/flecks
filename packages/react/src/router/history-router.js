@@ -21,4 +21,4 @@ exports.HistoryRouter = function HistoryRouter({basename, children, history}) {
     navigationType: state.action,
     navigator: history,
   });
-}
+};

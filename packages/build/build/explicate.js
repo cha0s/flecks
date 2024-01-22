@@ -99,9 +99,8 @@ module.exports = async function explicate(
             if (path !== request) {
               resolver.addAlias(path, request);
             }
-            return;
           }
-          if (await resolver.resolve(join(descriptor.request, 'src', platform))) {
+          else if (await resolver.resolve(join(descriptor.request, 'src', platform))) {
             const [path, request] = [
               join(descriptor.path, platform),
               join(descriptor.request, 'src', platform),
@@ -110,7 +109,6 @@ module.exports = async function explicate(
             if (path !== request) {
               resolver.addAlias(path, request);
             }
-            return;
           }
         }),
     );

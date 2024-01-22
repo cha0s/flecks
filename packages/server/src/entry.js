@@ -8,7 +8,7 @@ const {version} = require('../package.json');
 
 (async () => {
   const runtime = await __non_webpack_require__('@flecks/server/runtime');
-  const {config, loadFlecks, stubs} = runtime;
+  const {loadFlecks, stubs} = runtime;
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {

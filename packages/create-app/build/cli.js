@@ -2,10 +2,7 @@
 
 const {join} = require('path');
 
-const {
-  Option,
-  program,
-} = require('@flecks/core/build/commands');
+const {program} = require('@flecks/build/build/commands');
 const {
   dumpYml,
   loadYml,
@@ -23,7 +20,7 @@ const {
 (async () => {
   program.argument('<app>', 'name of the app to create');
   program.addOption(
-    new Option('-pm,--package-manager <binary>', 'package manager binary')
+    program.createOption('-pm,--package-manager <binary>', 'package manager binary')
       .choices(['npm', 'bun', 'yarn'])
       .default('npm'),
   );

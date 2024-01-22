@@ -291,15 +291,11 @@ module.exports = class Build extends Flecks {
           .map(async ([
             root,
             {
-              flecks,
               path,
               source,
             },
           ]) => {
             allowlist.push(new RegExp(`^${path}`));
-            // flecks.forEach((fleck) => {
-            //   allowlist.push(fleck);
-            // });
             debugSilly('%s runtime de-externalized %s, alias: %s', runtime, root, source || path);
             // Alias.
             config.resolve.alias[path] = source || path;

@@ -1,4 +1,4 @@
-const {processCode, spawnWith} = require('@flecks/core/build/commands');
+const {processCode, spawnWith} = require('@flecks/build/build/commands');
 
 module.exports = async (packageManager, cwd) => {
   const code = await processCode(spawnWith([packageManager, 'install'], {cwd}));

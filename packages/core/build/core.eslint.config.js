@@ -1,6 +1,7 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const globals = require('globals');
 
-module.exports = async (flecks) => ({
+module.exports = ({
   extends: [
     require.resolve('eslint-config-airbnb'),
     require.resolve('eslint-config-airbnb/hooks'),
@@ -23,7 +24,6 @@ module.exports = async (flecks) => ({
         'build/**/*.js',
       ],
       rules: {
-        'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
         'import/no-dynamic-require': 'off',
         'global-require': 'off',
       },
@@ -47,7 +47,6 @@ module.exports = async (flecks) => ({
   parser: require.resolve('@babel/eslint-parser'),
   parserOptions: {
     requireConfigFile: false,
-    babelOptions: await flecks.babel(),
   },
   plugins: ['@babel'],
   rules: {

@@ -47,9 +47,7 @@ module.exports = (program, flecks) => {
           if (siteDirExisted) {
             throw new Error(`A website directory at ${resolvedSiteDir} already exists!`);
           }
-          const templateDirectory = dirname(
-            __non_webpack_require__.resolve('@flecks/dox/website/sidebars.js'),
-          );
+          const templateDirectory = dirname(require.resolve('@flecks/dox/website/sidebars.js'));
           await cp(templateDirectory, resolvedSiteDir, {recursive: true});
           // Copy the docusaurus config if it doesn't already exist.
           try {

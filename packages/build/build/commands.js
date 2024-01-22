@@ -121,6 +121,7 @@ exports.commands = (program, flecks) => {
                 cmd,
                 {
                   cwd,
+                  env: {FLECKS_CORE_ROOT},
                 },
               );
               child.on('error', reject);

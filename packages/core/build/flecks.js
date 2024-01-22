@@ -463,7 +463,8 @@ exports.Flecks = class Flecks {
   }
 
   /**
-   * Return an object whose keys are fleck paths and values are the `await`ed result of invoking the hook.
+   * Return an object whose keys are fleck paths and values are the `await`ed result of invoking
+   * the hook.
    * @param {string} hook
    * @param {...any} args Arguments passed to each implementation.
    * @returns {*}

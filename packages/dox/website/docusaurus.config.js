@@ -4,6 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const {configDefaults} = require('@flecks/dox/build/docusaurus');
 
 module.exports = async function flecksDocusaurus() {

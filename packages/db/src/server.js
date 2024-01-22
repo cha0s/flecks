@@ -74,6 +74,6 @@ export const mixin = (Flecks) => class FlecksWithDb extends Flecks {
       this.transaction = sequelize.transaction.bind(sequelize);
     },
     transaction: () => {},
-  }
+  };
 
 };

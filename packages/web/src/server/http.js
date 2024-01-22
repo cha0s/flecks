@@ -62,6 +62,7 @@ export const createHttpServer = async (flecks) => {
         }
         routeMiddleware(req, res, (error) => {
           if (error) {
+            // eslint-disable-next-line no-console
             console.error(error);
             res.status(error.code || 500).end(error.stack);
             return;

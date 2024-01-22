@@ -1,6 +1,7 @@
 const {stat, unlink} = require('fs/promises');
 const {join} = require('path');
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const {commands: coreCommands} = require('@flecks/build/build/commands');
 const {D} = require('@flecks/core');
 const {glob} = require('@flecks/core/server');

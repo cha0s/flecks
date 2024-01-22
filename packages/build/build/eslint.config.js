@@ -38,7 +38,7 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
 }
 else {
   // Check cache first.
-  const cacheDirectory = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'core');
+  const cacheDirectory = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'build');
   try {
     statSync(join(cacheDirectory, 'eslint.config.json'));
     module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslint.config.json')).toString());

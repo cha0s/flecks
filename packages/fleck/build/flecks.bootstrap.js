@@ -1,5 +1,4 @@
-const {join} = require('path');
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 const {hook} = require('@flecks/build/build/process-assets');
 
 const commands = require('./commands');
