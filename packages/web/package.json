@@ -19,6 +19,7 @@
   },
   "files": [
     "entry.js",
+    "index.js",
     "runtime.js",
     "server.js",
     "server/build/entry.js",

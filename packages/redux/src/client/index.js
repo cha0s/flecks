@@ -10,7 +10,7 @@ export const hooks = {
       const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
       const reducer = createReducer(flecks, slices);
       // Hydrate from server.
-      const {preloadedState} = flecks.get('@flecks/redux/client');
+      const {preloadedState} = flecks.get('@flecks/redux');
       const store = await configureStore(flecks, reducer, {preloadedState});
       flecks.redux = store;
       return [Provider, {store}];

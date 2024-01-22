@@ -30,9 +30,4 @@ export const hooks = {
     req.redux = await configureStore(flecks, reducer, {preloadedState});
     next();
   },
-  '@flecks/web.config': async (req) => ({
-    '@flecks/redux/client': {
-      preloadedState: req.redux.getState(),
-    },
-  }),
 };

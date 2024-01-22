@@ -8,9 +8,6 @@ const debug = D('@flecks/web/server');
 export {configSource};
 
 export const hooks = {
-  '@flecks/web.config': async ({onlyAllow}, flecks) => ({
-    '@flecks/web': onlyAllow(flecks.get('@flecks/web'), ['appMountId', 'title']),
-  }),
   '@flecks/web.routes': (flecks) => [
     {
       method: 'get',

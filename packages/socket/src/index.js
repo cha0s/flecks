@@ -11,20 +11,16 @@ export const hooks = {
   '@flecks/core.starting': (flecks) => {
     flecks.socket.Packets = flecks.gather('@flecks/socket.packets', {check: badPacketsCheck});
   },
-  '@flecks/web.config': async (
-    req,
-    {config: {'@flecks/socket': {'packets.decorate': decorators = ['...']}}},
-  ) => ({
-    '@flecks/socket': {
-      'packets.decorate': decorators.filter(
-        (decorator) => 'server' !== decorator.split('/').pop(),
-      ),
-    },
-  }),
   '@flecks/socket.packets': (flecks) => ({
     Bundle: Bundle(flecks),
     Redirect,
     Refresh,
+  }),
+  '@flecks/web.config': async (req, flecks) => ({
+    'packets.decorate': (
+      flecks.get('@flecks/socket.packets.decorate', ['...'])
+        .filter((decorator) => 'server' !== decorator.split('/').pop())
+    ),
   }),
 };
 

@@ -4,30 +4,11 @@ const {
   NODE_ENV,
 } = process.env;
 
-export const configSource = async (flecks, req) => {
-  req.onlyAllow = (object, keys) => (
-    Object.fromEntries(
-      Object.entries(object)
-        .map(([key, value]) => [key, keys.includes(key) ? value : undefined]),
-    )
-  );
-  const httpConfig = await flecks.invokeMergeAsync('@flecks/web.config', req);
-  const config = Object.fromEntries(
-    Object.entries(flecks.web.config)
-      .filter(([path]) => !path.endsWith('/server'))
-      .map(([path, config]) => [path, {...config, ...httpConfig[path]}]),
-  );
-  // Fold in any bespoke configuration.
-  Object.keys(httpConfig)
-    .forEach((key) => {
-      if (!(key in config)) {
-        config[key] = httpConfig[key];
-      }
-    });
-  return `window[Symbol.for('@flecks/web.config')] = JSON.parse(decodeURIComponent("${
-    encodeURIComponent(JSON.stringify(config))
-  }"));`;
-};
+export const configSource = async (flecks, req) => (
+  `window[Symbol.for('@flecks/web.config')] = JSON.parse(decodeURIComponent("${
+    encodeURIComponent(JSON.stringify(await flecks.invokeAsync('@flecks/web.config', req)))
+  }"));`
+);
 
 class InlineConfig extends Transform {
 
