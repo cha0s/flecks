@@ -15,7 +15,7 @@ module.exports = async (flecks) => ({
   ignorePatterns: [
     'dist/**',
     // Not even gonna try.
-    'build/dox/hooks.js',
+    'build/flecks.hooks.js',
   ],
   overrides: [
     {

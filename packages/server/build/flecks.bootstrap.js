@@ -30,8 +30,8 @@ exports.hooks = {
       errorDetails: true,
     },
   }),
-  '@flecks/core.targets': () => ['server'],
-  '@flecks/core.targets.alter': (targets) => {
+  '@flecks/build.targets': () => ['server'],
+  '@flecks/build.targets.alter': (targets) => {
     // Don't build if there's a fleck target.
     if (targets.has('fleck')) {
       targets.delete('server');

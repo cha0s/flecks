@@ -30,7 +30,7 @@ module.exports = (program, flecks) => {
       } = opts;
       const {build} = coreCommands(program, flecks);
       const child = await build.action(undefined, opts);
-      const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/*.js'));
+      const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/**/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
         console.log('No fleck tests found.');

@@ -248,6 +248,7 @@ We have to configure `build/flecks.yml` so that the database comes up before we 
 
 ```yml
 '@db_test/content:./packages/content/src': {}
+'@flecks/build': {}
 '@flecks/core':
   id: db_test
 '@flecks/db': {}
@@ -328,6 +329,7 @@ but this isn't very helpful for any real purpose. Let's make a change to our `bu
 
 ```yml title="build/flecks.yml"
 '@db_test/content:./packages/content/src': {}
+'@flecks/build': {}
 '@flecks/core':
   id: db_test
 '@flecks/db': {}
@@ -392,6 +394,7 @@ Configure `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
 '@db_test/content:./packages/content/src': {}
+'@flecks/build': {}
 '@flecks/core':
   id: db_test
 '@flecks/db': {}

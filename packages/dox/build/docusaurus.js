@@ -1,12 +1,19 @@
 const {mkdir, writeFile} = require('fs/promises');
-const {isAbsolute, join, resolve} = require('path');
+const {
+  basename,
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  resolve,
+} = require('path');
 
 const {spawnWith} = require('@flecks/core/server');
 const {themes: prismThemes} = require('prism-react-renderer');
 const {rimraf} = require('rimraf');
 
 const {
-  generateBuildConfigsPage,
+  generateBuildFilesPage,
   generateConfigPage,
   generateHookPage,
   generateTodoPage,
@@ -63,14 +70,134 @@ exports.generate = async function generate(flecks, siteDir) {
   await rimraf(docsDirectory);
   const generatedDirectory = join(docsDirectory, '@flecks', 'dox');
   await mkdir(generatedDirectory, {recursive: true});
-  const state = await parseFlecks(flecks);
-  const hookPage = generateHookPage(state.hooks, flecks);
-  const todoPage = generateTodoPage(state.todos, flecks);
-  const buildConfigsPage = generateBuildConfigsPage(state.buildConfigs);
-  const configPage = generateConfigPage(state.configs);
-  await writeFile(join(generatedDirectory, 'hooks.md'), hookPage);
-  await writeFile(join(generatedDirectory, 'TODO.md'), todoPage);
-  await writeFile(join(generatedDirectory, 'build-configs.md'), buildConfigsPage);
+  const parsed = await parseFlecks(flecks);
+  const {
+    buildFiles,
+    config,
+    hooks,
+    todos,
+  } = parsed
+    .reduce(
+      (
+        r,
+        [
+          root,
+          sources,
+        ],
+      ) => {
+        const ensureHook = (hook) => {
+          if (!r.hooks[hook]) {
+            r.hooks[hook] = {
+              implementations: [],
+              invocations: [],
+              specification: undefined,
+            };
+          }
+        };
+        sources.forEach(
+          (
+            [
+              path,
+              {
+                buildFiles = [],
+                config = [],
+                hookImplementations = [],
+                hookInvocations = [],
+                hookSpecifications = [],
+                todos = [],
+              },
+            ],
+          ) => {
+            r.buildFiles.push(...buildFiles);
+            r.todos.push(...todos.map((todo) => ({
+              ...todo,
+              filename: join(`**${root}**`, path),
+            })));
+            if (config.length > 0) {
+              let fleck = root;
+              if ('build/flecks.bootstrap.js' !== path) {
+                fleck = join(fleck, path.startsWith('src') ? path.slice(4) : path);
+                fleck = join(dirname(fleck), basename(fleck, extname(fleck)));
+                fleck = fleck.endsWith('/index') ? fleck.slice(0, -6) : fleck;
+              }
+              r.config[fleck] = config;
+            }
+            hookImplementations.forEach(({column, hook, line}) => {
+              ensureHook(hook);
+              r.hooks[hook].implementations.push({
+                column,
+                filename: join(`**${root}**`, path),
+                line,
+              });
+            });
+            hookInvocations.forEach(({
+              column,
+              hook,
+              line,
+              type,
+            }) => {
+              ensureHook(hook);
+              r.hooks[hook].invocations.push({
+                column,
+                filename: join(`**${root}**`, path),
+                line,
+                type,
+              });
+            });
+            hookSpecifications.forEach(({
+              hook,
+              description,
+              example,
+              params,
+            }) => {
+              ensureHook(hook);
+              r.hooks[hook].specification = {
+                description,
+                example,
+                params,
+              };
+            });
+          },
+        );
+        return r;
+      },
+      {
+        buildFiles: [],
+        config: {},
+        hooks: {},
+        todos: [],
+      },
+    );
+  const sortedHooks = Object.fromEntries(
+    Object.entries(hooks)
+      .map(([hook, {implementations, invocations, specification}]) => (
+        [
+          hook,
+          {
+            implementations: implementations
+              .sort(({filename: l}, {filename: r}) => (l < r ? -1 : 1)),
+            invocations: invocations
+              .sort(({filename: l}, {filename: r}) => (l < r ? -1 : 1)),
+            specification,
+          },
+        ]
+      ))
+      .sort(([l], [r]) => (l < r ? -1 : 1)),
+  );
+  Object.entries(sortedHooks)
+    .forEach(([hook, {specification}]) => {
+      if (!specification) {
+        // eslint-disable-next-line no-console
+        console.warn(`Warning: no specification for hook: '${hook}'`);
+      }
+    });
+  const hookPage = generateHookPage(sortedHooks, flecks);
+  const todoPage = generateTodoPage(todos, flecks);
+  const buildFilesPage = generateBuildFilesPage(buildFiles);
+  const configPage = generateConfigPage(config);
+  await writeFile(join(generatedDirectory, 'hooks.mdx'), hookPage);
+  await writeFile(join(generatedDirectory, 'TODO.mdx'), todoPage);
+  await writeFile(join(generatedDirectory, 'build-configs.mdx'), buildFilesPage);
   await writeFile(join(generatedDirectory, 'config.mdx'), configPage);
 };
 

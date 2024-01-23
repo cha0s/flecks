@@ -4,16 +4,19 @@ description: A fleck is a module but also so much more.
 ---
 
 If you are following along from the previous getting started
-[configuration page](./configuration), you have an application with 2 flecks:
+[configuration page](./configuration), you have an application with 3 flecks:
 
+- `@flecks/build`
 - `@flecks/core`
 - `@flecks/server`
 
 <details>
-  <summary>About that "2 flecks" thing...</summary>
+  <summary>About that "3 flecks" thing...</summary>
 
-  Actually, your server application has **3 flecks** at this point:
+  Actually, your server application has **5 flecks** at this point:
 
+  - `@flecks/build`
+  - `@flecks/build/server`
   - `@flecks/core`
   - `@flecks/core/server`
   - `@flecks/server`
@@ -53,8 +56,9 @@ After some output, you'll find your new fleck at `packages/say-hello`. Let's ins
 `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
+'@flecks/build': {}
 '@flecks/core':
-  id: 'hello_world'
+  id: 'hello-world'
 '@flecks/server': {}
 // highlight-next-line
 '@hello-world/say-hello:./packages/say-hello': {}

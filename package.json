@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@docusaurus/theme-mermaid": "3.0.1",
+    "@flecks/build": "*",
     "lerna": "^8.0.2"
   }
 }

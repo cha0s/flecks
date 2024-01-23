@@ -297,11 +297,11 @@ exports.hooks = {
       json.files.push('assets');
     }
   },
-  '@flecks/core.targets': (flecks) => [
+  '@flecks/build.targets': (flecks) => [
     'web',
     ...(flecks.get('@flecks/web.dll').length > 0 ? ['web-vendor'] : []),
   ],
-  '@flecks/core.targets.alter': (targets) => {
+  '@flecks/build.targets.alter': (targets) => {
     // Don't build if there's a fleck target.
     if (targets.has('fleck')) {
       targets.delete('web');

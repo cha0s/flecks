@@ -92,6 +92,7 @@ flecks strives to provide powerful defaults that minimize the need to override c
 The simplest example of a flecks server application:
 
 ```yml
+'@flecks/build': {}
 '@flecks/core': {}
 '@flecks/server': {}
 ```

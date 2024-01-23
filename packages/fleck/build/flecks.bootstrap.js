@@ -14,6 +14,6 @@ exports.hooks = {
       errorDetails: true,
     },
   }),
-  '@flecks/core.targets': () => ['fleck'],
+  '@flecks/build.targets': () => ['fleck'],
   '@flecks/build.processAssets': hook,
 };

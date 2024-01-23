@@ -54,7 +54,7 @@ module.exports = class Build extends Flecks {
 
   aliased = {};
 
-  buildConfigs = {};
+  buildFiles = {};
 
   platforms = ['server'];
 
@@ -245,10 +245,10 @@ module.exports = class Build extends Flecks {
     Object.entries(this.invoke('@flecks/build.files'))
       .forEach(([fleck, configs]) => {
         configs.forEach((config) => {
-          this.buildConfigs[config] = fleck;
+          this.buildFiles[config] = fleck;
         });
       });
-    debugSilly('build configs loaded: %O', this.buildConfigs);
+    debugSilly('build configs loaded: %O', this.buildFiles);
   }
 
   get realiasedConfig() {
@@ -262,7 +262,7 @@ module.exports = class Build extends Flecks {
   }
 
   async resolveBuildConfig(config, override) {
-    const fleck = this.buildConfigs[config];
+    const fleck = this.buildFiles[config];
     if (!fleck) {
       throw new Error(`Unknown build config: '${config}'`);
     }
@@ -371,7 +371,7 @@ module.exports = class Build extends Flecks {
   }
 
   get targets() {
-    const targets = this.invoke('@flecks/core.targets');
+    const targets = this.invoke('@flecks/build.targets');
     const duplicates = {};
     const entries = Object.entries(targets);
     const set = new Set();
@@ -391,9 +391,9 @@ module.exports = class Build extends Flecks {
       `Multiple flecks ('${flecks.join("', '")})' tried to build target '${target}'`
     )).join('\n');
     if (errorMessage) {
-      throw new Error(`@flecks/core.targets:\n${errorMessage}`);
+      throw new Error(`@flecks/build.targets:\n${errorMessage}`);
     }
-    this.invoke('@flecks/core.targets.alter', set);
+    this.invoke('@flecks/build.targets.alter', set);
     return entries
       .map(([fleck, targets]) => (
         targets

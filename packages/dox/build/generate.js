@@ -2,23 +2,26 @@ const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => 
   Object.entries(filenameRewriters)
     .reduce(
       (filename, [from, to]) => filename.replace(new RegExp(from), to),
-      `${filename}:${line}:${column}`,
+      [filename, ...(line ? [line, column] : [])].join(':'),
     )
 );
 
-exports.generateBuildConfigsPage = (buildConfigs) => {
+exports.generateBuildFilesPage = (buildFiles) => {
   const source = [];
-  source.push('# Build configuration');
+  source.push('---');
+  source.push('title: Build files');
+  source.push('description: All the build files in this project.');
+  source.push('---');
   source.push('');
   source.push('This page documents all the build configuration files in this project.');
   source.push('');
-  if (buildConfigs.length > 0) {
-    buildConfigs
-      .sort(({config: l}, {config: r}) => (l < r ? -1 : 1))
-      .forEach(({config, comment}) => {
-        source.push(`## \`${config}\``);
+  if (buildFiles.length > 0) {
+    buildFiles
+      .sort(({filename: l}, {filename: r}) => (l < r ? -1 : 1))
+      .forEach(({filename, description}) => {
+        source.push(`## \`${filename}\``);
         source.push('');
-        source.push(comment);
+        source.push(description);
         source.push('');
       });
   }
@@ -27,9 +30,12 @@ exports.generateBuildConfigsPage = (buildConfigs) => {
 
 exports.generateConfigPage = (configs) => {
   const source = [];
-  source.push("const CodeBlock = require('@theme/CodeBlock');");
+  source.push('---');
+  source.push('title: Fleck configuration');
+  source.push('description: All the configurable flecks in this project.');
+  source.push('---');
   source.push('');
-  source.push('# Fleck configuration');
+  source.push("import CodeBlock from '@theme/CodeBlock';");
   source.push('');
   source.push('<style>td > .theme-code-block \\{ margin: 0; \\}</style>');
   source.push('');
@@ -41,9 +47,9 @@ exports.generateConfigPage = (configs) => {
       source.push(`## \`${fleck}\``);
       source.push('|Name|Default|Description|');
       source.push('|-|-|-|');
-      configs.forEach(({comment, config, defaultValue}) => {
+      configs.forEach(({defaultValue, description, key}) => {
         // Leading and trailing empty cell to make table rendering easier.
-        const row = ['', config];
+        const row = ['', key];
         let code = defaultValue.replace(/`/g, '\\`');
         // Multiline code. Fix indentation.
         if (defaultValue.includes('\n')) {
@@ -53,7 +59,7 @@ exports.generateConfigPage = (configs) => {
           code = [first, ...rest.map((line) => line.substring(indent))].join('\\n');
         }
         row.push(`<CodeBlock language="javascript">{\`${code}\`}</CodeBlock>`);
-        row.push(comment, '');
+        row.push(description, '');
         source.push(row.join('|'));
       });
       source.push('');
@@ -65,7 +71,10 @@ exports.generateHookPage = (hooks, flecks) => {
   const {filenameRewriters} = flecks.get('@flecks/dox');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
-  source.push('# Hooks');
+  source.push('---');
+  source.push('title: Hooks');
+  source.push('description: All the hooks in this project.');
+  source.push('---');
   source.push('');
   source.push('This page documents all the hooks in this project.');
   source.push('');
@@ -81,6 +90,16 @@ exports.generateHookPage = (hooks, flecks) => {
         source.push(...description.split('\n'));
         source.push('');
       }
+      if (example) {
+        source.push('### Example usage');
+        source.push('');
+        source.push('```javascript');
+        source.push('export const hooks = {');
+        source.push(`  '${hook}': ${example}`);
+        source.push('};');
+        source.push('```');
+        source.push('');
+      }
       if (params.length > 0) {
         params.forEach(({description, name, type}) => {
           source.push(`### <code>${name}: ${type}</code>`);
@@ -94,7 +113,7 @@ exports.generateHookPage = (hooks, flecks) => {
         source.push('<details>');
         source.push('<summary>Implementations</summary>');
         source.push('<ul>');
-        implementations.forEach(({filename, loc: {start: {column, line}}}) => {
+        implementations.forEach(({filename, column, line}) => {
           source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
         });
         source.push('</ul>');
@@ -105,21 +124,11 @@ exports.generateHookPage = (hooks, flecks) => {
         source.push('<details>');
         source.push('<summary>Invocations</summary>');
         source.push('<ul>');
-        invocations.forEach(({filename, loc: {start: {column, line}}}) => {
+        invocations.forEach(({filename, column, line}) => {
           source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
-        source.push('');
-      }
-      if (example) {
-        source.push('### Example usage');
-        source.push('');
-        source.push('```javascript');
-        source.push('export const hooks = {');
-        source.push(`  '${hook}': ${example}`);
-        source.push('};');
-        source.push('```');
         source.push('');
       }
     });
@@ -130,16 +139,25 @@ exports.generateTodoPage = (todos, flecks) => {
   const {filenameRewriters} = flecks.get('@flecks/dox');
   const rewriteFilename = makeFilenameRewriter(filenameRewriters);
   const source = [];
-  source.push('# TODO list');
+  source.push('---');
+  source.push('title: TODO list');
+  source.push('description: All the TODO items in this project.');
+  source.push('---');
+  source.push('');
+  source.push("import CodeBlock from '@theme/CodeBlock';");
   source.push('');
   source.push('This page documents all the TODO items in this project.');
   source.push('');
   if (todos.length > 0) {
-    todos.forEach(({filename, loc: {start: {column, line}}, text}) => {
-      source.push(`- ${rewriteFilename(filename, line, column)}`);
-      text.split('\n').forEach((line) => {
-        source.push(`  > ${line}`);
-      });
+    todos.forEach(({
+      filename,
+      context,
+      description,
+    }) => {
+      source.push(rewriteFilename(filename));
+      source.push(`> ## ${description}`);
+      source.push(`> <CodeBlock>${context}</CodeBlock>`);
+      source.push('');
     });
     source.push('');
   }
