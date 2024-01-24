@@ -27,10 +27,10 @@ exports.commands = (program, flecks) => {
         program.createOption('-d, --dev-dependency', 'add to dev dependencies'),
       ],
       description: 'Add a fleck to your application.',
-      action: async ({devDependency}, fleck) => {
+      action: async (fleck, {devDependency}) => {
         const args = [];
         if (['bun', 'yarn'].includes(packageManager)) {
-          args.push('bun', ['add', ...(devDependency ? ['-d'] : []), fleck]);
+          args.push(packageManager, ['add', ...(devDependency ? ['-d'] : []), fleck]);
         }
         else {
           args.push(packageManager, ['install', ...(devDependency ? ['--save-dev'] : []), fleck]);
