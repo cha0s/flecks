@@ -48,6 +48,7 @@ program
       action,
       args = [],
       description,
+      help,
       name = keys[i],
       options = [],
     } = commands[keys[i]];
@@ -61,6 +62,9 @@ program
       cmd.addOption(options[i]);
     }
     cmd.action(forwardProcessCode(action));
+    if (help) {
+      cmd.addHelpText('after', `\n${help}`);
+    }
   }
   // Parse commandline.
   program.parse(process.argv);

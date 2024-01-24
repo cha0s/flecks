@@ -79,6 +79,13 @@ module.exports = (program, flecks) => {
         .choices(['build', 'create', 'start']),
       siteDirArgument,
     ],
+    help: [
+      'The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.',
+      '',
+      'The `create` subcommand will create a documentation website starter template for you at `siteDir`',
+      "if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`",
+      "starter configuration will also be copied to your `build` directory if it doesn't already exist.",
+    ].join('\n'),
   };
   return commands;
 };
