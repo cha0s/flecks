@@ -26,8 +26,6 @@
     "server.js",
     "server.js.map",
     "src",
-    "start.js",
-    "start.js.map",
     "test"
   ],
   "dependencies": {
