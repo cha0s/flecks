@@ -62,7 +62,7 @@ Let's add another core fleck. flecks ships with a core fleck `@flecks/electron`.
 application inside of an instance of [Electron](https://www.electronjs.org/). You'll add the fleck:
 
 ```bash
-npx flecks add @flecks/electron
+npx flecks add -d @flecks/electron
 ```
 
 Finally `npm start` and you will see something like this:
@@ -70,3 +70,11 @@ Finally `npm start` and you will see something like this:
 ![An image of our simple hello world application running inside an Electron window](./flecks-electron.png)
 
 Isn't it beautiful? :relieved:
+
+:::note
+
+We used the `-d` option with `flecks add` to add `@flecks/electron` to
+[`devDependencies`](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file)
+since it's only needed for development.
+
+:::
