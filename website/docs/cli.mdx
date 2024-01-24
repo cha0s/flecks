@@ -13,57 +13,108 @@ flecks has a command-line interface for building, linting, testing, and so much 
 
 ### `add`
 
-Add a fleck to your application.
-
 ```
 Usage: flecks add [options] <fleck>
 
+add a fleck to your application
+
 Arguments:
-  fleck       fleck
+  fleck                 fleck
+
+Options:
+  -d, --dev-dependency  add to dev dependencies
+  -h, --help            display help for command
 ```
 
 ### `build`
 
-Build a target in your application.
-
 ```
 Usage: flecks build [options] [target]
 
+build a target in your application
+
 Arguments:
-  target               target (choices: "...")
+  target               build target (choices: "fleck")
 
 Options:
   -d, --no-production  dev build
   -h, --hot            build with hot module reloading
   -w, --watch          watch for changes
+  --help               display help for command
 ```
 
-### `lint`
-
-Run linter.
+### `clean`
 
 ```
-Usage: flecks lint [options]
+Usage: flecks clean [options]
+
+remove node_modules, lock file, and build artifacts
+
+Options:
+  -h, --help  display help for command
 ```
 
 ### `docusaurus`
 (Implemented by `@flecks/dox`)
 
-Create a documentation website for this project.
-
 ```
 Usage: flecks docusaurus [options] <subcommand> [siteDir]
+
+create a documentation website for this project
 
 Arguments:
   subcommand  Docusaurus command to run (choices: "build", "create", "start")
   siteDir     Docusaurus directory (default: "website")
-```
+
+Options:
+  -h, --help  display help for command
 
 The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
 
 The `create` subcommand will create a documentation website starter template for you at `siteDir`
 if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`
 starter configuration will also be copied to your `build` directory if it doesn't already exist.
+```
+
+### `lint`
+
+```
+Usage: flecks lint [options]
+
+run linter
+
+Options:
+  -h, --help  display help for command
+```
+
+### `repl`
+(Implemented by `@flecks/repl`)
+
+```
+Usage: flecks repl [options]
+
+connect to REPL
+
+Options:
+  -r, --rlwrap  use rlwrap around socat
+  -h, --help    display help for command
+```
+
+### `test`
+
+```
+Usage: flecks test [options]
+
+run tests
+
+Options:
+  -d, --no-production  dev build
+  -w, --watch          watch for changes
+  -v, --verbose        verbose output
+  -h, --help           display help for command
+```
+
+The options are passed along to the `build` command.
 
 ## Your commands
 
@@ -95,10 +146,10 @@ Edit your bootstrap script at `packages/fortune/build/flecks.bootstrap.js` to lo
 
 ```javascript title="packages/fortune/build/flecks.bootstrap.js"
 export const hooks = {
-  '@flecks/build.commands': () => ({
+  '@flecks/build.commands': (program) => ({
     fortune: {
       options: [
-        ['-n, --be-nice', 'be nice'],
+        program.createOption('-n, --be-nice', 'be nice'),
       ],
       description: 'find your true love',
       action: async ({beNice}) => {
@@ -177,18 +228,16 @@ name to personalize the output:
 const {Argument} = require('@flecks/core/build/commands');
 
 export const hooks = {
-  // highlight-start
   '@flecks/build.commands': (program, flecks) => {
     return {
-    // highlight-end
       fortune: {
         // highlight-start
         args: [
-          new Argument('[name]', 'your name')
+          program.createArgument('[name]', 'your name')
         ],
         // highlight-end
         options: [
-          ['-n, --be-nice', 'be nice'],
+          program.createOption('-n, --be-nice', 'be nice'),
         ],
         description: 'find your true love',
         // highlight-next-line
@@ -200,10 +249,8 @@ export const hooks = {
           }
         },
       },
-    // highlight-start
     };
   },
-  // highlight-end
 };
 ```
 
