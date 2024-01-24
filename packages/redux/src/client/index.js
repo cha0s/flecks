@@ -1,21 +1,19 @@
 import {Flecks} from '@flecks/core';
-import {Provider} from 'react-redux';
 
 import configureStore, {createReducer} from '../store';
 import localStorageEnhancer from './local-storage';
 
 export const hooks = {
-  '@flecks/react.providers': Flecks.priority(
-    async (req, flecks) => {
+  '@flecks/web/client.up': Flecks.priority(
+    async (flecks) => {
       const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
       const reducer = createReducer(flecks, slices);
       // Hydrate from server.
       const {preloadedState} = flecks.get('@flecks/redux');
       const store = await configureStore(flecks, reducer, {preloadedState});
       flecks.redux = store;
-      return [Provider, {store}];
     },
-    {before: '@flecks/react/router/client'},
+    {before: '@flecks/react/client'},
   ),
   '@flecks/redux.store': ({enhancers}) => {
     // Hydrate from and subscribe to localStorage.

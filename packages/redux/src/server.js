@@ -1,5 +1,4 @@
-import {D, Flecks} from '@flecks/core';
-import {Provider} from 'react-redux';
+import {D} from '@flecks/core';
 
 import {hydrateServer} from './actions';
 import createReducer from './store/create-reducer';
@@ -10,10 +9,6 @@ const debugSilly = debug.extend('silly');
 
 export const hooks = {
   '@flecks/electron/server.extensions': (installer) => [installer.REDUX_DEVTOOLS],
-  '@flecks/react.providers': Flecks.priority(
-    (req) => [Provider, {store: req.redux}],
-    {before: '@flecks/react/router/server'},
-  ),
   '@flecks/web/server.request.route': (flecks) => async (req, res, next) => {
     const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
     const reducer = createReducer(flecks, slices);
@@ -27,7 +22,7 @@ export const hooks = {
       Object.keys(slices),
       preloadedState,
     );
-    req.redux = await configureStore(flecks, reducer, {preloadedState});
+    req['@flecks/redux'] = await configureStore(flecks, reducer, {preloadedState});
     next();
   },
 };
