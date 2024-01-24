@@ -13,11 +13,11 @@
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_PATH=./node_modules webpack --config ./build/core.webpack.config.js --mode production",
+    "build": "webpack --config ./build/core.webpack.config.js --mode production",
     "clean": "rm -rf yarn.lock && yarn",
-    "lint": "NODE_PATH=./node_modules eslint --config ./build/core.eslint.config.js .",
+    "lint": "eslint --config ./build/core.eslint.config.js .",
     "postversion": "cp package.json dist",
-    "test": "npm run build -d && mocha -t 10000 --colors ./dist/test.js"
+    "test": "npm run build -d && mocha --colors ./dist/test.js"
   },
   "files": [
     "build",

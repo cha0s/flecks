@@ -2,9 +2,9 @@
   "name": "@flecks/build",
   "version": "3.0.0",
   "scripts": {
-    "build": "NODE_PATH=./node_modules webpack --config ./build/build.webpack.config.js --mode production",
+    "build": "webpack --config ./build/build.webpack.config.js --mode production",
     "clean": "rm -rf dist yarn.lock && yarn",
-    "lint": "NODE_PATH=./node_modules eslint --config ./build/eslint.config.js .",
+    "lint": "eslint --config ./build/eslint.config.js .",
     "postversion": "cp package.json dist",
     "test": "npm run build -d && mocha -t 10000 --colors ./dist/test.js"
   },
