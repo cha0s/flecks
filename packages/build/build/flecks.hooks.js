@@ -62,8 +62,8 @@ export const hooks = {
         ],
         description: 'This command does tests and also blows up',
         options: [
-          '-t, --test', 'Do a test',
-          '-b, --blow-up', 'Blow up instead of running the command',
+          program.createOption('-t, --test', 'Do a test'),
+          program.createOption('-b, --blow-up', 'Blow up instead of running the command'),
         ],
       },
     };

@@ -19,9 +19,9 @@ module.exports = (program, flecks) => {
   const commands = {};
   commands.test = {
     options: [
-      ['-d, --no-production', 'dev build'],
-      ['-w, --watch', 'watch for changes'],
-      ['-v, --verbose', 'verbose output'],
+      program.createOption('-d, --no-production', 'dev build'),
+      program.createOption('-w, --watch', 'watch for changes'),
+      program.createOption('-v, --verbose', 'verbose output'),
     ],
     description: 'run tests',
     action: async (opts) => {

@@ -24,7 +24,7 @@ exports.commands = (program, flecks) => {
         new Argument('<fleck>', 'fleck'),
       ],
       options: [
-        ['-d, --dev-dependency', 'add to dev dependencies'],
+        program.createOption('-d, --dev-dependency', 'add to dev dependencies'),
       ],
       description: 'add a fleck to your application',
       action: async ({devDependency}, fleck) => {
@@ -69,9 +69,11 @@ exports.commands = (program, flecks) => {
           .choices(targets.map(([, target]) => target)),
       ],
       options: [
-        ['-d, --no-production', 'dev build'],
-        ['-h, --hot', 'build with hot module reloading'],
-        ['-w, --watch', 'watch for changes'],
+        program.createOption('-d, --no-production', 'dev build'),
+        program.createOption('-h, --hot', 'build with hot module reloading')
+          .implies({production: false}),
+        program.createOption('-w, --watch', 'watch for changes')
+          .implies({production: false}),
       ],
       description: 'build a target in your application',
       action: async (target, opts) => {

@@ -58,7 +58,7 @@ program
       cmd.addArgument(args[i]);
     }
     for (let i = 0; i < options.length; ++i) {
-      cmd.option(...options[i]);
+      cmd.addOption(options[i]);
     }
     cmd.action(forwardProcessCode(action));
   }
