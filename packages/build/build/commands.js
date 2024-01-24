@@ -23,14 +23,17 @@ exports.commands = (program, flecks) => {
       args: [
         new Argument('<fleck>', 'fleck'),
       ],
+      options: [
+        ['-d, --dev-dependency', 'add to dev dependencies'],
+      ],
       description: 'add a fleck to your application',
-      action: async (fleck) => {
+      action: async ({devDependency}, fleck) => {
         const args = [];
-        if ('yarn' === packageManager) {
-          args.push('yarn', ['add', fleck]);
+        if (['bun', 'yarn'].includes(packageManager)) {
+          args.push('bun', ['add', ...(devDependency ? ['-d'] : []), fleck]);
         }
         else {
-          args.push(packageManager, ['install', fleck]);
+          args.push(packageManager, ['install', ...(devDependency ? ['--save-dev'] : []), fleck]);
         }
         args.push({stdio: 'inherit'});
         await processCode(spawn(...args));
