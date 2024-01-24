@@ -1,9 +1,7 @@
 const {copy, externals} = require('@flecks/build/server');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 
 module.exports = async (env, argv, flecks) => {
-  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
   const config = await configFn(env, argv, flecks);
   delete config.entry['server/build/entry'];
   delete config.entry['server/build/template'];
