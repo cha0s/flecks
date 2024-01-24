@@ -10,7 +10,8 @@ flecks provides integration with [Electron](https://www.electronjs.org/) through
 
 :::note[Gotta have somewhere to go]
 
-`@flecks/web` must be enabled on your site to give Electon somewhere to go.
+`@flecks/web` will automatically give Electon somewhere to go. Otherwise you must define
+`@flecks/electron.url`.
 
 :::
 
@@ -22,7 +23,18 @@ If `@flecks/react` or `@flecks/redux` are enabled in your application, the
 [Redux DevTools](https://github.com/reduxjs/redux-devtools) extensions (respectively) will be
 automatically installed.
 
+:::info[Can't stop the signal]
+
+`@flecks/create-app` automatically ships with a patch for Electron to fix a bug in their
+signal-forwarding code. This is necessary to make sure HMR works in your application.
+
+See: https://github.com/electron/electron/pull/40667
+
+:::
+
 :::note
 
 Production support including bundling is currently **in progress**. Maybe you would like to
 [submit a pull request](https://github.com/cha0s/flecks/compare)?
+
+:::
