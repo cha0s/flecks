@@ -68,7 +68,7 @@ const target = async (fleck) => {
     const {alias, add} = o;
     try {
       const flecks = await Build.from();
-      const {packageManager} = flecks.get('@flecks/core');
+      const {packageManager} = flecks.get('@flecks/build');
       const isMonorepo = await checkIsMonorepo();
       const [scope, pkg] = await target(fleck);
       const name = [scope, pkg].filter((e) => !!e).join('/');

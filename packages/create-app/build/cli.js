@@ -41,9 +41,9 @@ const {
         'build/flecks.yml',
         transform((chunk, encoding, done, stream) => {
           const yml = loadYml(chunk);
-          yml['@flecks/core'] = {id: app};
+          yml['@flecks/core'].id = app;
           if ('npm' !== packageManager) {
-            yml['@flecks/core'].packageManager = packageManager;
+            yml['@flecks/build'].packageManager = packageManager;
           }
           stream.push(dumpYml(yml, {forceQuotes: true, sortKeys: true}));
           done();
