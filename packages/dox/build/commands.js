@@ -22,7 +22,15 @@ module.exports = (program, flecks) => {
   const siteDirArgument = program.createArgument('[siteDir]', 'Docusaurus directory');
   siteDirArgument.defaultValue = 'website';
   commands.docusaurus = {
-    description: 'create a documentation website for this project',
+    description: [
+      'Create a documentation website for this project.',
+      '',
+      'The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.',
+      '',
+      'The `create` subcommand will create a documentation website starter template for you at `siteDir`',
+      "if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`",
+      "starter configuration will also be copied to your `build` directory if it doesn't already exist.",
+    ].join('\n'),
     action: async (subcommand, siteDir) => {
       const resolvedSiteDir = resolveSiteDir(siteDir);
       let siteDirExisted = false;
@@ -79,13 +87,6 @@ module.exports = (program, flecks) => {
         .choices(['build', 'create', 'start']),
       siteDirArgument,
     ],
-    help: [
-      'The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.',
-      '',
-      'The `create` subcommand will create a documentation website starter template for you at `siteDir`',
-      "if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`",
-      "starter configuration will also be copied to your `build` directory if it doesn't already exist.",
-    ].join('\n'),
   };
   return commands;
 };

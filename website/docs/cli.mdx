@@ -31,7 +31,7 @@ Options:
 ```
 Usage: flecks build [options] [target]
 
-build a target in your application
+Build a target in your application.
 
 Arguments:
   target               build target (choices: "fleck")
@@ -48,7 +48,7 @@ Options:
 ```
 Usage: flecks clean [options]
 
-remove node_modules, lock file, and build artifacts
+Remove node_modules, lock file, and build artifacts.
 
 Options:
   -h, --help  display help for command
@@ -60,7 +60,13 @@ Options:
 ```
 Usage: flecks docusaurus [options] <subcommand> [siteDir]
 
-create a documentation website for this project
+Create a documentation website for this project.
+
+The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
+
+The `create` subcommand will create a documentation website starter template for you at `siteDir`
+if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`
+starter configuration will also be copied to your `build` directory if it doesn't already exist.
 
 Arguments:
   subcommand  Docusaurus command to run (choices: "build", "create", "start")
@@ -68,12 +74,6 @@ Arguments:
 
 Options:
   -h, --help  display help for command
-
-The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
-
-The `create` subcommand will create a documentation website starter template for you at `siteDir`
-if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`
-starter configuration will also be copied to your `build` directory if it doesn't already exist.
 ```
 
 ### `lint`
@@ -81,7 +81,7 @@ starter configuration will also be copied to your `build` directory if it doesn'
 ```
 Usage: flecks lint [options]
 
-run linter
+Run ESLint.
 
 Options:
   -h, --help  display help for command
@@ -93,7 +93,7 @@ Options:
 ```
 Usage: flecks repl [options]
 
-connect to REPL
+Connect to REPL.
 
 Options:
   -r, --rlwrap  use rlwrap around socat
@@ -105,16 +105,16 @@ Options:
 ```
 Usage: flecks test [options]
 
-run tests
+Run tests.
 
 Options:
   -d, --no-production  dev build
   -w, --watch          watch for changes
   -v, --verbose        verbose output
   -h, --help           display help for command
-```
 
 The options are passed along to the `build` command.
+```
 
 ## Your commands
 

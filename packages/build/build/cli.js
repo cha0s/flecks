@@ -62,9 +62,6 @@ program
       cmd.addOption(options[i]);
     }
     cmd.action(forwardProcessCode(action));
-    if (help) {
-      cmd.addHelpText('after', `\n${help}`);
-    }
   }
   // Parse commandline.
   program.parse(process.argv);

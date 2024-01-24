@@ -23,7 +23,11 @@ module.exports = (program, flecks) => {
       program.createOption('-w, --watch', 'watch for changes'),
       program.createOption('-v, --verbose', 'verbose output'),
     ],
-    description: 'run tests',
+    description: [
+      'Run tests.',
+      '',
+      'The options are passed along to the `build` command.',
+    ].join('\n'),
     action: async (opts) => {
       const {
         watch,

@@ -26,7 +26,7 @@ exports.commands = (program, flecks) => {
       options: [
         program.createOption('-d, --dev-dependency', 'add to dev dependencies'),
       ],
-      description: 'add a fleck to your application',
+      description: 'Add a fleck to your application.',
       action: async ({devDependency}, fleck) => {
         const args = [];
         if (['bun', 'yarn'].includes(packageManager)) {
@@ -41,7 +41,7 @@ exports.commands = (program, flecks) => {
       },
     },
     clean: {
-      description: 'remove node_modules, lock file, and build artifacts',
+      description: 'Remove node_modules, lock file, and build artifacts.',
       action: () => {
         rimraf.sync(join(flecksRoot, 'dist'));
         rimraf.sync(join(flecksRoot, 'node_modules'));
@@ -75,7 +75,7 @@ exports.commands = (program, flecks) => {
         program.createOption('-w, --watch', 'watch for changes')
           .implies({production: false}),
       ],
-      description: 'build a target in your application',
+      description: 'Build a target in your application.',
       action: async (target, opts) => {
         const {
           hot,
@@ -104,7 +104,7 @@ exports.commands = (program, flecks) => {
     };
   }
   commands.lint = {
-    description: 'run linter',
+    description: 'Run ESLint.',
     args: [],
     action: async () => {
       const promises = [];

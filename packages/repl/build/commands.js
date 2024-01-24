@@ -14,7 +14,7 @@ module.exports = (program, flecks) => {
     options: [
       program.createOption('-r, --rlwrap', 'use rlwrap around socat'),
     ],
-    description: 'connect to REPL',
+    description: 'Connect to REPL.',
     action: async (opts) => {
       const {
         rlwrap,
