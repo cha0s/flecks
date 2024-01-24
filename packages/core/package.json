@@ -9,7 +9,6 @@
     "access": "public"
   },
   "version": "3.0.0",
-  "main": "index.js",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
