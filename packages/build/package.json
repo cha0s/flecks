@@ -1,6 +1,8 @@
 {
   "name": "@flecks/build",
   "version": "3.0.0",
+  "author": "cha0s",
+  "license": "MIT",
   "scripts": {
     "build": "webpack --config ./build/build.webpack.config.js --mode production",
     "clean": "rm -rf dist yarn.lock && yarn",

@@ -1,14 +1,7 @@
 {
   "name": "@flecks/server",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cha0s/flecks.git",
-    "directory": "packages/server"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "version": "3.0.0",
+  "author": "cha0s",
   "license": "MIT",
   "scripts": {
     "build": "flecks build",
@@ -16,6 +9,14 @@
     "lint": "flecks lint",
     "postversion": "cp package.json dist",
     "test": "flecks test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha0s/flecks.git",
+    "directory": "packages/server"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "entry.js",

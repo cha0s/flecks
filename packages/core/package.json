@@ -1,13 +1,5 @@
 {
   "name": "@flecks/core",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cha0s/flecks.git",
-    "directory": "packages/core"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "version": "3.0.0",
   "author": "cha0s",
   "license": "MIT",
@@ -17,6 +9,14 @@
     "lint": "eslint --config ./build/core.eslint.config.js .",
     "postversion": "cp package.json dist",
     "test": "npm run build -d && mocha --colors ./dist/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha0s/flecks.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "build",

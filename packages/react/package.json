@@ -1,14 +1,8 @@
 {
   "name": "@flecks/react",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cha0s/flecks.git",
-    "directory": "packages/react"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "version": "3.0.0",
+  "author": "cha0s",
+  "license": "MIT",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
@@ -16,6 +10,14 @@
     "postversion": "cp package.json dist",
     "postinstall": "node src/fake-context.js",
     "test": "flecks test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha0s/flecks.git",
+    "directory": "packages/react"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "client.js",
