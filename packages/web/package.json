@@ -2,7 +2,7 @@
   "name": "@flecks/web",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cha0s/flecks.git",
+    "url": "git+https://github.com/cha0s/flecks.git",
     "directory": "packages/web"
   },
   "publishConfig": {

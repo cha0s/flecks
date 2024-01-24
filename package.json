@@ -4,7 +4,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/cha0s/flecks.git"
+    "url": "git+https://github.com/cha0s/flecks.git"
   },
   "scripts": {
     "build": "lerna run build",
