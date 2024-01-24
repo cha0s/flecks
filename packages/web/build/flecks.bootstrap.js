@@ -292,11 +292,6 @@ exports.hooks = {
      */
     trust: false,
   }),
-  '@flecks/build.packageJson': (json, compilation) => {
-    if (Object.keys(compilation.assets).some((filename) => filename.match(/^assets\//))) {
-      json.files.push('assets');
-    }
-  },
   '@flecks/build.targets': (flecks) => [
     'web',
     ...(flecks.get('@flecks/web.dll').length > 0 ? ['web-vendor'] : []),
@@ -305,6 +300,11 @@ exports.hooks = {
     // Don't build if there's a fleck target.
     if (targets.has('fleck')) {
       targets.delete('web');
+    }
+  },
+  '@flecks/fleck.packageJson': (json, compilation) => {
+    if (Object.keys(compilation.assets).some((filename) => filename.match(/^assets\//))) {
+      json.files.push('assets');
     }
   },
   '@flecks/server.runtime': async (flecks) => {

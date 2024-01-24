@@ -70,21 +70,15 @@ export const hooks = {
   },
 
   /**
-   * Process the `package.json` for a built fleck.
-   * @param {Object} json The JSON.
-   * @param {[Compilation](https://webpack.js.org/api/compilation-object/)} compilation The webpack compilation.
-   */
-  '@flecks/build.packageJson': (json, compilation) => {
-    json.files.push('something');
-  },
-
-  /**
    * Process assets during a compilation.
+   * @param {string} target The build target.
    * @param {Record&lt;string, Source&gt;} assets The assets.
    * @param {[Compilation](https://webpack.js.org/api/compilation-object/)} compilation The webpack compilation.
    */
-  '@flecks/build.processAssets': (assets, compilation) => {
-    assets['my-file.js'] = new Source();
+  '@flecks/build.processAssets': (target, assets, compilation) => {
+    if (this.myTargets.includes(target)) {
+      assets['my-file.js'] = new compilation.compiler.webpack.sources.RawSource('content');
+    }
   },
 
   /**

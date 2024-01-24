@@ -8,8 +8,9 @@ const {
 
 exports.ProcessAssets = class ProcessAssets {
 
-  constructor(flecks) {
+  constructor(target, flecks) {
     this.flecks = flecks;
+    this.target = target;
   }
 
   apply(compiler) {
@@ -20,16 +21,12 @@ exports.ProcessAssets = class ProcessAssets {
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
         },
         async (assets, callback) => {
-          if (this.flecks) {
-            await this.flecks.invokeSequentialAsync(
-              '@flecks/build.processAssets',
-              assets,
-              compilation,
-            );
-          }
-          else {
-            await exports.hook(assets, compilation);
-          }
+          await this.flecks.invokeSequentialAsync(
+            '@flecks/build.processAssets',
+            this.target,
+            assets,
+            compilation,
+          );
           callback();
         },
       );
@@ -38,7 +35,7 @@ exports.ProcessAssets = class ProcessAssets {
 
 };
 
-exports.hook = async (assets, compilation, flecks) => {
+exports.processFleckAssets = async (assets, compilation, jsonCallback) => {
   const {RawSource} = compilation.compiler.webpack.sources;
   const packageJson = assets['package.json'];
   const json = JSON.parse(packageJson.source().toString());
@@ -55,8 +52,8 @@ exports.hook = async (assets, compilation, flecks) => {
     files.push('test');
   }
   // Let others have a say.
-  if (flecks) {
-    await flecks.invokeSequentialAsync('@flecks/build.packageJson', json, compilation);
+  if (jsonCallback) {
+    await jsonCallback(json, compilation);
   }
   // Add any sourcemaps.
   json.files = json.files

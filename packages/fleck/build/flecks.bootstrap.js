@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-const {hook} = require('@flecks/build/build/process-assets');
+const {processFleckAssets} = require('@flecks/build/build/process-assets');
 
 const commands = require('./commands');
 
@@ -15,5 +14,11 @@ exports.hooks = {
     },
   }),
   '@flecks/build.targets': () => ['fleck'],
-  '@flecks/build.processAssets': hook,
+  '@flecks/build.processAssets': async (target, assets, compilation, flecks) => {
+    if ('fleck' === target) {
+      await processFleckAssets(assets, compilation, (json, compilation) => (
+        flecks.invokeSequentialAsync('@flecks/fleck.packageJson', json, compilation)
+      ));
+    }
+  },
 };

@@ -19,13 +19,8 @@
     "access": "public"
   },
   "files": [
-    "build",
     "index.js",
-    "index.js.map",
-    "server.js",
-    "server.js.map",
-    "src",
-    "test"
+    "server.js"
   ],
   "dependencies": {
     "debug": "4.3.1",

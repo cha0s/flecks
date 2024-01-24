@@ -3,6 +3,7 @@ const {join} = require('path');
 const webpack = require('webpack');
 
 const {commands} = require('./commands');
+const {ProcessAssets} = require('./process-assets');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -22,6 +23,7 @@ exports.hooks = {
     if (Object.entries(flecks.compiled).length > 0) {
       config.resolve.symlinks = false;
     }
+    config.plugins.push(new ProcessAssets(target, flecks));
   },
   '@flecks/build.files': () => [
     /**
