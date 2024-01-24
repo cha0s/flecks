@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const globals = require('globals');
 
 module.exports = ({
@@ -16,7 +15,7 @@ module.exports = ({
   ignorePatterns: [
     'dist/**',
     // Not even gonna try.
-    'build/dox/hooks.js',
+    'build/flecks.hooks.js',
   ],
   overrides: [
     {
@@ -24,6 +23,7 @@ module.exports = ({
         'build/**/*.js',
       ],
       rules: {
+        'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
         'import/no-dynamic-require': 'off',
         'global-require': 'off',
       },

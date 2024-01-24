@@ -14,7 +14,6 @@ const {
 } = process.env;
 
 const debug = D('@flecks/build/build/commands');
-const debugSilly = debug.extend('silly');
 const flecksRoot = normalize(FLECKS_CORE_ROOT);
 
 exports.commands = (program, flecks) => {

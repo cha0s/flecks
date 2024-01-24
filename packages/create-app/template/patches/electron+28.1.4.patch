@@ -1,0 +1,18 @@
+diff --git a/node_modules/electron/cli.js b/node_modules/electron/cli.js
+index 09f4677..5227264 100755
+--- a/node_modules/electron/cli.js
++++ b/node_modules/electron/cli.js
+@@ -15,11 +15,10 @@ child.on('close', function (code, signal) {
+
+ const handleTerminationSignal = function (signal) {
+   process.on(signal, function signalHandler () {
+-    if (!child.killed) {
+-      child.kill(signal);
+-    }
++    child.kill(signal);
+   });
+ };
+
+ handleTerminationSignal('SIGINT');
+ handleTerminationSignal('SIGTERM');
++handleTerminationSignal('SIGUSR2');

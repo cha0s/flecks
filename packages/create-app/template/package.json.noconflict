@@ -4,8 +4,8 @@
   "scripts": {
     "build": "FLECKS_ENV__flecks_server__start=0 npm run build:only",
     "build:only": "flecks build",
-    "debug": "DEBUG=*,-babel*,-eslint* npm run dev",
-    "dev": "npm run -- build:only -h",
+    "debug": "DEBUG=@flecks/* npm run dev",
+    "dev": "npm run -- build:only -dh",
     "repl": "npx flecks repl --rlwrap",
     "start": "DEBUG=@flecks/*,-*:silly npm run dev"
   },
@@ -16,6 +16,8 @@
   "devDependencies": {
     "@flecks/build": "3.0.0",
     "@flecks/create-fleck": "3.0.0",
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0"
   }
 }
