@@ -44,6 +44,7 @@ exports.defaultConfig = (flecks, specializedConfig) => {
       alias: {},
       extensions,
       fallback: {},
+      modules: ['node_modules'],
     },
     stats: {
       colors: true,

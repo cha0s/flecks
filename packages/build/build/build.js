@@ -1,5 +1,5 @@
 const {realpath} = require('fs/promises');
-const {dirname, join} = require('path');
+const {dirname, join, relative} = require('path');
 
 const D = require('@flecks/core/build/debug');
 const {Flecks} = require('@flecks/core/build/flecks');
@@ -279,7 +279,7 @@ module.exports = class Build extends Flecks {
     return this.resolver.resolve(join(fleck, 'build', config));
   }
 
-  async runtimeCompiler(runtime, config, {allowlist = []} = {}) {
+  async runtimeCompiler(runtime, config, {additionalModuleDirs = [], allowlist = []} = {}) {
     // Compile?
     const needCompilation = Object.entries(this.compiled);
     if (needCompilation.length > 0) {
@@ -300,13 +300,10 @@ module.exports = class Build extends Flecks {
             // Alias.
             config.resolve.alias[path] = source || path;
             // Root aliases.
-            if (root) {
-              config.resolve.alias[
-                join(root, 'node_modules')
-              ] = join(FLECKS_CORE_ROOT, 'node_modules');
-              config.resolve.fallback[path] = root;
-            }
-            includes.push(root || path);
+            config.resolve.fallback[path] = root;
+            config.resolve.modules.push(relative(FLECKS_CORE_ROOT, join(root, 'node_modules')));
+            additionalModuleDirs.push(relative(FLECKS_CORE_ROOT, join(root, 'node_modules')));
+            includes.push(root);
           }),
       );
       // Compile.

@@ -4,6 +4,7 @@ const D = require('@flecks/core/build/debug');
 const {CachedInputFileSystem, ResolverFactory} = require('enhanced-resolve');
 const AppendPlugin = require('enhanced-resolve/lib/AppendPlugin');
 const AliasPlugin = require('enhanced-resolve/lib/AliasPlugin');
+const ModulesInHierarchicalDirectoriesPlugin = require('enhanced-resolve/lib/ModulesInHierarchicalDirectoriesPlugin');
 const fs = require('graceful-fs');
 
 const debug = D('@flecks/build/build/resolver');
@@ -27,10 +28,7 @@ module.exports = class Resolver {
       extensions: ['.js', '.json', '.node'],
       fileSystem: nodeFileSystem,
       symlinks: false,
-      ...{
-        modules: [join(FLECKS_CORE_ROOT, 'node_modules')],
-        ...options,
-      },
+      ...options,
     });
   }
 
@@ -56,6 +54,15 @@ module.exports = class Resolver {
       'described-resolve',
       {name, onlyModule: false, alias},
       'internal-resolve',
+    ).apply(this.resolver);
+  }
+
+  addModules(path) {
+    debugSilly("adding modules: '%s'", path);
+    new ModulesInHierarchicalDirectoriesPlugin(
+      "raw-module",
+      path,
+      "module"
     ).apply(this.resolver);
   }
 

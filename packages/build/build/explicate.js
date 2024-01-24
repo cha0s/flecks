@@ -1,7 +1,8 @@
+const {join, relative, resolve} = require('path');
+
 const {
-  join,
-  resolve,
-} = require('path');
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
 
 module.exports = async function explicate(
   maybeAliasedPaths,
@@ -83,8 +84,15 @@ module.exports = async function explicate(
     if (resolved) {
       await doExplication(descriptor);
     }
+    let descriptorRequest = descriptor.request;
+    if (areDescriptorsTheSame) {
+      descriptorRequest = join(descriptorRequest, 'src');
+    }
     if (descriptor.path !== descriptor.request) {
-      resolver.addAlias(descriptor.path, descriptor.request);
+      resolver.addAlias(descriptor.path, descriptorRequest);
+      if (descriptorRequest !== descriptor.request) {
+        resolver.addFallback(descriptor.path, descriptor.request);
+      }
     }
     await Promise.all(
       platforms
@@ -100,10 +108,10 @@ module.exports = async function explicate(
               resolver.addAlias(path, request);
             }
           }
-          else if (await resolver.resolve(join(descriptor.request, 'src', platform))) {
+          else if (await resolver.resolve(join(descriptorRequest, 'src', platform))) {
             const [path, request] = [
               join(descriptor.path, platform),
-              join(descriptor.request, 'src', platform),
+              join(descriptorRequest, 'src', platform),
             ];
             await doExplication({path, request});
             if (path !== request) {
@@ -119,7 +127,10 @@ module.exports = async function explicate(
     if (!rootDescriptor || roots[rootDescriptor.request]) {
       return;
     }
-    const {request} = rootDescriptor;
+    const {path, request} = rootDescriptor;
+    if (path !== request) {
+      resolver.addModules(relative(FLECKS_CORE_ROOT, join(request, 'node_modules')));
+    }
     roots[request] = true;
     // Import bootstrap script.
     const bootstrapPath = await resolver.resolve(join(request, 'build', 'flecks.bootstrap'));
