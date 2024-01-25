@@ -9,7 +9,7 @@ module.exports = async (env, argv) => {
   config.plugins.push(new ProcessAssets('fleck', flecks));
   // Small hack because internals.
   flecks.hooks['@flecks/build.processAssets'] = [{
-    hook: '@flecks/build',
+    fleck: '@flecks/build',
     fn: (target, assets, compilation) => processFleckAssets(assets, compilation),
   }];
   config.plugins.push(executable());

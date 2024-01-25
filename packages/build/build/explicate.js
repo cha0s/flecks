@@ -1,159 +1,127 @@
-const {join, relative, resolve} = require('path');
-
+const {access, realpath} = require('fs/promises');
+const {Module} = require('module');
 const {
-  FLECKS_CORE_ROOT = process.cwd(),
-} = process.env;
+  delimiter,
+  join,
+  resolve,
+} = require('path');
 
 module.exports = async function explicate(
-  maybeAliasedPaths,
   {
     importer,
+    paths: maybeAliasedPaths,
     platforms = ['server'],
     resolver,
-    root,
   },
 ) {
-  const descriptors = {};
-  const seen = {};
+  const dependentPaths = [];
   const roots = {};
-  function createDescriptor(maybeAliasedPath) {
-    const index = maybeAliasedPath.indexOf(':');
-    return -1 === index
-      ? {
-        path: maybeAliasedPath,
-        request: maybeAliasedPath,
-      }
-      : {
-        path: maybeAliasedPath.slice(0, index),
-        request: resolve(root, maybeAliasedPath.slice(index + 1)),
-      };
-  }
-  async function doExplication(descriptor) {
-    const {path, request} = descriptor;
-    if (
-      platforms
-        .filter((platform) => platform.startsWith('!'))
-        .map((platform) => platform.slice(1))
-        .includes(path.split('/').pop())
-    ) {
+  async function addRoot(path, request) {
+    // Already added it?
+    if (Object.keys(roots).some((rootPath) => path.startsWith(rootPath))) {
       return;
     }
-    descriptors[request] = descriptor;
-  }
-  async function getRootDescriptor(descriptor) {
-    const {path, request} = descriptor;
     // Walk up and find the root, if any.
     const pathParts = path.split('/');
-    const requestParts = request.split('/');
-    let rootDescriptor;
+    const requestParts = path === request
+      ? pathParts.slice()
+      : resolve(resolver.root, request).split('/');
+    /* eslint-disable no-await-in-loop */
     while (pathParts.length > 0 && requestParts.length > 0) {
       const candidate = requestParts.join('/');
-      // eslint-disable-next-line no-await-in-loop
       if (await resolver.resolve(join(candidate, 'package.json'))) {
-        rootDescriptor = {
-          path: pathParts.join('/'),
-          request: requestParts.join('/'),
+        const rootPath = pathParts.join('/');
+        // Don't add the root if this path doesn't actually exist.
+        if (path !== rootPath && !await resolver.resolve(path)) {
+          break;
+        }
+        // Resolve symlinks.
+        let realCandidate;
+        try {
+          realCandidate = await realpath(candidate);
+        }
+        catch (error) {
+          realCandidate = candidate;
+        }
+        // Aliased or symlinked? Include submodules.
+        if (path !== request || realCandidate !== candidate) {
+          const submodules = join(realCandidate, 'node_modules');
+          resolver.addModules(submodules);
+          // Runtime NODE_PATH hacking.
+          const {env} = process;
+          env.NODE_PATH = (env.NODE_PATH || '') + delimiter + submodules;
+          // eslint-disable-next-line no-underscore-dangle
+          Module._initPaths();
+        }
+        // Load `bootstrap.js`.
+        const bootstrapPath = await resolver.resolve(join(candidate, 'build', 'flecks.bootstrap'));
+        const bootstrap = bootstrapPath ? importer(bootstrapPath) : {};
+        // First add dependencies.
+        const {dependencies = []} = bootstrap;
+        if (dependencies.length > 0) {
+          await Promise.all(dependencies.map((dependency) => addRoot(dependency, dependency)));
+          dependentPaths.push(...dependencies);
+        }
+        // Add root as a dependency.
+        dependentPaths.push(rootPath);
+        // Add root.
+        roots[rootPath] = {
+          bootstrap,
+          request: realCandidate !== candidate ? realCandidate : candidate,
         };
         break;
       }
       pathParts.pop();
       requestParts.pop();
     }
-    return rootDescriptor;
+    /* eslint-enable no-await-in-loop */
   }
-  function descriptorsAreTheSame(l, r) {
-    return (l && !r) || (!l && r) ? false : l.request === r.request;
-  }
-  async function explicateDescriptor(descriptor) {
-    if (descriptors[descriptor.request] || seen[descriptor.request]) {
-      return;
-    }
-    seen[descriptor.request] = true;
-    const areDescriptorsTheSame = descriptorsAreTheSame(
-      descriptor,
-      await getRootDescriptor(descriptor),
-    );
-    const resolved = await resolver.resolve(descriptor.request);
-    if (resolved || areDescriptorsTheSame) {
-      // eslint-disable-next-line no-use-before-define
-      await explicateRoot(descriptor);
-    }
-    if (!resolved && areDescriptorsTheSame) {
-      descriptors[descriptor.request] = descriptor;
-    }
-    if (resolved) {
-      await doExplication(descriptor);
-    }
-    let descriptorRequest = descriptor.request;
-    if (areDescriptorsTheSame) {
-      descriptorRequest = join(descriptorRequest, 'src');
-    }
-    if (descriptor.path !== descriptor.request) {
-      resolver.addAlias(descriptor.path, descriptorRequest);
-      if (descriptorRequest !== descriptor.request) {
-        resolver.addFallback(descriptor.path, descriptor.request);
-      }
-    }
-    await Promise.all(
-      platforms
-        .filter((platform) => !platform.startsWith('!'))
-        .map(async (platform) => {
-          if (await resolver.resolve(join(descriptor.request, platform))) {
-            const [path, request] = [
-              join(descriptor.path, platform),
-              join(descriptor.request, platform),
-            ];
-            await doExplication({path, request});
-            if (path !== request) {
-              resolver.addAlias(path, request);
-            }
-          }
-          else if (await resolver.resolve(join(descriptorRequest, 'src', platform))) {
-            const [path, request] = [
-              join(descriptor.path, platform),
-              join(descriptorRequest, 'src', platform),
-            ];
-            await doExplication({path, request});
-            if (path !== request) {
-              resolver.addAlias(path, request);
-            }
-          }
-        }),
-    );
-  }
-  async function explicateRoot(descriptor) {
-    // Walk up and find the root, if any.
-    const rootDescriptor = await getRootDescriptor(descriptor);
-    if (!rootDescriptor || roots[rootDescriptor.request]) {
-      return;
-    }
-    const {path, request} = rootDescriptor;
-    if (path !== request) {
-      resolver.addModules(relative(FLECKS_CORE_ROOT, join(request, 'node_modules')));
-    }
-    roots[request] = true;
-    // Import bootstrap script.
-    const bootstrapPath = await resolver.resolve(join(request, 'build', 'flecks.bootstrap'));
-    const bootstrap = bootstrapPath ? importer(bootstrapPath) : {};
-    roots[request] = bootstrap;
-    // Explicate dependcies.
-    const {dependencies = []} = bootstrap;
-    if (dependencies.length > 0) {
-      await Promise.all(
-        dependencies
-          .map(createDescriptor)
-          .map(explicateDescriptor),
-      );
-    }
-    await explicateDescriptor(rootDescriptor);
-  }
-  await Promise.all(
-    maybeAliasedPaths
-      .map(createDescriptor)
-      .map(explicateDescriptor),
+  // Normalize maybe aliased paths into path and request.
+  const normalized = await Promise.all(
+    maybeAliasedPaths.map(async (maybeAliasedPath) => {
+      const index = maybeAliasedPath.indexOf(':');
+      return -1 === index
+        ? [maybeAliasedPath, maybeAliasedPath]
+        : [maybeAliasedPath.slice(0, index), maybeAliasedPath.slice(index + 1)];
+    }),
   );
-  return {
-    descriptors,
-    roots,
-  };
+  // Add roots.
+  await Promise.all(normalized.map(([path, request]) => addRoot(path, request)));
+  // Add aliases and fallbacks.
+  await Promise.all(
+    Object.entries(roots)
+      .filter(([path, {request}]) => path !== request)
+      .map(async ([path, {request}]) => {
+        try {
+          await access(join(request, 'src'));
+          resolver.addAlias(path, join(request, 'src'));
+        }
+        // eslint-disable-next-line no-empty
+        catch (error) {}
+        resolver.addFallback(path, request);
+      }),
+  );
+  const paths = (
+    // Resolve dependent, normalized, and platform paths.
+    await Promise.all(
+      dependentPaths.map((path) => [path, path])
+        .concat(normalized)
+        .map(([path]) => path)
+        .reduce((platformed, path) => (
+          platformed.concat([path], platforms.map((platform) => join(path, platform)))
+        ), [])
+        .map(async (path) => [path, await resolver.resolve(path)]),
+    )
+  )
+    // Filter unresolved except roots.
+    .filter(([path, resolved]) => resolved || roots[path])
+    .map(([path]) => path)
+    // Filter excluded platforms.
+    .filter((path) => (
+      !platforms
+        .filter((platform) => platform.startsWith('!'))
+        .map((platform) => platform.slice(1))
+        .some((excluded) => path.endsWith(`/${excluded}`))
+    ));
+  return {paths: [...new Set(paths)], roots};
 };

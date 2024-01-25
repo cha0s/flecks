@@ -315,9 +315,3 @@ exports.hooks = {
     return JSON.stringify(config);
   },
 };
-
-exports.stubs = {
-  server: [
-    /\.(c|s[ac])ss$/,
-  ],
-};

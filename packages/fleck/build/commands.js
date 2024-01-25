@@ -77,7 +77,7 @@ module.exports = (program, flecks) => {
           });
         });
       };
-      require('@flecks/core/build/stub')(flecks.stubs);
+      require('@flecks/build/build/resolve')(flecks.resolver, flecks.stubs);
       if (!watch) {
         await new Promise((resolve, reject) => {
           child.on('exit', (code) => {

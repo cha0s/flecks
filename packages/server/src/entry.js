@@ -8,7 +8,7 @@ const {version} = require('../package.json');
 
 (async () => {
   const runtime = await __non_webpack_require__('@flecks/server/runtime');
-  const {loadFlecks, stubs} = runtime;
+  const {loadFlecks, resolver, stubs} = runtime;
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {
@@ -24,7 +24,7 @@ const {version} = require('../package.json');
   const unserializedStubs = stubs.map((stub) => (Array.isArray(stub) ? new RegExp(...stub) : stub));
   if (unserializedStubs.length > 0) {
     debug('stubbing with %O', unserializedStubs);
-    __non_webpack_require__('@flecks/core/build/stub')(unserializedStubs);
+    __non_webpack_require__('@flecks/build/build/resolve')(resolver, unserializedStubs);
   }
   global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
   try {

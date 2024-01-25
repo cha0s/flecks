@@ -10,6 +10,7 @@ module.exports = (api) => {
       setSpreadProperties: true,
     },
     plugins: [
+      '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-syntax-class-properties',
       '@babel/plugin-syntax-logical-assignment-operators',
       '@babel/plugin-syntax-nullish-coalescing-operator',
@@ -24,6 +25,11 @@ module.exports = (api) => {
             '@babel/plugin-transform-async-to-generator',
             '@babel/plugin-transform-object-super',
           ],
+          shippedProposals: true,
+          targets: {
+            esmodules: true,
+            node: 'current',
+          },
         },
       ],
     ],

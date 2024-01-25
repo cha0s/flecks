@@ -22,18 +22,29 @@ const nodeFileSystem = new CachedInputFileSystem(fs, 4000);
 
 module.exports = class Resolver {
 
-  constructor(options) {
+  constructor(options = {}) {
+    const {
+      modules = [join(FLECKS_CORE_ROOT, 'node_modules'), 'node_modules'],
+      root = FLECKS_CORE_ROOT,
+      ...rest
+    } = options;
     this.resolver = ResolverFactory.createResolver({
       conditionNames: ['node'],
       extensions: ['.js', '.json', '.node'],
       fileSystem: nodeFileSystem,
+      modules,
       symlinks: false,
-      ...options,
+      ...rest,
     });
+    this.aliases = {};
+    this.fallbacks = {};
+    this.modules = modules;
+    this.root = root;
   }
 
   addAlias(name, alias) {
     debugSilly("adding alias: '%s' -> '%s'", name, alias);
+    this.aliases[name] = alias;
     new AliasPlugin(
       'raw-resolve',
       {name, onlyModule: false, alias},
@@ -50,6 +61,7 @@ module.exports = class Resolver {
 
   addFallback(name, alias) {
     debugSilly("adding fallback: '%s' -> '%s'", name, alias);
+    this.fallbacks[name] = alias;
     new AliasPlugin(
       'described-resolve',
       {name, onlyModule: false, alias},
@@ -59,10 +71,11 @@ module.exports = class Resolver {
 
   addModules(path) {
     debugSilly("adding modules: '%s'", path);
+    this.modules.push(path);
     new ModulesInHierarchicalDirectoriesPlugin(
-      "raw-module",
+      'raw-module',
       path,
-      "module"
+      'module',
     ).apply(this.resolver);
   }
 
@@ -73,7 +86,7 @@ module.exports = class Resolver {
   async resolve(request) {
     try {
       return await new Promise((resolve, reject) => {
-        this.resolver.resolve(nodeContext, FLECKS_CORE_ROOT, request, {}, (error, path) => {
+        this.resolver.resolve(nodeContext, this.root, request, {}, (error, path) => {
           if (error) {
             reject(error);
           }
@@ -82,6 +95,18 @@ module.exports = class Resolver {
           }
         });
       });
+    }
+    catch (error) {
+      if (!this.constructor.isResolutionError(error)) {
+        throw error;
+      }
+      return undefined;
+    }
+  }
+
+  resolveSync(request) {
+    try {
+      return this.resolver.resolveSync(nodeContext, this.root, request);
     }
     catch (error) {
       if (!this.constructor.isResolutionError(error)) {

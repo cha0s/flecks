@@ -1,5 +1,4 @@
-const {realpath} = require('fs/promises');
-const {dirname, join, relative} = require('path');
+const {join} = require('path');
 
 const D = require('@flecks/core/build/debug');
 const {Flecks} = require('@flecks/core/build/flecks');
@@ -65,142 +64,44 @@ module.exports = class Build extends Flecks {
   roots = {};
 
   async babel() {
-    const merging = [
-      {
-        plugins: ['@babel/plugin-syntax-dynamic-import'],
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              shippedProposals: true,
-              targets: {
-                esmodules: true,
-                node: 'current',
-              },
-            },
-          ],
-        ],
-      },
-    ];
-    merging.push({configFile: await this.resolveBuildConfig('babel.config.js')});
-    merging.push(...this.invokeFlat('@flecks/core.babel'));
-    return babelmerge.all(merging);
+    return babelmerge.all([
+      {configFile: await this.resolveBuildConfig('babel.config.js')},
+      ...this.invokeFlat('@flecks/core.babel'),
+    ]);
   }
 
   static async buildRuntime(originalConfig, platforms, flecks = {}) {
-    const dealiasedConfig = Object.fromEntries(
-      Object.entries(originalConfig)
-        .map(([maybeAliasedPath, config]) => {
-          const index = maybeAliasedPath.indexOf(':');
-          return [
-            -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
-            config,
-          ];
-        }),
-    );
-    const resolver = new Resolver();
-    const explication = await explicate(
-      Object.keys(originalConfig),
-      {
-        platforms,
-        resolver,
-        root: FLECKS_CORE_ROOT,
-        importer: (request) => require(request),
-      },
-    );
-    const runtime = {
-      config: environmentConfiguration(
-        Object.fromEntries(
-          Object.values(explication.descriptors)
-            .map(({path}) => [path, dealiasedConfig[path] || {}]),
-        ),
+    const cleanConfig = JSON.parse(JSON.stringify(originalConfig));
+    // Dealias the config keys.
+    const dealiasedConfig = environmentConfiguration(
+      Object.fromEntries(
+        Object.entries(cleanConfig)
+          .map(([maybeAliasedPath, config]) => {
+            const index = maybeAliasedPath.indexOf(':');
+            return [
+              -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
+              config,
+            ];
+          }),
       ),
-      flecks: Object.fromEntries(
-        Object.values(explication.descriptors)
-          .map(({path, request}) => [path, flecks[path] || explication.roots[request] || {}]),
-      ),
-    };
-    const aliased = {};
-    const compiled = {};
-    const reverseRequest = Object.fromEntries(
-      Object.entries(explication.descriptors)
-        .map(([, {path, request}]) => [request, path]),
     );
-    const roots = Object.fromEntries(
-      (await Promise.all(Object.entries(explication.roots)
-        .map(async ([request, bootstrap]) => {
-          const packageRequest = await realpath(await resolver.resolve(join(request, 'package.json')));
-          const realDirname = dirname(packageRequest);
-          const {dependencies = {}, devDependencies = {}} = require(packageRequest);
-          let source;
-          let root;
-          // One of ours?
-          if (
-            [].concat(
-              Object.keys(dependencies),
-              Object.keys(devDependencies),
-            )
-              .includes('@flecks/fleck')
-          ) {
-            root = realDirname.endsWith('/dist') ? realDirname.slice(0, -5) : realDirname;
-            source = join(root, 'src');
-          }
-          else {
-            root = realDirname;
-            source = realDirname;
-          }
-          return [
-            reverseRequest[request],
-            {
-              bootstrap,
-              request,
-              root,
-              source,
-            },
-          ];
-        })))
-        // Reverse sort for greedy root matching.
-        .sort(([l], [r]) => (l < r ? 1 : -1)),
-    );
-    await Promise.all(
-      Object.entries(explication.descriptors)
-        .map(async ([, {path, request}]) => {
-          if (path !== request) {
-            aliased[path] = request;
-          }
-          const [root, requestRoot] = Object.entries(roots)
-            .find(([, {request: rootRequest}]) => request.startsWith(rootRequest)) || [];
-          if (requestRoot && compiled[requestRoot.root]) {
-            return;
-          }
-          let resolvedRequest = await resolver.resolve(request);
-          if (!resolvedRequest) {
-            if (!requestRoot) {
-              return;
-            }
-            resolvedRequest = await resolver.resolve(join(requestRoot.root, 'package.json'));
-          }
-          const realResolvedRequest = await realpath(resolvedRequest);
-          if (path !== request || resolvedRequest !== realResolvedRequest) {
-            if (requestRoot) {
-              if (!compiled[requestRoot.root]) {
-                compiled[requestRoot.root] = {
-                  flecks: [],
-                  path: root,
-                  root: requestRoot.root,
-                  source: requestRoot.source,
-                };
-              }
-              compiled[requestRoot.root].flecks.push(path);
-            }
-          }
-        }),
-    );
-    return {
-      aliased,
-      compiled,
+    const resolver = new Resolver({root: FLECKS_CORE_ROOT});
+    const {paths, roots} = await explicate({
+      paths: Object.keys(originalConfig),
+      platforms,
       resolver,
-      roots,
+      importer: (request) => require(request),
+    });
+    const runtime = {
+      config: Object.fromEntries(paths.map((path) => [path, dealiasedConfig[path] || {}])),
+      flecks: Object.fromEntries(paths.map((path) => [
+        path,
+        flecks[path] || roots[path]?.bootstrap || {},
+      ])),
+    };
+    return {
+      resolver,
+      roots: Object.entries(roots).map(([path, {request}]) => [path, request]),
       runtime,
     };
   }
@@ -225,15 +126,11 @@ module.exports = class Build extends Flecks {
     debug('bootstrap configuration (%s)', configType);
     debugSilly(originalConfig);
     const {
-      aliased,
-      compiled,
       resolver,
       roots,
       runtime,
     } = await this.buildRuntime(originalConfig, platforms, configFlecks);
     const flecks = super.from(runtime);
-    flecks.aliased = aliased;
-    flecks.compiled = compiled;
     flecks.platforms = platforms;
     flecks.roots = roots;
     flecks.resolver = resolver;
@@ -255,7 +152,7 @@ module.exports = class Build extends Flecks {
     return Object.fromEntries(
       Object.entries(this.config)
         .map(([path, config]) => {
-          const alias = this.aliased[path];
+          const alias = this.resolver.fallbacks[path];
           return [alias ? `${path}:${alias}` : path, config];
         }),
     );
@@ -279,38 +176,15 @@ module.exports = class Build extends Flecks {
     return this.resolver.resolve(join(fleck, 'build', config));
   }
 
-  async runtimeCompiler(runtime, config, {additionalModuleDirs = [], allowlist = []} = {}) {
+  async runtimeCompiler(runtime, config) {
     // Compile?
-    const needCompilation = Object.entries(this.compiled);
-    if (needCompilation.length > 0) {
-      const babelConfig = await this.babel();
-      const includes = [];
-      // Alias and de-externalize.
-      await Promise.all(
-        needCompilation
-          .map(async ([
-            root,
-            {
-              path,
-              source,
-            },
-          ]) => {
-            allowlist.push(new RegExp(`^${path}`));
-            debugSilly('%s runtime de-externalized %s, alias: %s', runtime, root, source || path);
-            // Alias.
-            config.resolve.alias[path] = source || path;
-            // Root aliases.
-            config.resolve.fallback[path] = root;
-            config.resolve.modules.push(relative(FLECKS_CORE_ROOT, join(root, 'node_modules')));
-            additionalModuleDirs.push(relative(FLECKS_CORE_ROOT, join(root, 'node_modules')));
-            includes.push(root);
-          }),
-      );
-      // Compile.
+    const compiled = this.roots.filter(([path, request]) => path !== request);
+    if (compiled.length > 0) {
+      const include = Object.values(this.resolver.aliases);
       config.module.rules.push(
         {
           test: /\.(m?jsx?)?$/,
-          include: includes,
+          include,
           use: [
             {
               loader: require.resolve('babel-loader'),
@@ -318,35 +192,30 @@ module.exports = class Build extends Flecks {
                 cacheDirectory: true,
                 babelrc: false,
                 configFile: false,
-                ...babelConfig,
+                ...await this.babel(),
               },
             },
           ],
         },
       );
-      // Aliases.
-      Object.entries(this.aliased)
-        .forEach(([from, to]) => {
-          if (
-            !Object.entries(this.compiled)
-              .some(([, {flecks}]) => flecks.includes(from))
-          ) {
-            config.resolve.alias[from] = to;
-          }
-        });
       // Our very own lil' chunk.
       Flecks.set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
         chunks: 'all',
         enforce: true,
         priority: 100,
-        test: new RegExp(
-          `(?:${
-            includes
-              .map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')
-          })`,
-        ),
+        test: new RegExp(`(?:${
+          include.map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')
+        })`),
       });
     }
+    // Resolution.
+    const {resolve, resolveLoader} = config;
+    resolve.alias = {...resolve.alias, ...this.resolver.aliases};
+    resolve.fallback = {...resolve.fallback, ...this.resolver.fallbacks};
+    resolve.modules = [...resolve.modules, ...this.resolver.modules];
+    resolveLoader.alias = {...resolveLoader.alias, ...this.resolver.aliases};
+    resolveLoader.fallback = {...resolveLoader.fallback, ...this.resolver.fallbacks};
+    resolveLoader.modules = [...resolveLoader.modules, ...this.resolver.modules];
   }
 
   get stubs() {

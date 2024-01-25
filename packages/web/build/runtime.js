@@ -22,16 +22,12 @@ module.exports = async (config, env, argv, flecks) => {
       Object.keys(flecks.flecks)
         .map(async (fleck) => {
           // No root? How to infer?
-          const [root] = Object.entries(flecks.roots)
-            .find(([root]) => fleck.startsWith(root)) || [];
+          const [root, request] = flecks.roots.find(([root]) => fleck.startsWith(root)) || [];
           if (!root) {
             return undefined;
           }
           // Compiled? It will be included with the compilation.
-          if (
-            Object.entries(flecks.compiled)
-              .some(([, {flecks}]) => flecks.includes(fleck))
-          ) {
+          if (root !== request) {
             return undefined;
           }
           try {
@@ -96,12 +92,7 @@ module.exports = async (config, env, argv, flecks) => {
   config.resolve.alias['@flecks/web/runtime$'] = runtime;
   // Stubs.
   buildFlecks.stubs.forEach((stub) => {
-    config.module.rules.push(
-      {
-        test: stub,
-        use: 'null-loader',
-      },
-    );
+    config.resolve.alias[stub] = false;
   });
   await buildFlecks.runtimeCompiler('web', config);
   // Styles.
@@ -109,26 +100,18 @@ module.exports = async (config, env, argv, flecks) => {
   // Tests.
   if (!isProduction) {
     const testEntries = (await Promise.all(
-      Object.entries(buildFlecks.roots)
-        .map(async ([parent, {request}]) => {
+      buildFlecks.roots
+        .map(async ([root, request]) => {
           const tests = [];
-          const resolved = dirname(await resolver.resolve(join(request, 'package.json')));
-          const rootTests = await glob(join(resolved, 'test', '*.js'));
-          tests.push(
-            ...rootTests
-              .map((test) => test.replace(resolved, parent)),
-          );
+          const rootTests = await glob(join(request, 'test', '*.js'));
+          tests.push(...rootTests.map((test) => test.replace(request, root)));
           const platformTests = await Promise.all(
             buildFlecks.platforms.map((platform) => (
-              glob(join(resolved, 'test', 'platforms', platform, '*.js'))
+              glob(join(request, 'test', platform, '*.js'))
             )),
           );
-          tests.push(
-            ...platformTests
-              .flat()
-              .map((test) => test.replace(resolved, parent)),
-          );
-          return [parent, tests];
+          tests.push(...platformTests.flat().map((test) => test.replace(request, root)));
+          return [root, tests];
         }),
     ))
       .filter(([, tests]) => tests.length > 0);

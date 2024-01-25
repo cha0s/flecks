@@ -108,13 +108,13 @@ exports.parseSource = async (path, source) => {
   return exports.parseNormalSource(path, source);
 };
 
-exports.parseFleckRoot = async (path, root) => (
+exports.parseFleckRoot = async (request) => (
   Promise.all(
     (await Promise.all([
-      ...await glob(join(root, 'src', '**', '*.js')),
-      ...await glob(join(root, 'build', '**', '*.js')),
+      ...await glob(join(request, 'src', '**', '*.js')),
+      ...await glob(join(request, 'build', '**', '*.js')),
     ]))
-      .map((filename) => [relative(root, filename), filename])
+      .map((filename) => [relative(request, filename), filename])
       .map(async ([path, filename]) => {
         const buffer = await readFile(filename);
         return [path, await exports.parseSource(path, buffer.toString('utf8'))];
@@ -124,7 +124,7 @@ exports.parseFleckRoot = async (path, root) => (
 
 exports.parseFlecks = async (flecks) => (
   Promise.all(
-    Object.entries(flecks.roots)
-      .map(async ([path, {root}]) => [path, await exports.parseFleckRoot(path, root)]),
+    flecks.roots
+      .map(async ([path, request]) => [path, await exports.parseFleckRoot(request)]),
   )
 );

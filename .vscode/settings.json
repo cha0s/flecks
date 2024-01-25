@@ -1,4 +1,4 @@
 {
   "eslint.workingDirectories": [{"pattern": "./packages/*"}],
-  "eslint.options": {"overrideConfigFile": "./node_modules/@flecks/build/build/eslint.config.js"},
+  "eslint.options": {"overrideConfigFile": "../build/dist/build/eslint.config.js"},
 }

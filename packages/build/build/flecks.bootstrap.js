@@ -20,7 +20,7 @@ exports.hooks = {
         }),
       );
     }
-    if (Object.entries(flecks.compiled).length > 0) {
+    if (flecks.roots.some(([path, request]) => path !== request)) {
       config.resolve.symlinks = false;
     }
     config.plugins.push(new ProcessAssets(target, flecks));

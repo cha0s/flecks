@@ -50,7 +50,7 @@ module.exports = async (env, argv, flecks) => {
   config.entry.index.push('@flecks/server/entry');
   // Augment the application-starting configuration.
   if (isStarting) {
-    if (Object.entries(flecks.compiled).length > 0) {
+    if (flecks.roots.some(([path, request]) => path !== request)) {
       nodeEnv.NODE_PRESERVE_SYMLINKS = 1;
     }
     config.plugins.push(

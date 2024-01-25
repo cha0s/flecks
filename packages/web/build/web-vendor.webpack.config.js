@@ -35,6 +35,7 @@ module.exports = async (env, argv, flecks) => {
         stream: false,
         util: require.resolve('util'),
       },
+      modules: flecks.resolver.modules,
     },
     stats: {
       warningsFilter: [

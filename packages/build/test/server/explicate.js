@@ -12,69 +12,94 @@ const {
 const root = join(FLECKS_CORE_ROOT, 'test', 'server', 'explicate');
 
 function createExplication(paths, platforms) {
-  const resolver = new Resolver({modules: [join(root, 'fake_node_modules')]});
-  return explicate(
+  const resolver = new Resolver({
+    modules: [join(root, 'fake_node_modules')],
+    root,
+  });
+  return explicate({
     paths,
-    {
-      platforms,
-      resolver,
-      root,
-      importer: (request) => __non_webpack_require__(request),
-    },
-  );
+    platforms,
+    resolver,
+    importer: (request) => __non_webpack_require__(request),
+  });
 }
 
 describe('explication', () => {
 
   it('derives platforms', async () => {
-    expect(Object.keys((await createExplication(['platformed'])).descriptors))
-      .to.deep.equal([
-        'platformed', 'platformed/server',
-      ]);
-    expect(Object.keys((await createExplication(['server-only'])).descriptors))
-      .to.deep.equal([
-        'server-only/server',
-      ]);
+    expect(await createExplication(['platformed']))
+      .to.deep.include({
+        paths: ['platformed', 'platformed/server'],
+      });
+    expect(await createExplication(['server-only']))
+      .to.deep.include({
+        paths: ['server-only/server'],
+      });
   });
 
   it('derives through bootstrap', async () => {
-    expect(Object.keys((await createExplication(['real-root'])).descriptors))
-      .to.deep.equal([
-        'dependency', 'dependency/server',
-        'real-root', 'real-root/server',
-      ]);
+    expect(await createExplication(['real-root']))
+      .to.deep.include({
+        paths: [
+          'dependency', 'dependency/server',
+          'real-root', 'real-root/server',
+        ],
+      });
   });
 
   it('excludes platforms', async () => {
-    expect(Object.keys(
-      (await createExplication(
+    expect(
+      await createExplication(
         ['platformed/client', 'dependency'],
         ['server', '!client'],
-      )).descriptors,
-    ))
-      .to.deep.equal([
-        'dependency', 'dependency/server',
-      ]);
+      ),
+    )
+      .to.deep.include({
+        paths: ['dependency', 'dependency/server'],
+      });
   });
 
   it('explicates parents first', async () => {
-    expect(Object.keys((await createExplication(['real-root/server'])).descriptors))
-      .to.deep.equal([
-        'dependency', 'dependency/server',
-        'real-root', 'real-root/server',
-      ]);
+    expect(await createExplication(['real-root/server']))
+      .to.deep.include({
+        paths: [
+          'dependency', 'dependency/server',
+          'real-root', 'real-root/server',
+        ],
+      });
   });
 
   it('explicates only bootstrapped', async () => {
-    expect(Object.keys((await createExplication(['only-bootstrapped'])).descriptors))
-      .to.deep.equal([
-        'only-bootstrapped',
-      ]);
+    expect(await createExplication(['only-bootstrapped']))
+      .to.deep.include({
+        paths: ['only-bootstrapped'],
+      });
+  });
+
+  it('explicates root with src', async () => {
+    expect(await createExplication(['src-root:./src-root']))
+      .to.deep.include({
+        paths: ['src-root', 'src-root/server'],
+      });
   });
 
   it('skips nonexistent', async () => {
     expect(await createExplication(['real-root/nonexistent']))
-      .to.deep.equal({descriptors: {}, roots: {}});
+      .to.deep.equal({paths: [], roots: {}});
+  });
+
+  it('includes modules', async () => {
+    expect(await createExplication(['modules-root:./modules-root', 'foo']))
+      .to.deep.include({
+        paths: ['modules-root', 'foo'],
+      });
+  });
+
+  it('explicates aliased platforms', async () => {
+    expect(await createExplication(['aliased-platforms:./aliased-platforms']))
+      .to.deep.include({
+        paths: ['aliased-platforms', 'aliased-platforms/server'],
+      });
   });
 
 });
