@@ -124,4 +124,5 @@ dist
 /packages/*/bun.lockb
 /website/yarn.lock
 
+/dox
 /.nx/cache
