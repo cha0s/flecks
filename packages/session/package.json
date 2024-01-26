@@ -1,6 +1,6 @@
 {
   "name": "@flecks/session",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -27,7 +27,7 @@
     "express-session": "^1.17.3"
   },
   "devDependencies": {
-    "@flecks/build": "^3.1.0",
-    "@flecks/fleck": "^3.1.0"
+    "@flecks/build": "^3.1.1",
+    "@flecks/fleck": "^3.1.1"
   }
 }
