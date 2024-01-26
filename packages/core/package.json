@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --config ./build/core.webpack.config.js --mode production",
-    "clean": "rm -rf yarn.lock && yarn",
+    "clean": "rm -rf dist node_modules yarn.lock",
     "lint": "eslint --config ./build/core.eslint.config.js .",
     "postversion": "cp package.json dist",
     "test": "npm run build -d && mocha --colors ./dist/test.js"
