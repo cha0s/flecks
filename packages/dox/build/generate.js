@@ -125,8 +125,8 @@ exports.generateDocusaurusHookPage = (hooks) => {
         source.push('<details>');
         source.push('<summary>Implementations</summary>');
         source.push('<ul>');
-        implementations.forEach(({filename, column, line}) => {
-          source.push(`<li>${[filename, line, column].join(':')}</li>`);
+        implementations.forEach(({filename}) => {
+          source.push(`<li>${filename}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -136,8 +136,8 @@ exports.generateDocusaurusHookPage = (hooks) => {
         source.push('<details>');
         source.push('<summary>Invocations</summary>');
         source.push('<ul>');
-        invocations.forEach(({filename, column, line}) => {
-          source.push(`<li>${[filename, line, column].join(':')}</li>`);
+        invocations.forEach(({filename, type}) => {
+          source.push(`<li>${filename} (\`${type}\`)</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -216,7 +216,7 @@ exports.generateJson = async function generate(flecks) {
             r.buildFiles.push(...buildFiles);
             r.todos.push(...todos.map((todo) => ({
               ...todo,
-              filename: join(`**${root}**`, path),
+              filename: join(root, path),
             })));
             if (config.length > 0) {
               let fleck = root;
@@ -230,9 +230,7 @@ exports.generateJson = async function generate(flecks) {
             hookImplementations.forEach(({column, hook, line}) => {
               ensureHook(hook);
               r.hooks[hook].implementations.push({
-                column,
-                filename: join(`**${root}**`, path),
-                line,
+                filename: [join(root, path), line, column].join(':'),
               });
             });
             hookInvocations.forEach(({
@@ -243,9 +241,7 @@ exports.generateJson = async function generate(flecks) {
             }) => {
               ensureHook(hook);
               r.hooks[hook].invocations.push({
-                column,
-                filename: join(`**${root}**`, path),
-                line,
+                filename: [join(root, path), line, column].join(':'),
                 type,
               });
             });

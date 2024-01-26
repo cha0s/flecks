@@ -14,7 +14,7 @@ module.exports = (program, flecks) => {
   const commands = {};
   commands.dox = {
     description: 'Generate documentation',
-    action: async (subcommand, outputPath) => {
+    action: async (subcommand, outputPath, {rewriteFilenames = []}) => {
       let actualOutputPath = outputPath;
       if (!actualOutputPath) {
         switch (subcommand) {
@@ -32,6 +32,34 @@ module.exports = (program, flecks) => {
       await mkdir(actualOutputPath, {recursive: true});
       let output;
       const json = await generateJson(flecks);
+      const pairs = rewriteFilenames
+        .map((pair) => pair.split('='))
+        .map(([from, to]) => [new RegExp(from), to]);
+      const rewrite = (array) => (
+        array.map(
+          (object) => ({
+            ...object,
+            filename: pairs.reduce(
+              (filename, [from, to]) => filename.replace(from, to),
+              object.filename,
+            ),
+          }),
+        )
+      );
+      json.hooks = Object.fromEntries(
+        Object.entries(json.hooks)
+          .map(([hook, {implementations, invocations, specification}]) => (
+            [
+              hook,
+              {
+                implementations: rewrite(implementations),
+                invocations: rewrite(invocations),
+                specification,
+              },
+            ]
+          )),
+      );
+      json.todos = rewrite(json.todos);
       switch (subcommand) {
         case 'docusaurus':
           output = Object.fromEntries(
@@ -61,6 +89,9 @@ module.exports = (program, flecks) => {
       program.createArgument('subcommand', 'Generation type')
         .choices(['docusaurus', 'json']),
       program.createArgument('[output path]', 'Where the files are output'),
+    ],
+    options: [
+      program.createOption('-r, --rewrite-filenames [pairs...]', 'rewrite filenames'),
     ],
   };
   return commands;
