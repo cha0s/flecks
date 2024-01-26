@@ -2,3 +2,217 @@
 title: Redux
 description: Define your actions, reducers, and state.
 ---
+
+import Create from '@site/helpers/create';
+import InstallPackage from '@site/helpers/install-package';
+
+Working with redux in flecks is easy. Let's create a small application to inspect and
+familiarize ourselves.
+
+## Create an app with a fleck
+
+<Create type="app" pkg="redux-test" />
+
+```
+cd redux-test
+npx create-fleck ducks
+```
+
+## Add `@flecks/redux`
+
+Move to `packages/ducks` and add `@flecks/redux`:
+
+```
+cd packages/ducks
+```
+
+<InstallPackage pkg="@flecks/redux" />
+
+Edit `packages/ducks/build/flecks.bootstrap.js`:
+
+```js title="packages/ducks/build/flecks.bootstrap.js"
+exports.dependencies = ['@flecks/redux'];
+```
+
+Alright, let's create a duck at `packages/ducks/src/state/thing.js`:
+
+```js title="packages/ducks/src/state/thing.js"
+import {
+  createSelector,
+  createSlice,
+} from '@flecks/redux';
+
+export const thingSelector = ({thing}) => thing;
+
+export const leftSelector = createSelector([thingSelector], ({left}) => left);
+
+export const rightSelector = createSelector([thingSelector], ({right}) => right);
+
+export const totalSelector = createSelector(
+  [leftSelector, rightSelector],
+  (left, right) => left + right,
+);
+
+export const initialState = () => ({
+  left: 0,
+  right: 0,
+});
+
+const reducers = {
+  addToLeft: (state, {payload}) => {
+    state.left += payload;
+  },
+  addToRight: (state, {payload}) => {
+    state.right += payload;
+  },
+};
+
+const slice = createSlice({
+  name: 'thing',
+  initialState: initialState(),
+  reducers,
+});
+
+export const {
+  addToLeft,
+  addToRight,
+} = slice.actions;
+
+export default slice.reducer;
+```
+
+Let's create an exporter at `packages/ducks/src/state/index.js`:
+
+```js title="packages/ducks/src/state/index.js"
+export * from './thing';
+export {default as thing} from './thing';
+```
+
+Finally, we'll edit `packages/ducks/src/index.js`:
+
+```js title="packages/ducks/src/index.js"
+import {Flecks} from '@flecks/core';
+
+import {addToLeft, addToRight, thing} from './state';
+
+export const hooks = {
+  '@flecks/web/client.up': Flecks.priority(
+    async (flecks) => {
+      flecks.redux.dispatch(addToLeft(5));
+      flecks.redux.dispatch(addToRight(1));
+      flecks.redux.dispatch(addToRight(1));
+    },
+    {after: '@flecks/redux/client'},
+  ),
+  '@flecks/redux.slices': () => ({thing}),
+};
+```
+
+:::note[Have a slice]
+
+We're using `@flecks/web/client.up` just as a little test.
+
+:::
+
+As a little test, we'll add `@flecks/web` and `@flecks/electron` so we can check out the Redux
+devtools.
+
+From the project root:
+
+```
+npx flecks add @flecks/web
+npx flecks add -d @flecks/electron
+```
+
+:::warning[Attention]
+
+Make sure you **run those commands in the application root directory**!
+
+:::
+
+Now start up your application:
+
+```
+yarn start
+```
+
+After a moment, Electron will appear. Press `ctrl+i` to open devtools in Electron.
+
+![A screenshot showing our app running in Electron with devtools open](./redux-test-1.png)
+
+Open up the Redux devtools:
+
+![A screenshot showing our app running in Electron with devtools open now hovering over the Redux devtools tab](./redux-test-2.png)
+
+Everything is there!
+
+![A screenshot showing our app running in Electron with devtools open to the Redux devtools tab with our state visible](./redux-test-3.png)
+
+How about Redux in React? No problem! Move to `packages/ducks` and run the following command:
+
+```
+yarn add @flecks/react-redux
+```
+
+:::warning[Attention]
+
+Make sure you **run that command in `packages/ducks`**!
+
+:::
+
+Now update the dependencies in `packages/ducks/build/flecks.bootstrap.js`:
+
+```js title="packages/ducks/build/flecks.bootstrap.js"
+exports.dependencies = ['@flecks/react-redux', '@flecks/redux'];
+```
+
+Let's create a component at `packages/ducks/src/thing.jsx`:
+
+```jsx title="packages/ducks/src/thing.jsx"
+import {React} from '@flecks/react';
+import {useDispatch, useSelector} from '@flecks/react-redux';
+
+import {
+  addToLeft,
+  addToRight,
+  leftSelector,
+  rightSelector,
+  totalSelector,
+} from './state';
+
+function Thing() {
+  const dispatch = useDispatch();
+  const left = useSelector(leftSelector);
+  const right = useSelector(rightSelector);
+  const total = useSelector(totalSelector);
+  return (
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <button onClick={() => dispatch(addToLeft(1))}>Add 1 to Left</button>
+      <button onClick={() => dispatch(addToLeft(5))}>Add 5 to Left</button>
+      <span>Left: {left}</span>
+      <span>Total: {total}</span>
+      <span>Right: {right}</span>
+      <button onClick={() => dispatch(addToRight(1))}>Add 1 to Right</button>
+      <button onClick={() => dispatch(addToRight(5))}>Add 5 to Right</button>
+    </div>
+  )
+}
+
+export default Thing;
+```
+
+Now update `packages/ducks/src/index.js`:
+
+```js title="packages/ducks/src/index.js"
+import {thing} from './state';
+import Thing from './thing';
+
+export const hooks = {
+  '@flecks/react.roots': () => Thing,
+  '@flecks/redux.slices': () => ({thing}),
+};
+```
+
+Restart your application. It works!
+
+![A screenshot showing our app running in Electron after a few button presses](./redux-test-4.png)
