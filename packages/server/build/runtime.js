@@ -14,10 +14,6 @@ module.exports = async (config, env, argv, flecks) => {
     .filter(([, resolved]) => resolved)
     .map(([path]) => path);
   const runtime = {
-    resolver: JSON.stringify({
-      aliases: flecks.resolver.aliases,
-      fallbacks: flecks.resolver.fallbacks,
-    }),
     config: JSON.stringify(flecks.config),
     loadFlecks: [
       'async () => (',
@@ -42,11 +38,6 @@ module.exports = async (config, env, argv, flecks) => {
       '  )',
       ')',
     ].join('\n'),
-    stubs: (
-      JSON.stringify(flecks.stubs.map((stub) => (
-        stub instanceof RegExp ? [stub.source, stub.flags] : stub
-      )))
-    ),
     ...await flecks.invokeAsync('@flecks/server.runtime'),
   };
   const runtimeString = `{${

@@ -1,4 +1,24 @@
+const {banner} = require('@flecks/build/server');
+
 exports.hooks = {
+  '@flecks/build.config.alter': ({server}, env, argv, flecks) => {
+    if (server) {
+      const resolver = JSON.stringify({
+        alias: server.resolve.alias,
+        fallback: server.resolve.fallback,
+      });
+      const stubs = JSON.stringify(flecks.stubs);
+      if ('{}' !== resolver || '[]' !== stubs) {
+        server.plugins.push(
+          banner({
+            // `require()` magic.
+            banner: `require('@flecks/build/build/resolve')(${resolver}, ${stubs})`,
+            include: 'index.js',
+          }),
+        );
+      }
+    }
+  },
   '@flecks/build.files': () => [
     /**
      * Server build configuration. See: https://webpack.js.org/configuration/

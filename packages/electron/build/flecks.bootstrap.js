@@ -1,19 +1,6 @@
 const {join} = require('path');
 
-const {banner} = require('@flecks/build/server');
-
 exports.hooks = {
-  '@flecks/build.config': (target, config) => {
-    if ('server' === target) {
-      config.plugins.push(
-        banner({
-          // Bootstrap our `require()` magic.
-          banner: "require('module').Module._initPaths();",
-          include: 'index.js',
-        }),
-      );
-    }
-  },
   '@flecks/core.config': () => ({
     /**
      * Browser window options.
