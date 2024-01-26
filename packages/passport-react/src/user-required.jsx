@@ -1,6 +1,6 @@
 import {PropTypes, React} from '@flecks/react';
 import {Navigate, useLocation} from '@flecks/react/router';
-import {useSelector} from '@flecks/redux';
+import {useSelector} from '@flecks/react-redux';
 import {userIdSelector} from '@flecks/passport';
 
 function UserRequired({children, destination}) {

@@ -25,7 +25,7 @@
     "@flecks/core": "^3.0.0",
     "@flecks/passport": "^3.0.0",
     "@flecks/react": "^3.0.0",
-    "@flecks/redux": "^3.0.0",
+    "@flecks/react-redux": "^3.0.0",
     "@flecks/web": "^3.0.0"
   },
   "devDependencies": {

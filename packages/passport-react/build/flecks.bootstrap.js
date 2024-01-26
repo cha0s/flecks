@@ -1,1 +1,1 @@
-exports.dependencies = ['@flecks/passport', '@flecks/react'];
+exports.dependencies = ['@flecks/passport', '@flecks/react-redux'];

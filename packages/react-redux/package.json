@@ -1,0 +1,26 @@
+{
+  "name": "@flecks/react-redux",
+  "version": "3.0.0",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postversion": "cp package.json dist",
+    "test": "flecks test"
+  },
+  "files": [
+    "client.js",
+    "index.js",
+    "server.js"
+  ],
+  "dependencies": {
+    "@flecks/core": "3.0.0",
+    "@flecks/react": "3.0.0",
+    "@flecks/redux": "3.0.0",
+    "react-redux": "^7.2.2"
+  },
+  "devDependencies": {
+    "@flecks/build": "3.0.0",
+    "@flecks/fleck": "3.0.0"
+  }
+}
