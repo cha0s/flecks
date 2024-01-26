@@ -4,7 +4,7 @@
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
-    "postversion": "cp package.json dist",
+    "postversion": "npm run build",
     "test": "flecks test"
   },
   "files": [
