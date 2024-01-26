@@ -13,29 +13,6 @@
     "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@flecks/core": "*",
-    "@flecks/create-app": "*",
-    "@flecks/create-fleck": "*",
-    "@flecks/db": "*",
-    "@flecks/docker": "*",
-    "@flecks/dox": "*",
-    "@flecks/electron": "*",
-    "@flecks/fleck": "*",
-    "@flecks/governor": "*",
-    "@flecks/passport": "*",
-    "@flecks/passport-local": "*",
-    "@flecks/passport-local-react": "*",
-    "@flecks/passport-react": "*",
-    "@flecks/react": "*",
-    "@flecks/redis": "*",
-    "@flecks/redux": "*",
-    "@flecks/repl": "*",
-    "@flecks/server": "*",
-    "@flecks/session": "*",
-    "@flecks/socket": "*",
-    "@flecks/web": "*"
-  },
-  "dependencies": {
     "@flecks/build": "*",
     "lerna": "^8.0.2"
   }
