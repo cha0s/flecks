@@ -11,7 +11,7 @@ architectural opinions.
 
 # Documentation
 
-Visit [the documentation website](https://cha0s.github.io/flecks/docs).
+Visit [the documentation website](https://cha0s.github.io/flecks/docs/installation) to get started.
 
 ---
 
