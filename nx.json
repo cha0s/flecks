@@ -1,8 +1,0 @@
-{
-  "extends": "nx/presets/npm.json",
-  "targetDefaults": {
-    "build": {
-      "cache": true
-    }
-  }
-}
