@@ -1,4 +1,4 @@
-# Introduction
+# Flecks
 
 ⚡️ flecks will help you build a **flexible and powerful application in no time**.
 
