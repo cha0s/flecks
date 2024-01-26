@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkflecks_docusaurus=self.webpackChunkflecks_docusaurus||[]).push([[9661],{1892:(s,e,u)=>{u.r(e),u.d(e,{default:()=>n});u(7294);var r=u(512),c=u(1944),a=u(5281),l=u(8790),d=u(7293),k=u(5893);function n(s){return(0,k.jsx)(c.FG,{className:(0,r.Z)(a.k.wrapper.docsPages),children:(0,k.jsx)(d.Z,{children:(0,l.H)(s.route.routes)})})}}}]);
