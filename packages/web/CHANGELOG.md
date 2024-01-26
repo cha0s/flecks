@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* always include bespoke web config ([21eac28](https://github.com/cha0s/flecks/commit/21eac28fbf6c35a8da9aac2e7a6650157dc93738))
+* avoid FOUC on dev ([18e2bb9](https://github.com/cha0s/flecks/commit/18e2bb9446b2ead51800f2dd2d094cbe8c6282f8))
+* better FOUC prevention ([6b9738c](https://github.com/cha0s/flecks/commit/6b9738cb673736047947f537cb5ef6f37cbf9d3f))
+* chunks ([a6bac7b](https://github.com/cha0s/flecks/commit/a6bac7b627e66d3494d1c2a172cb259c8656dd55))
+* compilation ([2a2a993](https://github.com/cha0s/flecks/commit/2a2a9939881723aea711ec058bf873e90157c83b))
+* compilation ([a51184f](https://github.com/cha0s/flecks/commit/a51184fa49c96649660df827b61455a6e26f67ef))
+* crash on missing content type ([3e073d2](https://github.com/cha0s/flecks/commit/3e073d2660e0a4bf73fa5e6fd0f0500fb58ac5ae))
+* creators ([c1eee58](https://github.com/cha0s/flecks/commit/c1eee58a41553941613bed6879ad70cf46260cb2))
+* don't minimize ([e9c845a](https://github.com/cha0s/flecks/commit/e9c845a396c16c1c4d51c27846d5be69caf28609))
+* fallbacks ([a39b5fe](https://github.com/cha0s/flecks/commit/a39b5fe17831acc51045bf3c6faf918aa822f29c))
+* FOUC on dev ([213cbff](https://github.com/cha0s/flecks/commit/213cbffb84becd1ed4694532a702bd1752b1cd5d))
+* HMR ([9a58b50](https://github.com/cha0s/flecks/commit/9a58b500bae8925406cc664bce5ced39dddf3630))
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* **react:** tabs CSS ([a98070b](https://github.com/cha0s/flecks/commit/a98070ba6a0c1d59097db0c59adb7ec820a9739d))
+* set ID as default HTML title ([472f120](https://github.com/cha0s/flecks/commit/472f120a5a883549846ac902505c584343bd8144))
+* signal propagation ([572832b](https://github.com/cha0s/flecks/commit/572832b0372389db9458298eaf691e77e6a2606e))
+* SSR does config ([00b598c](https://github.com/cha0s/flecks/commit/00b598c295525009b9a943be951bf69434e56550))
+* style loading ([81fc5f6](https://github.com/cha0s/flecks/commit/81fc5f633fcb8c4c4d9f1ff88c9020d00b3d2499))
+* ux for slowies ([1a57157](https://github.com/cha0s/flecks/commit/1a57157d3eca57ae6bccee3ef573f5cef06ddb1c))
+
+
+### Features
+
+* aliasedConfig ([c68bb3b](https://github.com/cha0s/flecks/commit/c68bb3b6f775762081287fc3588f3fe609d77ad6))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* html template specifier ([5791c7a](https://github.com/cha0s/flecks/commit/5791c7a89433f16c1efea045a00ab488975c6dab))
+* per-entry styles ([d43316a](https://github.com/cha0s/flecks/commit/d43316a43635ea19338a6a1ce917f9b2d308c977))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

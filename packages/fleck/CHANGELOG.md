@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* mocha error propagation ([1f11aac](https://github.com/cha0s/flecks/commit/1f11aac027e0699b821c2bc9f31bdfe3fd61a2d0))
+* no CLI ([88b9a5f](https://github.com/cha0s/flecks/commit/88b9a5f6f1042673bd12fbc8e393634de23f516f))
+* test fails -> nonzero process code ([1f01189](https://github.com/cha0s/flecks/commit/1f0118914393d8b16913aad25eef81aaadac4e68))
+* test magic ([379f7de](https://github.com/cha0s/flecks/commit/379f7de0027fb3ee033530e306835ea2ab4722bd))
+
+
+### Features
+
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

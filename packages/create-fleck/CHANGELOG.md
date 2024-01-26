@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* config ([e001c77](https://github.com/cha0s/flecks/commit/e001c771ee69a9c18bef54df0411fe90651b3aba))
+* creation apps ([9bfa481](https://github.com/cha0s/flecks/commit/9bfa481731f32a2a4404d9d6d87ada8f39b35c77))
+* creators ([c1eee58](https://github.com/cha0s/flecks/commit/c1eee58a41553941613bed6879ad70cf46260cb2))
+* versioning ([f892113](https://github.com/cha0s/flecks/commit/f892113ca22e6c9fe9264462444f287c8687b6c1))
+
+
+### Features
+
+* add to build/flecks.yml ([77a5c60](https://github.com/cha0s/flecks/commit/77a5c60a44c4de55a2812ab11e2e2e72e25ac6c5))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* flecks add ([f440278](https://github.com/cha0s/flecks/commit/f44027854d4b40377e27396abd90e44f2bf71691))
+* package manager (and bun) ([16934d5](https://github.com/cha0s/flecks/commit/16934d55c93aef1fcb36ed47a2addc802ccf492d))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

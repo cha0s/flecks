@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* hmr ([bd4df17](https://github.com/cha0s/flecks/commit/bd4df17bad47cb85ba0a86e92e3d4437e0928335))
+
+
+### Features
+
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

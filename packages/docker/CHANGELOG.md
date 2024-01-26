@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* docker ([2d89ea3](https://github.com/cha0s/flecks/commit/2d89ea351246017176b6fe876f182261931119bc))
+
+
+### Features
+
+* **docker:** extra ([d5d0e8d](https://github.com/cha0s/flecks/commit/d5d0e8d74e8170738a9c1d04905c3b2d70a3af75))
+* **docker:** generation and hooks ([2f7ebf6](https://github.com/cha0s/flecks/commit/2f7ebf66a29aeb83e135ad09e37208da9e36865e))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

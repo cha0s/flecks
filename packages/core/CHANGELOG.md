@@ -3,6 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* babel devs always breaking things ([cc8a35a](https://github.com/cha0s/flecks/commit/cc8a35a4b25ee730feb8cb1c978d3f29238e1f64))
+* coerce the number ([820e390](https://github.com/cha0s/flecks/commit/820e390744d9a16a145db72c2ea7a433d2273d57))
+* compilation ([2a2a993](https://github.com/cha0s/flecks/commit/2a2a9939881723aea711ec058bf873e90157c83b))
+* compilation ([a51184f](https://github.com/cha0s/flecks/commit/a51184fa49c96649660df827b61455a6e26f67ef))
+* complex aliasing ([4ba2b51](https://github.com/cha0s/flecks/commit/4ba2b5113657f4426d8e976fe9a77d797378475a))
+* core neutrino config ([7feac4a](https://github.com/cha0s/flecks/commit/7feac4a87b711ec9e48fa5b41be6d52b251a4e61))
+* creation apps ([9bfa481](https://github.com/cha0s/flecks/commit/9bfa481731f32a2a4404d9d6d87ada8f39b35c77))
+* creators ([c1eee58](https://github.com/cha0s/flecks/commit/c1eee58a41553941613bed6879ad70cf46260cb2))
+* dedupe linked modules ([fe1c720](https://github.com/cha0s/flecks/commit/fe1c72033c066d61ec6f1ecc72bc474a708d0d14))
+* default source-map-support install ([ed2aa6a](https://github.com/cha0s/flecks/commit/ed2aa6a3c1354d7dfc4290e431c50779b8be2437))
+* discover through config ([5d2bc3e](https://github.com/cha0s/flecks/commit/5d2bc3ee0734ad19d0adcae79fd965d7f93cb6fd))
+* ensure compiled flecks are moved to their own chunk ([e3a7f73](https://github.com/cha0s/flecks/commit/e3a7f7390b8f118111ac0553b6a379c5893b742b))
+* eslint ([cc4ec9c](https://github.com/cha0s/flecks/commit/cc4ec9c30b7a2ca308d71bdcfb2002bb77d9287f))
+* eslint ([13b7bf4](https://github.com/cha0s/flecks/commit/13b7bf465bafeb3993c0f0221e7825853739fe46))
+* expanded cache ([d6192d1](https://github.com/cha0s/flecks/commit/d6192d181beffaf626a3fc210c4752269f45eda5))
+* extensions ([7b38b34](https://github.com/cha0s/flecks/commit/7b38b34b1f2a11654ff162fbf837e87fc8024b68))
+* fake context ([3976078](https://github.com/cha0s/flecks/commit/3976078bebdf426bd2fa027f8d4e553149a14d02))
+* fallbacks ([a39b5fe](https://github.com/cha0s/flecks/commit/a39b5fe17831acc51045bf3c6faf918aa822f29c))
+* flecks build pattern ([cf2b787](https://github.com/cha0s/flecks/commit/cf2b787a9f963bee0c1f6e0a3a1df40f5fd25787))
+* hmr gathered ([6374af5](https://github.com/cha0s/flecks/commit/6374af578e41afcb5bd2065e5f12c8c082f6ee61))
+* implementation misuse ([d2559e5](https://github.com/cha0s/flecks/commit/d2559e59f2793b46f1fef03de0fbc5e8ccb358ea))
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* mixin ([2f6ed6a](https://github.com/cha0s/flecks/commit/2f6ed6a0c82544a7bd0e9dac617f507047c03d1a))
+* no async by default ([49e3947](https://github.com/cha0s/flecks/commit/49e39475c7a39d933990fe0a2bd2e87336cd19e8))
+* non-existent hooks ([454c749](https://github.com/cha0s/flecks/commit/454c74993a9b97cd9bc014b655e1430c6374ae98))
+* react lint ([68e2d6a](https://github.com/cha0s/flecks/commit/68e2d6a19815c9327d44ecc72f11e21c0cc714c2))
+* tests ([a982224](https://github.com/cha0s/flecks/commit/a98222495ebffa555db426e480e5f453148c240a))
+* webpack in nodespace ([9c4d273](https://github.com/cha0s/flecks/commit/9c4d273279dbee031a59855aaf46958189269252))
+* work around bug in RequireContextPlugin ([0a79027](https://github.com/cha0s/flecks/commit/0a79027be63679896704a42eb7a541e3c49b159b))
+
+
+### Features
+
+* "wtf, you can't just take @babel/register, give it an actual API, and make it work simultaneously across multiple roots" ([82e22c3](https://github.com/cha0s/flecks/commit/82e22c3eef69f13b6b8645667d3362d49d3b3e6b))
+* aliasedConfig ([c68bb3b](https://github.com/cha0s/flecks/commit/c68bb3b6f775762081287fc3588f3fe609d77ad6))
+* awesomerific module resolution ([60c844d](https://github.com/cha0s/flecks/commit/60c844d58b294df0d9cf0be741266fdd8dd53a33))
+* crazy hax to make our ESLint experience dope ([467f0c9](https://github.com/cha0s/flecks/commit/467f0c9ad30521f841665a7b939ad4d9b7c8b53c))
+* dependencies ([e1ab724](https://github.com/cha0s/flecks/commit/e1ab724a416d696684ff7609fed85fa344495cf8))
+* dox++ ([95e18b9](https://github.com/cha0s/flecks/commit/95e18b9978cf5740e306f3b875aedd6fbf564221))
+* elided fleck implementation sorting ([fd4aec4](https://github.com/cha0s/flecks/commit/fd4aec4d0c4b10b15addac58db18463712ce4489))
+* flecks add ([f440278](https://github.com/cha0s/flecks/commit/f44027854d4b40377e27396abd90e44f2bf71691))
+* package manager (and bun) ([16934d5](https://github.com/cha0s/flecks/commit/16934d55c93aef1fcb36ed47a2addc802ccf492d))
+* ServerFlecks::register(BuildConfig|Resolver) ([013f980](https://github.com/cha0s/flecks/commit/013f980f583277e2e48e74e53ff148f12ebb345a))
+* support mjs ([7935597](https://github.com/cha0s/flecks/commit/79355977830a3778ef2414ece4d2812bc2e7ea0c))
+* warn about violated ordering expectations ([26a3ff0](https://github.com/cha0s/flecks/commit/26a3ff0cfad1894b728745b07c0d00bd477375f3))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

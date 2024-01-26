@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* compilation ([2a2a993](https://github.com/cha0s/flecks/commit/2a2a9939881723aea711ec058bf873e90157c83b))
+* compilation ([a51184f](https://github.com/cha0s/flecks/commit/a51184fa49c96649660df827b61455a6e26f67ef))
+* complex aliasing ([4ba2b51](https://github.com/cha0s/flecks/commit/4ba2b5113657f4426d8e976fe9a77d797378475a))
+* dedupe linked modules ([fe1c720](https://github.com/cha0s/flecks/commit/fe1c72033c066d61ec6f1ecc72bc474a708d0d14))
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* magic :) ([b09a339](https://github.com/cha0s/flecks/commit/b09a339e7eea9672274732f7ac9fdad51a4a99ec))
+* mixin ([2f6ed6a](https://github.com/cha0s/flecks/commit/2f6ed6a0c82544a7bd0e9dac617f507047c03d1a))
+* server entry log ([67fe8a6](https://github.com/cha0s/flecks/commit/67fe8a6345e7eef82ff6aa9932e12e8cb39d75d2))
+
+
+### Features
+
+* awesomerific module resolution ([60c844d](https://github.com/cha0s/flecks/commit/60c844d58b294df0d9cf0be741266fdd8dd53a33))
+* dependencies ([e1ab724](https://github.com/cha0s/flecks/commit/e1ab724a416d696684ff7609fed85fa344495cf8))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* killOnExit ([1b58856](https://github.com/cha0s/flecks/commit/1b5885623d921b58b05199b1c9d57df4068f303d))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 

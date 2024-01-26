@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/cha0s/flecks/compare/v1.4.1...v3.1.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* API ([7b97fa1](https://github.com/cha0s/flecks/commit/7b97fa1ac6f63642372726c6430385ff2dc5fbc2))
+* dox ([64bd11e](https://github.com/cha0s/flecks/commit/64bd11e9751fee83128bf7799cce7b675f982147))
+* dox ([919759f](https://github.com/cha0s/flecks/commit/919759f6918413e6d52826b9fbe1d681f11b1ba2))
+* hook dox ([aa78144](https://github.com/cha0s/flecks/commit/aa7814462801a9fef2324b8b5be231f288f23179))
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* roots ([a3babcc](https://github.com/cha0s/flecks/commit/a3babcc5a0edc2fadfb66cea6bf10faea816cd6c))
+
+
+### Features
+
+* **build:** command help ([42daad3](https://github.com/cha0s/flecks/commit/42daad3a40470bb2007c5f9ef3836014b22b0b75))
+* dox++ ([95e18b9](https://github.com/cha0s/flecks/commit/95e18b9978cf5740e306f3b875aedd6fbf564221))
+* **dox:** rewrite filenames ([dd116de](https://github.com/cha0s/flecks/commit/dd116de20c04526bbdc82579d9d741b4c21de64e))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+
+
+
 ## [2.0.3](https://github.com/cha0s/flecks/compare/v2.0.2...v2.0.3) (2023-11-22)
 
 
