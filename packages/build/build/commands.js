@@ -30,7 +30,7 @@ exports.commands = (program, flecks) => {
       action: async (fleck, {devDependency}) => {
         const args = [];
         if (['bun', 'yarn'].includes(packageManager)) {
-          args.push(packageManager, ['add', ...(devDependency ? ['-d'] : []), fleck]);
+          args.push(packageManager, ['add', ...(devDependency ? ['--dev'] : []), fleck]);
         }
         else {
           args.push(packageManager, ['install', ...(devDependency ? ['--save-dev'] : []), fleck]);
