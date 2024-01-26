@@ -6,13 +6,11 @@ export const hooks = {
     await youCanDoAsyncThingsHere();
   },
   /**
-   * Override flecks configuration sent to client flecks.
+   * Send configuration to clients.
    * @param {http.ClientRequest} req The HTTP request object.
    */
   '@flecks/web.config': (req) => ({
-    someClientFleck: {
-      someConfig: req.someConfig,
-    },
+    someConfig: req.someConfig,
   }),
   /**
    * Define HTTP routes.

@@ -2,8 +2,12 @@ export const hooks = {
   /**
    * Define docker containers.
    *
-   * Beware: the user running the server must have Docker privileges.
+   * :::warning
+   *
+   * The user running the server must have Docker privileges.
    * See: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
+   *
+   * :::
    */
   '@flecks/docker.containers': () => ({
     someContainer: {
