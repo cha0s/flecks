@@ -1,17 +1,10 @@
-const {
-  access,
-  cp,
-  mkdir,
-  rename,
-  rmdir,
-} = require('fs/promises');
-const {dirname, join} = require('path');
+const {mkdir, writeFile} = require('fs/promises');
+const {join, relative, resolve} = require('path');
 
 const {
-  generate,
-  resolveSiteDir,
-  spawn,
-} = require('./docusaurus');
+  generateDocusaurus,
+  generateJson,
+} = require('./generate');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -19,73 +12,55 @@ const {
 
 module.exports = (program, flecks) => {
   const commands = {};
-  const siteDirArgument = program.createArgument('[siteDir]', 'Docusaurus directory');
-  siteDirArgument.defaultValue = 'website';
-  commands.docusaurus = {
-    description: [
-      'Create a documentation website for this project.',
-      '',
-      'The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.',
-      '',
-      'The `create` subcommand will create a documentation website starter template for you at `siteDir`',
-      "if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`",
-      "starter configuration will also be copied to your `build` directory if it doesn't already exist.",
-    ].join('\n'),
-    action: async (subcommand, siteDir) => {
-      const resolvedSiteDir = resolveSiteDir(siteDir);
-      let siteDirExisted = false;
-      try {
-        const result = await mkdir(resolvedSiteDir);
-        if (undefined === result) {
-          await rmdir(resolvedSiteDir);
+  commands.dox = {
+    description: 'Generate documentation',
+    action: async (subcommand, outputPath) => {
+      let actualOutputPath = outputPath;
+      if (!actualOutputPath) {
+        switch (subcommand) {
+          case 'docusaurus':
+            actualOutputPath = 'website/docs/flecks';
+            break;
+          case 'json':
+            actualOutputPath = 'dist/dox';
+            break;
+          default:
+            break;
         }
       }
-      catch (error) {
-        siteDirExisted = true;
-      }
+      actualOutputPath = resolve(FLECKS_CORE_ROOT, actualOutputPath);
+      await mkdir(actualOutputPath, {recursive: true});
+      let output;
+      const json = await generateJson(flecks);
       switch (subcommand) {
-        case 'build':
-          if (!siteDirExisted) {
-            throw new Error(`There's no website directory at ${resolvedSiteDir} to build!`);
-          }
-          await generate(flecks, resolvedSiteDir);
-          spawn('build', resolvedSiteDir);
+        case 'docusaurus':
+          output = Object.fromEntries(
+            Object.entries(generateDocusaurus(json))
+              .map(([type, page]) => [`${type}.mdx`, page]),
+          );
           break;
-        case 'create': {
-          if (siteDirExisted) {
-            throw new Error(`A website directory at ${resolvedSiteDir} already exists!`);
-          }
-          const templateDirectory = dirname(require.resolve('@flecks/dox/website/sidebars.js'));
-          await cp(templateDirectory, resolvedSiteDir, {recursive: true});
-          // Copy the docusaurus config if it doesn't already exist.
-          try {
-            await access(join(FLECKS_CORE_ROOT, 'build', 'docusaurus.config.js'));
-          }
-          catch (error) {
-            await rename(
-              join(resolvedSiteDir, 'docusaurus.config.js'),
-              join(FLECKS_CORE_ROOT, 'build', 'docusaurus.config.js'),
-            );
-          }
-          // eslint-disable-next-line no-console
-          console.error(`website directory created at ${resolvedSiteDir}!`);
-          break;
-        }
-        case 'start':
-          if (!siteDirExisted) {
-            throw new Error(`There's no website directory at ${resolvedSiteDir} to start!`);
-          }
-          await generate(flecks, resolvedSiteDir);
-          spawn('start', resolvedSiteDir);
+        case 'json':
+          output = Object.fromEntries(
+            Object.entries(json)
+              .map(([type, value]) => [`${type}.json`, JSON.stringify(value, null, 2)]),
+          );
           break;
         default:
           break;
       }
+      await Promise.all(
+        Object.entries(output)
+          .map(([filename, output]) => (
+            writeFile(join(actualOutputPath, filename), output)
+          )),
+      );
+      // eslint-disable-next-line no-console
+      console.log("Output documentation to '%s'", relative(FLECKS_CORE_ROOT, actualOutputPath));
     },
     args: [
-      program.createArgument('subcommand', 'Docusaurus command to run')
-        .choices(['build', 'create', 'start']),
-      siteDirArgument,
+      program.createArgument('subcommand', 'Generation type')
+        .choices(['docusaurus', 'json']),
+      program.createArgument('[output path]', 'Where the files are output'),
     ],
   };
   return commands;

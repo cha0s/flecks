@@ -1,12 +1,26 @@
-const makeFilenameRewriter = (filenameRewriters) => (filename, line, column) => (
-  Object.entries(filenameRewriters)
-    .reduce(
-      (filename, [from, to]) => filename.replace(new RegExp(from), to),
-      [filename, ...(line ? [line, column] : [])].join(':'),
-    )
-);
+const {
+  basename,
+  dirname,
+  extname,
+  join,
+} = require('path');
 
-exports.generateBuildFilesPage = (buildFiles) => {
+const {parseFlecks} = require('./parser');
+
+exports.generateDocusaurus = function generate({
+  'build-files': buildFiles,
+  config,
+  hooks,
+  todos,
+}) {
+  return {
+    'build-files': exports.generateDocusaurusBuildFilesPage(buildFiles),
+    config: exports.generateDocusaurusConfigPage(config),
+    hooks: exports.generateDocusaurusHookPage(hooks),
+    todos: exports.generateDocusaurusTodoPage(todos),
+  };
+};
+exports.generateDocusaurusBuildFilesPage = (buildFiles) => {
   const source = [];
   source.push('---');
   source.push('title: Build files');
@@ -28,7 +42,7 @@ exports.generateBuildFilesPage = (buildFiles) => {
   return source.join('\n');
 };
 
-exports.generateConfigPage = (configs) => {
+exports.generateDocusaurusConfigPage = (configs) => {
   const source = [];
   source.push('---');
   source.push('title: Fleck configuration');
@@ -67,9 +81,7 @@ exports.generateConfigPage = (configs) => {
   return source.join('\n');
 };
 
-exports.generateHookPage = (hooks, flecks) => {
-  const {filenameRewriters} = flecks.get('@flecks/dox');
-  const rewriteFilename = makeFilenameRewriter(filenameRewriters);
+exports.generateDocusaurusHookPage = (hooks) => {
   const source = [];
   source.push('---');
   source.push('title: Hooks');
@@ -114,7 +126,7 @@ exports.generateHookPage = (hooks, flecks) => {
         source.push('<summary>Implementations</summary>');
         source.push('<ul>');
         implementations.forEach(({filename, column, line}) => {
-          source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
+          source.push(`<li>${[filename, line, column].join(':')}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -125,7 +137,7 @@ exports.generateHookPage = (hooks, flecks) => {
         source.push('<summary>Invocations</summary>');
         source.push('<ul>');
         invocations.forEach(({filename, column, line}) => {
-          source.push(`<li>${rewriteFilename(filename, line, column)}</li>`);
+          source.push(`<li>${[filename, line, column].join(':')}</li>`);
         });
         source.push('</ul>');
         source.push('</details>');
@@ -135,9 +147,7 @@ exports.generateHookPage = (hooks, flecks) => {
   return source.join('\n');
 };
 
-exports.generateTodoPage = (todos, flecks) => {
-  const {filenameRewriters} = flecks.get('@flecks/dox');
-  const rewriteFilename = makeFilenameRewriter(filenameRewriters);
+exports.generateDocusaurusTodoPage = (todos) => {
   const source = [];
   source.push('---');
   source.push('title: TODO list');
@@ -154,7 +164,7 @@ exports.generateTodoPage = (todos, flecks) => {
       context,
       description,
     }) => {
-      source.push(rewriteFilename(filename));
+      source.push(filename);
       source.push(`> ## ${description}`);
       source.push(`> <CodeBlock>${context}</CodeBlock>`);
       source.push('');
@@ -162,4 +172,134 @@ exports.generateTodoPage = (todos, flecks) => {
     source.push('');
   }
   return source.join('\n');
+};
+
+exports.generateJson = async function generate(flecks) {
+  const parsed = await parseFlecks(flecks);
+  const {
+    buildFiles,
+    config,
+    hooks,
+    todos,
+  } = parsed
+    .reduce(
+      (
+        r,
+        [
+          root,
+          sources,
+        ],
+      ) => {
+        const ensureHook = (hook) => {
+          if (!r.hooks[hook]) {
+            r.hooks[hook] = {
+              implementations: [],
+              invocations: [],
+              specification: undefined,
+            };
+          }
+        };
+        sources.forEach(
+          (
+            [
+              path,
+              {
+                buildFiles = [],
+                config = [],
+                hookImplementations = [],
+                hookInvocations = [],
+                hookSpecifications = [],
+                todos = [],
+              },
+            ],
+          ) => {
+            r.buildFiles.push(...buildFiles);
+            r.todos.push(...todos.map((todo) => ({
+              ...todo,
+              filename: join(`**${root}**`, path),
+            })));
+            if (config.length > 0) {
+              let fleck = root;
+              if ('build/flecks.bootstrap.js' !== path) {
+                fleck = join(fleck, path.startsWith('src') ? path.slice(4) : path);
+                fleck = join(dirname(fleck), basename(fleck, extname(fleck)));
+                fleck = fleck.endsWith('/index') ? fleck.slice(0, -6) : fleck;
+              }
+              r.config[fleck] = config;
+            }
+            hookImplementations.forEach(({column, hook, line}) => {
+              ensureHook(hook);
+              r.hooks[hook].implementations.push({
+                column,
+                filename: join(`**${root}**`, path),
+                line,
+              });
+            });
+            hookInvocations.forEach(({
+              column,
+              hook,
+              line,
+              type,
+            }) => {
+              ensureHook(hook);
+              r.hooks[hook].invocations.push({
+                column,
+                filename: join(`**${root}**`, path),
+                line,
+                type,
+              });
+            });
+            hookSpecifications.forEach(({
+              hook,
+              description,
+              example,
+              params,
+            }) => {
+              ensureHook(hook);
+              r.hooks[hook].specification = {
+                description,
+                example,
+                params,
+              };
+            });
+          },
+        );
+        return r;
+      },
+      {
+        buildFiles: [],
+        config: {},
+        hooks: {},
+        todos: [],
+      },
+    );
+  const sortedHooks = Object.fromEntries(
+    Object.entries(hooks)
+      .map(([hook, {implementations, invocations, specification}]) => (
+        [
+          hook,
+          {
+            implementations: implementations
+              .sort(({filename: l}, {filename: r}) => (l < r ? -1 : 1)),
+            invocations: invocations
+              .sort(({filename: l}, {filename: r}) => (l < r ? -1 : 1)),
+            specification,
+          },
+        ]
+      ))
+      .sort(([l], [r]) => (l < r ? -1 : 1)),
+  );
+  Object.entries(sortedHooks)
+    .forEach(([hook, {specification}]) => {
+      if (!specification) {
+        // eslint-disable-next-line no-console
+        console.warn(`Warning: no specification for hook: '${hook}'`);
+      }
+    });
+  return {
+    'build-files': buildFiles,
+    config,
+    hooks: sortedHooks,
+    todos,
+  };
 };

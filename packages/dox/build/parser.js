@@ -1,5 +1,5 @@
 const {readFile} = require('fs/promises');
-const {join, relative} = require('path');
+const {dirname, join, relative} = require('path');
 
 const {transformAsync} = require('@babel/core');
 const {default: traverse} = require('@babel/traverse');
@@ -125,6 +125,11 @@ exports.parseFleckRoot = async (request) => (
 exports.parseFlecks = async (flecks) => (
   Promise.all(
     flecks.roots
-      .map(async ([path, request]) => [path, await exports.parseFleckRoot(request)]),
+      .map(async ([path, request]) => [
+        path,
+        await exports.parseFleckRoot(
+          dirname(await flecks.resolver.resolve(join(request, 'package.json'))),
+        ),
+      ]),
   )
 );

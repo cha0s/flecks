@@ -1,23 +1,18 @@
 ---
-title: Documentation website
+title: Documentation
 description: Document your project.
 ---
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import ImageRow from '@site/helpers/image-row';
-import InstallPackage from '@site/helpers/install-package';
-import ThemedImage from '@theme/ThemedImage';
-
-# Documentation website
+# Documentation
 
 Ah, the most ~~boring~~ awesome part of development.
 
-flecks provides a fleck called `@flecks/dox` that helps you generate a documentation website for
-your project.
+flecks provides a fleck called `@flecks/dox` that helps you generate documentation for your
+project.
 
 :::tip[Mmm, dog food]
 
-In fact, this very website you're viewing now has been built with the same tooling!
+In fact, this very website you're viewing uses the same tooling!
 
 :::
 
@@ -29,65 +24,41 @@ To get started, add `@flecks/dox` to your project:
 npx flecks add -d @flecks/dox
 ```
 
-## Spin up a starter website
+## Output for Docusaurus
 
-Next, run:
-
-```bash
-npx flecks docusaurus create
-```
-
-You should now have a starter configuration in `build/docusaurus.config.js` and a new directory
-in your project: `website`. See [the command documentation](/docs/cli#docusaurus) to discover more
-options.
-
-Now, start your documentation website's development server with:
+[Docusaurus](https://docusaurus.io) is a nice way to generate a documentation website.
+`@flecks/dox` can output MDX files for Docusaurus:
 
 ```
-npx flecks docusaurus start
+npx flecks dox docusaurus
 ```
 
-You should now see a message similar to:
+By default this command will output the files to `website/docs/flecks`.
 
-```bash
-[SUCCESS] Docusaurus website is running at: http://localhost:3000/
+As an example, this website defines an entry in `sidebars.js` like so:
+
+```js
+{
+  type: 'category',
+  label: 'Generated details',
+  link: {
+    type: 'generated-index',
+  },
+  items: [
+    'flecks/hooks',
+    'flecks/config',
+    'flecks/build-files',
+    'flecks/todo',
+  ],
+},
 ```
 
-Go and have a look!
+## Raw output
 
-<ImageRow>
-  <ThemedImage
-    alt="Screenshot of the front page of the generated documentation site"
-    sources={{
-      light: useBaseUrl('/flecks-dox-1-light.png'),
-      dark: useBaseUrl('/flecks-dox-1.png'),
-    }}
-  />
-  <ThemedImage
-    alt="Screenshot of the documentation introduction page of the generated documentation site"
-    sources={{
-      light: useBaseUrl('/flecks-dox-2-light.png'),
-      dark: useBaseUrl('/flecks-dox-2.png'),
-    }}
-  />
-</ImageRow>
+You may also output JSON files for your own processing:
 
-Not bad, huh?
-
-## Building it out
-
-It's only a starter template, of course. You'll want to pop over to
-[the Docusaurus guides page](https://docusaurus.io/docs/category/guides) to build out your new
-website. Have fun!
-
-:::tip[Ready to roll out!]
-
-When you're ready to build for production, just run
-
-```bash
-npx flecks docusaurus build
+```
+npx flecks dox json
 ```
 
-After successfully building, your website files will be located at `dist/dox`.
-
-:::
+By default this command will output the files to `dist/dox`.
