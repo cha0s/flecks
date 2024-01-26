@@ -3,6 +3,9 @@
   "version": "3.1.0",
   "author": "cha0s",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "webpack --config ./build/build.webpack.config.js --mode production",
     "clean": "rm -rf dist node_modules yarn.lock",
