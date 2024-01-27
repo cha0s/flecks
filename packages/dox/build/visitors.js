@@ -101,7 +101,7 @@ exports.buildFileVisitor = (fn) => exports.hookVisitor('@flecks/build.files')(
               ),
             };
           })
-          .filter((buildConfig) => buildConfig)
+          .filter((buildFile) => buildFile)
           .forEach(fn);
       }
     });
