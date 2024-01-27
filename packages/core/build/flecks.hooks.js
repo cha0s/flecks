@@ -65,6 +65,17 @@ export const hooks = {
   },
 
   /**
+   * Invoked when a fleck is registered.
+   * @param {string} fleck
+   * @param {Module} M
+   */
+  '@flecks/core.registered': (fleck, M) => {
+    if ('@something/or-other' === fleck) {
+      doSomethingWith(M);
+    }
+  },
+
+  /**
    * Invoked when the application is starting. Use for order-independent initialization tasks.
    */
   '@flecks/core.starting': () => {
