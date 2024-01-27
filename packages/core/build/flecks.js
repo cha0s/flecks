@@ -869,14 +869,19 @@ exports.Flecks = class Flecks {
     debugSilly('registering %s...', fleck);
     this.flecks[fleck] = M;
     if (M.hooks) {
-      const keys = Object.keys(M.hooks);
-      debugSilly("hooks for '%s': %O", fleck, keys);
-      for (let j = 0; j < keys.length; j++) {
-        const key = keys[j];
-        if (!this.hooks[key]) {
-          this.hooks[key] = [];
+      const hooks = Object.keys(M.hooks);
+      debugSilly("hooks for '%s': %O", fleck, hooks);
+      for (let j = 0; j < hooks.length; j++) {
+        const hook = hooks[j];
+        if (!this.hooks[hook]) {
+          this.hooks[hook] = [];
         }
-        this.hooks[key].push({fleck, fn: M.hooks[key]});
+        if ('function' !== typeof M.hooks[hook]) {
+          throw new TypeError(
+            `Hook implementation must be a function! ('${fleck}' implementing '${hook}')`,
+          );
+        }
+        this.hooks[hook].push({fleck, fn: M.hooks[hook]});
       }
     }
   }
@@ -897,13 +902,13 @@ exports.Flecks = class Flecks {
    * @param {*} fleck
    */
   unregisterFleckHooks(fleck) {
-    const keys = Object.keys(this.hooks);
-    for (let j = 0; j < keys.length; j++) {
-      const key = keys[j];
-      if (this.hooks[key]) {
-        const index = this.hooks[key].findIndex(({fleck: hookPlugin}) => hookPlugin === fleck);
+    const hooks = Object.keys(this.hooks);
+    for (let j = 0; j < hooks.length; j++) {
+      const hook = hooks[j];
+      if (this.hooks[hook]) {
+        const index = this.hooks[hook].findIndex(({fleck: hookPlugin}) => hookPlugin === fleck);
         if (-1 !== index) {
-          this.hooks[key].splice(index, 1);
+          this.hooks[hook].splice(index, 1);
         }
       }
     }
