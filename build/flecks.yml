@@ -10,9 +10,9 @@
 '@flecks/fleck:./packages/fleck': {}
 '@flecks/governor:./packages/governor': {}
 '@flecks/passport:./packages/passport': {}
-'@flecks/passport:./packages/passport-local': {}
-'@flecks/passport:./packages/passport-local-react': {}
-'@flecks/passport:./packages/passport-react': {}
+'@flecks/passport-local:./packages/passport-local': {}
+'@flecks/passport-local-react:./packages/passport-local-react': {}
+'@flecks/passport-react:./packages/passport-react': {}
 '@flecks/react:./packages/react': {}
 '@flecks/react:./packages/react-redux': {}
 '@flecks/redis:./packages/redis': {}
