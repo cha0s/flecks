@@ -1,9 +1,10 @@
-const {mkdir, writeFile} = require('fs/promises');
+const {mkdir, readFile, writeFile} = require('fs/promises');
 const {join, relative, resolve} = require('path');
 
 const {
   generateDocusaurus,
   generateJson,
+  generateDocusaurusStyle,
 } = require('./generate');
 
 const {
@@ -33,7 +34,11 @@ module.exports = (program, flecks) => {
       let output;
       const json = await generateJson(flecks);
       const pairs = rewriteFilenames
-        .map((pair) => pair.split('='))
+        .map((pair) => {
+          const index = pair.indexOf('=');
+          return [pair.slice(0, index), pair.slice(index + 1)];
+        })
+        .concat(flecks.get('@flecks/dox.rewriteFilenames'))
         .map(([from, to]) => [new RegExp(from, 'g'), to]);
       const rewrite = (array) => (
         array.map(
@@ -66,6 +71,7 @@ module.exports = (program, flecks) => {
             Object.entries(generateDocusaurus(json))
               .map(([type, page]) => [`${type}.mdx`, page]),
           );
+          output['dox.module.css'] = await generateDocusaurusStyle();
           break;
         case 'json':
           output = Object.fromEntries(

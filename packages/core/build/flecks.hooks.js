@@ -8,7 +8,7 @@ export const hooks = {
   }),
 
   /**
-   * Define configuration.
+   * Define configuration. See [the configuration page](./config) for more details.
    */
   '@flecks/core.config': () => ({
     whatever: 'configuration',

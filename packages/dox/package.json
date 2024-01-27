@@ -18,9 +18,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "website"
-  ],
+  "files": [],
   "dependencies": {
     "@babel/core": "^7.17.2",
     "@babel/traverse": "^7.17.0",

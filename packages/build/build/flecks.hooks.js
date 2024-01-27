@@ -36,7 +36,7 @@ export const hooks = {
   '@flecks/build.extensions': () => ['.coffee'],
 
   /**
-   * Register build files.
+   * Register build files. See [the build files page](./build-files) for more details.
    */
   '@flecks/build.files': () => [
     /**

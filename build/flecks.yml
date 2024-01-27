@@ -5,7 +5,14 @@
 '@flecks/create:./packages/create-fleck': {}
 '@flecks/db:./packages/db': {}
 '@flecks/docker:./packages/docker': {}
-'@flecks/dox:./packages/dox': {}
+'@flecks/dox:./packages/dox':
+  rewriteFilenames:
+    -
+      - '@flecks\/([^/]+)\/(.*)'
+      - '[@flecks/**$1**<span style={{fontSize: "80%"}}>&#8203;`/$2`</span>](https://github.com/cha0s/flecks/tree/master/packages/$1/$2)'
+    -
+      - '\((.*):([0-9]+):[0-9]+\)'
+      - '($1#L$2)'
 '@flecks/electron:./packages/electron': {}
 '@flecks/fleck:./packages/fleck': {}
 '@flecks/governor:./packages/governor': {}

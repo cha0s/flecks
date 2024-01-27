@@ -59,7 +59,7 @@ export default {
         'flecks/hooks',
         'flecks/config',
         'flecks/build-files',
-        'flecks/todo',
+        'flecks/todos',
       ],
     },
   ],

@@ -88,6 +88,8 @@ exports.generateDocusaurusHookPage = (hooks) => {
   source.push('description: All the hooks in this project.');
   source.push('---');
   source.push('');
+  source.push("import styles from './dox.module.css';");
+  source.push('');
   source.push('This page documents all the hooks in this project.');
   source.push('');
   Object.entries(hooks)
@@ -121,31 +123,54 @@ exports.generateDocusaurusHookPage = (hooks) => {
         });
         source.push('');
       }
-      if (implementations.length > 0) {
-        source.push('<details>');
-        source.push('<summary>Implementations</summary>');
-        source.push('<ul>');
-        implementations.forEach(({filename}) => {
-          source.push(`<li>${filename}</li>`);
-        });
-        source.push('</ul>');
-        source.push('</details>');
-        source.push('');
-      }
-      if (invocations.length > 0) {
-        source.push('<details>');
-        source.push('<summary>Invocations</summary>');
-        source.push('<ul>');
-        invocations.forEach(({filename, type}) => {
-          source.push(`<li>${filename} (\`${type}\`)</li>`);
-        });
-        source.push('</ul>');
-        source.push('</details>');
-        source.push('');
+      if (implementations.length > 0 || invocations.length > 0) {
+        source.push('<div className={styles.hooks}>');
+        if (implementations.length > 0) {
+          source.push('<div>');
+          source.push('<h3>Implementations</h3>');
+          implementations.forEach(({filename}) => {
+            source.push(`<div>${filename}</div>`);
+          });
+          source.push('</div>');
+        }
+        if (invocations.length > 0) {
+          source.push('<div>');
+          source.push('<h3>Invocations</h3>');
+          invocations.forEach(({filename, type}) => {
+            source.push(`<div>${filename} (\`${type}\`)</div>`);
+          });
+          source.push('</div>');
+        }
+        source.push('</div>');
       }
     });
   return source.join('\n');
 };
+
+exports.generateDocusaurusStyle = () => `
+.hooks > div {
+  margin-bottom: var(--ifm-heading-margin-bottom);
+}
+.hooks > div code {
+  white-space: nowrap;
+}
+@media screen and (min-width: 641px) {
+  .hooks {
+    display: flex;
+  }
+  .hooks > div:first-child {
+    width: 50%;
+  }
+  .hooks > div:last-child {
+    padding-left: var(--ifm-spacing-horizontal);
+    width: 50%;
+  }
+  .hooks > div:only-child {
+    padding-left: 0;
+    width: 100%;
+  }
+}
+`;
 
 exports.generateDocusaurusTodoPage = (todos) => {
   const source = [];
