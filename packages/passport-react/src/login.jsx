@@ -14,9 +14,7 @@ function Login() {
       <TabList>
         {strategies.map(([tab]) => <Tab key={tab}>{tab}</Tab>)}
       </TabList>
-      <div className="behaved__tab-panels">
-        {strategies.map(([tab, panel]) => <TabPanel key={tab}>{panel}</TabPanel>)}
-      </div>
+      {strategies.map(([tab, panel]) => <TabPanel key={tab}>{panel}</TabPanel>)}
     </Tabs>
   );
 }
