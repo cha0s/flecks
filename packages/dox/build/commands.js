@@ -34,7 +34,7 @@ module.exports = (program, flecks) => {
       const json = await generateJson(flecks);
       const pairs = rewriteFilenames
         .map((pair) => pair.split('='))
-        .map(([from, to]) => [new RegExp(from), to]);
+        .map(([from, to]) => [new RegExp(from, 'g'), to]);
       const rewrite = (array) => (
         array.map(
           (object) => ({

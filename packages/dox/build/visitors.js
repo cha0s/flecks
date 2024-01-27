@@ -138,7 +138,14 @@ exports.hookInvocationVisitor = (fn) => ({
   CallExpression(path) {
     if (isMemberExpression(path.node.callee)) {
       if (
-        (isIdentifier(path.node.callee.object) && 'flecks' === path.node.callee.object.name)
+        (
+          isIdentifier(path.node.callee.object)
+          && 'flecks' === path.node.callee.object.name
+        )
+        || (
+          isIdentifier(path.node.callee.object.property)
+          && 'flecks' === path.node.callee.object.property.name
+        )
         || isThisExpression(path.node.callee.object)
       ) {
         if (isIdentifier(path.node.callee.property)) {
@@ -153,6 +160,17 @@ exports.hookInvocationVisitor = (fn) => ({
                   ...invocation,
                   hook: path.node.arguments[0].value,
                   type: path.node.callee.property.name,
+                });
+              }
+            }
+          }
+          if ('makeMiddleware' === path.node.callee.property.name) {
+            if (path.node.arguments.length > 0) {
+              if (isStringLiteral(path.node.arguments[0])) {
+                fn({
+                  ...invocation,
+                  hook: path.node.arguments[0].value,
+                  type: 'invokeFleck',
                 });
               }
             }

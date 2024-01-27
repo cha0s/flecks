@@ -14,13 +14,13 @@ const {
   todoVisitor,
 } = require('./visitors');
 
-exports.parseCode = async (code) => {
-  const {ast} = await transformAsync(code, {ast: true, code: false});
+exports.parseCode = async (options, code) => {
+  const {ast} = await transformAsync(code, {ast: true, code: false, ...options});
   return ast;
 };
 
-exports.parseNormalSource = async (root, path, source) => {
-  const ast = await exports.parseCode(source);
+exports.parseNormalSource = async (root, options, path, source) => {
+  const ast = await exports.parseCode(options, source);
   const buildFiles = [];
   const configs = [];
   const hookImplementations = [];
@@ -79,8 +79,8 @@ exports.parseNormalSource = async (root, path, source) => {
   };
 };
 
-exports.parseHookSpecificationSource = async (path, source) => {
-  const ast = await exports.parseCode(source);
+exports.parseHookSpecificationSource = async (options, path, source) => {
+  const ast = await exports.parseCode(options, source);
   const hookSpecifications = [];
   traverse(ast, hookSpecificationVisitor((hookSpecification) => {
     const {
@@ -101,36 +101,38 @@ exports.parseHookSpecificationSource = async (path, source) => {
   };
 };
 
-exports.parseSource = async (root, path, source) => {
+exports.parseSource = async (root, options, path, source) => {
   if (path.match(/build\/flecks\.hooks\.js$/)) {
-    return exports.parseHookSpecificationSource(path, source);
+    return exports.parseHookSpecificationSource(options, path, source);
   }
-  return exports.parseNormalSource(root, path, source);
+  return exports.parseNormalSource(root, options, path, source);
 };
 
-exports.parseFleckRoot = async (root, request) => (
+exports.parseFleckRoot = async (root, options, request) => (
   Promise.all(
     (await Promise.all([
-      ...await glob(join(request, 'src', '**', '*.js')),
-      ...await glob(join(request, 'build', '**', '*.js')),
+      ...await glob(join(request, 'src', '**', '*.{js,jsx}')),
+      ...await glob(join(request, 'build', '**', '*.{js,jsx}')),
     ]))
       .map((filename) => [relative(request, filename), filename])
       .map(async ([path, filename]) => {
         const buffer = await readFile(filename);
-        return [path, await exports.parseSource(root, path, buffer.toString('utf8'))];
+        return [path, await exports.parseSource(root, options, path, buffer.toString('utf8'))];
       }),
   )
 );
 
-exports.parseFlecks = async (flecks) => (
-  Promise.all(
+exports.parseFlecks = async (flecks) => {
+  const babel = await flecks.babel();
+  return Promise.all(
     flecks.roots
       .map(async ([path, request]) => [
         path,
         await exports.parseFleckRoot(
           path,
+          babel,
           dirname(await flecks.resolver.resolve(join(request, 'package.json'))),
         ),
       ]),
-  )
-);
+  );
+};
