@@ -7,6 +7,7 @@ export const hooks = {
   '@flecks/socket.client': () => ({
     timeout: Infinity,
   }),
+
   /**
    * Define server-side intercom channels.
    */
@@ -20,6 +21,7 @@ export const hooks = {
       return someServiceSpecificInformation();
     },
   }),
+
   /**
    * Define socket packets.
    *
@@ -31,6 +33,7 @@ export const hooks = {
    * See: https://github.com/cha0s/flecks/tree/master/packages/socket/src/packet/redirect.js
    */
   '@flecks/socket.packets': Flecks.provide(require.context('./packets', false, /\.js$/)),
+
   /**
    * Decorate database models.
    *
@@ -50,6 +53,30 @@ export const hooks = {
   '@flecks/socket.server': () => ({
     pingTimeout: Infinity,
   }),
+
+  /**
+   * Do something with a connecting socket.
+   *
+   * @param {[ServerSocket](https://github.com/cha0s/flecks/blob/master/packages/socket/src/server/socket.js)} socket The connecting socket.
+   */
+  '@flecks/socket/server.connect': (socket) => {
+    socket.on('disconnect', () => {
+      // ...
+    });
+  },
+
+  /**
+   * Get the Socket.IO instance.
+   *
+   * See: https://socket.io/docs/v4/server-instance/
+   * @param {SocketIo} io The Socket.IO server instance.
+   */
+  '@flecks/socket/server.io': (io) => {
+    io.engine.on("headers", (headers, req) => {
+      headers["test"] = "789";
+    });
+  },
+
   /**
    * Define middleware to run when a socket connection is established.
    */
@@ -57,5 +84,6 @@ export const hooks = {
     // Express-style route middleware...
     next();
   },
+
 };
 
