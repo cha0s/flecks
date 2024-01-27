@@ -54,26 +54,21 @@ Options:
   -h, --help  display help for command
 ```
 
-### `docusaurus`
+### `dox`
 (Implemented by `@flecks/dox`)
 
 ```
-Usage: flecks docusaurus [options] <subcommand> [siteDir]
+Usage: flecks dox [options] <subcommand> [output path]
 
-Create a documentation website for this project.
-
-The `build` and `start` subcommands are sugar on top of the corresponding Docusaurus commands.
-
-The `create` subcommand will create a documentation website starter template for you at `siteDir`
-if `siteDir` doesn't already exist (defaults to `website`). A `docusaurus.config.js`
-starter configuration will also be copied to your `build` directory if it doesn't already exist.
+Generate documentation
 
 Arguments:
-  subcommand  Docusaurus command to run (choices: "build", "create", "start")
-  siteDir     Docusaurus directory (default: "website")
+  subcommand                          Generation type (choices: "docusaurus", "json")
+  output path                         Where the files are output
 
 Options:
-  -h, --help  display help for command
+  -r, --rewrite-filenames [pairs...]  rewrite filenames
+  -h, --help                          display help for command
 ```
 
 ### `lint`
@@ -286,4 +281,3 @@ You might also stub your toe.
 
 flecks uses [Commander.js](https://github.com/tj/commander.js#quick-start) under the hood to build its CLI.
 It might be worth checking out their documentation for any more advanced usage.
-
