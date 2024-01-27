@@ -51,6 +51,8 @@ exports.generateDocusaurusConfigPage = (configs) => {
   source.push('');
   source.push("import CodeBlock from '@theme/CodeBlock';");
   source.push('');
+  source.push("import styles from './dox.module.css';");
+  source.push('');
   source.push('<style>td > .theme-code-block \\{ margin: 0; \\}</style>');
   source.push('');
   source.push('This page documents all configurable flecks in this project.');
@@ -59,11 +61,20 @@ exports.generateDocusaurusConfigPage = (configs) => {
     .sort(([l], [r]) => (l < r ? -1 : 1))
     .forEach(([fleck, configs]) => {
       source.push(`## \`${fleck}\``);
-      source.push('|Name|Default|Description|');
-      source.push('|-|-|-|');
+      source.push('<table className={styles.configTable}>');
+      source.push('<thead>');
+      source.push('<td className={styles.configBig}>Description</td>');
+      source.push('<td>Name</td>');
+      source.push('<td>Default value</td>');
+      source.push('</thead>');
+      source.push('<tbody>');
       configs.forEach(({defaultValue, description, key}) => {
         // Leading and trailing empty cell to make table rendering easier.
-        const row = ['', key];
+        source.push('<tr className={styles.configSmall}><td colspan="2"></td></tr>');
+        source.push(`<tr className={styles.configSmall}><td colspan="2">${description}</td></tr>`);
+        source.push('<tr>');
+        source.push(`<td className={styles.configBig}>${description}</td>`);
+        source.push(`<td>\`${key}\`</td>`);
         let code = defaultValue.replace(/`/g, '\\`');
         // Multiline code. Fix indentation.
         if (defaultValue.includes('\n')) {
@@ -72,11 +83,11 @@ exports.generateDocusaurusConfigPage = (configs) => {
           const indent = (rest[0].length - rest[0].trimStart().length) - 2;
           code = [first, ...rest.map((line) => line.substring(indent))].join('\\n');
         }
-        row.push(`<CodeBlock language="javascript">{\`${code}\`}</CodeBlock>`);
-        row.push(description, '');
-        source.push(row.join('|'));
+        source.push(`<td><CodeBlock language="javascript">{\`${code}\`}</CodeBlock></td>`);
+        source.push('</tr>');
       });
-      source.push('');
+      source.push('</tbody>');
+      source.push('</table>');
     });
   return source.join('\n');
 };
@@ -148,6 +159,24 @@ exports.generateDocusaurusHookPage = (hooks) => {
 };
 
 exports.generateDocusaurusStyle = () => `
+@media screen and (max-width: 640px) {
+  .configBig {
+    display: none;
+  }
+}
+@media screen and (min-width: 641px) {
+  .configSmall {
+    display: none;
+  }
+}
+tr.configSmall:first-child {
+  display: none;
+}
+.configTable {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
 .hooks > div {
   margin-bottom: var(--ifm-heading-margin-bottom);
 }
