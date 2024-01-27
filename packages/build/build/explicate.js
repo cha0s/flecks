@@ -45,8 +45,8 @@ module.exports = async function explicate(
             realResolvedCandidate = realResolvedCandidate.slice(0, -5);
           }
         }
-        // Aliased or symlinked? Include submodules.
-        if (path !== request || isSymlink) {
+        // Aliased? Include submodules.
+        if (path !== request) {
           const submodules = join(realResolvedCandidate, 'node_modules');
           resolver.addModules(submodules);
           // Runtime NODE_PATH hacking.
