@@ -1,7 +1,6 @@
 const {access, readFile} = require('fs/promises');
 const {
   basename,
-  dirname,
   extname,
   join,
 } = require('path');
