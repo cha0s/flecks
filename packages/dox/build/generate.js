@@ -53,8 +53,6 @@ exports.generateDocusaurusConfigPage = (configs) => {
   source.push('');
   source.push("import styles from './dox.module.css';");
   source.push('');
-  source.push('<style>td > .theme-code-block \\{ margin: 0; \\}</style>');
-  source.push('');
   source.push('This page documents all configurable flecks in this project.');
   source.push('');
   Object.entries(configs)
@@ -177,11 +175,23 @@ tr.configSmall:first-child {
   table-layout: fixed;
   width: 100%;
 }
+.configTable td:nth-child(2) code,
+.configTable td:nth-child(2) pre,
+.configTable td:nth-child(3) :global(.theme-code-block),
+.configTable td:nth-child(3) :global(.theme-code-block) pre {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+}
+.configTable td:nth-child(3) :global(.theme-code-block) {
+   margin: 0;
+}
 .hooks > div {
   margin-bottom: var(--ifm-heading-margin-bottom);
 }
 .hooks > div code {
   background-color: transparent;
+  border: none;
   white-space: nowrap;
 }
 @media screen and (min-width: 641px) {
