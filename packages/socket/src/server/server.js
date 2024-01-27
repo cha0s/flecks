@@ -37,7 +37,7 @@ export default class SocketServer {
     });
     this.io.use(this.makeSocketMiddleware());
     this.io.on('@flecks/socket.intercom', this.localIntercom);
-    this.flecks.invoke('@flecks/socket.server.io', this);
+    this.flecks.invoke('@flecks/socket/server.io', this.io);
     this.io.on('connect', this.onConnect);
   }
 
