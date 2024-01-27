@@ -2,6 +2,7 @@ const {access, realpath} = require('fs/promises');
 const {Module} = require('module');
 const {
   delimiter,
+  dirname,
   join,
   resolve,
 } = require('path');
@@ -36,16 +37,17 @@ module.exports = async function explicate(
           break;
         }
         // Resolve symlinks.
-        let realCandidate;
-        try {
-          realCandidate = await realpath(candidate);
-        }
-        catch (error) {
-          realCandidate = candidate;
+        const resolvedCandidate = dirname(await resolver.resolve(join(candidate, 'package.json')));
+        let realResolvedCandidate = await realpath(resolvedCandidate);
+        const isSymlink = resolvedCandidate !== realResolvedCandidate;
+        if (isSymlink) {
+          if (realResolvedCandidate.endsWith('/dist')) {
+            realResolvedCandidate = realResolvedCandidate.slice(0, -5);
+          }
         }
         // Aliased or symlinked? Include submodules.
-        if (path !== request || realCandidate !== candidate) {
-          const submodules = join(realCandidate, 'node_modules');
+        if (path !== request || isSymlink) {
+          const submodules = join(realResolvedCandidate, 'node_modules');
           resolver.addModules(submodules);
           // Runtime NODE_PATH hacking.
           const {env} = process;
@@ -67,7 +69,7 @@ module.exports = async function explicate(
         // Add root.
         roots[rootPath] = {
           bootstrap,
-          request: realCandidate !== candidate ? realCandidate : candidate,
+          request: isSymlink ? realResolvedCandidate : candidate,
         };
         break;
       }
