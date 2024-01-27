@@ -148,7 +148,7 @@ exports.generateDocusaurusHookPage = (hooks) => {
           source.push('<div>');
           source.push('<h3>Invocations</h3>');
           invocations.forEach(({filename, type}) => {
-            source.push(`<div>${filename} (\`${type}\`)</div>`);
+            source.push(`<div>(\`${type}\`) ${filename}</div>`);
           });
           source.push('</div>');
         }
@@ -181,6 +181,7 @@ tr.configSmall:first-child {
   margin-bottom: var(--ifm-heading-margin-bottom);
 }
 .hooks > div code {
+  background-color: transparent;
   white-space: nowrap;
 }
 @media screen and (min-width: 641px) {
