@@ -51,21 +51,16 @@ module.exports = async (config, env, argv, flecks) => {
   // HMR.
   source.push('if (module.hot) {');
   // Keep HMR junk out of our output path.
-  source.push('  const {unlink} = require("fs/promises");');
+  source.push('  const {glob} = require("glob");');
   source.push('  const {join} = require("path");');
+  source.push('  const {unlink} = require("fs/promises");');
   source.push('  let previousHash = __webpack_hash__;');
-  source.push('  module.hot.addStatusHandler((status) => {');
+  source.push('  module.hot.addStatusHandler(async (status) => {');
   source.push('    if ("idle" === status) {');
-  source.push('      require("glob")(');
+  source.push('      const disposing = await glob(');
   source.push(`        join('${config.output.path}', \`*\${previousHash}.hot-update.*\`),`);
-  source.push('        async (error, disposing) => {');
-  source.push('          if (error) {');
-  source.push('            throw error;');
-  source.push('            return;');
-  source.push('          }');
-  source.push('          await Promise.all(disposing.map(unlink));');
-  source.push('        },');
   source.push('      );');
+  source.push('      await Promise.all(disposing.map((filename) => unlink(filename)));');
   source.push('      previousHash = __webpack_hash__;');
   source.push('    }');
   source.push('  });');
