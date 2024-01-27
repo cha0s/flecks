@@ -19,7 +19,7 @@ exports.parseCode = async (code) => {
   return ast;
 };
 
-exports.parseNormalSource = async (path, source) => {
+exports.parseNormalSource = async (root, path, source) => {
   const ast = await exports.parseCode(source);
   const buildFiles = [];
   const configs = [];
@@ -51,7 +51,7 @@ exports.parseNormalSource = async (path, source) => {
       '@flecks/core/build/flecks.js',
       '@flecks/build/build/build.js',
     ]
-      .includes(path);
+      .includes(join(root, path));
     if (!isClassFile && hookInvocation.isThis) {
       return;
     }
@@ -101,14 +101,14 @@ exports.parseHookSpecificationSource = async (path, source) => {
   };
 };
 
-exports.parseSource = async (path, source) => {
+exports.parseSource = async (root, path, source) => {
   if (path.match(/build\/flecks\.hooks\.js$/)) {
     return exports.parseHookSpecificationSource(path, source);
   }
-  return exports.parseNormalSource(path, source);
+  return exports.parseNormalSource(root, path, source);
 };
 
-exports.parseFleckRoot = async (request) => (
+exports.parseFleckRoot = async (root, request) => (
   Promise.all(
     (await Promise.all([
       ...await glob(join(request, 'src', '**', '*.js')),
@@ -117,7 +117,7 @@ exports.parseFleckRoot = async (request) => (
       .map((filename) => [relative(request, filename), filename])
       .map(async ([path, filename]) => {
         const buffer = await readFile(filename);
-        return [path, await exports.parseSource(path, buffer.toString('utf8'))];
+        return [path, await exports.parseSource(root, path, buffer.toString('utf8'))];
       }),
   )
 );
@@ -128,6 +128,7 @@ exports.parseFlecks = async (flecks) => (
       .map(async ([path, request]) => [
         path,
         await exports.parseFleckRoot(
+          path,
           dirname(await flecks.resolver.resolve(join(request, 'package.json'))),
         ),
       ]),
