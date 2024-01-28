@@ -19,6 +19,7 @@
     "access": "public"
   },
   "files": [
+    "index.js",
     "session/server.js",
     "server.js"
   ],

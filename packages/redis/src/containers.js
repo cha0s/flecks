@@ -6,10 +6,10 @@ export default (flecks) => ({
       },
     },
     extra: {
-      command: `--port ${flecks.get('@flecks/redis/server.port')}`,
+      command: `--port ${flecks.get('@flecks/redis.port')}`,
     },
     image: 'redis:6',
     mount: '/data',
-    ports: {[flecks.get('@flecks/redis/server.port')]: 6379},
+    ports: {[flecks.get('@flecks/redis.port')]: 6379},
   },
 });
