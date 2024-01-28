@@ -219,16 +219,18 @@ it('visits hook invocations', async () => {
       flecks.invoke('sup');
       flecks.invokeAsync('yep');
       flecks.gather('stuff');
+      flecks.makeMiddleware('hook');
       flecks.nope();
       this.invoke('sup');
       this.invokeAsync('yep');
       this.gather('stuff');
+      this.makeMiddleware('hook');
       this.nope();
     `,
     hookInvocationVisitor,
     (visited) => {
       expect(visited.length)
-        .to.equal(8);
+        .to.equal(10);
     },
   );
 });

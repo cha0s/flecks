@@ -64,10 +64,10 @@ it('parses hook invocations based on context', async () => {
     this.invokeFlat('bar');
   `;
   let hookInvocations;
-  ({hookInvocations} = await parseSource('@flecks/core/build/flecks.js', source));
+  ({hookInvocations} = await parseSource('build/flecks.js', source, '@flecks/core'));
   expect(hookInvocations.length)
     .to.equal(2);
-  ({hookInvocations} = await parseSource('nope', source));
+  ({hookInvocations} = await parseSource('build/flecks.js', source, 'nope'));
   expect(hookInvocations.length)
     .to.equal(1);
 });
@@ -84,6 +84,6 @@ it('parses todos', async () => {
 });
 
 it('parses a root', async () => {
-  expect(await parseFleckRoot('./test/server/root'))
+  expect(await parseFleckRoot('@test/server', './test/server/root'))
     .to.deep.equal(verifiedRoot);
 });
