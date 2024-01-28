@@ -56,7 +56,6 @@ const {version} = require('@flecks/web/package.json');
   try {
     const flecks = await Flecks.from(runtime);
     window.flecks = flecks;
-    await Promise.all(flecks.invokeFlat('@flecks/core.starting'));
     await flecks.invokeSequentialAsync('@flecks/web/client.up');
     const appMountContainerId = `#${config['@flecks/web'].appMountId}-container`;
     window.document.querySelector(appMountContainerId).style.display = 'block';

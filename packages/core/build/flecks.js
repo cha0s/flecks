@@ -369,6 +369,7 @@ exports.Flecks = class Flecks {
     const Flecks = compose(...mixinDescription.map(([, mixin]) => mixin))(this);
     const instance = new Flecks(runtime);
     await instance.gatherHooks();
+    await instance.invokeSequentialAsync('@flecks/core.starting');
     return instance;
   }
 
