@@ -48,7 +48,6 @@ program
       action,
       args = [],
       description,
-      help,
       name = keys[i],
       options = [],
     } = commands[keys[i]];

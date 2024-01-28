@@ -44,13 +44,13 @@ export const hooks = {
      */
     username: undefined,
   }),
+  '@flecks/core.gathered': () => ({
+    models: {typeProperty: 'name'},
+  }),
   '@flecks/core.hmr.gathered': (gathered, hook, flecks) => {
     if ('@flecks/db/server.models' === hook) {
       register(gathered, flecks.db.sequelize);
     }
-  },
-  '@flecks/core.starting': (flecks) => {
-    flecks.db.Models = flecks.gather('@flecks/db/server.models', {typeProperty: 'name'});
   },
   '@flecks/docker.containers': containers,
   '@flecks/server.up': Flecks.priority(
@@ -63,17 +63,26 @@ export const hooks = {
 
 export const mixin = (Flecks) => class FlecksWithDb extends Flecks {
 
-  db = {
-    Models: {},
-    $$sequelize: undefined,
-    get sequelize() {
-      return this.$$sequelize;
-    },
-    set sequelize(sequelize) {
-      this.$$sequelize = sequelize;
-      this.transaction = sequelize.transaction.bind(sequelize);
-    },
-    transaction: () => {},
-  };
+  constructor(runtime) {
+    super(runtime);
+    if (!this.db) {
+      this.db = {};
+    }
+    Object.defineProperty(this.db, 'Models', {get: () => this.gathered('@flecks/db/server.models')});
+    let $$sequelize;
+    let $$transaction = (fn) => fn();
+    Object.defineProperty(
+      this.db,
+      'sequelize',
+      {
+        get: () => $$sequelize,
+        set: (sequelize) => {
+          $$sequelize = sequelize;
+          $$transaction = sequelize.transaction.bind(sequelize);
+        },
+      },
+    );
+    Object.defineProperty(this.db, 'transaction', {get: () => $$transaction});
+  }
 
 };

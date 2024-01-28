@@ -40,9 +40,6 @@ const capitalize = (string) => string.substring(0, 1).toUpperCase() + string.sub
  */
 const camelCase = (string) => string.split(/[_-]/).map(capitalize).join('');
 
-// Track gathered for HMR.
-const hotGathered = new Map();
-
 // Wrap classes to expose their flecks ID and type.
 const wrapGathered = (Class, id, idProperty, type, typeProperty) => {
   class Subclass extends Class {
@@ -66,6 +63,8 @@ exports.Flecks = class Flecks {
   $$expandedFlecksCache = {};
 
   flecks = {};
+
+  $$gathered = {};
 
   hooks = {};
 
@@ -184,7 +183,9 @@ exports.Flecks = class Flecks {
    * Destroy this instance.
    */
   destroy() {
+    this.$$expandedFlecksCache = {};
     this.config = {};
+    this.$$gathered = {};
     this.hooks = {};
     this.flecks = {};
   }
@@ -366,7 +367,9 @@ exports.Flecks = class Flecks {
       .map(([path, {mixin}]) => [path, mixin]).filter(([, mixin]) => mixin);
     debugSilly('mixins: %O', mixinDescription.map(([path]) => path));
     const Flecks = compose(...mixinDescription.map(([, mixin]) => mixin))(this);
-    return new Flecks(runtime);
+    const instance = new Flecks(runtime);
+    await instance.gatherHooks();
+    return instance;
   }
 
   /**
@@ -414,18 +417,33 @@ exports.Flecks = class Flecks {
       [exports.ById]: ids,
       [exports.ByType]: types,
     };
-    // Register for HMR?
-    hotGathered.set(
-      hook,
-      {
-        check,
-        idProperty,
-        typeProperty,
-        gathered,
-      },
-    );
+    this.$$gathered[hook] = {
+      check,
+      idProperty,
+      typeProperty,
+      gathered,
+    };
     debug("gathered '%s': %O", hook, Object.keys(gathered[exports.ByType]));
     return gathered;
+  }
+
+  gathered(type) {
+    return this.$$gathered[type]?.gathered;
+  }
+
+  async gatherHooks() {
+    const gathering = await this.invokeAsync('@flecks/core.gathered');
+    await Promise.all(
+      Object.entries(gathering)
+        .map(([fleck, gathering]) => (
+          Promise.all(
+            Object.entries(gathering)
+              .map(([type, options]) => (
+                this.gather(`${fleck}.${type}`, options)
+              )),
+          )
+        )),
+    );
   }
 
   /**
@@ -814,48 +832,46 @@ exports.Flecks = class Flecks {
    *
    * @param {string} fleck
    */
-  refreshGathered(fleck) {
-    const it = hotGathered.entries();
-    for (let current = it.next(); current.done !== true; current = it.next()) {
-      const {
-        value: [
-          hook,
-          {
-            check,
-            idProperty,
-            gathered,
-            typeProperty,
-          },
-        ],
-      } = current;
-      let raw;
-      // If decorating, gather all again
-      if (this.fleckImplementation(fleck, `${hook}.decorate`)) {
-        raw = this.invokeMerge(hook);
-        debugSilly('%s implements %s.decorate', fleck, hook);
-      }
-      // If only implementing, gather and decorate.
-      else if (this.fleckImplementation(fleck, hook)) {
-        raw = this.invokeFleck(hook, fleck);
-        debugSilly('%s implements %s', fleck, hook);
-      }
-      if (raw) {
-        const decorated = this.checkAndDecorateRawGathered(hook, raw, check);
-        debug('updating gathered %s from %s... %O', hook, fleck, decorated);
-        const entries = Object.entries(decorated);
-        entries.forEach(([type, Class]) => {
-          const {[type]: {[idProperty]: id}} = gathered;
-          const Subclass = wrapGathered(Class, id, idProperty, type, typeProperty);
-          // eslint-disable-next-line no-multi-assign
-          gathered[type] = Subclass;
-          gathered[id] = Subclass;
-          gathered[exports.ById][id] = Subclass;
-          gathered[exports.ByType][type] = Subclass;
-          this.invoke('@flecks/core.hmr.gathered.class', Subclass, hook);
-        });
-        this.invoke('@flecks/core.hmr.gathered', gathered, hook);
-      }
-    }
+  async refreshGathered(fleck) {
+    Object.entries(this.$$gathered)
+      .forEach(([
+        hook,
+        {
+          check,
+          idProperty,
+          gathered,
+          typeProperty,
+        },
+      ]) => {
+        let raw;
+        // If decorating, gather all again
+        if (this.fleckImplementation(fleck, `${hook}.decorate`)) {
+          raw = this.invokeMergeAsync(hook);
+          debugSilly('%s implements %s.decorate', fleck, hook);
+        }
+        // If only implementing, gather and decorate.
+        else if (this.fleckImplementation(fleck, hook)) {
+          raw = this.invokeFleck(hook, fleck);
+          debugSilly('%s implements %s', fleck, hook);
+        }
+        if (raw) {
+          const decorated = this.checkAndDecorateRawGathered(hook, raw, check);
+          debug('updating gathered %s from %s...', hook, fleck);
+          debugSilly('%O', decorated);
+          const entries = Object.entries(decorated);
+          entries.forEach(([type, Class]) => {
+            const {[type]: {[idProperty]: id}} = gathered;
+            const Subclass = wrapGathered(Class, id, idProperty, type, typeProperty);
+            // eslint-disable-next-line no-multi-assign
+            gathered[type] = Subclass;
+            gathered[id] = Subclass;
+            gathered[exports.ById][id] = Subclass;
+            gathered[exports.ByType][type] = Subclass;
+            this.invoke('@flecks/core.hmr.gathered.class', Subclass, hook);
+          });
+          this.invoke('@flecks/core.hmr.gathered', gathered, hook);
+        }
+      });
   }
 
   /**
