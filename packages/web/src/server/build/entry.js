@@ -53,10 +53,9 @@ const {version} = require('@flecks/web/package.json');
   const runtime = await loader(progress.update.bind(progress));
   progress.finish();
   debug('starting client...');
-  // Flecks mixins.
-  const flecks = Flecks.from(runtime);
-  window.flecks = flecks;
   try {
+    const flecks = await Flecks.from(runtime);
+    window.flecks = flecks;
     await Promise.all(flecks.invokeFlat('@flecks/core.starting'));
     await flecks.invokeSequentialAsync('@flecks/web/client.up');
     const appMountContainerId = `#${config['@flecks/web'].appMountId}-container`;

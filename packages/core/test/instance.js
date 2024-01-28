@@ -14,14 +14,14 @@ it('can create an empty instance', () => {
     .to.equal(0);
 });
 
-it('can gather config', () => {
+it('can gather config', async () => {
   let flecks;
-  flecks = Flecks.from({
+  flecks = await Flecks.from({
     flecks: {'@flecks/core/one': testOne},
   });
   expect(flecks.get(['@flecks/core/one']))
     .to.contain({foo: 'bar'});
-  flecks = Flecks.from({
+  flecks = await Flecks.from({
     config: {'@flecks/core/one': {foo: 'baz'}},
     flecks: {'@flecks/core/one': testOne},
   });

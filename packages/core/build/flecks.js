@@ -360,7 +360,7 @@ exports.Flecks = class Flecks {
    * @param {Object} config Configuration.
    * @returns {Flecks} A flecks instance.
    */
-  static from(runtime) {
+  static async from(runtime) {
     const {flecks} = runtime;
     const mixinDescription = Object.entries(flecks)
       .map(([path, {mixin}]) => [path, mixin]).filter(([, mixin]) => mixin);

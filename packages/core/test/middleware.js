@@ -6,8 +6,8 @@ const testOne = require('./packages/one');
 const testTwo = require('./packages/two');
 const testThree = require('./packages/three');
 
-it('can make middleware', (done) => {
-  const flecks = Flecks.from({
+it('can make middleware', async () => {
+  const flecks = await Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -23,14 +23,16 @@ it('can make middleware', (done) => {
   });
   const foo = {bar: 1};
   const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
-  mw(foo, () => {
-    expect(foo.bar).to.equal(4);
-    done();
+  await new Promise((resolve) => {
+    mw(foo, () => {
+      expect(foo.bar).to.equal(4);
+      resolve();
+    });
   });
 });
 
-it('respects explicit middleware configuration', (done) => {
-  const flecks = Flecks.from({
+it('respects explicit middleware configuration', async () => {
+  const flecks = await Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -46,14 +48,16 @@ it('respects explicit middleware configuration', (done) => {
   });
   const foo = {bar: 1};
   const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
-  mw(foo, () => {
-    expect(foo.bar).to.equal(3);
-    done();
+  await new Promise((resolve) => {
+    mw(foo, () => {
+      expect(foo.bar).to.equal(3);
+      resolve();
+    });
   });
 });
 
-it('respects middleware elision', (done) => {
-  const flecks = Flecks.from({
+it('respects middleware elision', async () => {
+  const flecks = await Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [
@@ -68,14 +72,16 @@ it('respects middleware elision', (done) => {
   });
   const foo = {bar: 1};
   const mw = flecks.makeMiddleware('@flecks/core/test.middleware');
-  mw(foo, () => {
-    expect(foo.bar).to.equal(3);
-    done();
+  await new Promise((resolve) => {
+    mw(foo, () => {
+      expect(foo.bar).to.equal(3);
+      resolve();
+    });
   });
 });
 
-it('throws on elision graph cycle', () => {
-  const flecks = Flecks.from({
+it('throws on elision graph cycle', async () => {
+  const flecks = await Flecks.from({
     config: {
       '@flecks/core/test': {
         middleware: [

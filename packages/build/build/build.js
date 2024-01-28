@@ -130,22 +130,22 @@ module.exports = class Build extends Flecks {
       roots,
       runtime,
     } = await this.buildRuntime(originalConfig, platforms, configFlecks);
-    const flecks = super.from(runtime);
+    const flecks = await super.from(runtime);
     flecks.platforms = platforms;
     flecks.roots = roots;
     flecks.resolver = resolver;
-    flecks.loadBuildConfigs();
+    flecks.loadBuildFiles();
     return flecks;
   }
 
-  loadBuildConfigs() {
+  loadBuildFiles() {
     Object.entries(this.invoke('@flecks/build.files'))
-      .forEach(([fleck, configs]) => {
-        configs.forEach((config) => {
-          this.buildFiles[config] = fleck;
+      .forEach(([fleck, filenames]) => {
+        filenames.forEach((filename) => {
+          this.buildFiles[filename] = fleck;
         });
       });
-    debugSilly('build configs loaded: %O', this.buildFiles);
+    debugSilly('build files loaded: %O', this.buildFiles);
   }
 
   get realiasedConfig() {

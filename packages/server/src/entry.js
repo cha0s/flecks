@@ -21,8 +21,8 @@ const {version} = require('../package.json');
   }
   const debug = D('@flecks/server/entry');
   debug('starting server...');
-  global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
   try {
+    global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
     await Promise.all(global.flecks.invokeFlat('@flecks/core.starting'));
     await global.flecks.invokeSequentialAsync('@flecks/server.up');
     debug('up!');

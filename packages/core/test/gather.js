@@ -5,8 +5,8 @@ import {Flecks, ById, ByType} from '@flecks/core';
 const testOne = require('./packages/one');
 const testTwo = require('./packages/two');
 
-it('can gather', () => {
-  const flecks = Flecks.from({
+it('can gather', async () => {
+  const flecks = await Flecks.from({
     flecks: {
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,

@@ -12,8 +12,8 @@ const testTwo = require('./packages/two');
 
 let flecks;
 
-beforeEach(() => {
-  flecks = Flecks.from({
+beforeEach(async () => {
+  flecks = await Flecks.from({
     flecks: {
       '@flecks/core/one': testOne,
       '@flecks/core/two': testTwo,
