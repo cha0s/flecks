@@ -1,4 +1,4 @@
-const {mkdir, readFile, writeFile} = require('fs/promises');
+const {mkdir, writeFile} = require('fs/promises');
 const {join, relative, resolve} = require('path');
 
 const {
