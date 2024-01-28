@@ -15,7 +15,6 @@
       - '($1#L$2)'
 '@flecks/electron:./packages/electron': {}
 '@flecks/fleck:./packages/fleck': {}
-'@flecks/governor:./packages/governor': {}
 '@flecks/passport:./packages/passport': {}
 '@flecks/passport-local:./packages/passport-local': {}
 '@flecks/passport-local-react:./packages/passport-local-react': {}

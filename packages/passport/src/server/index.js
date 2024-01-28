@@ -82,7 +82,7 @@ export const hooks = {
         });
       });
     },
-    {after: '@flecks/session/server', before: '@flecks/governor/server'},
+    {after: '@flecks/session/server'},
   ),
   '@flecks/web.routes': (flecks) => {
     const {
