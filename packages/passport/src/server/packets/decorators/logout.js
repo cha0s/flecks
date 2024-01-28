@@ -8,7 +8,7 @@ export default (Logout, flecks) => {
       await new Promise((r, e) => {
         req.session.save((error) => (error ? e(error) : r()));
       });
-      socket.send(['Redirect', flecks.get('@flecks/passport/server.logoutRedirect')]);
+      socket.send(['Redirect', flecks.get('@flecks/passport.logoutRedirect')]);
     }
 
     static validate(packet, {req}) {

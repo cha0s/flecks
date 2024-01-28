@@ -5,20 +5,6 @@ const debug = D('@flecks/passport');
 const debugSilly = debug.extend('silly');
 
 export const hooks = {
-  '@flecks/core.config': () => ({
-    /**
-     * Path to redirect to after failed login.
-     */
-    failureRedirect: '/',
-    /**
-     * Path to redirect to after logout.
-     */
-    logoutRedirect: '/',
-    /**
-     * Path to redirect to after successful login.
-     */
-    successRedirect: '/',
-  }),
   '@flecks/db.models': Flecks.provide(require.context('./models')),
   '@flecks/socket.packets.decorate': Flecks.decorate(require.context('./packets/decorators')),
   '@flecks/web/server.request.route': Flecks.priority(
@@ -103,7 +89,7 @@ export const hooks = {
       failureRedirect,
       logoutRedirect,
       successRedirect,
-    } = flecks.get('@flecks/passport/server');
+    } = flecks.get('@flecks/passport');
     const routes = [
       {
         method: 'get',
