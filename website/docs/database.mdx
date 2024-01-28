@@ -39,7 +39,7 @@ By default, flecks will connect to an in-memory SQLite database to get you start
 Astute observers may have noticed a line preceding the ones earlier:
 
 ```
-  @flecks/core/flecks gathered '@flecks/db/server.models': [] +0ms
+  @flecks/core/flecks gathered '@flecks/db.models': [] +0ms
 ```
 
 Let's create a fleck that makes a model so we can get a feel for how it works.
@@ -52,7 +52,7 @@ Now, let's hop into `packages/content/src/index.js` and add a hook implementatio
 
 ```javascript title="packages/content/src/index.js"
 export const hooks = {
-  '@flecks/db/server.models': (flecks) => {
+  '@flecks/db.models': (flecks) => {
     const {Model, Types} = flecks.fleck('@flecks/db/server');
     class Content extends Model {
       static get attributes() {
@@ -74,7 +74,7 @@ export const hooks = {
 Now, `npm start` your application and you will see that line looks different:
 
 ```
-  @flecks/core/flecks gathered '@flecks/db/server.models': [ 'Content' ] +0ms
+  @flecks/core/flecks gathered '@flecks/db.models': [ 'Content' ] +0ms
 ```
 
 Our model is recognized!
@@ -83,7 +83,7 @@ Let's add one more model and create an association between them:
 
 ```javascript title="packages/content/src/index.js"
 export const hooks = {
-  '@flecks/db/server.models': (flecks) => {
+  '@flecks/db.models': (flecks) => {
     const {Model, Types} = flecks.fleck('@flecks/db/server');
 
     class Content extends Model {
@@ -137,7 +137,7 @@ export const hooks = {
 If you were to `npm start`, you would see the line:
 
 ```
-  @flecks/core/flecks gathered '@flecks/db/server.models': [ 'Content', 'Tag' ] +0ms
+  @flecks/core/flecks gathered '@flecks/db.models': [ 'Content', 'Tag' ] +0ms
 ```
 
 ## Providing models with `Flecks.provide()`
@@ -205,7 +205,7 @@ Now, hop over to `packages/content/src/index.js` and let's rewrite the hook impl
 import {Flecks} from '@flecks/core/server';
 
 export const hooks = {
-  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+  '@flecks/db.models': Flecks.provide(require.context('./models')),
 }
 ```
 
@@ -240,7 +240,7 @@ export const hooks = {
     );
   },
   // highlight-end
-  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+  '@flecks/db.models': Flecks.provide(require.context('./models')),
 }
 ```
 
@@ -297,7 +297,7 @@ export const hooks = {
     );
     // highlight-end
   },
-  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+  '@flecks/db.models': Flecks.provide(require.context('./models')),
 }
 ```
 
@@ -332,9 +332,8 @@ but this isn't very helpful for any real purpose. Let's make a change to our `bu
 '@flecks/build': {}
 '@flecks/core':
   id: db_test
-'@flecks/db': {}
 // highlight-start
-'@flecks/db/server':
+'@flecks/db':
   database: './persistent.sql'
 // highlight-end
 '@flecks/server': {}
@@ -397,9 +396,8 @@ Configure `build/flecks.yml`:
 '@flecks/build': {}
 '@flecks/core':
   id: db_test
-'@flecks/db': {}
 // highlight-start
-'@flecks/db/server':
+'@flecks/db':
   database: db
   dialect: postgres
   password: THIS_PASSWORD_IS_UNSAFE

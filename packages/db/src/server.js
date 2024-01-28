@@ -16,39 +16,8 @@ export {default as Model} from './model';
 export {createDatabaseConnection};
 
 export const hooks = {
-  '@flecks/core.config': () => ({
-    /**
-     * The database to connect to.
-     */
-    database: ':memory:',
-    /**
-     * SQL dialect.
-     *
-     * See: https://sequelize.org/v5/manual/dialects.html
-     */
-    dialect: 'sqlite',
-    /**
-     * Database server host.
-     */
-    host: undefined,
-    /**
-     * Database server password.
-     */
-    password: undefined,
-    /**
-     * Database server port.
-     */
-    port: undefined,
-    /**
-     * Database server username.
-     */
-    username: undefined,
-  }),
-  '@flecks/core.gathered': () => ({
-    models: {typeProperty: 'name'},
-  }),
   '@flecks/core.hmr.gathered': (gathered, hook, flecks) => {
-    if ('@flecks/db/server.models' === hook) {
+    if ('@flecks/db.models' === hook) {
       register(gathered, flecks.db.sequelize);
     }
   },
@@ -68,7 +37,7 @@ export const mixin = (Flecks) => class FlecksWithDb extends Flecks {
     if (!this.db) {
       this.db = {};
     }
-    Object.defineProperty(this.db, 'Models', {get: () => this.gathered('@flecks/db/server.models')});
+    Object.defineProperty(this.db, 'Models', {get: () => this.gathered('@flecks/db.models')});
     let $$sequelize;
     let $$transaction = (fn) => fn();
     Object.defineProperty(

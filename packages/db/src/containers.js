@@ -5,7 +5,7 @@ export default (flecks) => {
     password,
     port,
     database,
-  } = flecks.get('@flecks/db/server');
+  } = flecks.get('@flecks/db');
   let environment = {
     app: {
       host: 'sequelize',

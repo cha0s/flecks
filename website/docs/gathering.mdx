@@ -6,7 +6,7 @@ description: Easily gather and provide things like database models, socket packe
 Gathering is useful when your fleck defines some sort of specification class, and then expects its
 sibling flecks to extend it. Some common examples:
 
-- Database models, defined through `@flecks/db/server.models`.
+- Database models, defined through `@flecks/db.models`.
 - Socket packets, defined through `@flecks/socket.packets`.
 
 ## Basics
@@ -79,7 +79,7 @@ assert(foo.type === 'Foo');
 }
 ```
 
-As an example, when `@flecks/db/server` gathers models, `typeProperty` is set to `name`, because
+As an example, when `@flecks/db` gathers models, `typeProperty` is set to `name`, because
 Sequelize requires its model classes to have a unique `name` property.
 
 :::warning[Platform order]
@@ -100,14 +100,14 @@ platforms.
 Complementary to above, `Flecks.provide()` helps you to ergonomically provide your
 flecks' implementations to a gather hook.
 
-Here's an example of how you could manually provide `@flecks/db/server.models` in your own fleck:
+Here's an example of how you could manually provide `@flecks/db.models` in your own fleck:
 
 ```javascript title="src/index.js"
 import SomeModel from './models/some-model';
 import AnotherModel from './models/another-model';
 
 export const hooks = {
-  '@flecks/db/server.models': () => ({
+  '@flecks/db.models': () => ({
     SomeModel,
     AnotherModel,
   }),
@@ -137,7 +137,7 @@ then, this `src/index.js`:
 import {Flecks} from '@flecks/core';
 
 export const hooks = {
-  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+  '@flecks/db.models': Flecks.provide(require.context('./models')),
 };
 ```
 
@@ -170,7 +170,7 @@ This allows other flecks to decorate whatever has been gathered:
 
 ```javascript
 export const hooks = {
-  '@flecks/db/server.models.decorate': (Models) => {
+  '@flecks/db.models.decorate': (Models) => {
     return {
       ...Models,
       User: class extends Models.User {
@@ -221,7 +221,7 @@ then, this `src/index.js`:
 import {Flecks} from '@flecks/core';
 
 export const hooks = {
-  '@flecks/db/server.models.decorate': (
+  '@flecks/db.models.decorate': (
     Flecks.decorate(require.context('./models/decorators'))
   ),
 };

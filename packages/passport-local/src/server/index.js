@@ -4,7 +4,7 @@ import {Flecks} from '@flecks/core';
 import LocalStrategy from 'passport-local';
 
 export const hooks = {
-  '@flecks/db/server.models.decorate': Flecks.decorate(require.context('./models/decorators')),
+  '@flecks/db.models.decorate': Flecks.decorate(require.context('./models/decorators')),
   '@flecks/passport.strategies': (passport, flecks) => ({
     local: new LocalStrategy(
       {usernameField: 'email'},

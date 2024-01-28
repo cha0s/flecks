@@ -34,7 +34,7 @@ export const hooks = {
   /**
    * Invoked when a gathered set is HMR'd.
    * @param {constructor} gathered The gathered set.
-   * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
+   * @param {string} hook The gather hook; e.g. `@flecks/db.models`.
    */
   '@flecks/core.hmr.gathered': (gathered, hook) => {
     // Do something with the gathered set...
@@ -43,7 +43,7 @@ export const hooks = {
   /**
    * Invoked when a gathered class is HMR'd.
    * @param {constructor} Class The class.
-   * @param {string} hook The gather hook; e.g. `@flecks/db/server.models`.
+   * @param {string} hook The gather hook; e.g. `@flecks/db.models`.
    */
   '@flecks/core.hmr.gathered.class': (Class, hook) => {
     // Do something with Class...
@@ -52,7 +52,7 @@ export const hooks = {
   /**
    * Invoked when flecks is building a fleck dependency graph.
    * @param {Digraph} graph The dependency graph.
-   * @param {string} hook The hook; e.g. `@flecks/db/server`.
+   * @param {string} hook The hook; e.g. `@flecks/server.up`.
    */
   '@flecks/core.priority': (graph, hook) => {
     // Make `@flecks/socket/server`'s `@flecks/server.up` implementation depend on

@@ -14,7 +14,7 @@ export async function createDatabaseConnection(flecks) {
     host,
     port,
     database,
-  } = flecks.get('@flecks/db/server');
+  } = flecks.get('@flecks/db');
   if ('sqlite' === dialect) {
     config = {
       dialect: 'sqlite',

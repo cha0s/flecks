@@ -25,7 +25,7 @@ export const hooks = {
       ttl: 30,
     },
   }),
-  '@flecks/db/server.models': Flecks.provide(require.context('./models', false, /\.js$/)),
+  '@flecks/db.models': Flecks.provide(require.context('./models', false, /\.js$/)),
   '@flecks/web/server.request.route': Flecks.priority(
     (flecks) => {
       const {web} = flecks.get('@flecks/governor/server');

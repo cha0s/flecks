@@ -19,7 +19,7 @@ export const hooks = {
      */
     successRedirect: '/',
   }),
-  '@flecks/db/server.models': Flecks.provide(require.context('./models')),
+  '@flecks/db.models': Flecks.provide(require.context('./models')),
   '@flecks/socket.packets.decorate': Flecks.decorate(require.context('./packets/decorators')),
   '@flecks/web/server.request.route': Flecks.priority(
     (flecks) => (req, res, next) => {

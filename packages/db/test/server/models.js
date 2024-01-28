@@ -5,6 +5,7 @@ it('automatically gathers models', async () => {
   const flecks = await Flecks.from({
     flecks: {
       '@flecks/core': await import('@flecks/core'),
+      '@flecks/db': await import('../../src'),
       '@flecks/db/server': await import('../../src/server'),
       '@test/thing': await import('./thing'),
     },
