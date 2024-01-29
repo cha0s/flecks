@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/cha0s/flecks/compare/v3.1.3...v3.1.4) (2024-01-29)
+
+
+### Bug Fixes
+
+* aliases ([527c7b0](https://github.com/cha0s/flecks/commit/527c7b03790b1bc2d26d06be31833c3bb64856a4))
+* **dox:** broke tests ([765a2ee](https://github.com/cha0s/flecks/commit/765a2eed9e3dc056afd8b348c2d7021ebb288393))
+* **dox:** missing specs ([980ed41](https://github.com/cha0s/flecks/commit/980ed41b9b050c3238f5d8830dcd1474e798d913))
+* flecks quirk files ([3790226](https://github.com/cha0s/flecks/commit/37902264d45d63aa7aea24f5c0b82bc3f2fdf95e))
+* hook name ([bf8298f](https://github.com/cha0s/flecks/commit/bf8298fe6883340a73a341ca058872eff24c50d9))
+* server HMR cleanliness ([df40891](https://github.com/cha0s/flecks/commit/df40891a0b6d60c2fb28c0aa32a0d20d878f114f))
+* symlinked flecks ([ff79be1](https://github.com/cha0s/flecks/commit/ff79be17677560f5e8b2151d9f67252049b0d2ff))
+
+
+### Performance Improvements
+
+* enhanced-resolve is far too slow for runtime ([6d1c59b](https://github.com/cha0s/flecks/commit/6d1c59b3517b527f436aadd322ddad7a47eab9d6))
+
+
+
+
+
 ## [3.1.3](https://github.com/cha0s/flecks/compare/v3.1.1...v3.1.3) (2024-01-26)
 
 **Note:** Version bump only for package @flecks/monorepo

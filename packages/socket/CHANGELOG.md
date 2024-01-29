@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/cha0s/flecks/compare/v3.1.3...v3.1.4) (2024-01-29)
+
+
+### Bug Fixes
+
+* **dox:** missing specs ([980ed41](https://github.com/cha0s/flecks/commit/980ed41b9b050c3238f5d8830dcd1474e798d913))
+* hook name ([bf8298f](https://github.com/cha0s/flecks/commit/bf8298fe6883340a73a341ca058872eff24c50d9))
+
+
+
+
+
 ## [3.1.3](https://github.com/cha0s/flecks/compare/v3.1.1...v3.1.3) (2024-01-26)
 
 **Note:** Version bump only for package @flecks/socket

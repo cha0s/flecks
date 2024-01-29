@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/cha0s/flecks/compare/v3.1.3...v3.1.4) (2024-01-29)
+
+
+### Bug Fixes
+
+* server HMR cleanliness ([df40891](https://github.com/cha0s/flecks/commit/df40891a0b6d60c2fb28c0aa32a0d20d878f114f))
+
+
+
+
+
 ## [3.1.3](https://github.com/cha0s/flecks/compare/v3.1.1...v3.1.3) (2024-01-26)
 
 **Note:** Version bump only for package @flecks/server

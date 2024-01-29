@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/cha0s/flecks/compare/v3.1.3...v3.1.4) (2024-01-29)
+
+
+### Bug Fixes
+
+* **dox:** broke tests ([765a2ee](https://github.com/cha0s/flecks/commit/765a2eed9e3dc056afd8b348c2d7021ebb288393))
+* flecks quirk files ([3790226](https://github.com/cha0s/flecks/commit/37902264d45d63aa7aea24f5c0b82bc3f2fdf95e))
+
+
+
+
+
 ## [3.1.3](https://github.com/cha0s/flecks/compare/v3.1.1...v3.1.3) (2024-01-26)
 
 **Note:** Version bump only for package @flecks/dox

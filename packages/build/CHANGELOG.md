@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.1.3...v3.1.4) (2024-01-29)
+
+
+### Bug Fixes
+
+* symlinked flecks ([ff79be1](https://git.hq.cha0s.io/cha0s/flecks/commits/ff79be17677560f5e8b2151d9f67252049b0d2ff))
+
+
+### Performance Improvements
+
+* enhanced-resolve is far too slow for runtime ([6d1c59b](https://git.hq.cha0s.io/cha0s/flecks/commits/6d1c59b3517b527f436aadd322ddad7a47eab9d6))
+
+
+
+
+
 ## [3.1.3](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.1.1...v3.1.3) (2024-01-26)
 
 **Note:** Version bump only for package @flecks/build
