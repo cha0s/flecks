@@ -21,6 +21,23 @@ export const hooks = {
   }),
 
   /**
+   * Let flecks gather for you.
+   *
+   * See [the Gathering guide](../gathering).
+   */
+  '@flecks/core.gathered': () => ({
+    // If this hook is implemented by a fleck called `@some/fleck`, then:
+    //
+    // This is equivalent to flecks.gather('@some/fleck.somethings'):
+    somethings: {},
+    //
+    // This is equivalent to flecks.gather('@some/fleck.others', {typeProperty: 'name'}):
+    others: {
+      typeProperty: 'name',
+    },
+  }),
+
+  /**
    * Invoked when a fleck is HMR'd
    * @param {string} path The path of the fleck
    * @param {Module} updatedFleck The updated fleck module.
@@ -76,7 +93,7 @@ export const hooks = {
   },
 
   /**
-   * Invoked when the application is starting. Use for startup tasks.
+   * Invoked when the application is starting.
    */
   '@flecks/core.starting': () => {
     console.log('starting!');
