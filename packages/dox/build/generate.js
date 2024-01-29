@@ -156,8 +156,8 @@ exports.generateDocusaurusHookPage = (hooks) => {
         if (invocations.length > 0) {
           source.push('<div>');
           source.push('<h3>Invocations</h3>');
-          invocations.forEach(({filename, type}) => {
-            source.push(`<div>(\`${type}\`) ${filename}</div>`);
+          invocations.forEach(({filename}) => {
+            source.push(`<div>${filename}</div>`);
           });
           source.push('</div>');
         }
