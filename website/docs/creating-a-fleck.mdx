@@ -67,7 +67,7 @@ After some output, you'll find your new fleck at `packages/say-hello`. Let's ins
 ### Aliasing for the win
 
 Notice there's a colon separating the path for this one. This is because this is an
-[aliased fleck](#todo). The part before the colon is the alias and the part after is the
+[aliased fleck](./compilation#paths-and-aliases). The part before the colon is the alias and the part after is the
 path to the package.
 
 By the way, your other application code can import using the alias (e.g.
@@ -78,23 +78,11 @@ By the way, your other application code can import using the alias (e.g.
   <summary>Wait, my modules don't have to be in <code>node_modules</code>?</summary>
 
   Nope! When you're developing applications, it can be real nice to
-  just pull in local source "packages". If you're wondering how this works, see
-  [the alias concept page](#todo).
+  just pull in local source "packages".
 
   That being said, sharing your packages on npm is a cool thing to do, so be rad and share your
   awesome flecks with the rest of us!
 
-  :::warning
-
-  You probably shouldn't do things like name an alias the same thing as a package that actually
-  exists in your `node_modules` directory. This is mitigated if you use the default monorepo
-  structure (unless your application name is identical to a monorepo organization that already
-  exists on `npm`: don't do that).
-
-  If you'd like to help define what happens in these edge cases you could
-  always [submit a pull request](https://github.com/cha0s/flecks/compare). :smile:
-
-  :::
 </details>
 
 ### Your first hook

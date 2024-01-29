@@ -11,6 +11,7 @@ export default {
       items: [
         'installation',
         'configuration',
+        'compilation',
         'creating-a-fleck',
         'adding-flecks',
       ],
@@ -37,7 +38,8 @@ export default {
             'hooks',
             'gathering',
             'ordering',
-            'isomorphism',
+            'platforms',
+            'package-json',
             'documentation',
           ],
         },

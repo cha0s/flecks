@@ -230,35 +230,24 @@ import {Flecks} from '@flecks/core/server';
 
 export const hooks = {
   // highlight-start
-  '@flecks/server.up': async (flecks) => {
-    const {Content, Tag} = flecks.db.Models;
-    console.log(
-      'There were',
-      await Content.count(), 'pieces of content',
-      'and',
-      await Tag.count(), 'tags.',
-    );
-  },
+  '@flecks/server.up': Flecks.priority(
+    async (flecks) => {
+      const {Content, Tag} = flecks.db.Models;
+      console.log(
+        'There were',
+        await Content.count(), 'pieces of content',
+        'and',
+        await Tag.count(), 'tags.',
+      );
+    },
+    {after: '@flecks/db/server'},
+  ),
   // highlight-end
   '@flecks/db.models': Flecks.provide(require.context('./models')),
 }
 ```
 
-We have to configure `build/flecks.yml` so that the database comes up before we try to use it:
-
-```yml
-'@db_test/content:./packages/content/src': {}
-'@flecks/build': {}
-'@flecks/core':
-  id: db_test
-'@flecks/db': {}
-// highlight-start
-'@flecks/server':
-  up:
-    - '@flecks/db'
-    - '@db_test/content'
-// highlight-end
-```
+We use [`Flecks.priority`](./ordering#fleckspriority) so that the database comes up before we try to use it.
 
 Now, another `npm start` will greet us with this line in the output:
 
@@ -328,7 +317,7 @@ restart it, you'll get a fresh new database every time. It was **quick to get st
 but this isn't very helpful for any real purpose. Let's make a change to our `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@db_test/content:./packages/content/src': {}
+'@db_test/content:./packages/content': {}
 '@flecks/build': {}
 '@flecks/core':
   id: db_test
@@ -392,7 +381,7 @@ npx flecks add -d @flecks/docker
 Configure `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@db_test/content:./packages/content/src': {}
+'@db_test/content:./packages/content': {}
 '@flecks/build': {}
 '@flecks/core':
   id: db_test
@@ -404,19 +393,8 @@ Configure `build/flecks.yml`:
   username: postgres
 // highlight-end
 '@flecks/docker': {}
-// highlight-start
-'@flecks/server':
-  up:
-    - '@flecks/docker'
-    - '@flecks/db'
-    - '@db_test/content'
-// highlight-end
+'@flecks/server': {}
 ```
-
-Notice that we configured `@flecks/server.up` to make sure to enforce a specific order in which
-our server flecks come up: first `@flecks/docker` to spin up the database, then
-`@flecks/db` to connect to the database, and finally our `@db_test/content` fleck to interact with
-the database. This is important!
 
 Now `npm start` will reveal the following message in the logs:
 
@@ -456,46 +434,6 @@ There are 2 tags.
 ```
 
 Awesome, we have a connection to a real postgres database!
-
-<details>
-  <summary>Where is the docker container?</summary>
-
-  You may notice that the first time you start your application there is a delay while Docker spins
-  up your new database server. This is normal. You may have also noticed that subsequent runs speed
-  up to near-instantaneous. This is also normal!
-
-  `@flecks/docker` runs your container in a manner that outlives your application. If you kill your
-  application and then run:
-
-  ```
-  docker ps
-  ```
-
-  You will see a line for your postgres database looking something like:
-
-  ```
-  CONTAINER ID   IMAGE     COMMAND                 CREATED        STATUS        PORTS                                      NAMES
-  <SOME_ID>      postgres  "docker-entrypoint.s…"  5 minutes ago  Up 5 minutes  0.0.0.0:5432->5432/tcp, :::5432->5432/tcp  db_test_sequelize
-  ```
-
-  You'll see under the `NAMES` column heading, there is an entry called `db_test_sequelize`. That's
-  our database! You can always
-
-  ```
-  docker kill db_test_sequelize
-  ```
-
-  to free up any resources being used. flecks keeps the containers running so that you get a nice
-  fast application start.
-
-  :::note[What's in a name?]
-
-  The container name is based off of `@flecks/core.id` which by default is `flecks`. If you change
-  your application's ID, the container name will be different!
-
-  :::
-
-</details>
 
 ## Production
 

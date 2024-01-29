@@ -1,0 +1,112 @@
+---
+title: Compilation
+description: Flecks may be subject to compilation.
+---
+
+A fleck will not always be compiled. Distributed flecks in production (e.g. one you install from
+`npm`) have already gone through a compilation step and will load very fast.
+
+There are some conditions that, when matched, will result in a fleck being compiled.
+
+flecks takes a build manifest such as:
+
+```
+'@flecks/build': {}
+'@flecks/core': {}
+'@flecks/server': {}
+'@aliased/fleck:./packages/aliased-fleck': {}
+```
+
+and determines both the **roots** and **paths** that compose the application, and whether they
+require compilation.
+
+## Roots
+
+A root is the package root of a fleck. A package root is defined as a directory with a
+`package.json` file.
+
+Multiple fleck paths may share the same root.
+
+<details>
+<summary>Sneaky little fleckses</summary>
+
+`@flecks/react`'s root contains 7 flecks!
+
+- `@flecks/react`
+- `@flecks/react/client`
+- `@flecks/react/router`
+- `@flecks/react/router/client`
+- `@flecks/react/router/server`
+- `@flecks/react/server`
+- `@flecks/react/tabs`
+
+</details>
+
+A root prefers to discover flecks within the `src` directory, but will fallback to discovering
+files under the root if that fails.
+
+## Paths and aliases
+
+Paths are the **human-readable** names of flecks. From our example above, `@aliased/fleck` is a
+path. `./packages/aliased-fleck` is an **alias**.
+
+:::tip[Compilation condition]
+
+The root path of an aliased fleck is **compiled**.
+
+:::
+
+### Symlinks
+
+:::tip[Compilation condition]
+
+If a root path is a symlinked path, the root path is **compiled**.
+
+:::warning[Land of linkin']
+
+Remember when you're linking a fleck to **link the output `dist` directory** and not the root path
+of the fleck.
+
+When building a fleck, [`package.json` is processed](./package-json) and that processed output
+should ideally be the `package.json` that your package manager sees.
+
+Don't worry: if the linked path ends with `/dist`, the parent directory will be used as the root
+path!
+
+:::
+
+:::tip[Link 'em up]
+
+When you are developing anything Sufficiently Complex:tm:, best practice is to symlink your
+dependent fleck so that your package manager can do its job and manage your dependency tree.
+
+:::
+
+## Pitfalls with aliasing
+
+:::warning[Aliased modules spaghetti]
+
+When an aliased fleck is compiled, its own `node_modules` directory is added to the module search
+paths for the application. This makes it **very easy** to get started writing a modular fleck.
+
+There can easily come a point where aliased flecks in an application may have very esoteric
+relationship between their `node_modules` directories, including but not limited to duplicate
+versions of libraries being included in a compilation.
+
+flecks makes very little effort to solve this problem as it is considered out of scope.
+
+:::
+
+:::warning[Unlikely alias]
+
+You probably shouldn't do things like name an alias the same thing as a package that actually
+exists in your `node_modules` directory. This is mitigated if you use the default monorepo
+structure (unless your application name is identical to a monorepo organization that already
+exists on `npm`: **don't do that**).
+
+:::
+
+All that being said, **aliasing exists** and it can take you pretty far!
+
+If you'd like to help define better behavior for these edge cases you could always
+[submit a pull request](https://github.com/cha0s/flecks/compare). :smile:

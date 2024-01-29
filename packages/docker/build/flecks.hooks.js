@@ -2,12 +2,6 @@ export const hooks = {
   /**
    * Define docker containers.
    *
-   * :::warning
-   *
-   * The user running the server must have Docker privileges.
-   * See: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-   *
-   * :::
    * @invoke MergeUniqueAsync
    */
   '@flecks/docker.containers': () => ({
