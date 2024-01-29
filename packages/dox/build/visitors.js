@@ -203,6 +203,9 @@ exports.hookSpecificationVisitor = (fn) => (
       const {key, value: example} = property;
       const [{value}] = property.leadingComments;
       const [{description, tags}] = parseComment(`/**\n${value}\n*/`, {spacing: 'preserve'});
+      const [invoke] = tags
+        .filter(({tag}) => 'invoke' === tag)
+        .map(({name}) => (name ? `invoke${name}` : 'invoke'));
       const [returns] = tags
         .filter(({tag}) => 'returns' === tag)
         .map(({name, type}) => ({description: name, type}));
@@ -214,6 +217,7 @@ exports.hookSpecificationVisitor = (fn) => (
           .filter(({tag}) => 'param' === tag)
           .map(({description, name, type}) => ({description, name, type})),
         ...returns && {returns},
+        ...invoke && {invoke},
       });
     }
   })

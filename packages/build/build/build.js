@@ -66,7 +66,7 @@ module.exports = class Build extends Flecks {
   async babel() {
     return babelmerge.all([
       {configFile: await this.resolveBuildConfig('babel.config.js')},
-      ...this.invokeFlat('@flecks/core.babel'),
+      ...await this.invokeSequentialAsync('@flecks/core.babel'),
     ]);
   }
 
@@ -104,6 +104,16 @@ module.exports = class Build extends Flecks {
       roots: Object.entries(roots).map(([path, {request}]) => [path, request]),
       runtime,
     };
+  }
+
+  async configureBuilds(config, env, argv) {
+    await Promise.all(
+      Object.entries(config)
+        .map(([target, config]) => (
+          this.invokeSequentialAsync('@flecks/build.config', target, config, env, argv)
+        )),
+    );
+    await this.invokeSequentialAsync('@flecks/build.config.alter', config, env, argv);
   }
 
   static async from(

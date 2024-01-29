@@ -33,12 +33,7 @@ if (FLECKS_CORE_SYNC_FOR_ESLINT) {
     const webpackConfigs = {
       fleck: await require(webpackConfigPath)(env, argv, flecks),
     };
-    await Promise.all(
-      flecks.invokeFlat('@flecks/build.config', 'fleck', webpackConfigs.fleck, env, argv),
-    );
-    await Promise.all(
-      flecks.invokeFlat('@flecks/build.config.alter', webpackConfigs, env, argv),
-    );
+    await flecks.configureBuilds(webpackConfigs, env, argv);
     const {resolve} = webpackConfigs.fleck;
     eslintConfig.settings['import/resolver'].webpack = {config: {resolve}};
     // Write it out to stdout.

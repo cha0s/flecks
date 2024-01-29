@@ -41,7 +41,7 @@ program
   const flecks = await Build.from();
   debugSilly('bootstrapped');
   // Register commands.
-  const commands = flecks.invokeMerge('@flecks/build.commands', program);
+  const commands = await flecks.invokeMergeUniqueAsync('@flecks/build.commands', program);
   const keys = Object.keys(commands).sort();
   for (let i = 0; i < keys.length; ++i) {
     const {

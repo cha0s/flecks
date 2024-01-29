@@ -4,7 +4,7 @@ export default async (flecks, opts = {}) => {
   const {
     host,
     port,
-  } = flecks.get('@flecks/redis/server');
+  } = flecks.get('@flecks/redis');
   const client = createClient({
     url: `redis://${host}:${port}`,
     ...opts,

@@ -41,7 +41,7 @@ export const hooks = {
       flecks.passport = {
         initialize: passport.initialize(),
         session: passport.session(),
-        strategies: flecks.invokeMergeUnique('@flecks/passport.strategies', passport),
+        strategies: await flecks.invokeMergeUniqueAsync('@flecks/passport.strategies', passport),
       };
       Object.entries(flecks.passport.strategies)
         .forEach(([name, strategy]) => {
@@ -51,7 +51,7 @@ export const hooks = {
     {before: '@flecks/web/server', after: ['@flecks/db/server', '@flecks/session/server']},
   ),
   '@flecks/socket.intercom': () => ({
-    '@flecks/passport.users': async (sids, server) => {
+    users: async (sids, server) => {
       const sockets = await server.sockets();
       return sids
         .filter((sid) => sockets.has(sid))

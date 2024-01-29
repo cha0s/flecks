@@ -15,14 +15,6 @@ export default class SocketServer {
     this.onConnect = this.onConnect.bind(this);
     this.flecks = flecks;
     this.httpServer = httpServer;
-    const hooks = flecks.invokeMerge('@flecks/socket.intercom');
-    debugSilly('intercom hooks(%O)', hooks);
-    this.localIntercom = async ({payload, type}, fn) => {
-      debugSilly('customHook: %s(%o)', type, payload);
-      if (hooks[type]) {
-        fn(await hooks[type](payload, this));
-      }
-    };
   }
 
   close(fn) {
@@ -31,13 +23,32 @@ export default class SocketServer {
   }
 
   async connect() {
+    const results = await this.flecks.invokeAsync('@flecks/socket.intercom');
+    const hooks = Object.entries(results)
+      .reduce(
+        (hooks, [fleck, endpoints]) => ({
+          ...hooks,
+          ...Object.fromEntries(
+            Object.entries(endpoints)
+              .map(([key, fn]) => [`${fleck}.${key}`, fn]),
+          ),
+        }),
+        {},
+      );
+    debugSilly('intercom hooks(%O)', hooks);
+    this.localIntercom = async ({payload, type}, fn) => {
+      debugSilly('customHook: %s(%o)', type, payload);
+      if (hooks[type]) {
+        fn(await hooks[type](payload, this));
+      }
+    };
     this.io = SocketIoServer(this.httpServer, {
       ...await this.flecks.invokeMergeAsync('@flecks/socket.server'),
       serveClient: false,
     });
     this.io.use(this.makeSocketMiddleware());
     this.io.on('@flecks/socket.intercom', this.localIntercom);
-    this.flecks.invoke('@flecks/socket/server.io', this.io);
+    await this.flecks.invokeSequentialAsync('@flecks/socket/server.io', this.io);
     this.io.on('connect', this.onConnect);
   }
 

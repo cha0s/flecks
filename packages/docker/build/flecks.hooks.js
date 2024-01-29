@@ -8,6 +8,7 @@ export const hooks = {
    * See: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
    *
    * :::
+   * @invoke MergeUniqueAsync
    */
   '@flecks/docker.containers': () => ({
     someContainer: {
@@ -29,6 +30,7 @@ export const hooks = {
    * @param {string} dockerfile The content of the Dockerfile.
    *
    * @returns The new content of the Dockerfile.
+   * @invoke ComposedAsync
    */
   '@flecks/docker.Dockerfile': (dockerfile) => (
     dockerfile.replace('DEBUG=*', 'DEBUG=*,-*:silly')
@@ -37,6 +39,7 @@ export const hooks = {
   /**
    *
    * @param {Object} config The object representing the docker compose configuration.
+   * @invoke SequentialAsync
    */
   '@flecks/docker.docker-compose.yml': (config) => {
     config.version = '3.1';

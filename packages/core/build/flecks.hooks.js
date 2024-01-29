@@ -2,6 +2,7 @@ export const hooks = {
 
   /**
    * Babel configuration.
+   * @invoke SequentialAsync
    */
   '@flecks/core.babel': () => ({
     plugins: ['...'],
@@ -9,6 +10,7 @@ export const hooks = {
 
   /**
    * Define configuration. See [the configuration page](./config) for more details.
+   * @invoke Fleck
    */
   '@flecks/core.config': () => ({
     whatever: 'configuration',
@@ -24,6 +26,7 @@ export const hooks = {
    * Let flecks gather for you.
    *
    * See [the Gathering guide](../gathering).
+   * @invoke Async
    */
   '@flecks/core.gathered': () => ({
     // If this hook is implemented by a fleck called `@some/fleck`, then:
@@ -41,6 +44,7 @@ export const hooks = {
    * Invoked when a fleck is HMR'd
    * @param {string} path The path of the fleck
    * @param {Module} updatedFleck The updated fleck module.
+   * @invoke
    */
   '@flecks/core.hmr': (path, updatedFleck) => {
     if ('my-fleck' === path) {
@@ -52,6 +56,7 @@ export const hooks = {
    * Invoked when a gathered set is HMR'd.
    * @param {constructor} gathered The gathered set.
    * @param {string} hook The gather hook; e.g. `@flecks/db.models`.
+   * @invoke
    */
   '@flecks/core.hmr.gathered': (gathered, hook) => {
     // Do something with the gathered set...
@@ -61,6 +66,7 @@ export const hooks = {
    * Invoked when a gathered class is HMR'd.
    * @param {constructor} Class The class.
    * @param {string} hook The gather hook; e.g. `@flecks/db.models`.
+   * @invoke
    */
   '@flecks/core.hmr.gathered.class': (Class, hook) => {
     // Do something with Class...
@@ -70,6 +76,7 @@ export const hooks = {
    * Invoked when flecks is building a fleck dependency graph.
    * @param {Digraph} graph The dependency graph.
    * @param {string} hook The hook; e.g. `@flecks/server.up`.
+   * @invoke
    */
   '@flecks/core.priority': (graph, hook) => {
     // Make `@flecks/socket/server`'s `@flecks/server.up` implementation depend on
@@ -85,6 +92,7 @@ export const hooks = {
    * Invoked when a fleck is registered.
    * @param {string} fleck
    * @param {Module} M
+   * @invoke
    */
   '@flecks/core.registered': (fleck, M) => {
     if ('@something/or-other' === fleck) {
@@ -94,6 +102,7 @@ export const hooks = {
 
   /**
    * Invoked when the application is starting.
+   * @invoke SequentialAsync
    */
   '@flecks/core.starting': () => {
     console.log('starting!');

@@ -84,17 +84,10 @@ exports.parseHookSpecificationSource = async (path, source, options) => {
   const hookSpecifications = [];
   traverse(ast, hookSpecificationVisitor((hookSpecification) => {
     const {
-      description,
-      hook,
       location: {start: {index: start}, end: {index: end}},
-      params,
+      ...specification
     } = hookSpecification;
-    hookSpecifications.push({
-      description,
-      example: source.slice(start, end),
-      hook,
-      params,
-    });
+    hookSpecifications.push({...specification, example: source.slice(start, end)});
   }));
   return {
     hookSpecifications,

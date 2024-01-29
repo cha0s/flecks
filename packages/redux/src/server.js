@@ -10,8 +10,8 @@ const debugSilly = debug.extend('silly');
 export const hooks = {
   '@flecks/electron/server.extensions': (installer) => [installer.REDUX_DEVTOOLS],
   '@flecks/web/server.request.route': (flecks) => async (req, res, next) => {
-    const slices = await flecks.invokeMergeUnique('@flecks/redux.slices');
-    const reducer = createReducer(flecks, slices);
+    const slices = await flecks.invokeMergeUniqueAsync('@flecks/redux.slices');
+    const reducer = await createReducer(flecks, slices);
     // Let the slices have a(n async) chance to hydrate with server data.
     await Promise.all(
       Object.values(slices).map(({hydrateServer}) => hydrateServer?.(req, flecks)),

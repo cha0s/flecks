@@ -3,6 +3,7 @@ export const hooks = {
    * Define REPL commands.
    *
    * Note: commands will be prefixed with a period in the Node REPL.
+   * @invoke MergeUniqueAsync
    */
   '@flecks/repl.commands': () => ({
     someCommand: (...args) => {
@@ -13,6 +14,7 @@ export const hooks = {
   }),
   /**
    * Provide global context to the REPL.
+   * @invoke MergeUniqueAsync
    */
   '@flecks/repl.context': () => {
     // Now you'd be able to do like:

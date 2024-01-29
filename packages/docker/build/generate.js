@@ -1,4 +1,4 @@
-exports.generateDockerFile = (flecks) => {
+exports.generateDockerFile = async (flecks) => {
   const dockerfile = [
     'FROM node:20',
     '',
@@ -16,7 +16,7 @@ exports.generateDockerFile = (flecks) => {
     'VOLUME /var/www/node_modules',
     '',
   ].join('\n');
-  return flecks.invokeComposed('@flecks/docker.Dockerfile', dockerfile);
+  return flecks.invokeComposedAsync('@flecks/docker.Dockerfile', dockerfile);
 };
 
 exports.generateComposeConfig = async (flecks) => {
@@ -36,7 +36,7 @@ exports.generateComposeConfig = async (flecks) => {
       ],
     },
   };
-  const containers = flecks.invoke('@flecks/docker.containers');
+  const containers = await flecks.invokeAsync('@flecks/docker.containers');
   (
     await Promise.all(
       Object.entries(containers)
@@ -69,6 +69,6 @@ exports.generateComposeConfig = async (flecks) => {
         });
     });
   const config = {version: '3', services};
-  flecks.invoke('@flecks/docker.docker-compose.yml', config);
+  await flecks.invokeSequentialAsync('@flecks/docker.docker-compose.yml', config);
   return config;
 };

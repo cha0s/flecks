@@ -1,10 +1,10 @@
 import SocketClient from './socket';
 
 export const hooks = {
-  '@flecks/web/client.up': (flecks) => {
+  '@flecks/web/client.up': async (flecks) => {
     const socket = new SocketClient(flecks);
     flecks.socket.client = socket;
-    socket.connect();
+    await socket.connect();
     socket.listen();
   },
   '@flecks/socket.client': ({config: {'@flecks/core': {id}}}) => ({

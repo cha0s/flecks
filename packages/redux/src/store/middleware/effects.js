@@ -1,5 +1,5 @@
-export default (flecks) => {
-  const effects = flecks.invokeFlat('@flecks/redux.effects');
+export default async (flecks) => {
+  const effects = await flecks.invokeSequentialAsync('@flecks/redux.effects');
   const effect = (store, action) => {
     effects.forEach((map) => {
       if (map[action.type]) {

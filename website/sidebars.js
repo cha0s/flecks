@@ -34,6 +34,7 @@ export default {
           collapsed: false,
           items: [
             'testing',
+            'hooks',
             'gathering',
             'ordering',
             'isomorphism',

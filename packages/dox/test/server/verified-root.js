@@ -32,6 +32,10 @@ export default [
             {description: 'Foo', name: 'foo', type: 'string'},
             {description: 'Bar', name: 'bar', type: 'number'},
           ],
+          returns: {
+            description: 'Baz',
+            type: 'Baz',
+          },
         },
       ],
     },

@@ -7,6 +7,7 @@ export const hooks = {
    * @param {Object} env The webpack environment.
    * @param {Object} argv The webpack commandline arguments.
    * @see {@link https://webpack.js.org/configuration/configuration-types/#exporting-a-function}
+   * @invoke SequentialAsync
    */
   '@flecks/build.config': (target, config, env, argv) => {
     if ('something' === target) {
@@ -22,6 +23,7 @@ export const hooks = {
    * @param {Object} env The webpack environment.
    * @param {Object} argv The webpack commandline arguments.
    * @see {@link https://webpack.js.org/configuration/configuration-types/#exporting-a-function}
+   * @invoke SequentialAsync
    */
   '@flecks/build.config.alter': (configs) => {
     // Maybe we want to do something if a target exists..?
@@ -32,11 +34,13 @@ export const hooks = {
 
   /**
    * Add implicitly resolved extensions.
+   * @invoke Flat
    */
   '@flecks/build.extensions': () => ['.coffee'],
 
   /**
    * Register build files. See [the build files page](./build-files) for more details.
+   * @invoke
    */
   '@flecks/build.files': () => [
     /**
@@ -48,6 +52,7 @@ export const hooks = {
   /**
    * Define CLI commands.
    * @param {[Command](https://github.com/tj/commander.js/tree/master#declaring-program-variable)} program The [Commander.js](https://github.com/tj/commander.js) program.
+   * @invoke MergeUniqueAsync
    */
   '@flecks/build.commands': (program, flecks) => {
     return {
@@ -74,6 +79,7 @@ export const hooks = {
    * @param {string} target The build target.
    * @param {Record&lt;string, Source&gt;} assets The assets.
    * @param {[Compilation](https://webpack.js.org/api/compilation-object/)} compilation The webpack compilation.
+   * @invoke SequentialAsync
    */
   '@flecks/build.processAssets': (target, assets, compilation) => {
     if (this.myTargets.includes(target)) {
@@ -83,12 +89,14 @@ export const hooks = {
 
   /**
    * Define build targets.
+   * @invoke
    */
   '@flecks/build.targets': () => ['sometarget'],
 
   /**
    * Alter defined build targets.
    * @param {Set&lt;string&gt;} targets The targets to build.
+   * @invoke
    */
   '@flecks/build.targets.alter': (targets) => {
     targets.delete('some-target');

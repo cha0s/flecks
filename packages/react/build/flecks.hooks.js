@@ -4,6 +4,7 @@ export const hooks = {
    *
    * Note: `req` will be only be defined when server-side rendering.
    * @param {http.ClientRequest} req The HTTP request object.
+   * @invoke SequentialAsync
    */
   '@flecks/react.providers': (req) => {
     // Generally it makes more sense to separate client and server concerns using platform
@@ -18,6 +19,7 @@ export const hooks = {
    * or an array of two elements where the first element is the component and the second element
    * is the props passed to the component.
    * @param {http.ClientRequest} req The HTTP request object.
+   * @invoke Async
    */
   '@flecks/react.roots': (req) => {
     // Note that we're not returning `<Component />`, but `Component`.

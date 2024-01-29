@@ -104,11 +104,22 @@ exports.generateDocusaurusHookPage = (hooks) => {
   Object.entries(hooks)
     .sort(([lhook], [rhook]) => (lhook < rhook ? -1 : 1))
     .forEach(([hook, {implementations = [], invocations = [], specification}]) => {
-      const {description, example, params} = specification || {
+      const {
+        description,
+        example,
+        invoke,
+        params,
+      } = specification || {
         params: [],
       };
       source.push(`## \`${hook}\``);
       source.push('');
+      if (invoke) {
+        source.push('<h3 style={{fontSize: "1.125rem", marginTop: 0}}>');
+        source.push(`[${invoke}](../hooks#${invoke.toLowerCase()})`);
+        source.push('</h3>');
+        source.push('');
+      }
       if (description) {
         source.push(...description.split('\n'));
         source.push('');
@@ -151,6 +162,7 @@ exports.generateDocusaurusHookPage = (hooks) => {
           source.push('</div>');
         }
         source.push('</div>');
+        source.push('\n');
       }
     });
   return source.join('\n');
@@ -310,18 +322,9 @@ exports.generateJson = async function generate(flecks) {
                 type,
               });
             });
-            hookSpecifications.forEach(({
-              hook,
-              description,
-              example,
-              params,
-            }) => {
+            hookSpecifications.forEach(({hook, ...specification}) => {
               ensureHook(hook);
-              r.hooks[hook].specification = {
-                description,
-                example,
-                params,
-              };
+              r.hooks[hook].specification = specification;
             });
           },
         );

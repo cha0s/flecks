@@ -11,19 +11,20 @@ const debugSilly = debug.extend('silly');
 
 export async function createReplServer(flecks) {
   const {id} = flecks.get('@flecks/core');
-  const context = (await Promise.all(flecks.invokeFlat('@flecks/repl.context')))
-    .reduce((r, vars) => ({...r, ...vars}), {flecks});
+  const context = {
+    ...await flecks.invokeMergeUniqueAsync('@flecks/repl.context'),
+    flecks,
+  };
   debug(
     'Object.keys(context) === %O',
     Object.keys(context),
   );
   const commands = {};
-  Object.entries(
-    flecks.invokeFlat('@flecks/repl.commands').reduce((r, commands) => ({...r, ...commands}), {}),
-  ).forEach(([key, value]) => {
-    commands[key] = value;
-    debugSilly('registered command: %s', key);
-  });
+  Object.entries(await flecks.invokeMergeUniqueAsync('@flecks/repl.commands'))
+    .forEach(([key, value]) => {
+      commands[key] = value;
+      debugSilly('registered command: %s', key);
+    });
   const netServer = createServer((socket) => {
     debug('client connection to repl established');
     socket.on('close', () => {

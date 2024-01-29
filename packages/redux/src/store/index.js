@@ -11,10 +11,10 @@ export default async function configureStore(flecks, reducer, {preloadedState}) 
     ],
     middleware: [
       '@flecks/redux/defaultMiddleware',
-      effectsMiddleware(flecks),
+      await effectsMiddleware(flecks),
     ],
   };
-  flecks.invokeFlat('@flecks/redux.store', options);
+  await flecks.invokeSequentialAsync('@flecks/redux.store', options);
   return configureStoreR({
     enhancers: (defaultEnhancers) => {
       const index = options.enhancers.indexOf('@flecks/redux/defaultEnhancers');

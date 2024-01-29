@@ -12,7 +12,7 @@ module.exports = class FlecksDockerOutput {
   apply(compiler) {
     compiler.hooks.compilation.tap('FlecksDockerOutput', (compilation) => {
       compilation.hooks.additionalAssets.tapAsync('FlecksDockerOutput', async (callback) => {
-        const dockerFile = generateDockerFile(this.options.flecks);
+        const dockerFile = await generateDockerFile(this.options.flecks);
         compilation.assets.Dockerfile = {
           source: () => dockerFile,
           size: () => dockerFile.length,

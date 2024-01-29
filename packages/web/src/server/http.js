@@ -6,7 +6,6 @@ import {D} from '@flecks/core';
 import compression from 'compression';
 import express from 'express';
 import httpProxy from 'http-proxy';
-import flatten from 'lodash.flatten';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -38,7 +37,7 @@ export const createHttpServer = async (flecks) => {
   app.use(flecks.makeMiddleware('@flecks/web/server.request.socket'));
   // Routes.
   const routeMiddleware = flecks.makeMiddleware('@flecks/web/server.request.route');
-  const routes = flatten(flecks.invokeFlat('@flecks/web.routes'));
+  const routes = (await Promise.all(flecks.invokeFlat('@flecks/web.routes'))).flat();
   debug('routes: %O', routes);
   routes.forEach(({method, path, middleware}) => app[method](path, routeMiddleware, middleware));
   // In development mode, create a proxy to the webpack-dev-server.
@@ -135,7 +134,7 @@ export const createHttpServer = async (flecks) => {
         reject(error);
         return;
       }
-      await Promise.all(flecks.invokeFlat('@flecks/web/server.up', httpServer));
+      await flecks.invokeSequentialAsync('@flecks/web/server.up', httpServer);
       debug('HTTP server up @ %s!', [host, port].filter((e) => !!e).join(':'));
       resolve();
     });

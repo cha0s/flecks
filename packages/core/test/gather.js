@@ -12,7 +12,7 @@ it('can gather', async () => {
       '@flecks/core/two': testTwo,
     },
   });
-  const Gathered = flecks.gather('@flecks/core/one/test-gather');
+  const Gathered = await flecks.gather('@flecks/core/one/test-gather');
   expect(Object.keys(Gathered[ByType]).length)
     .to.equal(Object.keys(Gathered[ById]).length);
   const typeKeys = Object.keys(Gathered[ByType]);

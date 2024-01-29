@@ -19,7 +19,7 @@ export default class SocketClient extends decorate(Socket) {
     this.socket = null;
   }
 
-  connect(address) {
+  async connect(address) {
     if (this.socket) {
       this.socket.destroy();
     }
@@ -30,7 +30,7 @@ export default class SocketClient extends decorate(Socket) {
       {
         reconnectionDelay: 'production' === process.env.NODE_ENV ? 1000 : 100,
         reconnectionDelayMax: 'production' === process.env.NODE_ENV ? 5000 : 500,
-        ...this.flecks.invokeMerge('@flecks/socket.client'),
+        ...await this.flecks.invokeMergeAsync('@flecks/socket.client'),
       },
     );
     this.socket.emitPromise = promisify(this.socket.emit.bind(this.socket));

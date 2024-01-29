@@ -5,7 +5,7 @@ export const hooks = {
     if (!flecks.get('@flecks/docker.enabled')) {
       return;
     }
-    const containers = await flecks.invokeMergeAsync('@flecks/docker.containers');
+    const containers = await flecks.invokeMergeUniqueAsync('@flecks/docker.containers');
     await Promise.all(
       Object.entries(containers)
         .map(([key, config]) => startContainer(flecks, key, config)),

@@ -28,27 +28,25 @@ module.exports = async (env, argv) => {
     debug('no build configuration found! aborting...');
     await new Promise(() => {});
   }
-  const entries = await Promise.all(building.map(
-    async ([fleck, target]) => {
-      const configFn = require(await flecks.resolveBuildConfig(`${target}.webpack.config.js`, fleck));
-      if ('function' !== typeof configFn) {
-        debug(`'${
-          target
-        }' build configuration expected function got ${
-          typeof configFn
-        }! aborting...`);
-        return undefined;
-      }
-      return [target, await configFn(env, argv, flecks)];
-    },
-  ));
-  await Promise.all(
-    entries.map(async ([target, config]) => (
-      Promise.all(flecks.invokeFlat('@flecks/build.config', target, config, env, argv))
+  const webpackConfigs = Object.fromEntries(
+    await Promise.all(building.map(
+      async ([fleck, target]) => {
+        const configFn = require(
+          await flecks.resolveBuildConfig(`${target}.webpack.config.js`, fleck),
+        );
+        if ('function' !== typeof configFn) {
+          debug(`'${
+            target
+          }' build configuration expected function got ${
+            typeof configFn
+          }! aborting...`);
+          return undefined;
+        }
+        return [target, await configFn(env, argv, flecks)];
+      },
     )),
   );
-  const webpackConfigs = Object.fromEntries(entries);
-  await Promise.all(flecks.invokeFlat('@flecks/build.config.alter', webpackConfigs, env, argv));
+  await flecks.configureBuilds(webpackConfigs, env, argv);
   const enterableWebpackConfigs = Object.values(webpackConfigs)
     .filter((webpackConfig) => {
       if (!webpackConfig.entry) {
