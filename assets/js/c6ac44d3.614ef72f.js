@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkflecks_docusaurus=self.webpackChunkflecks_docusaurus||[]).push([[1540],{3928:s=>{s.exports=JSON.parse('{"label":"release","permalink":"/flecks/blog/tags/release","allTagsPath":"/flecks/blog/tags","count":1,"unlisted":false}')}}]);

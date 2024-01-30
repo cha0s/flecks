@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkflecks_docusaurus=self.webpackChunkflecks_docusaurus||[]).push([[2535],{2625:s=>{s.exports=JSON.parse('{"title":"Recent posts","items":[]}')}}]);
