@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 
-import Heading from '@theme/Heading';
+import Flecks from './flecks';
 import styles from './index.module.css';
 
 function HomepageHeader() {
@@ -11,7 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <img src="flecks.png" width="128px" />
+        <Flecks />
         <Heading as="h1" className="hero__title">
           Craft modular apps with ease
         </Heading>
@@ -21,7 +22,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/"
           >
-            Get started
+            Let&apos;s go!
           </Link>
         </div>
       </div>

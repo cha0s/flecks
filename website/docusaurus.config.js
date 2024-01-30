@@ -37,6 +37,9 @@ export default async function flecksDocusaurus() {
     themeConfig:
       /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
       ({
+        colorMode: {
+          defaultMode: 'dark',
+        },
         navbar: {
           title: 'flecks',
           logo: {
