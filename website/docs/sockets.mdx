@@ -271,20 +271,23 @@ If the node that dispatches the request simulates the position, the response can
 Otherwise, the node must use **intercom** to ask the other nodes whether they simulate `P`:
 
 ```javascript
-const responses = await socket.req.intercom('@simulation/position.request', P);
+const responses = await socket.req.intercom('@some/simulation.requestPosition', P);
 ```
 
 This asks the other nodes if they simulate `P`. Nodes will respond either with `undefined` or `P`
 through their implementations of `@flecks/socket.intercom`:
 
 ```javascript
+// Assuming the fleck is `@some/simulation`...
 export const hooks = {
-  '@flecks/socket.intercom': async (P, {simulation}) => {
-    if (simulation.has(P)) {
-      return simulation.positionOf(P);
-    }
-    // return undefined is implied...
-  },
+  '@flecks/socket.intercom': ({simulation}) => ({
+    requestPosition: async (P) => {
+      if (simulation.has(P)) {
+        return simulation.positionOf(P);
+      }
+      // return undefined is implied...
+    },
+  }),
 }
 ```
 
@@ -307,15 +310,15 @@ only the others.
       alt has position(P)
         Node-1->>Client: RESPONSE: {x, y, z}
       else doesn't have position(P)
-        Node-1->>Intercom: INTERCOM: @simulation/position.request(P)
+        Node-1->>Intercom: INTERCOM: @some/simulation.requestPosition(P)
         par
-          Intercom-->>Node-1: INTERCOM: @simulation/position.request(P)
+          Intercom-->>Node-1: INTERCOM: @some/simulation.requestPosition(P)
           Node-1-xIntercom: RESPONSE: undefined
         and
-          Intercom-->>Node-2: INTERCOM: @simulation/position.request(P)
+          Intercom-->>Node-2: INTERCOM: @some/simulation.requestPosition(P)
           Node-2->>Intercom: RESPONSE: {x, y, z}
         and
-          Intercom-->>Node-N: INTERCOM: @simulation/position.request(P)
+          Intercom-->>Node-N: INTERCOM: @some/simulation.requestPosition(P)
           Node-N-xIntercom: RESPONSE: undefined
         end
         Intercom->>Node-1: RESPONSE: [undefined, {x, y, z}, undefined]
