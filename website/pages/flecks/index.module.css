@@ -1,5 +1,0 @@
-.flecksHero {
-  html[data-theme="light"] & {
-    filter: invert(1);
-  }
-}

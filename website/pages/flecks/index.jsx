@@ -12,8 +12,8 @@ function Flecks() {
     >
       <defs>
         <radialGradient id="sphere">
-          <stop offset="70%" stop-color="#272727" />
-          <stop offset="100%" stop-color="black" />
+          <stop offset="70%" stopColor="#272727" />
+          <stop offset="100%" stopColor="black" />
         </radialGradient>
       </defs>
       <ellipse

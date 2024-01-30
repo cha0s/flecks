@@ -39,6 +39,7 @@ export default async function flecksDocusaurus() {
       ({
         colorMode: {
           defaultMode: 'dark',
+          respectPrefersColorScheme: false,
         },
         navbar: {
           title: 'flecks',

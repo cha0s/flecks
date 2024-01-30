@@ -34,8 +34,8 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title="Build a flexible and powerful application in no time"
+      description="flecks is an exceptionally-extensible fullstack application production system. Its true purpose is to make application development a more joyful endeavor. Intelligent defaults combined with a highly dynamic structure motivate consistency while allowing you to easily express your own architectural opinions."
     >
       <HomepageHeader />
     </Layout>
