@@ -77,7 +77,7 @@ module.exports = (program, flecks) => {
           });
         });
       };
-      require('@flecks/build/build/resolve')(
+      require('@flecks/core/build/resolve')(
         {
           alias: flecks.resolver.aliases,
           fallback: flecks.resolver.fallbacks,

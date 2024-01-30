@@ -12,7 +12,7 @@ exports.hooks = {
         server.plugins.push(
           banner({
             // `require()` magic.
-            banner: `require('@flecks/build/build/resolve')(${resolver}, ${stubs})`,
+            banner: `require('@flecks/core/build/resolve')(${resolver}, ${stubs})`,
             include: 'index.js',
           }),
         );

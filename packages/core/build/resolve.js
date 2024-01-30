@@ -1,8 +1,8 @@
 const {resolve: resolvePath} = require('path');
 
-const D = require('@flecks/core/build/debug');
+const D = require('./debug');
 
-const debug = D('@flecks/server/build/runtime');
+const debug = D('@flecks/core/build/resolve');
 
 module.exports = function resolve({alias, fallback}, stubs) {
   debug('installing resolution magic');
