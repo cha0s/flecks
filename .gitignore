@@ -125,4 +125,6 @@ dist
 /website/yarn.lock
 
 /dox
+/dox-tmp
+
 /.nx/cache
