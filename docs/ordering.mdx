@@ -1,0 +1,87 @@
+---
+title: Ordering
+description: Hint at and explicitly control the order in which things occur.
+---
+
+# Ordering
+
+Suppose we are composing an application and we have HTTP session state using cookies. When a
+user hits a route, we need to load their session and subsequently read a value from said session
+to determine if the user prefers dark mode. Clearly, we will have to ensure that the session
+reification happens first. This is one function of orderable hooks.
+
+Flecks uses the name of the hook as a configuration key in order to determine the ordering of a
+hook. Let's take a core hook as an example, `@flecks/http/server.request.route`:
+
+Our `flecks.yml` could be configured like so:
+
+```yaml
+'@flecks/http/server':
+  'request.route':
+    - '@flecks/session'
+    - '@my-app/dark-mode-check'
+```
+
+In this application, when `@flecks/http/server.request.route` is invoked, `@flecks/session`'s
+implementation is invoked (which reifies the user's session from cookies), followed by
+`@my-app/dark-mode-check`'s.
+
+## Ellipses/elision
+
+It is not always ergonomic to configure the order of every single implementation, but enough to
+specify which implementations must run first (or last).
+
+For example, suppose we have multiple implementations that require there to have been a reified
+user session, but which order those implementations run might not be a concern. For this, flecks
+provides you with the ellipses entry:
+
+```yaml
+'@flecks/http/server':
+  'request.route':
+    - '@flecks/session'
+    - '...'
+    - '@my-app/finalize'
+```
+
+In this application, we first reify the user session as before, but instead of listing
+`@my-app/dark-mode-check` immediately after, we specify ellipses. After the ellipses we specify
+`@my-app/finalize` to do some finalization work.
+
+`'...'` essentially translates to: "every implementing fleck which has not already been explicitly
+listed in the ordering configuration". The default ordering configuration for any orderable hook is: `['...']`.
+
+Using more than one ellipses entry in an ordering configuration is ambiguous and will throw an
+error.
+
+## `Flecks.priority`
+
+`@my-app/dark-mode-check`'s implementation of `@flecks/http/server.request.route` will always need
+to run after the user session server implementation runs. We can remove the need to configure
+this manually by configuring the priority of our hook implementation.
+
+If this is our dark mode checker:
+
+```js
+export const hooks = {
+  '@flecks/http/server.request.route': (flecks) => (req, res, next) => {
+    if (req.session.prefersDarkMode) {
+      // ...
+    }
+  },
+}
+```
+
+Then this is the same implementation but configured to run after `@flecks/session/server`:
+
+```js
+export const hooks = {
+  '@flecks/http/server.request.route': Flecks.priority(
+    (flecks) => (req, res, next) => {
+      if (req.session.prefersDarkMode) {
+        // ...
+      }
+    },
+    {after: '@flecks/session/server'},
+  ),
+}
+```

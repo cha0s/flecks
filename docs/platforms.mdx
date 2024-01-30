@@ -1,0 +1,17 @@
+---
+title: Platforms
+description: It might matter where your code is running.
+---
+
+Platforms automatically discover flecks based on the platform where the code is running.
+
+A fleck may provide a `/client` or `/server` path which is automatically included or excluded based
+on the current platform.
+
+:::tip[For example]
+
+The `@flecks/react` fleck includes a `@flecks/react/client` and `@flecks/react/server` fleck. So
+you can simply add `@flecks/react` to your `build/flecks.yml` and it will include everything
+automatically for the server and client side.
+
+:::

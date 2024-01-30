@@ -1,0 +1,141 @@
+---
+title: Creating a fleck
+description: A fleck is a module but also so much more.
+---
+
+If you are following along from the previous getting started
+[configuration page](./configuration), you have an application with 3 flecks:
+
+- `@flecks/build`
+- `@flecks/core`
+- `@flecks/server`
+
+<details>
+  <summary>About that "3 flecks" thing...</summary>
+
+  Actually, your server application has **5 flecks** at this point:
+
+  - `@flecks/build`
+  - `@flecks/build/server`
+  - `@flecks/core`
+  - `@flecks/core/server`
+  - `@flecks/server`
+
+  flecks will load the `[...]/server` fleck under any fleck that is loaded on the server. This is
+  also the case when using `@flecks/web` which will automatically load `[...]/client` flecks
+  which are only loaded in the browser.
+
+</details>
+
+## Your first fleck
+
+Let's make your website greet the user with a good ol' **hello world**.
+
+To do this, you'll be creating your own little fleck. flecks also provides a built-in utility to
+create a fleck.
+
+:::note[Your application is a monorepo by default]
+
+You may have noticed that your little starter application has a `packages` directory. By default,
+flecks structures your application as a monorepo.
+
+This isn't any hard requirement, it's only a suggestion.
+
+:::
+
+### Create the fleck
+
+Let's create our little fleck:
+
+```bash
+npx create-fleck say-hello
+```
+
+After some output, you'll find your new fleck at `packages/say-hello`. Let's inspect our
+`build/flecks.yml`:
+
+```yml title="build/flecks.yml"
+'@flecks/build': {}
+'@flecks/core':
+  id: 'hello-world'
+'@flecks/server': {}
+// highlight-next-line
+'@hello-world/say-hello:./packages/say-hello': {}
+```
+
+### Aliasing for the win
+
+Notice there's a colon separating the path for this one. This is because this is an aliased fleck.
+The part before the colon is the alias and the part after is the path to the package.
+
+By the way, your other application code can import using the alias (e.g.
+`require('@hello-world/say-hello');`)
+[as if it were a package](https://webpack.js.org/configuration/resolve/#resolvealias).
+
+<details>
+  <summary>Wait, my modules don't have to be in <code>node_modules</code>?</summary>
+
+  Nope! When you're developing applications, it can be real nice to
+  just pull in local source "packages".
+
+  That being said, sharing your packages on npm is a cool thing to do, so be rad and share your
+  awesome flecks with the rest of us!
+
+</details>
+
+### Your first hook
+
+There is a source file at `packages/say-hello/src/index.js` but for now it's empty. Let's fill it
+out a bit:
+
+```javascript title="packages/say-hello/src/index.js"
+export const hooks = {
+  '@flecks/server.up': async () => {
+    process.stdout.write('  hello server\n');
+  },
+};
+```
+
+Now, restart your application:
+
+```bash
+npm run start
+```
+
+You will be greeted by a line in the output:
+
+```terminal
+  hello server
+```
+
+### flecks injection
+
+Hook implementations may receive arguments. After any arguments, the `flecks` instance is always
+passed.
+
+`@flecks/server.up` doesn't pass any arguments, so the `flecks` instance is the first argument.
+Let's see how to use the instance to read some configuration:
+
+```javascript title="packages/say-hello/src/index.js"
+export const hooks = {
+  '@flecks/server.up': async (flecks) => {
+    const {id} = flecks.get('@flecks/core');
+    process.stdout.write(`  hello server: ID ${id}\n`);
+  },
+};
+```
+
+This time, you will see:
+
+```terminal
+  hello server: ID hello-world
+```
+
+:::note[Still with us?]
+
+...or whatever your application's ID is. We're assuming you're following along from
+[the configuration page](./configuration).
+
+:::
+
+Next, we'll go over some of the nuts and bolts of how your flecks are compiled.

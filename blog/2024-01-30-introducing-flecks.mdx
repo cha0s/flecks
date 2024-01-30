@@ -1,0 +1,199 @@
+---
+title: "flecks: NOT a fullstack framework"
+description: "Introducing flecks: an exceptionally-extensible application production system."
+slug: introducing-flecks
+authors:
+  - name: cha0s
+    title: Creator of flecks
+    url: https://github.com/cha0s
+    image_url: https://github.com/cha0s.png
+tags: [announcement, introducing, flecks, release]
+hide_table_of_contents: false
+---
+
+import Link from '@docusaurus/Link';
+
+export function Tiny({children}) {
+  return <span style={{fontSize: '0.75em'}}>{children}</span>;
+}
+
+Introducing flecks: an **exceptionally-extensible application production system**.
+
+{/* truncate */}
+
+:::warning[What's the letter before "alpha"?]
+
+This is a new release and worked on by only one person: me! Please keep this in mind!
+
+:::
+
+## Is it ~~webscale~~ fullstack?
+
+<figure>
+  ![A screenshot from the 2010 "MongoDB is webscale" cartoon](./webscale.jpg)
+  <figcaption style={{fontSize: '0.8rem'}}>*yes, I remember*</figcaption>
+</figure>
+
+I admit, I clickbaited with the title there just a little bit. I love fullstack! flecks is more
+than capable of building fullstack applications. If you just want to jump to more of that sort
+of thing, you might be interested in the <Link target="_blank" to="../docs/react">React</Link>
+page in the documentation.
+
+### For real, though
+
+A fullstack JS application is basically appception: what you actually have is a server
+application written in JS that serves a client application written in JS. Using
+the same language obscures (arguably, *by design*) the fact that these are actually two distinct
+applications.
+
+![A screenshot of Doctor Olivia Octopus saying "There's two, actually"](./two-actually.jpg)
+
+:::danger[Hot take]
+
+Some modern framework APIs are becoming increasingly obscure in their attempt to paper over
+this reality
+([*\*ahem\**](https://github.com/cha0s/flecks/blob/master/packages/react/src/client.js#L24)... and
+don't get me started on [**RSC**](https://www.mayank.co/blog/react-server-components/)...).
+
+:::
+
+### Don't get it twisted
+
+To put it in basic terms: A webserver is a core aspect of a fullstack application, but **a
+webserver is not a core aspect of an application**. The same could be said about asset
+optimization, routing, and many other core fullstack JS concepts.
+
+flecks is concerned with **writing applications**; fullstack applications are merely a subset of
+that.
+
+## Do one thing and do it well
+
+The core concept is the concept of a **fleck** which is... just a JS module. There exists a server
+fleck, a web fleck, a React fleck, and so on.
+
+Here's a simple fleck that says hello when the application is starting:
+
+```js
+export const hooks = {
+  '@flecks/core.starting': () => {
+    console.log('hey you');
+  },
+};
+```
+
+That's it. It's a module that exports some hook implementations. If you're curious what kind of
+hooks we're talking about, check out
+<Link target="_blank" to="../docs/flecks/hooks">the hooks reference page</Link>.
+
+You add a reference to your fleck to a file called
+<Link target="_blank" to="../docs/creating-a-fleck">`flecks.yml`</Link> and you're rolling. Again,
+**a flecks application is just flecks** having their hook implementations invoked.
+
+
+
+What are multiple flecks called? **flecks**!
+
+:::tip[Wordplay]
+
+It is not a coincidence that the name of the framework uses the same word as the plural form of
+its constituting elements: the implication is that **flecks is just flecks**, it's not doing
+anything special on its own. Sure, it *does something*, but the something that it does is simply
+orchestrate your flecks together into an application.
+
+:::
+
+### Small core
+
+Creating an application with `@flecks/create-app` and then doing
+e.g. `yarn install --production` will result in a full working application with a size of
+**less than 7 MB**. Granted, it's only a server that will start, have nothing to do, and halt in
+about 100 ms, but it illustrates that flecks builds what you tell it to, **it is not a kitchen
+sink system**.
+
+<figure>
+  ![A screenshot of Fry from Futurama captioned "Not sure if you're overly specific or not specific enough"](./specific-enough.jpg)
+  <figcaption style={{fontSize: '0.8rem'}}>*When you're writing an article and curious about how the Big Kid on the Block performs in terms of raw default production application size, but can't even figure out how to measure it because you have already downloaded more than 7MB of ads for their "hosting solution" into your brain in the process*</figcaption>
+</figure>
+
+
+### The flecks way
+
+The few core architectural opinions that are held are presented as suggestions, not requirements.
+
+:::info[**“I hold it to be the inalienable right of anybody to go to hell in his own way.”**]
+
+― Robert Frost
+
+:::
+
+A few motivating philosophies which I **do not** consider to be suggestions when creating flecks:
+
+- You shouldn't be surprised by what happens
+- Your application has what **you** want in it, not what **flecks** wants in it
+- You shouldn't have to have a full budget for production deployment
+- Developer comfort and confidence are essential, not just a nice-to-have
+- Core architectural opinions require transparency and justification
+
+## Why though?
+
+You might be thinking something like:
+
+<figure>
+  ![A screenshot of Michael from The Office shouting "NO GOD PLEASE NO"](./pls-no.jpg)
+  <figcaption style={{fontSize: '0.8rem'}}>***Why?!*** *A new JavaScript framework is the last thing we need.*</figcaption>
+</figure>
+
+Perhaps you will write a thesis explaining in great detail why there is no
+objective reason for flecks to exist. **I'm fine with that**,
+<Tiny>because I love it and there's nothing you can do about it.</Tiny>
+
+Seriously though, a couple reasons why I made flecks and use it to develop applications are:
+
+### Separation of concerns
+
+JS has matured a lot over the years, and modules are all but a first-class concept. This has been
+a huge win for Properly Structured:tm: applications.
+
+However, I believe the real reason many fullstack frameworks exist today is to
+*centralize concerns*. No one wants to set up a whole database, a routing system, a webserver,
+etc, <Tiny>etc, <Tiny>etc.</Tiny></Tiny> every time. So, the default approach has been to reach out
+for a framework to tie it all together. To some extent this is an inevitable evolution.
+
+![Screenshot of Patrick Star with the caption "Push them somewhere else"](./over-there.jpg)
+
+With flecks, the first-class motivation is to push these concerns out into modular units
+which do one thing and do it immaculately.
+[This is not a new concept](https://en.wikipedia.org/wiki/Unix_philosophy). These units can be
+composed into an application that does as much or as little as you like, <Tiny>without requiring
+your application structure to follow some corporate diktat <Tiny>requiring you to enter a mailing
+address to submit a pull request. <Tiny>(don't ask...)</Tiny></Tiny></Tiny>
+
+### Joy
+
+<div style={{float: 'right', padding: '0 1.5rem'}}>![A screenshot of Marie Kondo stating "This one sparks joy."](./kondo.jpg)</div>
+
+I have found this structure to work very well and to *feel pleasant*. It's great to get up and
+running super quickly without having to repeat a monolithic structure over and over. It's almost
+reminiscent of those small plastic building blocks my parents used to step on. Super fun!
+
+I find that I **don't have to think about what flecks is doing** most of the time, which is exactly
+what I want.
+
+flecks is at its best when you can forget that it exists and everything Just Works:tm:.
+
+### Because I can
+
+No, seriously! Over the years interacting with various parts of the JS ecosystem I have experienced
+all manner of closed-minded hostile encounters with people who regrettably lacked the imagination
+to understand something which may have ran counter to the established wisdom of the week.
+
+So I guess anyone who told me that it won't work, doesn't make sense, or other copium-based
+responses: Here it is! Eat your hearts out and get meme'd on. :heart:
+
+## No TypeScript?
+
+I understand and appreciate the benefits of strong typing. I have also noticed that TS tends to sap
+my joy when I work with it!
+
+If you love flecks enough to be serious about working to improve it and you can also make a
+compelling and transparent case to rewrite some or all of it in TS, I'm listening!

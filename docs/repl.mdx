@@ -1,0 +1,84 @@
+---
+title: REPL
+description: Start a REPL server and connect to it.
+---
+
+import Create from '@site/helpers/create';
+
+flecks provides `@flecks/repl` to make it easy to run a
+[REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) inside your running
+application. `@flecks/repl` provides a [command](./cli#repl) to easily connect to your application.
+
+## Prerequisites
+
+In order to use it you will need to have [socat](https://manpages.org/socat).
+
+## Play with a REPL
+
+Let's create an application to test the REPL:
+
+<Create type="app" pkg="repl-test" />
+
+```
+npx flecks add -d @flecks/repl
+```
+
+Start your application:
+
+```
+npm run start
+```
+
+It will just sit there. Open another terminal in the project directory and run the command:
+
+```
+npx flecks repl
+```
+
+:::tip
+
+For a more ergonomic experience, you may use:
+
+```
+npx flecks repl -r
+```
+
+If you have [rlwrap](https://manpages.org/rlwrap) installed.
+
+:::
+
+and you will be greeted with a prompt:
+
+```
+repl-test>
+```
+
+That's our application ID! We can run commands:
+
+```js
+repl-test> flecks.get('@flecks/core')
+{ id: 'repl-test' }
+```
+
+Confirm we're actually in our application by killing it:
+
+```
+repl-test> process.exit(0)
+```
+
+That will kick us back out to the terminal. If we try to run the command again, we'll get an error
+that looks something like this:
+
+```bash
+[...] socat[...] E connect(5, AF=1 "/tmp/flecks/repl-test/repl/repl-test-[...].sock", 57): Connection refused
+```
+
+This is because there's no application to connect to anymore.
+
+## Extend the REPL
+
+Your flecks can implement [@flecks/repl.commands](./flecks/hooks#flecksreplcommands) and/or
+[@flecks/repl.context](./flecks/hooks#flecksreplcontext) to add context or commands to the REPL.
+
+For instance, `@flecks/passport-local` implements a command to easily create a user account in
+the REPL.
