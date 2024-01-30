@@ -1,6 +1,6 @@
 {
   "name": "@flecks/passport",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -23,14 +23,14 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^3.1.4",
-    "@flecks/db": "^3.1.4",
-    "@flecks/redux": "^3.1.4",
-    "@flecks/session": "^3.1.4",
+    "@flecks/core": "^3.1.5",
+    "@flecks/db": "^3.1.5",
+    "@flecks/redux": "^3.1.5",
+    "@flecks/session": "^3.1.5",
     "passport": "^0.7.0"
   },
   "devDependencies": {
-    "@flecks/build": "^3.1.4",
-    "@flecks/fleck": "^3.1.4"
+    "@flecks/build": "^3.1.5",
+    "@flecks/fleck": "^3.1.5"
   }
 }
