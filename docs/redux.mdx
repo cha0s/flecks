@@ -9,16 +9,19 @@ import InstallPackage from '@site/helpers/install-package';
 Working with redux in flecks is easy. Let's create a small application to inspect and
 familiarize ourselves.
 
-## Create an app with a fleck
+## Create an app
 
 <Create type="app" pkg="redux-test" />
 
 ```
 cd redux-test
-npx create-fleck ducks
 ```
 
-## Add `@flecks/redux`
+## Create a fleck
+
+<Create type="fleck" pkg="ducks" />
+
+## Add `@flecks/redux` to `packages/ducks`
 
 Move to `packages/ducks` and add `@flecks/redux`:
 
@@ -126,14 +129,15 @@ npx flecks add -d @flecks/electron
 
 :::warning[Attention]
 
-Make sure you **run those commands in the application root directory**!
+Those commands should be run **in the application root directory**! Your fleck doesn't care about
+dealing with a web server or an electron app.
 
 :::
 
 Now start up your application:
 
 ```
-yarn start
+npm start
 ```
 
 After a moment, Electron will appear. Press `ctrl+i` to open devtools in Electron.
@@ -150,13 +154,13 @@ Everything is there!
 
 How about Redux in React? No problem! Move to `packages/ducks` and run the following command:
 
-```
-yarn add @flecks/react-redux
-```
+<InstallPackage pkg="@flecks/react-redux" />
 
 :::warning[Attention]
 
-Make sure you **run that command in `packages/ducks`**!
+That command should be run **in `packages/ducks`**! This way, the fleck encapsulates all of its
+dependencies. Your fleck is its own package. If you do things right, you can even publish your
+fleck for others to use!
 
 :::
 
