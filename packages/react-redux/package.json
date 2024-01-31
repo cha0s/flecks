@@ -1,12 +1,22 @@
 {
   "name": "@flecks/react-redux",
   "version": "3.1.5",
+  "author": "cha0s",
+  "license": "MIT",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
     "postversion": "cp package.json dist",
     "test": "flecks test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha0s/flecks.git",
+    "directory": "packages/react-redux"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "client.js",
@@ -18,9 +28,6 @@
     "@flecks/react": "^3.1.5",
     "@flecks/redux": "^3.1.5",
     "react-redux": "^7.2.2"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "devDependencies": {
     "@flecks/build": "^3.1.5",

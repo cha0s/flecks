@@ -7,7 +7,7 @@ const {
 } = require('path');
 
 const get = require('lodash.get');
-const set = require('lodash.set');
+const set = require('set-value');
 
 const compose = require('./compose');
 const D = require('./debug');
@@ -903,17 +903,6 @@ exports.Flecks = class Flecks {
         this.hooks[hook].push({fleck, fn: M.hooks[hook]});
       }
     }
-  }
-
-  /**
-   * Set a configuration value.
-   *
-   * @param {string} path The configuration path e.g. `@flecks/example.config`.
-   * @param {*} value The value to set.
-   * @returns {*} The value that was set.
-   */
-  set(path, value) {
-    return set(this.config, path, value);
   }
 
   /**

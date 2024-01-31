@@ -143,5 +143,10 @@ module.exports = async (config, env, argv, flecks) => {
         },
       ],
     });
+    // Fix a little derp in mocha 10.2.0.
+    config.module.rules.push({
+      test: /mocha\/mocha\.js$/,
+      use: await flecks.resolver.resolve('@flecks/web/build/fix-mocha-critical-dependency'),
+    });
   }
 };
