@@ -43,7 +43,7 @@ keep this in mind!
 
 I admit, I clickbaited with the title there just a little bit. I love fullstack! flecks is more
 than capable of building fullstack applications. If you just want to jump to more of that sort
-of thing, you might be interested in the <Link target="_blank" to="../docs/react">React</Link>
+of thing, you might be interested in the <Link target="_blank" to="https://cha0s.github.io/flecks/docs/react">React</Link>
 page in the documentation.
 
 ### For real, though
@@ -66,8 +66,8 @@ don't get me started on [**RSC**](https://www.mayank.co/blog/react-server-compon
 
 ### Don't get it twisted
 
-To put it in basic terms: A webserver is a core aspect of a fullstack application, but **a
-webserver is not a core aspect of an application**. The same could be said about asset
+To put it in basic terms: A web server is a core aspect of a fullstack application, but **a
+web server is not a core aspect of an application**. The same could be said about asset
 optimization, routing, and many other core fullstack JS concepts.
 
 flecks is concerned with **writing applications**; fullstack applications are merely a subset of
@@ -75,7 +75,7 @@ that.
 
 ## Do one thing and do it well
 
-The core concept is the concept of a **fleck** which is... just a JS module. There exists a server
+The core primitive is the **fleck** which is... just a JS module. There exists a server
 fleck, a web fleck, a React fleck, and so on.
 
 Here's a simple fleck that says hello when the application is starting:
@@ -90,13 +90,11 @@ export const hooks = {
 
 That's it. It's a module that exports some hook implementations. If you're curious what kind of
 hooks we're talking about, check out
-<Link target="_blank" to="../docs/flecks/hooks">the hooks reference page</Link>.
+<Link target="_blank" to="https://cha0s.github.io/flecks/docs/flecks/hooks">the hooks reference page</Link>.
 
 You add a reference to your fleck to a file called
-<Link target="_blank" to="../docs/creating-a-fleck">`flecks.yml`</Link> and you're rolling. Again,
+<Link target="_blank" to="https://cha0s.github.io/flecks/docs/creating-a-fleck">`flecks.yml`</Link> and you're rolling. Again,
 **a flecks application is just flecks** having their hook implementations invoked.
-
-
 
 What are multiple flecks called? **flecks**!
 
@@ -133,12 +131,13 @@ The few core architectural opinions that are held are presented as suggestions, 
 
 :::
 
-A few motivating philosophies which I **do not** consider to be suggestions when creating flecks:
+A few motivating philosophies which I **do not** consider to be suggestions regarding this
+project:
 
-- You shouldn't be surprised by what happens
+- You shouldn't be unpleasantly surprised by what happens
 - Your application has what **you** want in it, not what **flecks** wants in it
-- You shouldn't have to have a full budget for production deployment
 - Developer comfort and confidence are essential, not just a nice-to-have
+- You shouldn't have to have a full budget for production deployment
 - Core architectural opinions require transparency and justification
 
 ## Why though?
@@ -168,13 +167,13 @@ for a framework to tie it all together. To some extent this is an inevitable evo
 
 <figure>
   ![Screenshot of Patrick Star with the caption "Push them somewhere else"](./over-there.jpg)
-  <figcaption style={{fontSize: '0.8rem'}}>*You've never even **seen** a real <Link target="_blank" to="../docs/redux">duck</Link>*</figcaption>
+  <figcaption style={{fontSize: '0.8rem'}}>*You've never even **seen** a real <Link target="_blank" to="https://cha0s.github.io/flecks/docs/redux">duck</Link>*</figcaption>
 </figure>
 
 
-With flecks, the first-class motivation is to push these concerns out into modular units
-which do one thing and do it immaculately.
-[This is not a new concept](https://en.wikipedia.org/wiki/Unix_philosophy). These units can be
+With flecks, the first principle is to push these concerns out into modular units which do one
+thing and do it immaculately.
+[This is not a new concept](https://en.wikipedia.org/wiki/Unix_philosophy)! These units can be
 composed into an application that does as much or as little as you like, <Tiny>without requiring
 your application structure to follow some corporate diktat <Tiny>requiring you to enter a mailing
 address to submit a pull request. <Tiny>(don't ask...)</Tiny></Tiny></Tiny>
@@ -201,16 +200,7 @@ to understand something which may have ran counter to the established wisdom of 
 So I guess anyone who told me that it won't work, doesn't make sense, or other copium-based
 responses: Here it is! Eat your hearts out and haterz get meme'd on. :nail_care:
 
-## No TypeScript?
+## Thanks again
 
-I understand and appreciate the benefits of strong typing. I have also noticed that TS tends to sap
-my joy when I work with it!
-
-If you love flecks enough to be serious about working to improve it and you can also make a
-compelling and transparent case to rewrite some or all of it in TS, I'm listening!
-
-## Again, thanks for your time
-
-I appreciate you reading all that! Come send me love (or threats or whatever) at the
+I do appreciate you reading all that! Come send me love (or threats or whatever) at the
 [Github discussions page](https://github.com/cha0s/flecks/discussions)! :relieved:
-
