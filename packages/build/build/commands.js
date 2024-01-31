@@ -1,6 +1,21 @@
 const {spawn} = require('child_process');
-const {join, normalize} = require('path');
+const {
+  access,
+  constants: {R_OK, W_OK},
+  readFile,
+  writeFile,
+} = require('fs/promises');
+const {join} = require('path');
 
+const {parseAsync} = require('@babel/core');
+const {default: generate} = require('@babel/generator');
+const {default: traverse} = require('@babel/traverse');
+const {
+  isIdentifier,
+  isMemberExpression,
+  isStringLiteral,
+  stringLiteral,
+} = require('@babel/types');
 const D = require('@flecks/core/build/debug');
 const {processCode, spawnWith} = require('@flecks/core/server');
 const {Argument, Option, program} = require('commander');
@@ -14,7 +29,29 @@ const {
 } = process.env;
 
 const debug = D('@flecks/build/build/commands');
-const flecksRoot = normalize(FLECKS_CORE_ROOT);
+
+const dependenciesVisitor = (fn) => ({
+  AssignmentExpression: (path) => {
+    if (isMemberExpression(path.node.left)) {
+      if (isIdentifier(path.node.left.object)) {
+        if ('exports' === path.node.left.object.name) {
+          if (isIdentifier(path.node.left.property)) {
+            if ('dependencies' === path.node.left.property.name) {
+              fn(path.node.right);
+            }
+          }
+        }
+      }
+    }
+  },
+});
+
+function stringLiteralSinglequote(value) {
+  return {
+    ...stringLiteral(value),
+    extra: {rawValue: value, raw: `'${value}'`},
+  };
+}
 
 exports.commands = (program, flecks) => {
   const {packageManager} = flecks.get('@flecks/build');
@@ -37,23 +74,90 @@ exports.commands = (program, flecks) => {
         }
         args.push({stdio: 'inherit'});
         await processCode(spawn(...args));
-        await addFleckToYml(fleck);
+        // If it seems like we're in a fleck path, update the bootstrap dependencies if possible.
+        const bootstrapPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.bootstrap.js');
+        let code;
+        let dependencies;
+        let devDependencies;
+        try {
+          ({
+            dependencies,
+            devDependencies,
+          } = require(join(FLECKS_CORE_ROOT, 'package.json')));
+        }
+        catch (error) {
+          dependencies = {};
+          devDependencies = {};
+        }
+        if (
+          []
+            .concat(
+              Object.keys(dependencies),
+              Object.keys(devDependencies),
+            )
+            .includes('@flecks/fleck')
+        ) {
+          try {
+            // eslint-disable-next-line no-bitwise
+            await access(bootstrapPath, R_OK | W_OK);
+            code = (await readFile(bootstrapPath)).toString();
+          }
+          catch (error) { /* empty */ }
+        }
+        if ('undefined' !== typeof code) {
+          const ast = await parseAsync(code, {ast: true, code: false});
+          let dependencies;
+          traverse(ast, dependenciesVisitor((node) => {
+            dependencies = node;
+          }));
+          if (dependencies) {
+            const {elements, end, start} = dependencies;
+            const seen = {};
+            dependencies.elements = elements
+              .concat(stringLiteralSinglequote(fleck))
+              .filter((node) => {
+                if (isStringLiteral(node)) {
+                  if (seen[node.value]) {
+                    return false;
+                  }
+                  seen[node.value] = true;
+                }
+                return true;
+              });
+            code = [
+              code.slice(0, start),
+              generate(dependencies).code,
+              code.slice(end),
+            ].join('');
+          }
+          else {
+            code = [
+              code,
+              `exports.dependencies = ['${fleck}'];\n`,
+            ].join('\n');
+          }
+          await writeFile(bootstrapPath, code);
+        }
+        // Otherwise, assume we're in an application root.
+        else {
+          await addFleckToYml(fleck);
+        }
       },
     },
     clean: {
       description: 'Remove node_modules, lock file, and build artifacts.',
       action: () => {
-        rimraf.sync(join(flecksRoot, 'dist'));
-        rimraf.sync(join(flecksRoot, 'node_modules'));
+        rimraf.sync(join(FLECKS_CORE_ROOT, 'dist'));
+        rimraf.sync(join(FLECKS_CORE_ROOT, 'node_modules'));
         switch (packageManager) {
           case 'yarn':
-            rimraf.sync(join(flecksRoot, 'yarn.lock'));
+            rimraf.sync(join(FLECKS_CORE_ROOT, 'yarn.lock'));
             break;
           case 'bun':
-            rimraf.sync(join(flecksRoot, 'bun.lockb'));
+            rimraf.sync(join(FLECKS_CORE_ROOT, 'bun.lockb'));
             break;
           case 'npm':
-            rimraf.sync(join(flecksRoot, 'package-lock.json'));
+            rimraf.sync(join(FLECKS_CORE_ROOT, 'package-lock.json'));
             break;
           default:
             break;
