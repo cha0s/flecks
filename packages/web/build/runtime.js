@@ -1,6 +1,7 @@
 const {access, readFile} = require('fs/promises');
 const {
   basename,
+  dirname,
   extname,
   join,
 } = require('path');
@@ -102,14 +103,17 @@ module.exports = async (config, env, argv, flecks) => {
       buildFlecks.roots
         .map(async ([root, request]) => {
           const tests = [];
-          const rootTests = await glob(join(request, 'test', '*.js'));
-          tests.push(...rootTests.map((test) => test.replace(request, root)));
+          const resolved = dirname(
+            await buildFlecks.resolver.resolve(join(request, 'package.json')),
+          );
+          const rootTests = await glob(join(resolved, 'test', '*.js'));
+          tests.push(...rootTests.map((test) => test.replace(resolved, root)));
           const platformTests = await Promise.all(
             buildFlecks.platforms.map((platform) => (
-              glob(join(request, 'test', platform, '*.js'))
+              glob(join(resolved, 'test', platform, '*.js'))
             )),
           );
-          tests.push(...platformTests.flat().map((test) => test.replace(request, root)));
+          tests.push(...platformTests.flat().map((test) => test.replace(resolved, root)));
           return [root, tests];
         }),
     ))
