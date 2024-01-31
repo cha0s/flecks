@@ -21,6 +21,7 @@ export const hooks = {
       {},
       [React.createElement(await root(flecks), {key: 'root'})],
     );
+    // API™.
     if (ssr) {
       hydrateRoot(container, RootComponent);
     }
