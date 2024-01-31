@@ -13,16 +13,28 @@ Let's create a little app to demonstrate how to use [React](https://react.dev/) 
 
 <Create type="app" pkg="react-test" />
 
-We'll add the `react` fleck:
-
 ```
 cd react-test
+```
+
+We'll also create a little fleck to hold our root component:
+
+<Create type="fleck" pkg="root" />
+
+We'll add the `react` fleck to our new fleck:
+
+```
+cd packages/root
 npx flecks add @flecks/react
 ```
 
-Finally, we'll create a fleck:
+:::tip
 
-<Create type="fleck" pkg="root" />
+We add `@flecks/react` to `packages/root` instead of our application directory so that our new
+fleck encapsulates all the dependencies it needs. You can distribute your flecks to others if you
+do this right!
+
+:::
 
 ### Add a root component
 
