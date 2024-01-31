@@ -57,7 +57,7 @@ applications.
 
 :::danger[Hot take]
 
-Some modern framework APIs are becoming increasingly obscure in their attempt to paper over
+Some modern framework APIs are becoming increasingly esoteric in their attempt to paper over
 this reality
 ([*\*ahem\**](https://github.com/cha0s/flecks/blob/master/packages/react/src/client.js#L24)... and
 don't get me started on [**RSC**](https://www.mayank.co/blog/react-server-components/)...).
@@ -98,12 +98,12 @@ You add a reference to your fleck to a file called
 
 What are multiple flecks called? **flecks**!
 
-:::tip[Wordplay]
+:::tip[Flickin' fleckers]
 
 It is not a coincidence that the name of the framework uses the same word as the plural form of
-its constituting elements: the implication is that **flecks is just flecks**, it's not doing
-anything special on its own. Sure, it *does something*, but the something that it does is simply
-orchestrate your flecks together into an application.
+its constituting elements: the implication is that **flecks is just flecks**, it's not really doing
+anything special on its own. Sure, it *does something*, but the something that it does is provide
+tools with which to orchestrate your flecks together into an application.
 
 :::
 
@@ -120,6 +120,32 @@ sink system**.
   <figcaption style={{fontSize: '0.8rem'}}>*When you're writing an article and curious about how the Big Kid on the Block performs in terms of raw default production application size, but can't even figure out how to measure it because you have already downloaded more than 7MB of ads for their "hosting solution" into your brain in the process*</figcaption>
 </figure>
 
+### So where's asset optimization, data fetching, filetree routing, RSC...?
+
+Well, I do admit that I don't stand before you today with a solution for every problem around
+fullstack development.
+
+flecks is made with **cooperation and collaboration as a primary concern**. A fleck is *just
+a package* exactly for that reason: it should be frictionless to publish a package (or a suite)
+to the world and then add them to a project just like you would with any other package! **It should
+be as frictionless** for a developer to say "I don't agree with how this fleck is
+implemented" and write their own, interacting seamlessly with everything else they actually want.
+
+**I believe we can design modular solutions to these problems!** In order to do this, it's probably
+better to be standing on top of less, not more.
+
+### <ins>Better *no* abstraction than the *wrong* abstraction</ins>
+
+I know this will come off as inflammatory but I *honestly feel* like some of the more recent
+JS framework "paradigms" feel like someone coding at midnight and having an epiphany about the
+"killer new paradigm" which they are now going to spend the next 5 hours implementing in all
+their code only to wake up the next morning absolutely exhausted with a broken codebase and a
+deep sense of regret as they revert all the changes and pretend that it never happened.
+
+<figure>
+  ![A picture of a person with their head down pouring coffee all over the place captioned "I'm never drinking again"](./drinking.jpg)
+  <figcaption style={{fontSize: '0.8rem'}}>***obviously** this has never happened to **my** projects. <Tiny><Tiny>Also, you ran your credit card the whole time.</Tiny></Tiny>*</figcaption>
+</figure>
 
 ### The flecks way
 
@@ -134,11 +160,11 @@ The few core architectural opinions that are held are presented as suggestions, 
 A few motivating philosophies which I **do not** consider to be suggestions regarding this
 project:
 
-- You shouldn't be unpleasantly surprised by what happens
+- You **shouldn't be unpleasantly surprised** by what happens
 - Your application has what **you** want in it, not what **flecks** wants in it
-- Developer comfort and confidence are essential, not just a nice-to-have
-- You shouldn't have to have a full budget for production deployment
-- Core architectural opinions require transparency and justification
+- Developer **comfort and confidence are essential**, not just a nice-to-have
+- You **shouldn't have to have a full budget** for production deployment
+- Core architectural **opinions require transparency and justification**
 
 ## Why though?
 
@@ -202,5 +228,9 @@ responses: Here it is! Eat your hearts out and haterz get meme'd on. :nail_care:
 
 ## Thanks again
 
-I do appreciate you reading all that! Come send me love (or threats or whatever) at the
-[Github discussions page](https://github.com/cha0s/flecks/discussions)! :relieved:
+I do appreciate you reading all that! I apologize if my tone came off as overly-antagonistic (as
+opposed to <em>the-correct-amount-of-</em>antagonistic). I actually think people are *afraid* to say some
+of the things I've said here out loud! Come send me love (or threats or whatever) at the
+[Github discussions page](https://github.com/cha0s/flecks/discussions)!
+
+Most importantly: **Have fun**! :heart:
