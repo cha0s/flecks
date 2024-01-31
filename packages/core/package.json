@@ -7,7 +7,7 @@
     "build": "webpack --config ./build/core.webpack.config.js --mode production",
     "clean": "rm -rf dist node_modules yarn.lock",
     "lint": "eslint --config ./build/core.eslint.config.js .",
-    "postversion": "cp package.json dist",
+    "postversion": "npm run build",
     "test": "npm run build -d && mocha --colors ./dist/test.js"
   },
   "repository": {
