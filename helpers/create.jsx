@@ -6,7 +6,7 @@ export default function Create({pkg, type}) {
   return (
     <Tabs>
       <TabItem value="npm" label="npm">
-        <CodeBlock language="bash">npx @flecks/create-{type} {pkg}</CodeBlock>
+        <CodeBlock language="bash">npm init @flecks/{type} {pkg}</CodeBlock>
       </TabItem>
       <TabItem value="yarn" label="Yarn">
         <CodeBlock language="bash">yarn create @flecks/{type} {pkg}</CodeBlock>

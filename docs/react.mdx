@@ -3,28 +3,26 @@ title: React
 description: Define root components, enable SSR, and more.
 ---
 
+import Create from '@site/helpers/create';
+
 # React
 
 ## Getting started
 
 Let's create a little app to demonstrate how to use [React](https://react.dev/) in flecks:
 
-```
-create-app react-test
-```
+<Create type="app" pkg="react-test" />
 
-We'll add the `web` and `react` flecks:
+We'll add the `react` fleck:
 
 ```
-npx flecks add @flecks/web
+cd react-test
 npx flecks add @flecks/react
 ```
 
 Finally, we'll create a fleck:
 
-```
-npx @flecks/create-fleck root
-```
+<Create type="fleck" pkg="root" />
 
 ### Add a root component
 
@@ -60,6 +58,8 @@ Using `@flecks/react` makes sure your components are all using the same instance
 
 :::
 
+### Go check it out
+
 Visit your website in your browser and you will see the hello world message!
 
 :::tip[Server-Side Rendering (SSR)]
@@ -77,7 +77,6 @@ is because **Server-Side Rendering (SSR) is enabled by default**! If you don't w
   ssr: false
 // highlight-end
 '@flecks/server': {}
-'@flecks/web': {}
 '@react-test/root:./packages/root/src': {}
 ```
 
