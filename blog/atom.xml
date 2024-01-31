@@ -92,11 +92,11 @@ deep sense of regret as they revert all the changes and pretend that it never ha
 <p>A few motivating philosophies which I <strong>do not</strong> consider to be suggestions regarding this
 project:</p>
 <ul>
-<li>You shouldn't be unpleasantly surprised by what happens</li>
+<li>You <strong>shouldn't be unpleasantly surprised</strong> by what happens</li>
 <li>Your application has what <strong>you</strong> want in it, not what <strong>flecks</strong> wants in it</li>
-<li>Developer comfort and confidence are essential, not just a nice-to-have</li>
-<li>You shouldn't have to have a full budget for production deployment</li>
-<li>Core architectural opinions require transparency and justification</li>
+<li>Developer <strong>comfort and confidence are essential</strong>, not just a nice-to-have</li>
+<li>You <strong>shouldn't have to have a full budget</strong> for production deployment</li>
+<li>Core architectural <strong>opinions require transparency and justification</strong></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="why-though">Why though?<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#why-though" class="hash-link" aria-label="Direct link to Why though?" title="Direct link to Why though?">​</a></h2>
 <p>You might be thinking something like:</p>
