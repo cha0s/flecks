@@ -71,12 +71,13 @@ sink system</strong>.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="the-flecks-way">The flecks way<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#the-flecks-way" class="hash-link" aria-label="Direct link to The flecks way" title="Direct link to The flecks way">​</a></h3>
 <p>The few core architectural opinions that are held are presented as suggestions, not requirements.</p>
 <div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span><strong>“I hold it to be the inalienable right of anybody to go to hell in his own way.”</strong></div><div class="admonitionContent_BuS1"><p>― Robert Frost</p></div></div>
-<p>A few motivating philosophies which I <strong>do not</strong> consider to be suggestions when creating flecks:</p>
+<p>A few motivating philosophies which I <strong>do not</strong> consider to be suggestions regarding this
+project:</p>
 <ul>
-<li>You shouldn't be surprised by what happens</li>
+<li>You shouldn't be unpleasantly surprised by what happens</li>
 <li>Your application has what <strong>you</strong> want in it, not what <strong>flecks</strong> wants in it</li>
-<li>You shouldn't have to have a full budget for production deployment</li>
 <li>Developer comfort and confidence are essential, not just a nice-to-have</li>
+<li>You shouldn't have to have a full budget for production deployment</li>
 <li>Core architectural opinions require transparency and justification</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="why-though">Why though?<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#why-though" class="hash-link" aria-label="Direct link to Why though?" title="Direct link to Why though?">​</a></h2>
@@ -116,12 +117,7 @@ all manner of closed-minded hostile encounters with people who regrettably lacke
 to understand something which may have ran counter to the established wisdom of the week.</p>
 <p>So I guess anyone who told me that it won't work, doesn't make sense, or other copium-based
 responses: Here it is! Eat your hearts out and haterz get meme'd on. <!-- -->💅</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="no-typescript">No TypeScript?<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#no-typescript" class="hash-link" aria-label="Direct link to No TypeScript?" title="Direct link to No TypeScript?">​</a></h2>
-<p>I understand and appreciate the benefits of strong typing. I have also noticed that TS tends to sap
-my joy when I work with it!</p>
-<p>If you love flecks enough to be serious about working to improve it and you can also make a
-compelling and transparent case to rewrite some or all of it in TS, I'm listening!</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="again-thanks-for-your-time">Again, thanks for your time<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#again-thanks-for-your-time" class="hash-link" aria-label="Direct link to Again, thanks for your time" title="Direct link to Again, thanks for your time">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="thanks-again">Thanks again<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#thanks-again" class="hash-link" aria-label="Direct link to Thanks again" title="Direct link to Thanks again">​</a></h2>
 <p>I do appreciate you reading all that! Come send me love (or threats or whatever) at the
 <a href="https://github.com/cha0s/flecks/discussions" target="_blank" rel="noopener noreferrer">Github discussions page</a>! <!-- -->😌</p>]]></content>
         <author>
