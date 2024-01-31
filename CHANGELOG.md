@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.8](https://github.com/cha0s/flecks/compare/v3.1.7...v3.1.8) (2024-01-31)
+
+
+### Bug Fixes
+
+* work around https://github.com/SimenB/add-asset-html-webpack-plugin/issues/373 ([82a86fd](https://github.com/cha0s/flecks/commit/82a86fd2411450002ead6ffab2e14b4b96649265))
+
+
+
+
+
 ## [3.1.7](https://github.com/cha0s/flecks/compare/v3.1.6...v3.1.7) (2024-01-31)
 
 **Note:** Version bump only for package @flecks/monorepo
