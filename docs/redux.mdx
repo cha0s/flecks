@@ -21,20 +21,11 @@ cd redux-test
 
 <Create type="fleck" pkg="ducks" />
 
-## Add `@flecks/redux` to `packages/ducks`
-
-Move to `packages/ducks` and add `@flecks/redux`:
+We'll add the `redux` fleck to our new fleck:
 
 ```
 cd packages/ducks
-```
-
-<InstallPackage pkg="@flecks/redux" />
-
-Edit `packages/ducks/build/flecks.bootstrap.js`:
-
-```js title="packages/ducks/build/flecks.bootstrap.js"
-exports.dependencies = ['@flecks/redux'];
+npx flecks add @flecks/redux
 ```
 
 Alright, let's create a duck at `packages/ducks/src/state/thing.js`:
@@ -102,8 +93,7 @@ export const hooks = {
   '@flecks/web/client.up': Flecks.priority(
     async (flecks) => {
       flecks.redux.dispatch(addToLeft(5));
-      flecks.redux.dispatch(addToRight(1));
-      flecks.redux.dispatch(addToRight(1));
+      flecks.redux.dispatch(addToRight(2));
     },
     {after: '@flecks/redux/client'},
   ),
@@ -154,7 +144,9 @@ Everything is there!
 
 How about Redux in React? No problem! Move to `packages/ducks` and run the following command:
 
-<InstallPackage pkg="@flecks/react-redux" />
+```
+npx flecks add @flecks/react-redux
+```
 
 :::warning[Attention]
 
@@ -163,12 +155,6 @@ dependencies. Your fleck is its own package. If you do things right, you can eve
 fleck for others to use!
 
 :::
-
-Now update the dependencies in `packages/ducks/build/flecks.bootstrap.js`:
-
-```js title="packages/ducks/build/flecks.bootstrap.js"
-exports.dependencies = ['@flecks/react-redux'];
-```
 
 Let's create a component at `packages/ducks/src/thing.jsx`:
 
