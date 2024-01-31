@@ -7,6 +7,8 @@ const debug = D('@flecks/core/build/resolve');
 module.exports = function resolve({alias, fallback}, stubs) {
   debug('installing resolution magic');
   const {Module} = require('module');
+  // eslint-disable-next-line no-underscore-dangle
+  Module._initPaths();
   const {require: Mr} = Module.prototype;
   function preprocessMatchers(matchers) {
     return Object.entries(matchers)

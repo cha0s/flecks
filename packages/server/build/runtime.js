@@ -106,5 +106,5 @@ module.exports = async (config, env, argv, flecks) => {
     allowlist.push(/^webpack\/hot\/signal/);
   }
   // Externalize the rest.
-  config.externals = externals({allowlist});
+  config.externals = externals({allowlist, additionalModuleDirs: flecks.resolver.modules});
 };

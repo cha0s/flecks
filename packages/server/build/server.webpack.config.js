@@ -1,4 +1,4 @@
-const {join} = require('path');
+const {delimiter, join} = require('path');
 
 const {
   banner,
@@ -50,11 +50,13 @@ module.exports = async (env, argv, flecks) => {
   config.entry.index.push('@flecks/server/entry');
   // Augment the application-starting configuration.
   if (isStarting) {
-    if (flecks.roots.some(([path, request]) => path !== request)) {
-      nodeEnv.NODE_PRESERVE_SYMLINKS = 1;
-    }
     config.plugins.push(
       startServer({
+        env: {
+          ...nodeEnv,
+          NODE_PATH: flecks.resolver.modules.join(delimiter),
+          NODE_PRESERVE_SYMLINKS: flecks.roots.some(([path, request]) => path !== request) ? 1 : 0,
+        },
         exec: 'index.js',
         // Bail hard on unhandled rejections and report.
         nodeArgs: [...nodeArgs, '--unhandled-rejections=strict', '--trace-uncaught'],
