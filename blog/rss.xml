@@ -40,13 +40,13 @@ this reality
 (<a href="https://github.com/cha0s/flecks/blob/master/packages/react/src/client.js#L24" target="_blank" rel="noopener noreferrer"><em>*ahem*</em></a>... and
 don't get me started on <a href="https://www.mayank.co/blog/react-server-components/" target="_blank" rel="noopener noreferrer"><strong>RSC</strong></a>...).</p></div></div>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="dont-get-it-twisted">Don't get it twisted<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#dont-get-it-twisted" class="hash-link" aria-label="Direct link to Don't get it twisted" title="Direct link to Don't get it twisted">​</a></h3>
-<p>To put it in basic terms: A webserver is a core aspect of a fullstack application, but <strong>a
-webserver is not a core aspect of an application</strong>. The same could be said about asset
+<p>To put it in basic terms: A web server is a core aspect of a fullstack application, but <strong>a
+web server is not a core aspect of an application</strong>. The same could be said about asset
 optimization, routing, and many other core fullstack JS concepts.</p>
 <p>flecks is concerned with <strong>writing applications</strong>; fullstack applications are merely a subset of
 that.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="do-one-thing-and-do-it-well">Do one thing and do it well<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#do-one-thing-and-do-it-well" class="hash-link" aria-label="Direct link to Do one thing and do it well" title="Direct link to Do one thing and do it well">​</a></h2>
-<p>The core concept is the concept of a <strong>fleck</strong> which is... just a JS module. There exists a server
+<p>The core primitive is the <strong>fleck</strong> which is... just a JS module. There exists a server
 fleck, a web fleck, a React fleck, and so on.</p>
 <p>Here's a simple fleck that says hello when the application is starting:</p>
 <div class="language-js codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-js codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token keyword module" style="color:rgb(189, 147, 249);font-style:italic">export</span><span class="token plain"> </span><span class="token keyword" style="color:rgb(189, 147, 249);font-style:italic">const</span><span class="token plain"> hooks </span><span class="token operator">=</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token string-property property">'@flecks/core.starting'</span><span class="token operator">:</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">(</span><span class="token punctuation" style="color:rgb(248, 248, 242)">)</span><span class="token plain"> </span><span class="token arrow operator">=&gt;</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token console class-name">console</span><span class="token punctuation" style="color:rgb(248, 248, 242)">.</span><span class="token method function property-access" style="color:rgb(80, 250, 123)">log</span><span class="token punctuation" style="color:rgb(248, 248, 242)">(</span><span class="token string" style="color:rgb(255, 121, 198)">'hey you'</span><span class="token punctuation" style="color:rgb(248, 248, 242)">)</span><span class="token punctuation" style="color:rgb(248, 248, 242)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token punctuation" style="color:rgb(248, 248, 242)">}</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token punctuation" style="color:rgb(248, 248, 242)">}</span><span class="token punctuation" style="color:rgb(248, 248, 242)">;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
@@ -97,9 +97,9 @@ etc, <span style="font-size:0.75em">etc, <span style="font-size:0.75em">etc.</sp
 for a framework to tie it all together. To some extent this is an inevitable evolution.</p>
 <figure><p><img loading="lazy" alt="Screenshot of Patrick Star with the caption &amp;quot;Push them somewhere else&amp;quot;" src="https://cha0s.github.io/flecks/assets/images/over-there-19c01e6cdf39cc325266aa184db093f0.jpg" width="478" height="345" class="img_ev3q">
 </p><figcaption style="font-size:0.8rem"><em>You've never even <strong>seen</strong> a real <a target="_blank" href="https://cha0s.github.io/flecks/docs/redux">duck</a></em></figcaption><p></p></figure>
-<p>With flecks, the first-class motivation is to push these concerns out into modular units
-which do one thing and do it immaculately.
-<a href="https://en.wikipedia.org/wiki/Unix_philosophy" target="_blank" rel="noopener noreferrer">This is not a new concept</a>. These units can be
+<p>With flecks, the first principle is to push these concerns out into modular units which do one
+thing and do it immaculately.
+<a href="https://en.wikipedia.org/wiki/Unix_philosophy" target="_blank" rel="noopener noreferrer">This is not a new concept</a>! These units can be
 composed into an application that does as much or as little as you like, <span style="font-size:0.75em">without requiring
 your application structure to follow some corporate diktat <span style="font-size:0.75em">requiring you to enter a mailing
 address to submit a pull request. <span style="font-size:0.75em">(don't ask...)</span></span></span></p>
@@ -123,7 +123,7 @@ my joy when I work with it!</p>
 <p>If you love flecks enough to be serious about working to improve it and you can also make a
 compelling and transparent case to rewrite some or all of it in TS, I'm listening!</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="again-thanks-for-your-time">Again, thanks for your time<a href="https://cha0s.github.io/flecks/blog/introducing-flecks#again-thanks-for-your-time" class="hash-link" aria-label="Direct link to Again, thanks for your time" title="Direct link to Again, thanks for your time">​</a></h2>
-<p>I appreciate you reading all that! Come send me love (or threats or whatever) at the
+<p>I do appreciate you reading all that! Come send me love (or threats or whatever) at the
 <a href="https://github.com/cha0s/flecks/discussions" target="_blank" rel="noopener noreferrer">Github discussions page</a>! <!-- -->😌</p>]]></content:encoded>
             <category>announcement</category>
             <category>introducing</category>
