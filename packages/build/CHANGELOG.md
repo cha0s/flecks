@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.1.8...v3.2.0) (2024-01-31)
+
+
+### Features
+
+* flecks add for fleck dependencies ([ca1a3f0](https://git.hq.cha0s.io/cha0s/flecks/commits/ca1a3f0b1a849c6b223f0241c681c67a7ceb03a9))
+
+
+
+
+
 ## [3.1.7](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.1.6...v3.1.7) (2024-01-31)
 
 **Note:** Version bump only for package @flecks/build

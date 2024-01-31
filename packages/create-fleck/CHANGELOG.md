@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/cha0s/flecks/compare/v3.1.8...v3.2.0) (2024-01-31)
+
+**Note:** Version bump only for package @flecks/create-fleck
+
+
+
+
+
 ## [3.1.8](https://github.com/cha0s/flecks/compare/v3.1.7...v3.1.8) (2024-01-31)
 
 **Note:** Version bump only for package @flecks/create-fleck

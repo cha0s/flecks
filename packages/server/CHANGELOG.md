@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/cha0s/flecks/compare/v3.1.8...v3.2.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* server runtime ([15b1290](https://github.com/cha0s/flecks/commit/15b1290c68c0a90f2a8731cc5b139ef5d4761d9c))
+
+
+
+
+
 ## [3.1.7](https://github.com/cha0s/flecks/compare/v3.1.6...v3.1.7) (2024-01-31)
 
 **Note:** Version bump only for package @flecks/server
