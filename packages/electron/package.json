@@ -1,6 +1,6 @@
 {
   "name": "@flecks/electron",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -22,12 +22,12 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^3.1.5",
+    "@flecks/core": "^3.1.6",
     "electron": "^28.1.4",
     "electron-devtools-installer": "^3.2.0"
   },
   "devDependencies": {
-    "@flecks/build": "^3.1.5",
-    "@flecks/fleck": "^3.1.5"
+    "@flecks/build": "^3.1.6",
+    "@flecks/fleck": "^3.1.6"
   }
 }

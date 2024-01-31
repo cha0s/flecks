@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.6](https://github.com/cha0s/flecks/compare/v3.1.5...v3.1.6) (2024-01-31)
+
+
+### Bug Fixes
+
+* web test resolution ([f6dfec1](https://github.com/cha0s/flecks/commit/f6dfec1c9814fadcae1356281b23b24110b656bb))
+
+
+
+
+
 ## [3.1.5](https://github.com/cha0s/flecks/compare/v3.1.4...v3.1.5) (2024-01-30)
 
 **Note:** Version bump only for package @flecks/web
