@@ -8,8 +8,8 @@ are documented at the [hooks reference page](./flecks/hooks).
 
 ## Implementing (your and other) hooks
 
-To define hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks), you
-only have to export a `hooks` object:
+To implement hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks),
+you only have to export a `hooks` object:
 
 ```javascript
 export const hooks = {
@@ -19,8 +19,6 @@ export const hooks = {
 };
 ```
 
-**Note:** All hooks recieve an extra final argument, which is the flecks instance.
-
 ## Invoking your hooks
 
 Hooks may be invoked using different invocation methods which may affect the order of invocation
@@ -28,7 +26,11 @@ as well as the final result.
 
 All methods accept an arbitrary number of arguments after the specified arguments.
 
-All methods pass the `flecks` instance as the last argument.
+:::info[Catch you on the flip]
+
+All methods pass the `flecks` instance as the last argument. You never have to include it.
+
+:::
 
 <style>{`
 h3 > code:before {
@@ -88,6 +90,9 @@ h3 > code:before {
 #invokemiddleware > code:after
 {
   content: '(hook, ...args)';
+}
+code:before, code:after {
+  opacity: 0.5;
 }
 `}</style>
 
