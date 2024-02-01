@@ -75,7 +75,7 @@ export default async (flecks, key, config) => {
   );
   const child = spawn('docker', args, {
     detached: true,
-    stdio: 'ignore',
+    // stdio: 'ignore',
   });
   await new Promise((r, e) => {
     child.on('error', e);

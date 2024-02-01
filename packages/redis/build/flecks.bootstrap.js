@@ -1,4 +1,6 @@
-export const hooks = {
+const containers = require('./containers');
+
+exports.hooks = {
   '@flecks/core.config': () => ({
     /**
      * Redis server host.
@@ -9,4 +11,5 @@ export const hooks = {
      */
     port: 6379,
   }),
+  '@flecks/docker.containers': containers,
 };

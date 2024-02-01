@@ -1,4 +1,4 @@
-export default (flecks) => {
+module.exports = (flecks) => {
   const {
     dialect,
     username,

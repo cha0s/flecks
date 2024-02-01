@@ -1,7 +1,6 @@
 import {Flecks} from '@flecks/core';
 
 import {createDatabaseConnection} from './connection';
-import containers from './containers';
 import register from './register';
 
 export {
@@ -21,7 +20,6 @@ export const hooks = {
       register(gathered, flecks.db.sequelize);
     }
   },
-  '@flecks/docker.containers': containers,
   '@flecks/server.up': Flecks.priority(
     async (flecks) => {
       flecks.db.sequelize = await createDatabaseConnection(flecks);
