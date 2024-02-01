@@ -144,15 +144,16 @@ of the fleck.
 When building a fleck, [`package.json` is processed](./building-your-fleck#processing-packagejson)
 and that processed output should ideally be the `package.json` that your package manager sees.
 
-Don't worry: if the linked path ends with `/dist`, the parent directory will be used as the root
-path!
-
 :::
+
+Don't worry: **if the linked path ends with `/dist`, the parent directory will be used as the root
+path!** This means that **flecks will discover your `src` directory** and use it when compiling
+your application.
 
 :::tip[Link 'em up]
 
-When you are developing anything Sufficiently Complex:tm:, **best practice is to symlink your
-fleck** so that your package manager can do its job and manage your dependency tree.
+When you are rapidly developing anything Sufficiently Complex:tm:, **best practice is to symlink
+your fleck** so that your package manager can do its job and manage your dependency tree.
 
 :::
 
