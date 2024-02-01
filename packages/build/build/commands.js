@@ -1,4 +1,3 @@
-const {spawn} = require('child_process');
 const {
   access,
   constants: {R_OK, W_OK},
