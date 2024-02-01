@@ -72,7 +72,7 @@ export const hooks = {
       Content,
     };
   },
-}
+};
 ```
 
 Now,
@@ -132,7 +132,7 @@ export const hooks = {
       Tag,
     };
   },
-}
+};
 ```
 
 :::tip[Ess-Cue-Ell-ize]
@@ -188,10 +188,6 @@ export default (flecks) => {
 
     static get attributes() {
       return {
-        key: {
-          type: Types.STRING,
-          allowNull: false,
-        },
         value: {
           type: Types.STRING,
           allowNull: false,
@@ -200,7 +196,7 @@ export default (flecks) => {
     }
 
     static associate({Content}) {
-      this.hasMany(Content);
+      this.belongsTo(Content);
     }
 
   };
@@ -214,7 +210,7 @@ returning the classes.
 Now, hop over to `packages/content/src/index.js` and let's rewrite the hook implementation:
 
 ```javascript title="packages/content/src/index.js"
-import {Flecks} from '@flecks/core/server';
+import {Flecks} from '@flecks/core';
 
 export const hooks = {
   '@flecks/db.models': Flecks.provide(require.context('./models')),
@@ -238,7 +234,7 @@ Let's do something with them. Edit `packages/content/src/index.js` again like
 so:
 
 ```javascript title="packages/content/src/index.js"
-import {Flecks} from '@flecks/core/server';
+import {Flecks} from '@flecks/core';
 
 export const hooks = {
   // highlight-start
@@ -256,7 +252,7 @@ export const hooks = {
   ),
   // highlight-end
   '@flecks/db.models': Flecks.provide(require.context('./models')),
-}
+};
 ```
 
 We use [`Flecks.priority`](./ordering#fleckspriority) so that the database comes up before we try to use it.
@@ -276,7 +272,7 @@ Not very interesting. Let's add some, but only if there aren't any yet:
 ```javascript title="packages/content/src/index.js"
 export const hooks = {
   '@flecks/server.up': async (flecks) => {
-    const {Tag} = flecks.db.Models;
+    const {Content, Tag} = flecks.db.Models;
     console.log(
       'There were',
       await Content.count(), 'pieces of content',
@@ -303,7 +299,7 @@ export const hooks = {
     // highlight-end
   },
   '@flecks/db.models': Flecks.provide(require.context('./models')),
-}
+};
 ```
 
 Another
@@ -418,21 +414,11 @@ Configure `build/flecks.yml`:
 '@flecks/server': {}
 ```
 
-Now,
-
-<Run headless cmd="start" />
-
-You will find the following message in the logs:
-
-```
-  @flecks/server/entry Error: Please install pg package manually
-```
-
-Pretty straightforward how to proceed:
+Add `pg` to connect to postgres:
 
 <InstallPackage headless pkg="pg" />
 
-Remember, **small core**! :smile: Now,
+Now,
 
 <Run headless cmd="start" />
 
@@ -483,14 +469,14 @@ application for production to make container orchestration easier. Let's take a 
 ```yml title="dist/server/docker-compose.yml"
 version: '3'
 services:
-  flecks_app:
+  db_test_app:
     build:
       context: ..
       dockerfile: dist/server/Dockerfile
     environment:
       FLECKS_ENV__flecks_docker_server__enabled: 'false'
       // highlight-next-line
-      FLECKS_ENV__flecks_db_server__host: sequelize
+      FLECKS_ENV__flecks_db__host: sequelize
     volumes:
       - ../node_modules:/var/www/node_modules
   // highlight-start
