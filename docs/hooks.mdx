@@ -6,6 +6,8 @@ description: The key to unlocking the power of flecks.
 Hooks are how everything happens in flecks. There are many hooks and the hooks provided by flecks
 are documented at the [hooks reference page](./flecks/hooks).
 
+## Implementing (your and other) hooks
+
 To define hooks (and turn your plain ol' boring JS modules into beautiful interesting flecks), you
 only have to export a `hooks` object:
 
@@ -19,7 +21,7 @@ export const hooks = {
 
 **Note:** All hooks recieve an extra final argument, which is the flecks instance.
 
-## Invocation
+## Invoking your hooks
 
 Hooks may be invoked using different invocation methods which may affect the order of invocation
 as well as the final result.
@@ -209,3 +211,27 @@ app.use(flecks.makeMiddleware('@my/fleck.hook'));
 ```
 
 For more information, see: http://expressjs.com/en/guide/using-middleware.html
+
+## Documenting your hooks
+
+You should document the hooks you define for the benefit of others (and future you)! You may do so
+in `build/flecks.hooks.js`. If you define a hook called `@my/fleck.alarm`, you could write:
+
+```js title="build/flecks.hooks.js"
+export const hooks = {
+  /**
+   * Ring an alarm.
+   *
+   * @param {number} ding The dinger.
+   * @param {string} dong The donger.
+   *
+   * @invoke Async
+   */
+  '@my/fleck.alarm': (ding, dong) => {
+    // Here's some example usage.
+  },
+}
+```
+
+This is how the [generated hooks page](./flecks/hooks) gathers data to generate the page. You can
+even [take advantage of this for your project](./documentation)!

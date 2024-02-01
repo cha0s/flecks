@@ -1,5 +1,5 @@
 ---
-title: Building
+title: Building your application
 description: How your application is built.
 ---
 
@@ -40,12 +40,12 @@ Multiple fleck paths may share the same root.
 A root prefers to discover flecks within the `src` directory, but will fallback to discovering
 files under the root if that fails.
 
-## Bootstrap
+### Bootstrap
 
-flecks first runs a bootstrap phase before any compilation during which all **roots** are checked
-for the existence of a `build/flecks.bootstrap.js` script. If one exists, it is loaded as a fleck.
-The main difference is **the bootstrap script is executed by Node.JS as-is** and is not subject to
-any compilation or preprocessing.
+flecks runs a bootstrap phase during which all **roots** are checked for the existence of a
+`build/flecks.bootstrap.js` script. If one exists, it is loaded as a fleck. The main difference
+is **the bootstrap script is executed by Node.JS as-is** and is not subject to any compilation or
+preprocessing.
 
 In addition to exporting `hooks`, a bootstrap script may also export:
 
@@ -56,6 +56,14 @@ Dependent flecks will automatically be added to the build manifest.
 ```js
 exports.dependencies = ['@some/fleck'];
 ```
+
+:::tip[Fostering dependency]
+
+If you run `flecks add @some/fleck` in your fleck root, `@some/fleck` will be added to your
+`package.json` and your `exports.dependencies` will be automatically updated to include
+`@some/fleck`.
+
+:::
 
 ### Stubs
 
@@ -71,25 +79,26 @@ exports.stubs = {
 This is effectively the Node.JS `require()` version of
 [Webpack's `{'alias': false}` functionality](https://webpack.js.org/configuration/resolve/#resolvealias).
 
-## Compilation
+## Compiling flecks
 
 A fleck will not always be compiled. Distributed flecks in production (e.g. one you install from
 `npm`) have already gone through a compilation step and will load very fast.
 
 There are some conditions that, when matched, will result in a fleck being compiled.
 
-## Paths and aliases
+### Paths and aliases
 
 Paths are the package names of flecks. From our example above, `@aliased/fleck` is a
 path. `./packages/aliased-fleck` is an **alias**.
 
-:::tip[Compilation condition]
+:::info[Compilation condition]
 
 The root path of an aliased fleck is **compiled**.
 
 :::
 
-### Pitfalls with aliasing
+<details>
+<summary>Pitfalls with aliasing</summary>
 
 :::warning[Aliased modules spaghetti]
 
@@ -118,9 +127,12 @@ All that being said, **aliasing exists** and it can take you pretty far!
 If you'd like to help define better behavior for these edge cases you could always
 [submit a pull request](https://github.com/cha0s/flecks/compare). :smile:
 
-## Symlinks
+</details>
 
-:::tip[Compilation condition]
+
+### Symlinks
+
+:::info[Compilation condition]
 
 If a root path is a symlinked path, the root path is **compiled**.
 
@@ -129,8 +141,8 @@ If a root path is a symlinked path, the root path is **compiled**.
 Remember when you're linking a fleck to **link the output `dist` directory** and not the root path
 of the fleck.
 
-When building a fleck, [`package.json` is processed](./package-json) and that processed output
-should ideally be the `package.json` that your package manager sees.
+When building a fleck, [`package.json` is processed](./building-your-fleck#processing-packagejson)
+and that processed output should ideally be the `package.json` that your package manager sees.
 
 Don't worry: if the linked path ends with `/dist`, the parent directory will be used as the root
 path!
