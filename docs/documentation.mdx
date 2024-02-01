@@ -3,6 +3,8 @@ title: Documentation
 description: Document your project.
 ---
 
+import Execute from '@site/helpers/execute';
+
 # Documentation
 
 Ah, the most ~~boring~~ awesome part of development.
@@ -21,18 +23,14 @@ In fact, this very website you're viewing uses the same tooling! Check out the
 
 To get started, add `@flecks/dox` to your project:
 
-```bash
-npx flecks add -d @flecks/dox
-```
+<Execute cmd="flecks add -d @flecks/dox" />
 
 ## Output for Docusaurus
 
 [Docusaurus](https://docusaurus.io) is a nice way to generate a documentation website.
 `@flecks/dox` can output MDX files for Docusaurus:
 
-```
-npx flecks dox docusaurus
-```
+<Execute headless cmd="flecks dox docusaurus" />
 
 By default this command will output the files to `website/docs/flecks`.
 
@@ -58,8 +56,6 @@ As an example, this website defines an entry in `sidebars.js` like so:
 
 You may also output JSON files for your own processing:
 
-```
-npx flecks dox json
-```
+<Execute headless cmd="flecks dox json" />
 
 By default this command will output the files to `dist/dox`.

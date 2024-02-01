@@ -4,7 +4,9 @@ description: Define your actions, reducers, and state.
 ---
 
 import Create from '@site/helpers/create';
+import Execute from '@site/helpers/execute';
 import InstallPackage from '@site/helpers/install-package';
+import Run from '@site/helpers/run';
 
 Working with redux in flecks is easy. Let's create a small application to inspect and
 familiarize ourselves.
@@ -19,14 +21,15 @@ cd redux-test
 
 ## Create a fleck
 
-<Create type="fleck" pkg="ducks" />
+<Create headless type="fleck" pkg="ducks" />
 
 We'll add the `redux` fleck to our new fleck:
 
-```
-cd packages/ducks
-npx flecks add @flecks/redux
-```
+<Execute headless cmd="flecks add @flecks/redux">
+  ```
+  cd packages/ducks
+  ```
+</Execute>
 
 ## Create a duck
 
@@ -122,10 +125,9 @@ devtools.
 
 From the project root:
 
-```
-npx flecks add @flecks/web
-npx flecks add -d @flecks/electron
-```
+<Execute
+  cmd={["flecks add @flecks/web", "flecks add -d @flecks/electron"]}
+/>
 
 :::warning[Attention]
 
@@ -138,9 +140,7 @@ dealing with a web server or an electron app.
 
 Now start up your application:
 
-```
-npm start
-```
+<Run headless cmd="start" />
 
 After a moment, Electron will appear. Press `ctrl+i` to open devtools in Electron.
 
@@ -158,9 +158,7 @@ Everything is there!
 
 How about Redux in React? No problem! Move to `packages/ducks` and run the following command:
 
-```
-npx flecks add @flecks/react-redux
-```
+<Execute headless cmd="flecks add @flecks/react-redux" />
 
 :::warning[Attention]
 

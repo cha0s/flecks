@@ -3,6 +3,9 @@ title: Building and testing
 description: Learn how to build, test, and override defaults for your fleck
 ---
 
+import Execute from '@site/helpers/execute';
+import Run from '@site/helpers/run';
+
 `@flecks/create-fleck` sets up an environment that makes building, testing, and distributing
 your flecks easy.
 
@@ -47,7 +50,7 @@ making it easier and frictionless to share code.
 flecks augments your source `package.json` during the build process and outputs a
 **built `package.json`** to **`dist`**.
 
-If you generate a fleck using `create-fleck`, its `files` key will look like this:
+If you generate a fleck using `@flecks/create-fleck`, its `files` key will look like this:
 
 ```json
   "files": [
@@ -145,11 +148,9 @@ We intentionally made an error so we can see what a failed test looks like.
 
 :::
 
-If we run the following command **from within `packages/example`**:
-
-```bash
-npm run test
-```
+<Run cmd="test">
+  If we run the following command **from within `packages/example`**:
+</Run>
 
 We would see the following output:
 
@@ -181,11 +182,10 @@ it('can add two to a number', () => {
 });
 ```
 
-and try again:
 
-```bash
-npm run test
-```
+<Run cmd="test">
+  and try again:
+</Run>
 
 ```
   ✓ can add two to a number
@@ -200,9 +200,7 @@ Everything's good!
 flecks also allows you to write tests that only target a specific platform. Let's add web support
 and then write a test that only runs for the client:
 
-```bash
-npx flecks add @flecks/web
-```
+<Execute cmd="flecks add @flecks/web" />
 
 Now, let's add a test. We add a client test by adding a `client` directory to our `test`
 directory and putting tests there:
@@ -254,8 +252,11 @@ Awesome, everything passes!
 
 :::info[Sanity check]
 
-If you run `npm run test` in your `packages/example` directory, you will see that only one test was
-run:
+<Run cmd="test">
+  If you run **from your `packages/example` directory**:
+</Run>
+
+You will see that only one test was run:
 
 ```
   ✓ can add two to a number

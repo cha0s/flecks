@@ -4,7 +4,9 @@ description: Define models and connect to a database.
 ---
 
 import Create from '@site/helpers/create';
+import Execute from '@site/helpers/execute';
 import InstallPackage from '@site/helpers/install-package';
+import Run from '@site/helpers/run';
 
 # Database
 
@@ -20,11 +22,13 @@ We'll start from scratch as an example. Create a new flecks application:
 
 Now in your new application directory, add `@flecks/db`:
 
-```bash
-npx flecks add @flecks/db
-```
+<Execute headless cmd="flecks add @flecks/db" />
 
-Finally, `npm start` your application and you will see lines like the following in the logs:
+Finally,
+
+<Run headless cmd="start" />
+
+You will see lines like the following in the logs:
 
 ```
   @flecks/db/server/connection config: { dialect: 'sqlite', storage: ':memory:' } +0ms
@@ -71,7 +75,11 @@ export const hooks = {
 }
 ```
 
-Now, `npm start` your application and you will see that line looks different:
+Now,
+
+<Run headless cmd="start" />
+
+You will see that line looks different:
 
 ```
   @flecks/core/flecks gathered '@flecks/db.models': [ 'Content' ] +0ms
@@ -134,7 +142,11 @@ export const hooks = {
 
 :::
 
-If you were to `npm start`, you would see the line:
+If you were to
+
+<Run headless cmd="start" />
+
+You would see the line:
 
 ```
   @flecks/core/flecks gathered '@flecks/db.models': [ 'Content', 'Tag' ] +0ms
@@ -249,7 +261,11 @@ export const hooks = {
 
 We use [`Flecks.priority`](./ordering#fleckspriority) so that the database comes up before we try to use it.
 
-Now, another `npm start` will greet us with this line in the output:
+Now, another
+
+<Run headless cmd="start" />
+
+You will find this line in the output:
 
 ```
 There were 0 pieces of content and 0 tags.
@@ -290,7 +306,11 @@ export const hooks = {
 }
 ```
 
-Another `npm start` and we see:
+Another
+
+<Run headless cmd="start" />
+
+You will see:
 
 ```
 There were 0 pieces of content and 0 tags.
@@ -328,7 +348,11 @@ but this isn't very helpful for any real purpose. Let's make a change to our `bu
 '@flecks/server': {}
 ```
 
-Now `npm start` again. You'll see our old familiar message:
+Once again,
+
+<Run headless cmd="start" />
+
+You'll see our old familiar message:
 
 ```
 There were 0 pieces of content and 0 tags.
@@ -374,9 +398,7 @@ machine.
 
 Let's add another fleck to our project:
 
-```bash
-npx flecks add -d @flecks/docker
-```
+<Execute cmd="flecks add -d @flecks/docker" />
 
 Configure `build/flecks.yml`:
 
@@ -396,7 +418,11 @@ Configure `build/flecks.yml`:
 '@flecks/server': {}
 ```
 
-Now `npm start` will reveal the following message in the logs:
+Now,
+
+<Run headless cmd="start" />
+
+You will find the following message in the logs:
 
 ```
   @flecks/server/entry Error: Please install pg package manually
@@ -404,10 +430,13 @@ Now `npm start` will reveal the following message in the logs:
 
 Pretty straightforward how to proceed:
 
-<InstallPackage pkg="pg" />
+<InstallPackage headless pkg="pg" />
 
-Remember, **small core**! :smile: Now `npm start` again and you will see some new lines in the
-logs:
+Remember, **small core**! :smile: Now,
+
+<Run headless cmd="start" />
+
+You will see some new lines in the logs:
 
 ```
   @flecks/docker/container creating datadir '/tmp/flecks/flecks/docker/sequelize' +0ms
@@ -426,7 +455,10 @@ There are 2 tags.
 ```
 
 because we just created a new postgres database from scratch just then! Kill the application and
-run `npm start` one more time and then you will see what you expect:
+
+<Run headless cmd="start" />
+
+You will see what you expect:
 
 ```
 There were 2 tags.
@@ -440,11 +472,9 @@ Awesome, we have a connection to a real postgres database!
 Sure, spinning up a database like magic is spiffy for development, but you probably want to be a
 little less freewheeling on your production server.
 
-Build the application we've built so far:
-
-```
-npm run build
-```
+<Run headless cmd="build">
+  Build the application we've built so far:
+</Run>
 
 Then, take a look in the `dist/server` directory. You'll see a file there called
 `docker-compose.yml`. `@flecks/docker` automatically emits this file when you build your

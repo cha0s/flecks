@@ -10,6 +10,7 @@ export default async function flecksDocusaurus() {
   /** @type {import('@docusaurus/types').Config} */
   const config = {
     baseUrl: '/flecks/',
+    clientModules: ['./global.css'],
     favicon: 'flecks.png',
     i18n: {
       defaultLocale: 'en',

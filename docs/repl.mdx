@@ -4,6 +4,8 @@ description: Start a REPL server and connect to it.
 ---
 
 import Create from '@site/helpers/create';
+import Execute from '@site/helpers/execute';
+import Run from '@site/helpers/run';
 
 flecks provides `@flecks/repl` to make it easy to run a
 [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) inside your running
@@ -19,29 +21,21 @@ Let's create an application to test the REPL:
 
 <Create type="app" pkg="repl-test" />
 
-```
-npx flecks add -d @flecks/repl
-```
+<Execute headless cmd="flecks add -d @flecks/repl" />
 
-Start your application:
-
-```
-npm run start
-```
+<Run headless cmd="start">
+  Start your application:
+</Run>
 
 It will just sit there. Open another terminal in the project directory and run the command:
 
-```
-npx flecks repl
-```
+<Execute headless cmd="flecks repl" />
 
 :::tip
 
 For a more ergonomic experience, you may use:
 
-```
-npx flecks repl -r
-```
+<Execute headless cmd="flecks repl -r" />
 
 If you have [rlwrap](https://manpages.org/rlwrap) installed.
 

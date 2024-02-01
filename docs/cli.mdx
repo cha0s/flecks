@@ -4,6 +4,7 @@ description: Use built-in commands and write your own.
 ---
 
 import Create from '@site/helpers/create';
+import Execute from '@site/helpers/execute';
 
 # Command-line interface
 
@@ -119,15 +120,13 @@ run through the process.
 
 ### Implement <code>@flecks/build&#8203;.commands</code>
 
-First, create an application:
+<Create type="app" pkg="cli_test">
+  First, create an application:
+</Create>
 
-<Create type="app" pkg="cli_test" />
-
-Move into the new project and create a fleck:
-
-```bash
-npx create-fleck fortune
-```
+<Create headless type="fleck" pkg="fortune">
+  Move into the new project and create a fleck:
+</Create>
 
 We're going to be creating a fortune teller command that will tell you when you will find love.
 :heart_eyes:
@@ -160,11 +159,9 @@ export const hooks = {
 
 ### Inspect and invoke your command
 
-Now, invoke flecks like so:
-
-```bash
-npx flecks --help
-```
+<Execute cmd="flecks --help">
+  Now, invoke flecks like so:
+</Execute>
 
 You will see among the commands listed:
 
@@ -172,11 +169,9 @@ You will see among the commands listed:
   fortune [options]         find your true love
 ```
 
-Run the command with the `--help` option:
-
-```bash
-npx flecks fortune --help
-```
+<Execute headless cmd="flecks fortune --help">
+  Run the command with the `--help` option:
+</Execute>
 
 You will see this output:
 
@@ -189,11 +184,9 @@ Options:
   -n, --be-nice  be nice
 ```
 
-Let's try it!
-
-```bash
-npx flecks fortune --be-nice
-```
+<Execute headless cmd="flecks fortune --be-nice">
+  Let's try it!
+</Execute>
 
 You will see something like:
 
@@ -201,11 +194,9 @@ You will see something like:
 It will be 11 days until you meet your true love!
 ```
 
-How about without our option:
-
-```bash
-npx flecks fortune
-```
+<Execute headless cmd="flecks fortune">
+  How about without our option:
+</Execute>
 
 You will see something like:
 
@@ -220,8 +211,6 @@ You can also define arguments in addition to options. Let's add an argument that
 name to personalize the output:
 
 ```javascript title="packages/fortune/build/flecks.bootstrap.js"
-const {Argument} = require('@flecks/core/build/commands');
-
 export const hooks = {
   '@flecks/build.commands': (program, flecks) => {
     return {
@@ -251,11 +240,9 @@ export const hooks = {
 
 Notice that we added the argument to... the arguments.
 
-Try it again:
-
-```bash
-npx flecks fortune --be-nice
-```
+<Execute cmd="flecks fortune --be-nice">
+  Try it again:
+</Execute>
 
 You will see e.g.:
 
@@ -263,12 +250,10 @@ You will see e.g.:
 Hey, person. It will be 7 days until you meet your true love!
 ```
 
-That's because we set the default name to `'person'` in the code above. Let's try passing in a
-name:
-
-```bash
-npx flecks fortune cha0s
-```
+<Execute headless cmd="flecks fortune cha0s">
+  That's because we set the default name to `'person'` in the code above. Let's try passing in a
+  name:
+</Execute>
 
 Now the output looks like:
 
