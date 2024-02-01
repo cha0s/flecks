@@ -8,7 +8,8 @@ Using `@flecks/create-fleck` sets up an environment to build
 ## `package.json` and entry points
 
 flecks automatically uses the `files` key in your `package.json` to determine the
-[entry points](https://webpack.js.org/concepts/entry-points/) of your fleck.
+[entry points](https://webpack.js.org/concepts/entry-points/) of your fleck. Entry points are
+automatically discovered from the **`src`** directory of your fleck.
 
 Think of your `files` key as a sort of `exports`, but for your files. If your `package.json`'s
 `files` key looks like this:
@@ -23,6 +24,9 @@ Think of your `files` key as a sort of `exports`, but for your files. If your `p
 
 Other code could `import` any of those paths (e.g. `@your/fleck/client`, `@your/fleck`,
 `@your/fleck/something-else`).
+
+You may have a structure like `src/client/index.js` and the entry point discovery would still
+work as expected above.
 
 ### Who cares? Everything works without it!
 
