@@ -1,5 +1,4 @@
 const {copy, executable} = require('@flecks/build/server');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 
 module.exports = async (env, argv, flecks) => {
