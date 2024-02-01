@@ -1,5 +1,5 @@
 ---
-title: Building and testing your fleck
+title: Building and testing
 description: Learn how to build, test, and override defaults for your fleck
 ---
 
@@ -92,7 +92,7 @@ application.
 flecks provides a default webpack configuration for your fleck. This may not be what you want, so
 you may override it:
 
-```js title="build/default.eslint.config"
+```js title="build/fleck.webpack.config.js"
 const flecksWebpackDefaults = require('@flecks/fleck/build/fleck.webpack.config');
 module.exports = async (env, argv, flecks) => {
   const config = await flecksWebpackDefaults(env, argv, flecks);
@@ -274,12 +274,12 @@ lot of default rules including a lightly-tweaked version of
 [`eslint-config-airbnb`](https://airbnb.io/javascript/) as well as overrides for special
 circumstances: for instance, loosening some rules for the `test` directory.
 
-### `build/default.eslint.config`
+### `build/default.eslint.config.js`
 
 You may want to completely change these defaults and you can do so by creating a file
-`build/default.eslint.config`:
+`build/default.eslint.config.js`:
 
-```js title="build/default.eslint.config"
+```js title="build/default.eslint.config.js"
 const flecksEslintDefaults = require('@flecks/build/build/default.eslint.config');
 module.exports = async (flecks) => ({
   extends: [
