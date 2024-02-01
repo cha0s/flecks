@@ -8,14 +8,14 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "clean": "lerna exec yarn clean",
+    "clean": "lerna run clean",
     "dox:bump": "npm run dox:gh-pages && cd dox && git add . && git commit -m $(git -C .. rev-parse HEAD) && git push origin gh-pages",
     "dox:gh-pages": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --out-dir ../dox-tmp && cd .. && rm -rf dox/* && mv dox-tmp/* dox && rmdir dox-tmp",
     "dox:serve": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --no-minify --out-dir ../dox-tmp && node_modules/.bin/docusaurus serve --dir ../dox-tmp",
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus",
     "lint": "lerna run lint",
     "publish": "lerna publish --conventional-commits --contents=dist --registry https://registry.npmjs.org",
-    "test": "lerna exec 'yarn && yarn test'"
+    "test": "lerna run test"
   },
   "devDependencies": {
     "@flecks/build": "^3.1.3",
