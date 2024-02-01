@@ -78,7 +78,8 @@ export default async function flecksDocusaurus() {
         },
       }),
     title: 'flecks',
-    url: 'https://cha0s.github.io',
+    trailingSlash: false,
+    url: 'https://cha0s.github.io/',
   };
   return config;
 }
