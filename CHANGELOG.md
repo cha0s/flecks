@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/cha0s/flecks/compare/v3.2.2...v3.2.3) (2024-02-01)
+
+
+### Bug Fixes
+
+* output ([55421e7](https://github.com/cha0s/flecks/commit/55421e73a4231fe5ca29d4653625a2c10ad92a37))
+
+
+
+
+
 ## [3.2.2](https://github.com/cha0s/flecks/compare/v3.2.1...v3.2.2) (2024-02-01)
 
 

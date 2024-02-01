@@ -1,6 +1,6 @@
 {
   "name": "@flecks/docker",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
