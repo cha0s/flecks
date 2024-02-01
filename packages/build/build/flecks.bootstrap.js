@@ -50,10 +50,6 @@ exports.hooks = {
   ],
   '@flecks/core.config': () => ({
     /**
-     * The package manager used for tasks.
-     */
-    packageManager: 'npm',
-    /**
      * Build targets to profile with `webpack.debug.ProfilingPlugin`.
      */
     profile: [],

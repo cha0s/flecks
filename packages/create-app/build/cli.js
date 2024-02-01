@@ -2,12 +2,16 @@
 
 const {join} = require('path');
 
-const {transform} = require('@flecks/core/server');
+const {
+  build,
+  install,
+  transform,
+} = require('@flecks/core/server');
 const {program} = require('commander');
 const {dump: dumpYml, load: loadYml} = require('js-yaml');
 const validate = require('validate-npm-package-name');
 
-const build = require('./build');
+// const build = require('./build');
 const {move, testDestination} = require('./move');
 
 const {
@@ -18,8 +22,7 @@ const {
   program.argument('<app>', 'name of the app to create');
   program.addOption(
     program.createOption('-pm,--package-manager <binary>', 'package manager binary')
-      .choices(['npm', 'bun', 'yarn'])
-      .default('npm'),
+      .choices(['npm', 'bun', 'pnpm', 'yarn']),
   );
   program.action(async (app, {packageManager}) => {
     try {
@@ -42,16 +45,14 @@ const {
         transform((chunk, encoding, done, stream) => {
           const yml = loadYml(chunk);
           yml['@flecks/core'].id = app;
-          if ('npm' !== packageManager) {
-            yml['@flecks/build'].packageManager = packageManager;
-          }
           stream.push(dumpYml(yml, {forceQuotes: true, sortKeys: true}));
           done();
         }),
       );
       // Write the tree.
       await fileTree.writeTo(destination);
-      await build(packageManager, destination);
+      await install({cwd: destination, packageManager});
+      await build({cwd: destination, packageManager});
     }
     catch (error) {
       // eslint-disable-next-line no-console

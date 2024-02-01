@@ -3,11 +3,13 @@
 const {stat} = require('fs/promises');
 const {join} = require('path');
 
-const Build = require('@flecks/build/build/build');
-const addFleckToYml = require('@flecks/build/build/add-fleck-to-yml');
-const {program} = require('@flecks/build/build/commands');
-const {transform} = require('@flecks/core/server');
-const build = require('@flecks/create-app/build/build');
+const addPathsToYml = require('@flecks/build/build/add-paths-to-yml');
+const {program} = require('commander');
+const {
+  build,
+  install,
+  transform,
+} = require('@flecks/core/server');
 const {move, testDestination} = require('@flecks/create-app/build/move');
 const {validate} = require('@flecks/create-app/server');
 
@@ -64,11 +66,12 @@ const target = async (fleck) => {
   program.argument('<fleck>', 'name of the fleck to create');
   program.option('--no-add', 'do not add an entry to `build/flecks.yml`');
   program.option('--no-alias', 'do not alias the fleck in `build/flecks.yml`');
-  program.action(async (fleck, o) => {
-    const {alias, add} = o;
+  program.addOption(
+    program.createOption('-pm,--package-manager <binary>', 'package manager binary')
+      .choices(['npm', 'bun', 'pnpm', 'yarn']),
+  );
+  program.action(async (fleck, {alias, add, packageManager}) => {
     try {
-      const flecks = await Build.from();
-      const {packageManager} = flecks.get('@flecks/build');
       const isMonorepo = await checkIsMonorepo();
       const [scope, pkg] = await target(fleck);
       const name = [scope, pkg].filter((e) => !!e).join('/');
@@ -97,9 +100,11 @@ const target = async (fleck) => {
       }
       // Write the tree.
       await fileTree.writeTo(destination);
-      await build(packageManager, destination);
+      // Install and build.
+      await install({cwd: destination, packageManager});
+      await build({cwd: destination, packageManager});
       if (isMonorepo && add) {
-        await addFleckToYml(...[name].concat(alias ? pkg : []));
+        await addPathsToYml([[name].concat(alias ? `./packages/${pkg}` : []).join(':')]);
       }
     }
     catch (error) {

@@ -17,12 +17,15 @@ const {
   stringLiteral,
 } = require('@babel/types');
 const D = require('@flecks/core/build/debug');
-const {processCode, spawnWith} = require('@flecks/core/server');
-const {Argument, Option, program} = require('commander');
+const {
+  add,
+  lockFile,
+  spawnWith,
+} = require('@flecks/core/server');
 const {glob} = require('glob');
 const rimraf = require('rimraf');
 
-const addFleckToYml = require('./add-fleck-to-yml');
+const addPathsToYml = require('./add-paths-to-yml');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -55,26 +58,23 @@ function stringLiteralSinglequote(value) {
 }
 
 exports.commands = (program, flecks) => {
-  const {packageManager} = flecks.get('@flecks/build');
   const commands = {
     add: {
       args: [
-        new Argument('<fleck>', 'fleck'),
+        program.createArgument('<packages...>', 'packages to add'),
       ],
       options: [
         program.createOption('-d, --dev-dependency', 'add to dev dependencies'),
+        program.createOption('-pm,--package-manager <binary>', 'package manager binary')
+          .choices(['npm', 'bun', 'pnpm', 'yarn']),
       ],
-      description: 'Add a fleck to your application.',
-      action: async (fleck, {devDependency}) => {
-        const args = [];
-        if (['bun', 'yarn'].includes(packageManager)) {
-          args.push(packageManager, ['add', ...(devDependency ? ['--dev'] : []), fleck]);
-        }
-        else {
-          args.push(packageManager, ['install', ...(devDependency ? ['--save-dev'] : []), fleck]);
-        }
-        args.push({stdio: 'inherit'});
-        await processCode(spawn(...args));
+      description: 'Add flecks to your application.',
+      action: async (packages, {devDependency, packageManager}) => {
+        await add({
+          dev: devDependency,
+          packageManager,
+          packages,
+        });
         // If it seems like we're in a fleck path, update the bootstrap dependencies if possible.
         const bootstrapPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.bootstrap.js');
         let code;
@@ -107,7 +107,7 @@ exports.commands = (program, flecks) => {
             const seen = {};
             // Add the fleck to dependencies.
             dependencies.elements = elements
-              .concat(stringLiteralSinglequote(fleck))
+              .concat(packages.map((fleck) => stringLiteralSinglequote(fleck)))
               // Filter duplicate literal strings.
               .filter((node) => {
                 if (isStringLiteral(node)) {
@@ -129,35 +129,29 @@ exports.commands = (program, flecks) => {
           else {
             code = [
               code,
-              `exports.dependencies = ['${fleck}'];\n`,
+              `exports.dependencies = ['${packages.join("', '")}'];\n`,
             ].join('\n');
           }
           await writeFile(bootstrapPath, code);
         }
         // Otherwise, assume we're in an application root.
         else {
-          await addFleckToYml(fleck);
+          await addPathsToYml(packages);
         }
       },
     },
     clean: {
       description: 'Remove node_modules, lock file, and build artifacts.',
-      action: () => {
-        rimraf.sync(join(FLECKS_CORE_ROOT, 'dist'));
-        rimraf.sync(join(FLECKS_CORE_ROOT, 'node_modules'));
-        switch (packageManager) {
-          case 'yarn':
-            rimraf.sync(join(FLECKS_CORE_ROOT, 'yarn.lock'));
-            break;
-          case 'bun':
-            rimraf.sync(join(FLECKS_CORE_ROOT, 'bun.lockb'));
-            break;
-          case 'npm':
-            rimraf.sync(join(FLECKS_CORE_ROOT, 'package-lock.json'));
-            break;
-          default:
-            break;
-        }
+      options: [
+        program.createOption('-pm,--package-manager <binary>', 'package manager binary')
+          .choices(['npm', 'bun', 'pnpm', 'yarn']),
+      ],
+      action: async ({packageManager}) => {
+        await Promise.all([
+          rimraf(join(FLECKS_CORE_ROOT, 'dist')),
+          rimraf(join(FLECKS_CORE_ROOT, 'node_modules')),
+          rimraf(join(FLECKS_CORE_ROOT, lockFile(packageManager))),
+        ]);
       },
     },
   };
@@ -171,7 +165,7 @@ exports.commands = (program, flecks) => {
       options: [
         program.createOption('-d, --no-production', 'dev build'),
         program.createOption('-h, --hot', 'build with hot module reloading')
-          .implies({production: false}),
+          .implies({production: false, watch: true}),
         program.createOption('-w, --watch', 'watch for changes')
           .implies({production: false}),
       ],
@@ -185,7 +179,7 @@ exports.commands = (program, flecks) => {
         debug('Building...', opts);
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
-          'npx', 'webpack',
+          join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'webpack'),
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
           ...((watch || hot) ? ['--watch'] : []),
@@ -217,7 +211,7 @@ exports.commands = (program, flecks) => {
           .map((pkg) => join(process.cwd(), pkg))
           .map(async (cwd) => {
             const cmd = [
-              'npx', 'eslint',
+              join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'eslint'),
               '--config', await flecks.resolveBuildConfig('eslint.config.js'),
               '.',
             ];
@@ -260,7 +254,3 @@ exports.commands = (program, flecks) => {
   };
   return commands;
 };
-
-exports.Argument = Argument;
-exports.Option = Option;
-exports.program = program;

@@ -1,5 +1,4 @@
-'@flecks/build':
-  packageManager: yarn
+'@flecks/build': {}
 '@flecks/core:./packages/core': {}
 '@flecks/create:./packages/create-app': {}
 '@flecks/create:./packages/create-fleck': {}
