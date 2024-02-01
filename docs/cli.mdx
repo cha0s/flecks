@@ -15,16 +15,17 @@ flecks has a command-line interface for building, linting, testing, and so much 
 ### `add`
 
 ```
-Usage: flecks add [options] <fleck>
+Usage: flecks add [options] <packages...>
 
-add a fleck to your application
+Add flecks to your application.
 
 Arguments:
-  fleck                 fleck
+  packages                        packages to add
 
 Options:
-  -d, --dev-dependency  add to dev dependencies
-  -h, --help            display help for command
+  -d, --dev-dependency            add to dev dependencies
+  -pm,--package-manager <binary>  package manager binary (choices: "npm", "bun", "pnpm", "yarn")
+  -h, --help                      display help for command
 ```
 
 ### `build`
@@ -52,7 +53,8 @@ Usage: flecks clean [options]
 Remove node_modules, lock file, and build artifacts.
 
 Options:
-  -h, --help  display help for command
+  -pm,--package-manager <binary>  package manager binary (choices: "npm", "bun", "pnpm", "yarn")
+  -h, --help                      display help for command
 ```
 
 ### `dox`
