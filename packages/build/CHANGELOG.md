@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.2.1...v3.2.2) (2024-02-01)
+
+
+### Bug Fixes
+
+* environmentalize ([dcf48da](https://git.hq.cha0s.io/cha0s/flecks/commits/dcf48dab9555020dc954e4753c4f0f093d662789))
+
+
+
+
+
 ## [3.2.1](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.2.0...v3.2.1) (2024-02-01)
 
 **Note:** Version bump only for package @flecks/build

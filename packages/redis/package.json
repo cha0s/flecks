@@ -1,6 +1,6 @@
 {
   "name": "@flecks/redis",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -30,7 +30,7 @@
     "redis": "4.0.3"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.1",
-    "@flecks/fleck": "^3.2.1"
+    "@flecks/build": "^3.2.2",
+    "@flecks/fleck": "^3.2.2"
   }
 }

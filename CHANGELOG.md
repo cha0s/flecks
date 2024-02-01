@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://github.com/cha0s/flecks/compare/v3.2.1...v3.2.2) (2024-02-01)
+
+
+### Bug Fixes
+
+* containers @ bootstrap ([378ddaf](https://github.com/cha0s/flecks/commit/378ddaf762f73b8d0f30d04a8ab9f4616e833380))
+* environmentalize ([dcf48da](https://github.com/cha0s/flecks/commit/dcf48dab9555020dc954e4753c4f0f093d662789))
+
+
+
+
+
 ## [3.2.1](https://github.com/cha0s/flecks/compare/v3.2.0...v3.2.1) (2024-02-01)
 
 **Note:** Version bump only for package @flecks/monorepo

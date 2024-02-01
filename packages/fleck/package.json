@@ -1,6 +1,6 @@
 {
   "name": "@flecks/fleck",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -28,7 +28,7 @@
     "mocha": "^10.2.0"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.1",
+    "@flecks/build": "^3.2.2",
     "chai": "4.2.0"
   }
 }
