@@ -28,6 +28,8 @@ cd packages/ducks
 npx flecks add @flecks/redux
 ```
 
+## Create a duck
+
 Alright, let's create a duck at `packages/ducks/src/state/thing.js`:
 
 ```js title="packages/ducks/src/state/thing.js"
@@ -75,6 +77,8 @@ export const {
 export default slice.reducer;
 ```
 
+### Export your state
+
 Let's create an exporter at `packages/ducks/src/state/index.js`:
 
 ```js title="packages/ducks/src/state/index.js"
@@ -82,12 +86,18 @@ export * from './thing';
 export {default as thing} from './thing';
 ```
 
+Not strictly necessary, but you might find it convenient to access your actions and selectors!
+
+## Set up a contrived web example
+
 Finally, we'll edit `packages/ducks/src/index.js`:
 
 ```js title="packages/ducks/src/index.js"
 import {Flecks} from '@flecks/core';
 
 import {addToLeft, addToRight, thing} from './state';
+
+export * from './state';
 
 export const hooks = {
   '@flecks/web/client.up': Flecks.priority(
@@ -124,6 +134,8 @@ dealing with a web server or an electron app.
 
 :::
 
+### Check out the redux devtools
+
 Now start up your application:
 
 ```
@@ -141,6 +153,8 @@ Open up the Redux devtools:
 Everything is there!
 
 ![A screenshot showing our app running in Electron with devtools open to the Redux devtools tab with our state visible](./redux-test-3.png)
+
+## Redux in React in flecks
 
 How about Redux in React? No problem! Move to `packages/ducks` and run the following command:
 
