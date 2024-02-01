@@ -53,7 +53,7 @@ export default async function flecksDocusaurus() {
           items: [
             {
               to: 'docs/',
-              label: 'Docs',
+              label: 'Documentation',
               position: 'left',
             },
             {
