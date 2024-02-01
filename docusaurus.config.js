@@ -46,10 +46,9 @@ export default async function flecksDocusaurus() {
           respectPrefersColorScheme: false,
         },
         navbar: {
-          title: 'flecks',
           logo: {
             alt: 'flecks logo',
-            src: 'flecks-textless.png',
+            src: 'flecks.svg',
           },
           items: [
             {

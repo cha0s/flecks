@@ -1,3 +1,7 @@
+.navbar__logo img {
+  scale: 150%;
+}
+
 ul.headless.tabs {
   display: none;
 }
