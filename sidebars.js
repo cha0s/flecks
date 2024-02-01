@@ -36,7 +36,6 @@ export default {
             'hooks',
             'gathering',
             'ordering',
-            'testing',
             'platforms',
             'documentation',
           ],
