@@ -6,7 +6,7 @@
     {
       "label": "Start Docusaurus server",
       "type": "shell",
-      "command": "npx flecks docusaurus start",
+      "command": "yarn dox start --no-open",
       "problemMatcher": {
         "pattern": {
           "regexp": "^Error",
