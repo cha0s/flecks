@@ -5,3 +5,19 @@
 ul.headless.tabs {
   display: none;
 }
+
+.getmemedon {
+  background-image: linear-gradient(to left, violet, blueviolet, royalblue, green, gold, orange, red);
+  background-clip: text;
+  color: transparent;
+  animation: 2s infinite linear getmemedon;
+}
+
+@keyframes getmemedon {
+  from {
+    background-position: 0em;
+  }
+  to {
+    background-position: 10.5em;
+  }
+}
