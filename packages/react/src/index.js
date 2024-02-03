@@ -22,4 +22,5 @@ export const hooks = {
      */
     ssr: true,
   }),
+  '@flecks/web.config': async (req, flecks) => flecks.get('@flecks/react'),
 };

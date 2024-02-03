@@ -39,17 +39,15 @@ module.exports = class Build extends Flecks {
   static async buildRuntime(originalConfig, platforms, flecks = {}) {
     const cleanConfig = JSON.parse(JSON.stringify(originalConfig));
     // Dealias the config keys.
-    const dealiasedConfig = this.environmentConfiguration(
-      Object.fromEntries(
-        Object.entries(cleanConfig)
-          .map(([maybeAliasedPath, config]) => {
-            const index = maybeAliasedPath.indexOf(':');
-            return [
-              -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
-              config,
-            ];
-          }),
-      ),
+    const dealiasedConfig = Object.fromEntries(
+      Object.entries(cleanConfig)
+        .map(([maybeAliasedPath, config]) => {
+          const index = maybeAliasedPath.indexOf(':');
+          return [
+            -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
+            config,
+          ];
+        }),
     );
     const resolver = new Resolver({root: FLECKS_CORE_ROOT});
     const {paths, roots} = await explicate({
@@ -59,7 +57,9 @@ module.exports = class Build extends Flecks {
       importer: (request) => require(request),
     });
     const runtime = {
-      config: Object.fromEntries(paths.map((path) => [path, dealiasedConfig[path] || {}])),
+      config: this.environmentConfiguration(
+        Object.fromEntries(paths.map((path) => [path, dealiasedConfig[path] || {}])),
+      ),
       flecks: Object.fromEntries(paths.map((path) => [
         path,
         flecks[path] || roots[path]?.bootstrap || {},
