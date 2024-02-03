@@ -1,6 +1,6 @@
 {
   "name": "@flecks/repl",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -27,7 +27,7 @@
     "debug": "4.3.1"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.2",
-    "@flecks/fleck": "^3.2.2"
+    "@flecks/build": "^3.2.4",
+    "@flecks/fleck": "^3.2.4"
   }
 }

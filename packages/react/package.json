@@ -1,6 +1,6 @@
 {
   "name": "@flecks/react",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -34,7 +34,7 @@
   "dependencies": {
     "@babel/preset-react": "^7.23.3",
     "@flecks/core": "^3.2.1",
-    "@flecks/web": "^3.2.2",
+    "@flecks/web": "^3.2.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "babel-merge": "^3.0.0",
     "classnames": "^2.3.1",
@@ -50,7 +50,7 @@
     "redux-first-history": "5.1.1"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.2",
-    "@flecks/fleck": "^3.2.2"
+    "@flecks/build": "^3.2.4",
+    "@flecks/fleck": "^3.2.4"
   }
 }

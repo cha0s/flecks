@@ -1,6 +1,6 @@
 {
   "name": "@flecks/passport-local",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -23,12 +23,12 @@
   ],
   "dependencies": {
     "@flecks/core": "^3.2.1",
-    "@flecks/passport": "^3.2.2",
+    "@flecks/passport": "^3.2.4",
     "bcrypt": "^5.1.1",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.2",
-    "@flecks/fleck": "^3.2.2"
+    "@flecks/build": "^3.2.4",
+    "@flecks/fleck": "^3.2.4"
   }
 }

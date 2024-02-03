@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/cha0s/flecks/compare/v3.2.3...v3.2.4) (2024-02-03)
+
+**Note:** Version bump only for package @flecks/docker
+
+
+
+
+
 ## [3.2.3](https://github.com/cha0s/flecks/compare/v3.2.2...v3.2.3) (2024-02-01)
 
 

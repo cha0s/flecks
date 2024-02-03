@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.2.3...v3.2.4) (2024-02-03)
+
+
+### Bug Fixes
+
+* config ([83df532](https://git.hq.cha0s.io/cha0s/flecks/commits/83df532e97db80166e72c6fd78efe094799dab67))
+* work around webpack resolution sloppiness ([88c4f13](https://git.hq.cha0s.io/cha0s/flecks/commits/88c4f13f7430d565e6f498ef7b79f746b6b2c8ab))
+
+
+
+
+
 ## [3.2.2](https://git.hq.cha0s.io/cha0s/flecks/compare/v3.2.1...v3.2.2) (2024-02-01)
 
 

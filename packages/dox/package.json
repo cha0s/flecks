@@ -1,6 +1,6 @@
 {
   "name": "@flecks/dox",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -28,7 +28,7 @@
     "rimraf": "^5.0.5"
   },
   "devDependencies": {
-    "@flecks/build": "^3.2.2",
-    "@flecks/fleck": "^3.2.2"
+    "@flecks/build": "^3.2.4",
+    "@flecks/fleck": "^3.2.4"
   }
 }
