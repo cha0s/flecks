@@ -2,8 +2,51 @@
   scale: 150%;
 }
 
+.tabs-container {
+  position: relative;
+}
+.tabs-container > ul.headless.tabs {
+  line-height: 1.5em;
+  position: absolute;
+  z-index: 10;
+  top: -1.25em;
+}
 ul.headless.tabs {
-  display: none;
+  overflow: hidden;
+}
+ul.headless.tabs > li {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+ul.headless.tabs > li[aria-selected="false"] {
+  opacity: 0.1;
+}
+ul.headless.tabs > li[aria-selected="false"]:hover {
+  opacity: 0.4;
+}
+ul.headless.tabs > li[aria-selected="true"] {
+  opacity: 0.4;
+}
+ul.headless.tabs > li[aria-selected="true"]:hover {
+  opacity: 0.9;
+}
+
+@keyframes slow-open {
+  from {
+    opacity: 0;
+    position: absolute;
+  }
+  59% {
+    position: absolute;
+  }
+  60% {
+    opacity: 0;
+    position: relative;
+  }
+  to {
+    position: relative;
+    opacity: 1;
+  }
 }
 
 .getmemedon {
