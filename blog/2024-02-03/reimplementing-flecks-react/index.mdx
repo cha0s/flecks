@@ -1,0 +1,408 @@
+---
+title: "Reimplementing `@flecks/react` by hand"
+description: "By reimplementing a simplified version of a built-in fleck, we will learn how flecks works"
+slug: reimplementing-flecks-react
+authors:
+  - name: cha0s
+    title: Creator of flecks
+    url: https://github.com/cha0s
+    image_url: https://github.com/cha0s.png
+tags: [flecks, education]
+hide_table_of_contents: false
+image: https://cha0s.github.io/flecks/flecks.png
+---
+
+import Create from '@site/helpers/create';
+import Execute from '@site/helpers/execute';
+import Install from '@site/helpers/install-package';
+import Run from '@site/helpers/run';
+
+flecks provides some default flecks to help with common tasks such as spinning up a web server,
+databases, and a react runtime with babel plugins, among many other things.
+
+In this article, we will be reimplementing a small subset of `@flecks/react` in our own isolated
+application so we can learn how to build with flecks.
+
+{/* truncate */}
+
+:::warning[Save yourself the trouble]
+
+In practice, there's not much need to reimplement React support, you can just lean on what's
+already provided -- that is in fact the entire point of flecks!
+
+This is just an illustration for the sake of understanding.
+
+:::
+
+## Generate some stuff
+
+First, let's generate a little application starter:
+
+<Create type="app" pkg="illustration" />
+
+```
+cd illustration
+```
+
+We'll create two flecks, one called `react`:
+
+<Create headless type="fleck" pkg="react" />
+
+and one called `component`:
+
+<Create headless type="fleck" pkg="component" />
+
+A quick look at `build/flecks.yml` shows:
+
+```yml
+'@flecks/build': {}
+'@flecks/core':
+  id: illustration
+'@flecks/server': {}
+'@illustration/component:./packages/component': {}
+'@illustration/react:./packages/react': {}
+```
+
+## Do stuff with React
+
+Let's go in our `component` package and make some React noises. We'll create
+`@illustration/component/src/component.jsx`:
+
+```js title="packages/component/src/component.jsx"
+function Component() {
+  // Just for now so we don't need the React instance just yet...
+  return false;
+}
+export default Component;
+```
+
+and we'll import it in to `@illustration/component/src/index.js`:
+
+```js title="packages/component/src/index.js"
+import Component from './component';
+```
+
+Start your application:
+
+<Run headless cmd="start" />
+
+### Whoops
+
+Uh, oh! We got an error:
+
+```
+Module not found: Error: Can't resolve './component'
+
+      no extension
+        [...]/illustration/packages/component/src/component doesn't exist
+      .mjs
+        [...]/illustration/packages/component/src/component.mjs doesn't exist
+      .js
+        [...]/illustration/packages/component/src/component.js doesn't exist
+      .json
+        [...]/illustration/packages/component/src/component.json doesn't exist
+      .wasm
+        [...]/illustration/packages/component/src/component.wasm doesn't exist
+
+```
+
+We can see that `jsx` wasn't one of the extensions that got searched! This is because of flecks's
+**small core philosophy**. It's just a JS application by default. The whole point is that we are
+about to implement React support ourselves! Let's do that.
+
+### Modify the build
+
+We need to add the ability to discover (and compile) JSX files. We'll do this in
+`@illustration/react`.
+
+:::info[Just a phase]
+
+flecks has a **bootstrap** phase where build hooks like `@flecks/core.babel` are invoked. This is
+in contrast to the **runtime** phase which is where hooks like `@flecks/server.up`
+are invoked.
+
+:::
+
+Let's modify `@illustration/react/build/flecks.bootstrap.js` like so:
+
+```js
+exports.dependencies = [];
+
+exports.hooks = {
+  // babel config to compile JSX
+  '@flecks/core.babel': () => ({presets: ['@babel/preset-react']}),
+  // implicit extensions
+  '@flecks/build.extensions': () => ['.jsx'],
+};
+```
+
+We're using `@babel/preset-react` now, so let's move into `@illustration/react` and add it to our
+dependencies:
+
+<Install headless pkg="@babel/preset-react" />
+
+Start your application again:
+
+<Run headless cmd="start" />
+
+Everything comes up right! Only thing is, we don't actually have a web server yet!
+
+## Web integration
+
+flecks provides `@flecks/web` which implements a web server and runtime upon which we may build
+web applications. A React application is a specialization of a web application, so let's lean on
+`@flecks/web` so we don't have to completely reinvent the wheel!
+
+### Dependencies
+
+Move into `@illustration/react` and add `@flecks/web` as well as `react` and `react-dom`:
+
+<Install headless pkg="@flecks/web react react-dom" />
+
+Add `@flecks/web` to the dependencies in `@illustration/react/build/flecks.bootstrap.js`:
+
+```js title="packages/react/build/flecks.bootstrap.js"
+// highlight-next-line
+exports.dependencies = ['@flecks/web'];
+```
+
+### Client implementation
+
+Before we proceed we'll need to actually do something in our new web client. Let's add some code to
+`@illustration/react/src/index.js`:
+
+```js title="packages/react/src/index.js"
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+
+export const hooks = {
+  '@flecks/web/client.up': async (flecks) => {
+    // appMountId defaults to 'root', by the way.
+    const {appMountId} = flecks.get('@flecks/web');
+    const container = window.document.getElementById(appMountId);
+    // Render the root we create with react-dom
+    createRoot(container).render(
+      // What to render though..?
+    );
+    console.log('rendered');
+  },
+};
+```
+
+:::info[`export const` all of a sudden]
+
+Since we're dealing with the **runtime** phase now, we get access to the nice stuff we're used to
+like `export const hooks` instead of `exports.hooks`.
+
+**Rule of thumb**: if you are in **`build`** you're probably in the **bootstrap** phase. Otherwise,
+you are in the **runtime** phase.
+
+:::
+
+Now, restart your application:
+
+<Run headless cmd="start" />
+
+You'll see that we're now getting the `rendered` message in the console.
+
+### What are we doing here exactly?
+
+What are we going to render, though? This is where **hooks** come into play!
+
+Our `@illustration/react` fleck needs to be able to gather and render components on behalf of
+other flecks so they don't have to do all of this root rendering busywork.
+
+We'll implement a hook: `@illustration/react.roots` that will allow other flecks to implement their
+React root components. We'll then collect and render them all.
+
+```js title="packages/react/src/client.js"
+  '@flecks/web/client.up': async (flecks) => {
+    const {appMountId} = flecks.get('@flecks/web');
+    const container = window.document.getElementById(appMountId);
+    // highlight-start
+    const results = flecks.invoke('@illustration/react.roots');
+    // highlight-end
+    // By default `invoke` returns an object: {[fleckPath]: result, ...}
+    // So, we'll map it into a flat list of components and use the fleck path as the key prop:
+    // highlight-start
+    const Components = Object.entries(results)
+      .map(([fleckPath, Component]) => React.createElement(Component, {key: fleckPath}));
+    // highlight-end
+    // Finally we'll render all our components as children of the `React.StrictMode` component:
+    // highlight-start
+    createRoot(container).render(React.createElement(React.StrictMode, {}, Components));
+    console.log('rendered roots: %O', results);
+    // highlight-end
+  },
+```
+
+Refreshing the page shows `rendered roots: Object {  }` in the console. Getting closer!
+
+Let's go back over to `@illustration/component/src/index.js` and implement **our** hook:
+
+```js title="packages/component/src/index.js"
+import Component from './component';
+
+// highlight-start
+export const hooks = {
+  '@illustration/react.roots': () => Component,
+};
+// highlight-end
+```
+
+Refresh one more time and you will see:
+
+```
+rendered roots:  Object { "@illustration/component": Component() }
+```
+
+Awesome!
+
+### Passing React
+
+If you remember, our original component just `return false`'d up there, and we only
+added `react` to `@illustration/react`. So how do we use it from `@illustration/component`?
+Well, `@flecks/react` just re-exports it so you don't have to worry about this exact thing. Let's
+follow suit in `@illustration/react`:
+
+```js title="packages/react/src/index.js"
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+
+// highlight-next-line
+export {React};
+
+export const hooks = {
+  '@flecks/web/client.up': async (flecks) => {
+    const {appMountId} = flecks.get('@flecks/web');
+    const container = window.document.getElementById(appMountId);
+    const results = flecks.invoke('@illustration/react.roots');
+    // By default `invoke` returns a map: {[fleckPath]: result}
+    // So, we'll map it into a flat list of components and use the fleck path as the key:
+    const Components = Object.entries(results)
+      .map(([fleckPath, Component]) => React.createElement(Component, {key: fleckPath}));
+    // Finally we'll render all our components as children of the `React.StrictMode` component:
+    createRoot(container).render(React.createElement(React.StrictMode, {}, Components));
+    console.log('rendered roots: %O', results);
+  },
+};
+```
+
+Back over in `@illustration/component/src/component.jsx`, we'll use it:
+
+```js title="packages/component/src/component.jsx"
+// highlight-next-line
+import {React} from '@illustration/react';
+
+function Component() {
+  // highlight-next-line
+  return <p>Hello world</p>;
+}
+export default Component;
+```
+
+Now refresh the page and you will see exactly what you expect!
+
+## For real this time
+
+Other aspects like HMR will be left as an exercise for the reader. Or... you could just use
+`@flecks/react`! You really should do that and save yourself the trouble. Back in our application's
+`build/flecks.yml` let's remove our half-baked React implementation:
+
+```yml
+'@flecks/build': {}
+'@flecks/core':
+  id: illustration
+'@flecks/server': {}
+'@illustration/component:./packages/component': {}
+```
+
+Move into `@illustration/component` and **add `@flecks/react` using the flecks CLI**:
+
+<Execute headless cmd="flecks add @flecks/react" />
+
+This is a twofer! It **adds the package to `dependencies` in `package.json`** and it also **adds
+a fleck dependency in `flecks.bootstrap.js`**:
+
+```json title="packages/component/package.json"
+{
+  "name": "@illustration/component",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "postversion": "npm run build",
+    "test": "flecks test"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@flecks/core": "^3.0.0",
+    // highlight-next-line
+    "@flecks/react": "^3.2.1"
+  },
+  "devDependencies": {
+    "@flecks/build": "^3.0.0",
+    "@flecks/fleck": "^3.0.0"
+  }
+}
+```
+
+```js title="packages/component/build/flecks.bootstrap.js"
+// highlight-next-line
+exports.dependencies = ['@flecks/react'];
+
+exports.hooks = {};
+```
+
+:::tip[Achievement unlocked: dependence]
+
+`@illustration/component` has specified all of its dependencies!
+
+It might seem like a bit of busywork to explicitly specify your dependencies because flecks makes
+it so easy to get along without needing to.
+
+However by doing so you unlock the potential of **sharing your code with others** which gets at the
+heart of the flecks way: sharing solutions to repeated problems. Remember: **Future you is just
+as likely to be the beneficiary!**
+
+:::
+
+Swap the `React` import in `@illustration/component/src/component.jsx`:
+
+```js title="packages/component/src/component.jsx"
+// highlight-next-line
+import {React} from '@flecks/react';
+
+function Component() {
+  return <p>Hello world</p>;
+}
+export default Component;
+```
+
+Swap the hook implementation in `@illustration/component/src/index.js`:
+
+```js title="packages/component/src/index.js"
+import Component from './component';
+
+export const hooks = {
+  // highlight-next-line
+  '@flecks/react.roots': () => Component,
+};
+```
+
+:::info[Copy that]
+
+It's what we spent all of this time doing, but better!
+
+The entire reason flecks exists is to minimize duplicated effort.
+
+:::
+
+### Enjoy
+
+<Run headless cmd="start" />
+
+Now all that's left is to **have fun**!
