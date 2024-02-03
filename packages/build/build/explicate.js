@@ -49,6 +49,8 @@ module.exports = async function explicate(
         if (path !== request) {
           const submodules = join(realResolvedCandidate, 'node_modules');
           resolver.addModules(submodules);
+          // Work around webpack-dev-server resolution sloppiness.
+          resolver.addAlias(join(submodules, 'webpack'), join(resolver.root, 'node_modules', 'webpack'));
           // Runtime NODE_PATH hacking.
           const {env} = process;
           env.NODE_PATH = (env.NODE_PATH || '') + delimiter + submodules;
