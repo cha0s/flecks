@@ -1,12 +1,5 @@
 import {Flecks} from '@flecks/core';
 
-export const testNodespace = () => [
-  /* eslint-disable no-eval */
-  eval('typeof require.context'),
-  eval('typeof __non_webpack_require__'),
-  /* eslint-enable no-eval */
-];
-
 export const hooks = {
   '@flecks/core.config': () => ({
     foo: 'bar',
