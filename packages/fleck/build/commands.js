@@ -35,7 +35,7 @@ module.exports = (program, flecks) => {
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
         console.log('No tests found.');
-        return;
+        return undefined;
       }
       // Remove the previous test.
       const testLocation = join(FLECKS_CORE_ROOT, 'dist', 'test.js');
