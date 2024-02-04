@@ -9,6 +9,7 @@ const loadConfig = require('./load-config');
 const Resolver = require('./resolver');
 
 const {
+  FLECKS_CORE_BUILD_LIST = '',
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
@@ -34,6 +35,13 @@ module.exports = class Build extends Flecks {
       {configFile: await this.resolveBuildConfig('babel.config.js')},
       ...await this.invokeSequentialAsync('@flecks/core.babel'),
     ]);
+  }
+
+  static get buildList() {
+    return FLECKS_CORE_BUILD_LIST
+      .split(',')
+      .map((name) => name.trim())
+      .filter((e) => e);
   }
 
   static async buildRuntime(originalConfig, platforms, flecks = {}) {

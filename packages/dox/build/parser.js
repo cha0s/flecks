@@ -3,7 +3,7 @@ const {dirname, join, relative} = require('path');
 
 const {transformAsync} = require('@babel/core');
 const {default: traverse} = require('@babel/traverse');
-const {glob} = require('@flecks/core/server');
+const {glob} = require('@flecks/core/src/server');
 
 const {
   buildFileVisitor,

@@ -1,3 +1,4 @@
+const Build = require('@flecks/build/build/build');
 const {processFleckAssets} = require('@flecks/build/build/process-assets');
 
 const commands = require('./commands');
@@ -13,7 +14,10 @@ exports.hooks = {
       errorDetails: true,
     },
   }),
-  '@flecks/build.targets': () => ['fleck'],
+  '@flecks/build.targets': () => (
+    ['fleck']
+      .concat(Build.buildList.includes('test') ? ['test'] : [])
+  ),
   '@flecks/build.processAssets': async (target, assets, compilation, flecks) => {
     if ('fleck' === target) {
       await processFleckAssets(assets, compilation, (json, compilation) => (

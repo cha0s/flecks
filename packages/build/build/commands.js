@@ -20,7 +20,7 @@ const {
   add,
   lockFile,
   spawnWith,
-} = require('@flecks/core/server');
+} = require('@flecks/core/src/server');
 const {glob} = require('glob');
 const rimraf = require('rimraf');
 
@@ -178,7 +178,7 @@ exports.commands = (program, flecks) => {
         debug('Building...', opts);
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
-          join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'webpack'),
+          'npx', 'webpack',
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
           ...((watch || hot) ? ['--watch'] : []),
@@ -210,7 +210,7 @@ exports.commands = (program, flecks) => {
           .map((pkg) => join(process.cwd(), pkg))
           .map(async (cwd) => {
             const cmd = [
-              join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'eslint'),
+              'npx', 'eslint',
               '--config', await flecks.resolveBuildConfig('eslint.config.js'),
               '.',
             ];
@@ -219,7 +219,10 @@ exports.commands = (program, flecks) => {
                 cmd,
                 {
                   cwd,
-                  env: {FLECKS_CORE_ROOT},
+                  env: {
+                    FLECKS_BUILD_ESLINT_NO_CACHE: true,
+                    FLECKS_CORE_ROOT,
+                  },
                 },
               );
               child.on('error', reject);

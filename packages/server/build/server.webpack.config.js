@@ -4,7 +4,7 @@ const {
   banner,
   defaultConfig,
   webpack,
-} = require('@flecks/build/server');
+} = require('@flecks/build/src/server');
 
 const runtime = require('./runtime');
 const startServer = require('./start');

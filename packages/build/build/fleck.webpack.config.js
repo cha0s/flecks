@@ -6,16 +6,15 @@ const {
 } = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
-const glob = require('glob');
 
-const {defaultConfig, externals, regexFromExtensions} = require('./webpack');
+const configFn = require('./common.webpack.config');
+const {externals} = require('./webpack');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
 const source = join(FLECKS_CORE_ROOT, 'src');
-const tests = join(FLECKS_CORE_ROOT, 'test');
 
 const resolveValidModulePath = (source) => (path) => {
   // Does the file resolve as source?
@@ -36,79 +35,31 @@ const resolveValidModulePath = (source) => (path) => {
 };
 
 module.exports = async (env, argv, flecks) => {
-  const {name, files = []} = require(join(FLECKS_CORE_ROOT, 'package.json'));
-  const config = defaultConfig(flecks, {
-    externals: externals({importType: 'umd'}),
-    node: {
-      __dirname: false,
-      __filename: false,
-    },
-    optimization: {
-      splitChunks: false,
-      runtimeChunk: false,
-    },
-    output: {
-      filename: '[name].js',
-      library: {
-        name,
-        type: 'umd',
-        umdNamedDefine: true,
-      },
-    },
-    plugins: [
-      new CopyPlugin({
-        patterns: [
-          {
-            from: '.',
-            to: '.',
-            globOptions: {
-              dot: true,
-              ignore: [
-                'dist',
-                'node_modules',
-              ],
-              gitignore: true,
-            },
-            info: {
-              minimized: true,
-            },
-          },
-        ],
-      }),
-    ],
-    resolve: {
-      alias: {
-        [name]: source,
-      },
-      fallback: {
-        [name]: FLECKS_CORE_ROOT,
-      },
-    },
-    stats: {
-      colors: true,
-      errorDetails: true,
-    },
-    target: 'node',
-  });
-  const babelConfig = await flecks.babel();
-  const extensionsRegex = regexFromExtensions(config.resolve.extensions);
-  config.module.rules.push(
-    {
-      include: [source, tests],
-      test: extensionsRegex,
-      use: [
+  const config = await configFn(env, argv, flecks);
+  config.externals = await externals();
+  config.output.clean = {keep: /test\.js(?:\.map)?/};
+  config.plugins.push(
+    new CopyPlugin({
+      patterns: [
         {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-            babelrc: false,
-            configFile: false,
-            ...babelConfig,
+          from: '.',
+          to: '.',
+          globOptions: {
+            dot: true,
+            ignore: [
+              'dist',
+              'node_modules',
+            ],
+            gitignore: true,
+          },
+          info: {
+            minimized: true,
           },
         },
       ],
-    },
+    }),
   );
+  const {files = []} = require(join(FLECKS_CORE_ROOT, 'package.json'));
   // Automatic entry registration.
   files
     .filter(resolveValidModulePath(source))
@@ -116,14 +67,5 @@ module.exports = async (env, argv, flecks) => {
       const trimmed = join(dirname(file), basename(file, extname(file)));
       config.entry[trimmed] = `${source}/${trimmed}`;
     });
-  // Test entry.
-  const testPaths = glob.sync(join(tests, '*.js'));
-  const {platforms} = flecks;
-  for (let i = 0; i < platforms.length; ++i) {
-    testPaths.push(...glob.sync(join(tests, platforms[i], '*.js')));
-  }
-  if (testPaths.length > 0) {
-    config.entry.test = ['source-map-support/register', ...testPaths];
-  }
   return config;
 };

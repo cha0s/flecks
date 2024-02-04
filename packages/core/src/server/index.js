@@ -1,5 +1,8 @@
-export {glob} from 'glob';
+/* eslint-disable global-require */
 
-export * from '../../build/stream';
-export * from './package-manager';
-export * from './process';
+module.exports = {
+  glob: require('glob').glob,
+  ...require('../../build/stream'),
+  ...require('./package-manager'),
+  ...require('./process'),
+};

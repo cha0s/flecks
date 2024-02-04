@@ -3,7 +3,7 @@ const {readdir} = require('fs/promises');
 const {tmpdir} = require('os');
 const {join} = require('path');
 
-const {D} = require('@flecks/core');
+const {D} = require('@flecks/core/src');
 const commandExists = require('command-exists');
 
 const debug = D('@flecks/repl/commands');

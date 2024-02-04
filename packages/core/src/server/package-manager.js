@@ -1,14 +1,14 @@
-import {processCode, spawnWith} from './process';
+const {processCode, spawnWith} = require('./process');
 
 /* eslint-disable camelcase */
 const {
   npm_config_user_agent = 'npm',
 } = process.env;
 
-export const inferPackageManager = () => npm_config_user_agent.split('/')[0];
+exports.inferPackageManager = () => npm_config_user_agent.split('/')[0];
 /* eslint-enable camelcase */
 
-export const build = async ({cwd, packageManager = inferPackageManager()}) => {
+exports.build = async ({cwd, packageManager = exports.inferPackageManager()}) => {
   let args;
   switch (packageManager) {
     case 'bun':
@@ -28,7 +28,7 @@ export const build = async ({cwd, packageManager = inferPackageManager()}) => {
   return args && processCode(spawnWith(args, {cwd}));
 };
 
-export const add = async ({dev, packageManager = inferPackageManager(), packages}) => {
+exports.add = async ({dev, packageManager = exports.inferPackageManager(), packages}) => {
   let args;
   switch (packageManager) {
     case 'bun':
@@ -64,7 +64,7 @@ export const add = async ({dev, packageManager = inferPackageManager(), packages
   return args && processCode(spawnWith(args));
 };
 
-export const install = async ({cwd, packageManager = inferPackageManager()}) => {
+exports.install = async ({cwd, packageManager = exports.inferPackageManager()}) => {
   let args;
   switch (packageManager) {
     case 'bun':
@@ -84,7 +84,7 @@ export const install = async ({cwd, packageManager = inferPackageManager()}) => 
   return args && processCode(spawnWith(args, {cwd}));
 };
 
-export const lockFile = (packageManager = inferPackageManager()) => {
+exports.lockFile = (packageManager = exports.inferPackageManager()) => {
   switch (packageManager) {
     case 'bun':
       return 'bun.lockb';

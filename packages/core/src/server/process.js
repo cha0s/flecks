@@ -1,11 +1,11 @@
-import {spawn} from 'child_process';
+const {spawn} = require('child_process');
 
-import D from '../../build/debug';
+const D = require('../../build/debug');
 
 const debug = D('@flecks/core/server');
 const debugSilly = debug.extend('silly');
 
-export const processCode = (child) => new Promise((resolve, reject) => {
+exports.processCode = (child) => new Promise((resolve, reject) => {
   child.on('error', reject);
   child.on('exit', (code) => {
     child.off('error', reject);
@@ -13,7 +13,7 @@ export const processCode = (child) => new Promise((resolve, reject) => {
   });
 });
 
-export const spawnWith = (cmd, opts = {}) => {
+exports.spawnWith = (cmd, opts = {}) => {
   debug("spawning: '%s'", cmd.join(' '));
   debugSilly('with options: %O', opts);
   const child = spawn(cmd[0], cmd.slice(1), {

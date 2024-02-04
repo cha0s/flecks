@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const D = require('@flecks/core/build/debug');
-const {processCode} = require('@flecks/core/server');
+const {processCode} = require('@flecks/core/src/server');
 const {Command} = require('commander');
 
 const Build = require('./build');

@@ -1,4 +1,10 @@
-export {dump as dumpYml, load as loadYml} from 'js-yaml';
-export {default as webpack} from 'webpack';
+/* eslint-disable global-require */
 
-export * from '../build/webpack';
+const {dump: dumpYml, load: loadYml} = require('js-yaml');
+
+module.exports = {
+  dumpYml,
+  loadYml,
+  webpack: require('webpack'),
+  ...require('../build/webpack'),
+};

@@ -1,6 +1,4 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "useNx": true,
   "version": "3.2.4"
 }

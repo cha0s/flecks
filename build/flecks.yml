@@ -1,10 +1,10 @@
 '@flecks/build': {}
-'@flecks/core:./packages/core': {}
-'@flecks/create:./packages/create-app': {}
-'@flecks/create:./packages/create-fleck': {}
-'@flecks/db:./packages/db': {}
-'@flecks/docker:./packages/docker': {}
-'@flecks/dox:./packages/dox':
+'@flecks/core': {}
+'@flecks/create-app': {}
+'@flecks/create-fleck': {}
+'@flecks/db': {}
+'@flecks/docker': {}
+'@flecks/dox':
   rewriteFilenames:
     -
       - '@flecks\/([^/]+)\/(.*)'
@@ -12,18 +12,18 @@
     -
       - '\((.*):([0-9]+):[0-9]+\)'
       - '($1#L$2)'
-'@flecks/electron:./packages/electron': {}
-'@flecks/fleck:./packages/fleck': {}
-'@flecks/passport:./packages/passport': {}
-'@flecks/passport-local:./packages/passport-local': {}
-'@flecks/passport-local-react:./packages/passport-local-react': {}
-'@flecks/passport-react:./packages/passport-react': {}
-'@flecks/react:./packages/react': {}
-'@flecks/react:./packages/react-redux': {}
-'@flecks/redis:./packages/redis': {}
-'@flecks/redux:./packages/redux': {}
-'@flecks/repl:./packages/repl': {}
-'@flecks/server:./packages/server': {}
-'@flecks/session:./packages/session': {}
-'@flecks/socket:./packages/socket': {}
-'@flecks/web:./packages/web': {}
+'@flecks/electron': {}
+'@flecks/fleck': {}
+'@flecks/passport': {}
+'@flecks/passport-local': {}
+'@flecks/passport-local-react': {}
+'@flecks/passport-react': {}
+'@flecks/react': {}
+'@flecks/react-redux': {}
+'@flecks/redis': {}
+'@flecks/redux': {}
+'@flecks/repl': {}
+'@flecks/server': {}
+'@flecks/session': {}
+'@flecks/socket': {}
+'@flecks/web': {}

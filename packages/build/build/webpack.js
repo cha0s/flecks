@@ -1,4 +1,4 @@
-const {chmod} = require('fs');
+const {access, chmod} = require('fs/promises');
 const {join} = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
@@ -94,18 +94,47 @@ exports.executable = () => (
 
     // eslint-disable-next-line class-methods-use-this
     apply(compiler) {
-      compiler.hooks.afterEmit.tapAsync(
+      compiler.hooks.afterEmit.tapPromise(
         'Executable',
-        (compilation, callback) => {
-          chmod(join(FLECKS_CORE_ROOT, 'dist', 'build', 'cli.js'), 0o755, callback);
-        },
+        async () => (
+          chmod(join(FLECKS_CORE_ROOT, 'dist', 'build', 'cli.js'), 0o755)
+        ),
       );
     }
 
   }()
 );
 
-exports.externals = nodeExternals;
+exports.externals = async (options = {}) => {
+  const parts = FLECKS_CORE_ROOT.split('/');
+  const additionalModuleDirs = [];
+  while (parts.length > 1) {
+    parts.pop();
+    const candidate = join(parts.join('/'), 'node_modules');
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await access(candidate);
+      additionalModuleDirs.push(candidate);
+    }
+    // eslint-disable-next-line no-empty
+    catch (error) {}
+  }
+  try {
+    // eslint-disable-next-line no-await-in-loop
+    await access('/node_modules');
+    additionalModuleDirs.push('/node_modules');
+  }
+  // eslint-disable-next-line no-empty
+  catch (error) {}
+  return nodeExternals({
+    importType: 'umd',
+    ...options,
+    additionalModuleDirs: [
+      ...additionalModuleDirs,
+      ...(options.additionalModuleDirs || []),
+    ],
+  });
+};
 
 exports.regexFromExtensions = (exts) => (
   new RegExp(String.raw`(?:${exts.map((ext) => ext.replaceAll('.', '\\.')).join('|')})$`)

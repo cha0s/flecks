@@ -1,4 +1,4 @@
-const {externals} = require('@flecks/build/server');
+const {externals} = require('@flecks/build/src/server');
 
 const D = require('@flecks/core/build/debug');
 
@@ -106,5 +106,9 @@ module.exports = async (config, env, argv, flecks) => {
     allowlist.push(/^webpack\/hot\/signal/);
   }
   // Externalize the rest.
-  config.externals = externals({allowlist, additionalModuleDirs: flecks.resolver.modules});
+  config.externals = await externals({
+    additionalModuleDirs: flecks.resolver.modules,
+    allowlist,
+    importType: 'commonjs',
+  });
 };

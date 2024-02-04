@@ -3,8 +3,8 @@ const {join} = require('path');
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const {commands: coreCommands} = require('@flecks/build/build/commands');
-const {D} = require('@flecks/core');
-const {glob} = require('@flecks/core/server');
+const {D} = require('@flecks/core/src');
+const {glob} = require('@flecks/core/src/server');
 const chokidar = require('chokidar');
 const clearModule = require('clear-module');
 const Mocha = require('mocha');
@@ -33,7 +33,7 @@ module.exports = (program, flecks) => {
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
-      const child = await build.action(undefined, opts);
+      const child = await build.action('test', opts);
       const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/**/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console

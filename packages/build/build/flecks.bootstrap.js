@@ -4,6 +4,7 @@ const webpack = require('webpack');
 
 const {commands} = require('./commands');
 const {ProcessAssets} = require('./process-assets');
+const {externals} = require('./webpack');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -25,6 +26,13 @@ exports.hooks = {
     }
     config.plugins.push(new ProcessAssets(target, flecks));
   },
+  '@flecks/build.config.alter': async ({test}) => {
+    if (test) {
+      test.externals = await externals({
+        allowlist: Object.keys(test.resolve.fallback).map((fallback) => new RegExp(fallback)),
+      });
+    }
+  },
   '@flecks/build.files': () => [
     /**
      * Babel configuration. See: https://babeljs.io/docs/en/config-files
@@ -44,9 +52,13 @@ exports.hooks = {
      */
     'fleckspack.config.js',
     /**
-     * Fleck build configuration. See: https://webpack.js.org/configuration/
+     * Fleck source build configuration. See: https://webpack.js.org/configuration/
      */
     'fleck.webpack.config.js',
+    /**
+     * Fleck test build configuration. See: https://webpack.js.org/configuration/
+     */
+    'test.webpack.config.js',
   ],
   '@flecks/core.config': () => ({
     /**

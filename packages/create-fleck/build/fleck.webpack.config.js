@@ -1,4 +1,4 @@
-const {copy, executable} = require('@flecks/build/server');
+const {copy, executable} = require('@flecks/build/src/server');
 const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 
 module.exports = async (env, argv, flecks) => {

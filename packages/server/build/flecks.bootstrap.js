@@ -1,4 +1,4 @@
-const {banner} = require('@flecks/build/server');
+const {banner} = require('@flecks/build/src/server');
 
 exports.hooks = {
   '@flecks/build.config.alter': ({server}, env, argv, flecks) => {

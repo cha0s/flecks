@@ -1,4 +1,4 @@
-const {copy, externals} = require('@flecks/build/server');
+const {copy, externals} = require('@flecks/build/src/server');
 const configFn = require('@flecks/fleck/build/fleck.webpack.config');
 
 module.exports = async (env, argv, flecks) => {
@@ -6,9 +6,8 @@ module.exports = async (env, argv, flecks) => {
   delete config.entry['server/build/entry'];
   delete config.entry['server/build/template'];
   delete config.entry['server/build/tests'];
-  config.externals = externals({
+  config.externals = await externals({
     allowlist: ['mocha/mocha.css'],
-    importType: 'umd',
   });
   config.plugins.push(
     copy({

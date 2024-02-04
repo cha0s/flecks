@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
+
 import {join} from 'path';
 
 import {expect} from 'chai';
-import clearModule from 'clear-module';
 
 import resolve from '@flecks/core/build/resolve';
 
@@ -21,10 +22,10 @@ it('can resolve inexact', async () => {
   expect(__non_webpack_require__(join(root, 'blah')))
     .to.equal(4);
   clear();
-  clearModule(join(root, 'blah'));
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/blah.js'];
   expect(__non_webpack_require__(join(root, 'blah')))
     .to.equal(3);
-  clearModule(join(root, 'blah'));
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/blah.js'];
 });
 
 it('can resolve exact', async () => {
@@ -39,11 +40,11 @@ it('can resolve exact', async () => {
   expect(__non_webpack_require__(join(root, 'boo')))
     .to.equal(2);
   clear();
-  clearModule(join(root, 'blah'));
-  clearModule(join(root, 'boo'));
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/blah.js'];
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/boo.js'];
   expect(__non_webpack_require__(join(root, 'boo')))
     .to.equal(1);
-  clearModule(join(root, 'boo'));
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/boo.js'];
 });
 
 it('can resolve false', async () => {
@@ -53,10 +54,10 @@ it('can resolve false', async () => {
     },
     fallback: {},
   }, []);
-  expect(__non_webpack_require__(join(root, 'boo')))
+  expect(__non_webpack_require__(join(root, 'boo.js')))
     .to.be.undefined;
   clear();
-  clearModule(join(root, 'boo'));
-  expect(__non_webpack_require__(join(root, 'boo')))
+  delete __non_webpack_require__.cache['/home/cha0s/sync/src/code/flecks/packages/core/test/server/resolve/boo.js'];
+  expect(__non_webpack_require__(join(root, 'boo.js')))
     .to.equal(1);
 });

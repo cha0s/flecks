@@ -6,14 +6,7 @@ const Build = require('./build');
 
 const debug = D('@flecks/build/build/fleckspack.config.js');
 
-const {
-  FLECKS_CORE_BUILD_LIST = '',
-} = process.env;
-
-const buildList = FLECKS_CORE_BUILD_LIST
-  .split(',')
-  .map((name) => name.trim())
-  .filter((e) => e);
+const {buildList} = Build;
 
 module.exports = async (env, argv) => {
   debug('bootstrapping flecks...');

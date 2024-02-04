@@ -2,8 +2,8 @@ const {stat, unlink} = require('fs/promises');
 const {join} = require('path');
 
 const Build = require('@flecks/build/build/build');
-const {regexFromExtensions} = require('@flecks/build/server');
-const {spawnWith} = require('@flecks/core/server');
+const {regexFromExtensions} = require('@flecks/build/src/server');
+const {spawnWith} = require('@flecks/core/src/server');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {

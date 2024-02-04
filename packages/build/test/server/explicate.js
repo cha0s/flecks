@@ -1,3 +1,4 @@
+import {mkdir, writeFile} from 'fs/promises';
 import {join} from 'path';
 
 import {expect} from 'chai';
@@ -89,6 +90,9 @@ describe('explication', () => {
   });
 
   it('includes modules', async () => {
+    // act doesn't like copying node_modules, so we'll spin it up.
+    mkdir(join(root, 'modules-root', 'node_modules'));
+    await writeFile(join(root, 'modules-root', 'node_modules', 'foo.js'), '');
     expect(await createExplication(['modules-root:./modules-root', 'foo']))
       .to.deep.include({
         paths: ['modules-root', 'foo'],

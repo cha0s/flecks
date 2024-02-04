@@ -11,7 +11,7 @@ const {
   transform,
 } = require('@flecks/core/server');
 const {move, testDestination} = require('@flecks/create-app/build/move');
-const {validate} = require('@flecks/create-app/server');
+const {validate} = require('@flecks/create-app/src/server');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

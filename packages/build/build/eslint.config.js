@@ -14,6 +14,7 @@ const Build = require('./build');
 const debug = D('@flecks/build/build/eslint.config.js');
 
 const {
+  FLECKS_BUILD_ESLINT_NO_CACHE,
   FLECKS_CORE_ROOT = process.cwd(),
   FLECKS_CORE_SYNC_FOR_ESLINT = false,
 } = process.env;
@@ -44,6 +45,9 @@ else {
   // Check cache first.
   const cacheDirectory = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'build');
   try {
+    if (FLECKS_BUILD_ESLINT_NO_CACHE) {
+      throw new Error();
+    }
     statSync(join(cacheDirectory, 'eslint.config.json'));
     module.exports = JSON.parse(readFileSync(join(cacheDirectory, 'eslint.config.json')).toString());
   }
@@ -62,7 +66,6 @@ else {
     const json = stdout.toString();
     try {
       const parsed = JSON.parse(json);
-      statSync(join(FLECKS_CORE_ROOT, 'node_modules'));
       mkdirSync(cacheDirectory, {recursive: true});
       // Cache.
       writeFileSync(join(cacheDirectory, 'eslint.config.json'), json);

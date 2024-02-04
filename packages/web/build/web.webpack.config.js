@@ -4,7 +4,7 @@ const {
   defaultConfig,
   regexFromExtensions,
   webpack,
-} = require('@flecks/build/server');
+} = require('@flecks/build/src/server');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {htmlTagObjectToString} = require('html-webpack-plugin/lib/html-tags');
