@@ -20,9 +20,9 @@ const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
       .then(
         ((cwd) => (
           (code) => {
-            if (0 === code) {
-              return processCode(spawnWith(['npm', 'run', ...process.argv.slice(2)], {cwd}));
-            }
+            return 0 === code
+              ? processCode(spawnWith(['npm', 'run', ...process.argv.slice(2)], {cwd}))
+              : code;
           }
         ))(paths[i]),
       );
