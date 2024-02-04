@@ -1,3 +1,5 @@
+![CI](https://github.com/cha0s/flecks/actions/workflows/verify.yml/badge.svg)
+
 # Flecks
 
 ⚡️ flecks will help you build a **flexible and powerful application in no time**.
