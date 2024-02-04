@@ -1,5 +1,9 @@
 const globals = require('globals');
 
+const {
+  FLECKS_BUILD_TESTING_LINT,
+} = process.env;
+
 module.exports = async (flecks) => ({
   extends: [
     require.resolve('eslint-config-airbnb'),
@@ -16,6 +20,10 @@ module.exports = async (flecks) => ({
     'dist/**',
     // Not even gonna try.
     'build/flecks.hooks.js',
+    // Internal.
+    ...!FLECKS_BUILD_TESTING_LINT
+      ? ['test/server/lint/fail.js']
+      : [],
   ],
   overrides: [
     {
