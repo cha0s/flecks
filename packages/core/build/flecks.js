@@ -56,7 +56,7 @@ const wrapGathered = (Class, id, idProperty, type, typeProperty) => {
   return Subclass;
 };
 
-exports.Flecks = class Flecks {
+class Flecks {
 
   config = {};
 
@@ -82,14 +82,14 @@ exports.Flecks = class Flecks {
     );
     this.config = {...emptyConfigForAllFlecks, ...config};
     const entries = Object.entries(flecks);
-    debugSilly('paths: %O', entries.map(([fleck]) => fleck));
+    this.constructor.debugSilly('paths: %O', entries.map(([fleck]) => fleck));
     for (let i = 0; i < entries.length; i++) {
       const [fleck, M] = entries[i];
       this.registerFleckHooks(fleck, M);
       this.invoke('@flecks/core.registered', fleck, M);
     }
     this.configureFlecksDefaults();
-    debugSilly('config: %O', this.config);
+    this.constructor.debugSilly('config: %O', this.config);
   }
 
   /**
@@ -275,7 +275,7 @@ exports.Flecks = class Flecks {
         if (rAfter.includes(l)) {
           explanation.push(r, 'after', l);
         }
-        debug(
+        this.constructor.debug(
           "Suspicious ordering specification for '%s': '%s' expected to run %s '%s'!",
           ...explanation,
         );
@@ -284,7 +284,7 @@ exports.Flecks = class Flecks {
     // Filter unimplemented.
     this.$$expandedFlecksCache[hook] = expanded // eslint-disable-line no-return-assign
       .filter((fleck) => this.fleckImplementation(fleck, hook));
-    debugSilly("cached hook expansion for '%s': %O", hook, expanded);
+    this.constructor.debugSilly("cached hook expansion for '%s': %O", hook, expanded);
     return [...this.$$expandedFlecksCache[hook]];
   }
 
@@ -365,7 +365,7 @@ exports.Flecks = class Flecks {
     const {flecks} = runtime;
     const mixinDescription = Object.entries(flecks)
       .map(([path, {mixin}]) => [path, mixin]).filter(([, mixin]) => mixin);
-    debugSilly('mixins: %O', mixinDescription.map(([path]) => path));
+    this.debugSilly('mixins: %O', mixinDescription.map(([path]) => path));
     const Flecks = compose(...mixinDescription.map(([, mixin]) => mixin))(this);
     const instance = new Flecks(runtime);
     await instance.gatherHooks();
@@ -424,7 +424,7 @@ exports.Flecks = class Flecks {
       typeProperty,
       gathered,
     };
-    debug("gathered '%s': %O", hook, Object.keys(gathered[exports.ByType]));
+    this.constructor.debug("gathered '%s': %O", hook, Object.keys(gathered[exports.ByType]));
     return gathered;
   }
 
@@ -557,7 +557,7 @@ exports.Flecks = class Flecks {
    * @returns {*}
    */
   invokeFleck(hook, fleck, ...args) {
-    debugSilly('invokeFleck(%s, %s, ...)', hook, fleck);
+    this.constructor.debugSilly('invokeFleck(%s, %s, ...)', hook, fleck);
     if (!this.hooks[hook]) {
       return undefined;
     }
@@ -737,7 +737,7 @@ exports.Flecks = class Flecks {
    * @returns {function}
    */
   makeMiddleware(hook) {
-    debugSilly('makeMiddleware(...): %s', hook);
+    this.constructor.debugSilly('makeMiddleware(...): %s', hook);
     if (!this.hooks[hook]) {
       return (...args) => args.pop()();
     }
@@ -746,7 +746,7 @@ exports.Flecks = class Flecks {
       // No flecks, immediate dispatch.
       return (...args) => args.pop()();
     }
-    debugSilly('middleware: %O', flecks);
+    this.constructor.debugSilly('middleware: %O', flecks);
     const instance = new Middleware(flecks.map((fleck) => this.invokeFleck(hook, fleck)));
     return instance.dispatch.bind(instance);
   }
@@ -817,7 +817,7 @@ exports.Flecks = class Flecks {
    * @protected
    */
   refresh(fleck, M) {
-    debug('refreshing %s...', fleck);
+    this.constructor.debug('refreshing %s...', fleck);
     // Remove old hook implementations.
     this.unregisterFleckHooks(fleck);
     // Replace the fleck.
@@ -849,17 +849,17 @@ exports.Flecks = class Flecks {
           // If decorating, gather all again
           if (this.fleckImplementation(fleck, `${hook}.decorate`)) {
             raw = await this.invokeMergeAsync(hook);
-            debugSilly('%s implements %s.decorate', fleck, hook);
+            this.constructor.debugSilly('%s implements %s.decorate', fleck, hook);
           }
           // If only implementing, gather and decorate.
           else if (this.fleckImplementation(fleck, hook)) {
             raw = await this.invokeFleck(hook, fleck);
-            debugSilly('%s implements %s', fleck, hook);
+            this.constructor.debugSilly('%s implements %s', fleck, hook);
           }
           if (raw) {
             const decorated = await this.checkAndDecorateRawGathered(hook, raw, check);
-            debug('updating gathered %s from %s...', hook, fleck);
-            debugSilly('%O', decorated);
+            this.constructor.debug('updating gathered %s from %s...', hook, fleck);
+            this.constructor.debugSilly('%O', decorated);
             const entries = Object.entries(decorated);
             entries.forEach(([type, Class]) => {
               const {[type]: {[idProperty]: id}} = gathered;
@@ -885,11 +885,11 @@ exports.Flecks = class Flecks {
    * @protected
    */
   registerFleckHooks(fleck, M) {
-    debugSilly('registering %s...', fleck);
+    this.constructor.debugSilly('registering %s...', fleck);
     this.flecks[fleck] = M;
     if (M.hooks) {
       const hooks = Object.keys(M.hooks);
-      debugSilly("hooks for '%s': %O", fleck, hooks);
+      this.constructor.debugSilly("hooks for '%s': %O", fleck, hooks);
       for (let j = 0; j < hooks.length; j++) {
         const hook = hooks[j];
         if (!this.hooks[hook]) {
@@ -922,7 +922,11 @@ exports.Flecks = class Flecks {
     }
   }
 
-};
+}
 
-exports.Flecks.get = get;
-exports.Flecks.set = set;
+Flecks.debug = debug;
+Flecks.debugSilly = debugSilly;
+Flecks.get = get;
+Flecks.set = set;
+
+exports.Flecks = Flecks;
