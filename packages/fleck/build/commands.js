@@ -1,13 +1,11 @@
 const {stat, unlink} = require('fs/promises');
 const {join} = require('path');
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 const {commands: coreCommands} = require('@flecks/build/build/commands');
 const {D} = require('@flecks/core/src');
 const {glob} = require('@flecks/core/src/server');
-const chokidar = require('chokidar');
-const clearModule = require('clear-module');
 const Mocha = require('mocha');
+const {watchParallelRun} = require('mocha/lib/cli/watch-run');
 
 const debug = D('@flecks/build.commands');
 
@@ -33,17 +31,21 @@ module.exports = (program, flecks) => {
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
-      const child = await build.action('test', opts);
       const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/**/*.js'));
       if (0 === testPaths.length) {
         // eslint-disable-next-line no-console
-        console.log('No fleck tests found.');
-        return child;
+        console.log('No tests found.');
+        return;
       }
+      // Remove the previous test.
       const testLocation = join(FLECKS_CORE_ROOT, 'dist', 'test.js');
-      if (watch) {
+      try {
         await unlink(testLocation);
       }
+      // eslint-disable-next-line no-empty
+      catch (error) {}
+      // Kick off building the test and wait for the file to exist.
+      await build.action('test', opts);
       debug('Testing...', opts);
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -59,24 +61,7 @@ module.exports = (program, flecks) => {
           });
         }
       }
-      const runMocha = async () => {
-        const mocha = new Mocha();
-        mocha.ui('bdd');
-        clearModule(testLocation);
-        mocha.addFile(testLocation);
-        mocha.loadFiles();
-        return new Promise((r, e) => {
-          mocha.run((code) => {
-            if (!code) {
-              r();
-              return;
-            }
-            const error = new Error('Tests failed');
-            error.code = code;
-            e(error);
-          });
-        });
-      };
+      // Magic.
       require('@flecks/core/build/resolve')(
         {
           alias: flecks.resolver.aliases,
@@ -84,28 +69,24 @@ module.exports = (program, flecks) => {
         },
         flecks.stubs,
       );
-      if (!watch) {
-        await new Promise((resolve, reject) => {
-          child.on('exit', (code) => {
-            if (code !== 0) {
-              reject(code);
-              return;
-            }
-            resolve();
-          });
-          child.on('error', reject);
-        });
-        await runMocha();
-        return 0;
+      const mocha = new Mocha({parallel: true});
+      mocha.ui('bdd');
+      if (watch) {
+        watchParallelRun(mocha, {watchFiles: [testLocation]}, {file: [testLocation], spec: []});
+        return new Promise(() => {});
       }
-      chokidar.watch(testLocation)
-        .on('all', async () => {
-          await new Promise((resolve) => {
-            setTimeout(resolve, 50);
-          });
-          runMocha();
+      mocha.files = [testLocation];
+      return new Promise((r, e) => {
+        mocha.run((code) => {
+          if (!code) {
+            r();
+            return;
+          }
+          const error = new Error('Tests failed');
+          error.code = code;
+          e(error);
         });
-      return new Promise(() => {});
+      });
     },
   };
   return commands;

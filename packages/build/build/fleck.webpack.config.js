@@ -37,7 +37,6 @@ const resolveValidModulePath = (source) => (path) => {
 module.exports = async (env, argv, flecks) => {
   const config = await configFn(env, argv, flecks);
   config.externals = await externals();
-  config.output.clean = {keep: /test\.js(?:\.map)?/};
   config.plugins.push(
     new CopyPlugin({
       patterns: [

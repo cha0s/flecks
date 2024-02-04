@@ -179,9 +179,9 @@ exports.commands = (program, flecks) => {
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
           'npx', 'webpack',
+          ...((watch || hot) ? ['watch'] : []),
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
-          ...((watch || hot) ? ['--watch'] : []),
         ];
         return spawnWith(
           cmd,
