@@ -2,17 +2,23 @@ import {expect} from 'chai';
 
 import {Flecks, ById, ByType} from '@flecks/core';
 
-const testOne = require('./packages/one');
-const testTwo = require('./packages/two');
-
 it('can gather', async () => {
   const flecks = await Flecks.from({
     flecks: {
-      '@flecks/core/one': testOne,
-      '@flecks/core/two': testTwo,
+      one: {
+        hooks: {
+          'one.gather': Flecks.provide(require.context('./gather/one', false)),
+          'one.gather.decorate': Flecks.decorate(require.context('./gather/one/decorators', false)),
+        },
+      },
+      two: {
+        hooks: {
+          'one.gather': Flecks.provide(require.context('./gather/two', false)),
+        },
+      },
     },
   });
-  const Gathered = await flecks.gather('@flecks/core/one/test-gather');
+  const Gathered = await flecks.gather('one.gather');
   expect(Object.keys(Gathered[ByType]).length)
     .to.equal(Object.keys(Gathered[ById]).length);
   const typeKeys = Object.keys(Gathered[ByType]);

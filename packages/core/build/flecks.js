@@ -459,7 +459,7 @@ class Flecks {
   }
 
   /**
-   * Interpolate a string with flecks configurtaion values.
+   * Interpolate a string with flecks configuration values.
    * @param {string} string
    * @returns The interpolated string.
    */
