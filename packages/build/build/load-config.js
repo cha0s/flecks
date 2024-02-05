@@ -5,14 +5,10 @@ const D = require('@flecks/core/build/debug');
 
 const debug = D('@flecks/build/build/load-config');
 
-const {
-  FLECKS_CORE_ROOT = process.cwd(),
-} = process.env;
-
-module.exports = async function loadConfig() {
+module.exports = async function loadConfig(root) {
   try {
     const {load} = require('js-yaml');
-    const filename = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
+    const filename = join(root, 'build', 'flecks.yml');
     const buffer = await readFile(filename, 'utf8');
     debug('parsing configuration from YML...');
     return ['YML', load(buffer, {filename})];
@@ -21,7 +17,7 @@ module.exports = async function loadConfig() {
     if ('ENOENT' !== error.code) {
       throw error;
     }
-    const {name} = require(join(FLECKS_CORE_ROOT, 'package.json'));
+    const {name} = require(join(root, 'package.json'));
     const barebones = {
       '@flecks/build': {},
       '@flecks/core': {},
@@ -30,7 +26,7 @@ module.exports = async function loadConfig() {
     if (barebones[name]) {
       delete barebones[name];
     }
-    barebones[`${name}:${FLECKS_CORE_ROOT}`] = {};
+    barebones[`${name}:${root}`] = {};
     return ['barebones', barebones];
   }
 };

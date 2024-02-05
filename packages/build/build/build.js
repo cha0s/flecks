@@ -44,7 +44,12 @@ module.exports = class Build extends Flecks {
       .filter((e) => e);
   }
 
-  static async buildRuntime(originalConfig, platforms, flecks = {}) {
+  static async buildRuntime({
+    flecks = {},
+    originalConfig,
+    platforms,
+    root,
+  }) {
     const cleanConfig = JSON.parse(JSON.stringify(originalConfig));
     // Dealias the config keys.
     const dealiasedConfig = Object.fromEntries(
@@ -57,7 +62,7 @@ module.exports = class Build extends Flecks {
           ];
         }),
     );
-    const resolver = new Resolver({root: FLECKS_CORE_ROOT});
+    const resolver = new Resolver({root});
     const {paths, roots} = await explicate({
       paths: Object.keys(originalConfig),
       platforms,
@@ -129,6 +134,7 @@ module.exports = class Build extends Flecks {
       config: configParameter,
       flecks: configFlecks,
       platforms = ['server'],
+      root = FLECKS_CORE_ROOT,
     } = {},
   ) {
     // Load or use parameterized configuration.
@@ -136,7 +142,7 @@ module.exports = class Build extends Flecks {
     let configType = 'parameter';
     if (!configParameter) {
       // eslint-disable-next-line no-param-reassign
-      [configType, originalConfig] = await loadConfig();
+      [configType, originalConfig] = await loadConfig(root);
     }
     else {
       originalConfig = JSON.parse(JSON.stringify(configParameter));
@@ -147,9 +153,15 @@ module.exports = class Build extends Flecks {
       resolver,
       roots,
       runtime,
-    } = await this.buildRuntime(originalConfig, platforms, configFlecks);
+    } = await this.buildRuntime({
+      flecks: configFlecks,
+      originalConfig,
+      platforms,
+      root,
+    });
     const flecks = await super.from(runtime);
     flecks.platforms = platforms;
+    flecks.root = root;
     flecks.roots = roots;
     flecks.resolver = resolver;
     flecks.loadBuildFiles();
@@ -181,7 +193,7 @@ module.exports = class Build extends Flecks {
     if (!fleck) {
       throw new Error(`Unknown build config: '${config}'`);
     }
-    const rootConfig = await this.resolver.resolve(join(FLECKS_CORE_ROOT, 'build', config));
+    const rootConfig = await this.resolver.resolve(join(this.root, 'build', config));
     if (rootConfig) {
       return rootConfig;
     }

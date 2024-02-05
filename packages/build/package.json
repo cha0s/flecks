@@ -11,7 +11,7 @@
     "clean": "rm -rf dist node_modules yarn.lock",
     "lint": "eslint --config ./build/eslint.config.js .",
     "postversion": "npm run build",
-    "test": "webpack --config ../core/build/build.test.webpack.config.js --mode production && mocha --colors ./dist/test.js --timeout 10000",
+    "test": "webpack --config ./build/build.test.webpack.config.js --mode production && mocha --colors ./dist/test.js --timeout 10000",
     "test:watch": "webpack watch --config ./build/build.test.webpack.config.js --mode development & mocha --parallel --watch --watch-files ./dist/test.js --colors ./dist/test.js --timeout 10000"
   },
   "bin": {
