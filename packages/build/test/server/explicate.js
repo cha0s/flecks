@@ -91,7 +91,7 @@ describe('explication', () => {
 
   it('includes modules', async () => {
     // act doesn't like copying node_modules, so we'll spin it up.
-    mkdir(join(root, 'modules-root', 'node_modules'));
+    await mkdir(join(root, 'modules-root', 'node_modules'), {recursive: true});
     await writeFile(join(root, 'modules-root', 'node_modules', 'foo.js'), '');
     expect(await createExplication(['modules-root:./modules-root', 'foo']))
       .to.deep.include({
