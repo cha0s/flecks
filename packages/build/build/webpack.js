@@ -97,7 +97,7 @@ exports.executable = () => (
       compiler.hooks.afterEmit.tapPromise(
         'Executable',
         async () => (
-          chmod(join(FLECKS_CORE_ROOT, 'dist', 'build', 'cli.js'), 0o755)
+          chmod(join(FLECKS_CORE_ROOT, 'dist', 'fleck', 'build', 'cli.js'), 0o755)
         ),
       );
     }

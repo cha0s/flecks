@@ -22,7 +22,7 @@ const {
   spawnWith,
 } = require('@flecks/core/src/server');
 const {glob} = require('glob');
-const rimraf = require('rimraf');
+const {rimraf} = require('rimraf');
 
 const addPathsToYml = require('./add-paths-to-yml');
 

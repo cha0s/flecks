@@ -4,11 +4,10 @@ import {join} from 'path';
 
 import {D, Flecks} from '@flecks/core';
 
-const {version} = require('../package.json');
-
 (async () => {
-  const runtime = await __non_webpack_require__('@flecks/server/runtime');
-  const {loadFlecks} = runtime;
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  const runtime = await import('@flecks/server/runtime');
+  const {loadFlecks, version} = runtime;
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {
@@ -27,6 +26,7 @@ const {version} = require('../package.json');
     debug('up!');
   }
   catch (error) {
-    debug(error);
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 })();

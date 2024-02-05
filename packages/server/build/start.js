@@ -21,13 +21,17 @@ class StartServerPlugin {
   apply(compiler) {
     const {options: {exec, signal}, pluginName} = this;
     const logger = compiler.getInfrastructureLogger(pluginName);
-    compiler.hooks.afterEmit.tapAsync(pluginName, (compilation, callback) => {
+    compiler.hooks.afterEmit.tapPromise(pluginName, async (compilation) => {
       if (this.worker && this.worker.isConnected()) {
         if (signal) {
-          process.kill(this.worker.process.pid, true === signal ? 'SIGUSR2' : signal);
+          this.worker.kill(true === signal ? 'SIGUSR2' : signal);
+          return undefined;
         }
-        callback();
-        return;
+        const promise = new Promise((resolve) => {
+          this.worker.on('disconnect', resolve);
+        });
+        this.worker.disconnect();
+        await promise;
       }
       let entryPoint;
       if (!exec) {
@@ -42,7 +46,7 @@ class StartServerPlugin {
       else {
         entryPoint = exec(compilation);
       }
-      this.startServer(join(compiler.options.output.path, entryPoint), callback);
+      return this.startServer(join(compiler.options.output.path, entryPoint));
     });
     compiler.hooks.shouldEmit.tap(pluginName, (compilation) => {
       const entryPoints = Object.keys(compilation.assets);
@@ -66,7 +70,7 @@ class StartServerPlugin {
     return parseInt(port, 10);
   }
 
-  startServer(exec, callback) {
+  async startServer(exec) {
     const {
       args,
       env,
@@ -81,13 +85,16 @@ class StartServerPlugin {
       args,
       ...(inspectPort && {inspectPort}),
     });
-    cluster.on('online', () => callback());
     this.worker = cluster.fork(env);
     if (killOnExit) {
       this.worker.on('exit', () => {
         process.exit();
       });
     }
+    return new Promise((resolve, reject) => {
+      this.worker.on('error', reject);
+      this.worker.on('online', resolve);
+    });
   }
 
 }

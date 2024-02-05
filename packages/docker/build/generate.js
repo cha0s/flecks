@@ -11,7 +11,7 @@ exports.generateDockerFile = async (flecks) => {
     'ENV DEBUG=*',
     'ENV NODE_ENV=production',
     '',
-    'CMD ["node", "./dist/server/index.js"]',
+    'CMD ["node", "dist/server"]',
     '',
     'VOLUME /var/www/node_modules',
     '',

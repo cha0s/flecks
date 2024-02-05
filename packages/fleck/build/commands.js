@@ -1,7 +1,8 @@
-const {stat, unlink} = require('fs/promises');
-const {join} = require('path');
+const {access} = require('fs/promises');
+const {join, relative} = require('path');
 
 const {commands: coreCommands} = require('@flecks/build/build/commands');
+const {rimraf} = require('@flecks/build/src/server');
 const {D} = require('@flecks/core/src');
 const {glob} = require('@flecks/core/src/server');
 const Mocha = require('mocha');
@@ -18,6 +19,7 @@ module.exports = (program, flecks) => {
   commands.test = {
     options: [
       program.createOption('-d, --no-production', 'dev build'),
+      program.createOption('-t, --timeout <ms>', 'timeout').default(2000),
       program.createOption('-w, --watch', 'watch for changes'),
       program.createOption('-v, --verbose', 'verbose output'),
     ],
@@ -28,22 +30,19 @@ module.exports = (program, flecks) => {
     ].join('\n'),
     action: async (opts) => {
       const {
+        timeout,
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
-      const testPaths = await glob(join(FLECKS_CORE_ROOT, 'test/**/*.js'));
-      if (0 === testPaths.length) {
+      const tests = await glob(join(FLECKS_CORE_ROOT, 'test', '*.js'));
+      const serverTests = await glob(join(FLECKS_CORE_ROOT, 'test', 'server', '*.js'));
+      if (0 === tests.length + serverTests.length) {
         // eslint-disable-next-line no-console
         console.log('No tests found.');
         return undefined;
       }
       // Remove the previous test.
-      const testLocation = join(FLECKS_CORE_ROOT, 'dist', 'test.js');
-      try {
-        await unlink(testLocation);
-      }
-      // eslint-disable-next-line no-empty
-      catch (error) {}
+      await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
       await build.action('test', opts);
       debug('Testing...', opts);
@@ -51,7 +50,7 @@ module.exports = (program, flecks) => {
       while (true) {
         try {
           // eslint-disable-next-line no-await-in-loop
-          await stat(testLocation);
+          await access(join(FLECKS_CORE_ROOT, 'dist', 'test'));
           break;
         }
         catch (error) {
@@ -69,13 +68,25 @@ module.exports = (program, flecks) => {
         },
         flecks.stubs,
       );
-      const mocha = new Mocha({parallel: true});
+      const mocha = new Mocha({parallel: true, timeout});
       mocha.ui('bdd');
+      const files = []
+        .concat(tests, serverTests)
+        .map((path) => join('dist', relative(FLECKS_CORE_ROOT, path)));
       if (watch) {
-        watchParallelRun(mocha, {watchFiles: [testLocation]}, {file: [testLocation], spec: []});
+        watchParallelRun(
+          mocha,
+          {
+            watchFiles: files,
+          },
+          {
+            file: files,
+            spec: [],
+          },
+        );
         return new Promise(() => {});
       }
-      mocha.files = [testLocation];
+      mocha.files = files;
       return new Promise((r, e) => {
         mocha.run((code) => {
           if (!code) {

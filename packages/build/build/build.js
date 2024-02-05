@@ -52,16 +52,7 @@ module.exports = class Build extends Flecks {
   }) {
     const cleanConfig = JSON.parse(JSON.stringify(originalConfig));
     // Dealias the config keys.
-    const dealiasedConfig = Object.fromEntries(
-      Object.entries(cleanConfig)
-        .map(([maybeAliasedPath, config]) => {
-          const index = maybeAliasedPath.indexOf(':');
-          return [
-            -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
-            config,
-          ];
-        }),
-    );
+    const dealiasedConfig = this.dealiasedConfig(cleanConfig);
     const resolver = new Resolver({root});
     const {paths, roots} = await explicate({
       paths: Object.keys(originalConfig),

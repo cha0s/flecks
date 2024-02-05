@@ -94,7 +94,7 @@ module.exports = async (config, env, argv, flecks) => {
   buildFlecks.stubs.forEach((stub) => {
     config.resolve.alias[stub] = false;
   });
-  await buildFlecks.runtimeCompiler('web', config);
+  await buildFlecks.runtimeCompiler('web', config, env, argv);
   // Styles.
   config.entry.index.push(...styles);
   // Tests.

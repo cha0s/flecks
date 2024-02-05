@@ -11,8 +11,8 @@
     "clean": "rm -rf dist node_modules yarn.lock",
     "lint": "eslint --config ./build/eslint.config.js .",
     "postversion": "npm run build",
-    "test": "webpack --config ./build/build.test.webpack.config.js --mode production && mocha --colors ./dist/test.js --timeout 10000",
-    "test:watch": "webpack watch --config ./build/build.test.webpack.config.js --mode development & mocha --parallel --watch --watch-files ./dist/test.js --colors ./dist/test.js --timeout 10000"
+    "test": "webpack --config ./build/build.test.webpack.config.js --mode production && mocha --colors --parallel ./dist/test/*.js ./dist/test/server/*.js",
+    "test:watch": "webpack watch --config ./build/build.test.webpack.config.js --mode development & mocha --colors --parallel --watch --watch-files ./dist/test/*.js ./dist/test/server/*.js"
   },
   "bin": {
     "flecks": "./build/cli.js"
@@ -51,7 +51,7 @@
     "graceful-fs": "^4.2.11",
     "js-yaml": "4.1.0",
     "mocha": "^10.2.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.5",
     "source-map-loader": "4.0.1",
     "source-map-support": "0.5.19",
     "webpack": "^5.89.0",

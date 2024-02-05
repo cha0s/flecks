@@ -4,6 +4,8 @@ const D = require('@flecks/core/build/debug');
 
 const debug = D('@flecks/server/build/runtime');
 
+const {version} = require('../package.json');
+
 module.exports = async (config, env, argv, flecks) => {
   const runtimePath = await flecks.resolver.resolve('@flecks/server/runtime');
   // Inject flecks configuration.
@@ -38,6 +40,7 @@ module.exports = async (config, env, argv, flecks) => {
       '  )',
       ')',
     ].join('\n'),
+    version: JSON.stringify(version),
     ...await flecks.invokeAsync('@flecks/server.runtime'),
   };
   const runtimeString = `{${
@@ -100,7 +103,7 @@ module.exports = async (config, env, argv, flecks) => {
   flecks.stubs.forEach((stub) => {
     config.resolve.alias[stub] = false;
   });
-  await flecks.runtimeCompiler('server', config);
+  await flecks.runtimeCompiler('server', config, env, argv);
   // Rewrite to signals for HMR.
   if ('production' !== argv.mode) {
     allowlist.push(/^webpack\/hot\/signal/);

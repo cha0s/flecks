@@ -45,12 +45,10 @@ it('configures from environment', async () => {
 });
 
 it('dealiases config', async () => {
-  expect(await Build.buildRuntime({
-    originalConfig: {'two:./two': {foo: 2}},
-    platforms: [],
-    root: buildRoot,
-  }))
-    .to.nested.include({
-      'runtime.config.two.foo': 2,
+  expect(await Build.dealiasedConfig({'two:./two': {foo: 2}}))
+    .to.deep.equal({
+      two: {
+        foo: 2,
+      },
     });
 });

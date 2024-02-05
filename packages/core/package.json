@@ -8,8 +8,8 @@
     "clean": "rm -rf dist node_modules yarn.lock",
     "lint": "eslint --config ./build/core.eslint.config.js .",
     "postversion": "npm run build",
-    "test": "webpack --config ./build/test.webpack.config.js --mode production && mocha --colors ./dist/test.js",
-    "test:watch": "webpack watch --config ./build/test.webpack.config.js --mode development & mocha --parallel --watch --watch-files ./dist/test.js --colors ./dist/test.js"
+    "test": "webpack --config ./build/test.webpack.config.js --mode production && mocha --colors --parallel ./dist/test/*.js ./dist/test/server/*.js",
+    "test:watch": "webpack watch --config ./build/test.webpack.config.js --mode development & mocha --colors --parallel --watch --watch-files ./dist/test/*.js ./dist/test/server/*.js"
   },
   "repository": {
     "type": "git",
@@ -54,7 +54,7 @@
     "eslint-webpack-plugin": "^3.2.0",
     "globals": "^13.23.0",
     "mocha": "^10.2.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.5",
     "source-map-loader": "4.0.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",

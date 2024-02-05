@@ -135,6 +135,25 @@ class Flecks {
   }
 
   /**
+   * Dealias a configuration object.
+   *
+   * @param {Object} config Configuration.
+   * @returns {Object}
+   */
+  static dealiasedConfig(config) {
+    return Object.fromEntries(
+      Object.entries(config)
+        .map(([maybeAliasedPath, config]) => {
+          const index = maybeAliasedPath.indexOf(':');
+          return [
+            -1 === index ? maybeAliasedPath : maybeAliasedPath.slice(0, index),
+            config,
+          ];
+        }),
+    );
+  }
+
+  /**
    * Generate a decorator from a require context.
    *
    * @param {*} context @see {@link https://webpack.js.org/guides/dependency-management/#requirecontext}

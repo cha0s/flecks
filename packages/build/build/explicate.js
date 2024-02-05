@@ -41,8 +41,8 @@ module.exports = async function explicate(
         let realResolvedCandidate = await realpath(resolvedCandidate);
         const isSymlink = resolvedCandidate !== realResolvedCandidate;
         if (isSymlink) {
-          if (realResolvedCandidate.endsWith('/dist')) {
-            realResolvedCandidate = realResolvedCandidate.slice(0, -5);
+          if (realResolvedCandidate.endsWith('/dist/fleck')) {
+            realResolvedCandidate = realResolvedCandidate.slice(0, -11);
           }
         }
         // Aliased? Include submodules.
