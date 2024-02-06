@@ -46,8 +46,7 @@ exports.hooks = {
      * Webpack stats configuration.
      */
     stats: {
-      colors: true,
-      errorDetails: true,
+      preset: 'minimal',
     },
   }),
   '@flecks/build.targets': () => ['server'],

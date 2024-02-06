@@ -244,8 +244,7 @@ exports.hooks = {
      * (webpack-dev-server) Webpack stats output.
      */
     devStats: {
-      colors: true,
-      errorDetails: true,
+      preset: 'minimal',
     },
     /**
      * Modules to externalize using `webpack.DllPlugin`.
@@ -278,8 +277,7 @@ exports.hooks = {
      * Webpack stats configuration.
      */
     stats: {
-      colors: true,
-      errorDetails: true,
+      preset: 'minimal',
     },
     /**
      * HTML title.

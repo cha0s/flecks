@@ -74,8 +74,7 @@ module.exports = async (env, argv, flecks) => {
       modules: ['node_modules'],
     },
     stats: {
-      colors: true,
-      errorDetails: true,
+      preset: 'minimal',
     },
     target: 'node',
   });

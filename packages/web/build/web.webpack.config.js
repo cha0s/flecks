@@ -164,10 +164,10 @@ module.exports = async (env, argv, flecks) => {
       compress: false,
       devMiddleware: {
         stats: {
-          ...devStats,
           warningsFilter: [
             /Failed to parse source map/,
           ],
+          ...devStats,
         },
       },
       historyApiFallback: {
@@ -234,10 +234,10 @@ module.exports = async (env, argv, flecks) => {
       },
     },
     stats: {
-      ...flecks.get('@flecks/web.stats'),
       warningsFilter: [
         /Failed to parse source map/,
       ],
+      ...flecks.get('@flecks/web.stats'),
     },
     target: 'web',
   });

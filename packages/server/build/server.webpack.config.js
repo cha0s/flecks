@@ -33,10 +33,10 @@ module.exports = async (env, argv, flecks) => {
       banner({banner: "require('source-map-support').install();"}),
     ],
     stats: {
-      ...flecks.get('@flecks/server.stats'),
       warningsFilter: [
         /Failed to parse source map/,
       ],
+      ...flecks.get('@flecks/server.stats'),
     },
     target: 'node',
   });

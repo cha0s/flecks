@@ -53,8 +53,7 @@ exports.defaultConfig = (flecks, specializedConfig) => {
       modules: ['node_modules'],
     },
     stats: {
-      colors: true,
-      errorDetails: true,
+      preset: 'minimal',
     },
   };
   return 'function' === typeof specializedConfig
