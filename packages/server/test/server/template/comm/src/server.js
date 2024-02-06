@@ -1,3 +1,4 @@
+import cluster from 'cluster';
 import {createConnection} from 'net';
 
 const {
@@ -18,7 +19,12 @@ export const hooks = {
     if (!FLECKS_SERVER_TEST_SOCKET) {
       return;
     }
-    const socket = createConnection({path: FLECKS_SERVER_TEST_SOCKET});
+    const socket = createConnection(FLECKS_SERVER_TEST_SOCKET);
+    if (cluster.isWorker) {
+      cluster.worker.on('disconnect', () => {
+        socket.end();
+      });
+    }
     flecks.socket = socket;
     socket.on('connect', () => {
       socket.on('data', (data) => {

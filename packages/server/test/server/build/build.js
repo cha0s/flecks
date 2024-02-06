@@ -2,7 +2,7 @@ import {cp, mkdir} from 'fs/promises';
 import {join} from 'path';
 
 import {rimraf} from '@flecks/build/server';
-import {processCode, spawnWith} from '@flecks/core/server';
+import {binaryPath, processCode, spawnWith} from '@flecks/core/server';
 
 import {listen} from './listen';
 
@@ -21,9 +21,9 @@ export async function createApplicationAt(path) {
   return qualified;
 }
 
-export function build(path, {args = [], opts = {}} = {}) {
-  return processCode(spawnWith(
-    ['npx', 'flecks', 'build', ...args],
+export async function buildChild(path, {args = [], opts = {}} = {}) {
+  return spawnWith(
+    [await binaryPath('flecks'), 'build', ...args],
     {
       ...opts,
       env: {
@@ -33,7 +33,11 @@ export function build(path, {args = [], opts = {}} = {}) {
         ...opts.env,
       },
     },
-  ));
+  );
+}
+
+export async function build(path, {args = [], opts = {}} = {}) {
+  return processCode(await buildChild(path, {args, opts}));
 }
 
 export async function serverActions(path, actions) {

@@ -58,7 +58,7 @@ module.exports = async (env, argv, flecks) => {
           NODE_PRESERVE_SYMLINKS: flecks.roots.some(([path, request]) => path !== request) ? 1 : 0,
         },
         exec: 'index.js',
-        killOnExit: !!hot,
+        killOnExit: !hot,
         // Bail hard on unhandled rejections and report.
         nodeArgs: [...nodeArgs, '--unhandled-rejections=strict', '--trace-uncaught'],
         // HMR.

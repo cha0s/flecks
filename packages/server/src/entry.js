@@ -35,7 +35,7 @@ import {D, Flecks} from '@flecks/core';
 if (module.hot) {
   module.hot.accept('./runtime', () => {
     if (cluster.isWorker) {
-      cluster.worker.send('hmr-restart');
+      cluster.worker.disconnect();
       const error = new Error('Restart requested!');
       error.stack = '';
       throw error;

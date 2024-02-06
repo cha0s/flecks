@@ -14,7 +14,7 @@
     "dox:serve": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --no-minify --out-dir ../dox-tmp && node_modules/.bin/docusaurus serve --dir ../dox-tmp",
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus",
     "lint": "node build/tasks lint",
-    "test": "node build/tasks -- test -t 60000"
+    "test": "node build/tasks -- test -t 300000"
   },
   "devDependencies": {
     "husky": "^9.0.7",

@@ -18,6 +18,7 @@ const {
 const D = require('@flecks/core/build/debug');
 const {
   add,
+  binaryPath,
   lockFile,
   spawnWith,
 } = require('@flecks/core/src/server');
@@ -178,7 +179,7 @@ exports.commands = (program, flecks) => {
         debug('Building...', opts);
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
-          'npx', 'webpack',
+          await binaryPath('webpack'),
           ...((watch || hot) ? ['watch'] : []),
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
@@ -210,7 +211,7 @@ exports.commands = (program, flecks) => {
           .map((pkg) => join(process.cwd(), pkg))
           .map(async (cwd) => {
             const cmd = [
-              'npx', 'eslint',
+              await binaryPath('eslint'),
               '--config', await flecks.resolveBuildConfig('eslint.config.js'),
               '.',
             ];

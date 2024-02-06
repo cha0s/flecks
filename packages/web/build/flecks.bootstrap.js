@@ -174,7 +174,7 @@ exports.hooks = {
       '--hot',
       '--config', await flecks.resolveBuildConfig('fleckspack.config.js'),
     ];
-    const child = spawnWith(
+    spawnWith(
       cmd,
       {
         env: {
@@ -182,10 +182,6 @@ exports.hooks = {
         },
       },
     );
-    // Clean up on exit.
-    process.on('exit', () => {
-      child.kill();
-    });
     // Remove the build config since we're handing off to WDS.
     delete configs.web;
   },

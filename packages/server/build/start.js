@@ -16,6 +16,12 @@ class StartServerPlugin {
       signal: false,
       ...('string' === typeof options ? {name: options} : options),
     };
+    ['exit', 'SIGINT', 'SIGTERM']
+      .forEach((event) => {
+        process.on(event, () => {
+          this.worker.kill('exit' === event ? 'SIGKILL' : event);
+        });
+      });
   }
 
   apply(compiler) {
@@ -85,23 +91,21 @@ class StartServerPlugin {
       args,
       ...(inspectPort && {inspectPort}),
     });
-    const setupListeners = (worker) => {
-      if (killOnExit) {
-        worker.on('exit', () => {
-          process.exit();
-        });
-      }
-      worker.on('message', (message) => {
-        if ('hmr-restart' === message) {
+    this.worker = cluster.fork(env);
+    if (killOnExit) {
+      this.worker.on('exit', (code) => {
+        process.exit(code);
+      });
+    }
+    else {
+      this.worker.on('disconnect', () => {
+        if (this.worker.exitedAfterDisconnect) {
           // eslint-disable-next-line no-console
           console.error('[HMR] Restarting application...');
           this.worker = cluster.fork(env);
-          setupListeners(this.worker);
         }
       });
-    };
-    this.worker = cluster.fork(env);
-    setupListeners(this.worker);
+    }
     return new Promise((resolve, reject) => {
       this.worker.on('error', reject);
       this.worker.on('online', resolve);
