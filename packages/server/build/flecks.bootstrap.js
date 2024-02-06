@@ -25,6 +25,13 @@ exports.hooks = {
      */
     'server.webpack.config.js',
   ],
+  '@flecks/build.targets': () => ['server'],
+  '@flecks/build.targets.alter': (targets) => {
+    // Don't build if there's a fleck target.
+    if (targets.has('fleck')) {
+      targets.delete('server');
+    }
+  },
   '@flecks/core.config': () => ({
     /**
      * Whether HMR is enabled.
@@ -49,11 +56,4 @@ exports.hooks = {
       preset: 'minimal',
     },
   }),
-  '@flecks/build.targets': () => ['server'],
-  '@flecks/build.targets.alter': (targets) => {
-    // Don't build if there's a fleck target.
-    if (targets.has('fleck')) {
-      targets.delete('server');
-    }
-  },
 };
