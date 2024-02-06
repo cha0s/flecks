@@ -60,8 +60,11 @@ else {
         ...process.env,
       },
     });
-    // eslint-disable-next-line no-console
-    console.error(stderr.toString());
+    const stderrString = stderr.toString();
+    if (stderrString) {
+      // eslint-disable-next-line no-console
+      console.error(stderrString);
+    }
     // Read the JSON written out to stdout.
     const json = stdout.toString();
     try {
