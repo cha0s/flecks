@@ -1,3 +1,4 @@
+import cluster from 'cluster';
 import {mkdir} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join} from 'path';
@@ -30,3 +31,14 @@ import {D, Flecks} from '@flecks/core';
     console.error(error);
   }
 })();
+
+if (module.hot) {
+  module.hot.accept('./runtime', () => {
+    if (cluster.isWorker) {
+      cluster.worker.send('hmr-restart');
+      const error = new Error('Restart requested!');
+      error.stack = '';
+      throw error;
+    }
+  });
+}

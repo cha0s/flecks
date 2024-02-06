@@ -41,14 +41,16 @@ export const hooks = {
   }),
 
   /**
-   * Invoked when a fleck is HMR'd
+   * Invoked when a module is HMR'd. Throw to abort hot reload and restart application.
+   * Must be synchronous.
+   *
    * @param {string} path The path of the fleck
-   * @param {Module} updatedFleck The updated fleck module.
-   * @invoke
+   * @param {Module} updated The updated module.
+   * @invokeSequential
    */
-  '@flecks/core.hmr': (path, updatedFleck) => {
+  '@flecks/core.hmr': (path, updated) => {
     if ('my-fleck' === path) {
-      updatedFleck.doSomething();
+      updated.doSomething();
     }
   },
 

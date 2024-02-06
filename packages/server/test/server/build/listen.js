@@ -33,6 +33,18 @@ class SocketWrapper {
     });
   }
 
+  async waitForHmr() {
+    return new Promise((resolve, reject) => {
+      this.socket.on('error', reject);
+      this.socket.on('data', (data) => {
+        const action = JSON.parse(data.toString());
+        if ('hmr' === action.type) {
+          resolve(action);
+        }
+      });
+    });
+  }
+
 }
 
 export async function listen() {
