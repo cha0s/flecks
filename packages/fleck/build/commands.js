@@ -17,6 +17,9 @@ const {
 module.exports = (program, flecks) => {
   const commands = {};
   commands.test = {
+    args: [
+      program.createArgument('[only]', 'only run a specific test'),
+    ],
     options: [
       program.createOption('-d, --no-production', 'dev build'),
       program.createOption('-t, --timeout <ms>', 'timeout').default(2000),
@@ -28,7 +31,7 @@ module.exports = (program, flecks) => {
       '',
       'The options are passed along to the `build` command.',
     ].join('\n'),
-    action: async (opts) => {
+    action: async (only, opts) => {
       const {
         timeout,
         watch,
@@ -36,11 +39,23 @@ module.exports = (program, flecks) => {
       const {build} = coreCommands(program, flecks);
       const tests = await glob(join(FLECKS_CORE_ROOT, 'test', '*.js'));
       const serverTests = await glob(join(FLECKS_CORE_ROOT, 'test', 'server', '*.js'));
-      if (0 === tests.length + serverTests.length) {
+      let files = []
+        .concat(tests, serverTests)
+        .map((path) => relative(FLECKS_CORE_ROOT, path));
+      if (0 === files.length) {
         // eslint-disable-next-line no-console
         console.log('No tests found.');
         return undefined;
       }
+      if (only) {
+        if (files.includes(only)) {
+          files = [only];
+        }
+        else {
+          throw new Error(`Test '${only}' does not exist!`);
+        }
+      }
+      files = files.map((file) => join('dist', file));
       // Remove the previous test.
       await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
@@ -70,9 +85,6 @@ module.exports = (program, flecks) => {
       );
       const mocha = new Mocha({parallel: true, timeout});
       mocha.ui('bdd');
-      const files = []
-        .concat(tests, serverTests)
-        .map((path) => join('dist', relative(FLECKS_CORE_ROOT, path)));
       if (watch) {
         watchParallelRun(
           mocha,
