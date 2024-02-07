@@ -116,6 +116,10 @@ class Flecks {
     for (let i = 0; i < flecks.length; i++) {
       this.configureFleckDefaults(flecks[i]);
     }
+    this.config = {
+      ...this.bootstrappedConfig,
+      ...this.config,
+    };
   }
 
   /**
