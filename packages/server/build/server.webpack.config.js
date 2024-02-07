@@ -31,7 +31,6 @@ module.exports = async (env, argv, flecks) => {
       __filename: false,
     },
     output: {
-      libraryTarget: 'commonjs2',
       path: join(FLECKS_CORE_ROOT, 'dist', 'server'),
     },
     plugins: [
