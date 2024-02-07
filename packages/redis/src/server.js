@@ -1,5 +1,6 @@
 import {Flecks} from '@flecks/core';
 
+import containers from '../build/containers';
 import createClient from './create-client';
 
 export {default as redis} from 'redis';
@@ -29,6 +30,7 @@ const safeKeys = async (client, pattern, caret) => {
 export const keys = (client, pattern) => safeKeys(client, pattern, 0);
 
 export const hooks = {
+  '@flecks/docker.containers': containers,
   '@flecks/repl.context': async (flecks) => ({
     redisClient: await createClient(flecks),
   }),
