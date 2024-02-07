@@ -11,10 +11,8 @@ const debug = D('@flecks/react/client');
 export {FlecksContext};
 
 export const hooks = {
-  '@flecks/web/client.up': async (flecks) => {
+  '@flecks/web/client.up': async (container, flecks) => {
     const {ssr} = flecks.get('@flecks/react');
-    const {appMountId} = flecks.get('@flecks/web');
-    const container = window.document.getElementById(appMountId);
     debug('%sing...', ssr ? 'hydrat' : 'render');
     const RootComponent = React.createElement(
       React.StrictMode,

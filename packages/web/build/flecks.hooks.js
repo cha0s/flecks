@@ -1,9 +1,12 @@
 export const hooks = {
   /**
    * Define sequential actions to run when the client comes up.
+   *
+   * @param {Element} container The root DOM element of the application.
+   *
    * @invoke SequentialAsync
    */
-  '@flecks/web/client.up': async () => {
+  '@flecks/web/client.up': async (container) => {
     await youCanDoAsyncThingsHere();
   },
   /**
