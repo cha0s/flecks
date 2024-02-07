@@ -103,6 +103,21 @@ export const hooks = {
   },
 
   /**
+   * Invoked when `flecks.yml` is hot reloaded. Throw to abort hot reload and restart application.
+   * Must be synchronous.
+   *
+   * @param {string} fleck The fleck whose config changed.
+   * @param {Object} config The new config.
+   */
+  '@flecks/core.reload': (fleck, config, flecks) => {
+    if ('i-care-about' === fleck) {
+      if (flecks.get(`${fleck}.volatile`) !== config.volatile) {
+        throw new Error('Changes too volatile');
+      }
+    }
+  }
+
+  /**
    * Invoked when the application is starting.
    * @invoke SequentialAsync
    */

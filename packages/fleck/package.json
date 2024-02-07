@@ -22,7 +22,6 @@
   "dependencies": {
     "@flecks/core": "^3.2.1",
     "babel-merge": "^3.0.0",
-    "chokidar": "^3.5.3",
     "debug": "^4.3.3",
     "mocha": "^10.2.0"
   },

@@ -1,4 +1,4 @@
-const {exec, spawn} = require('child_process');
+const {exec, fork, spawn} = require('child_process');
 
 const D = require('../../build/debug');
 
@@ -28,14 +28,15 @@ exports.processCode = (child) => new Promise((resolve, reject) => {
 const children = [];
 
 exports.spawnWith = (cmd, opts = {}) => {
-  debug("spawning: '%s'", cmd.join(' '));
-  debugSilly('with options: %O', opts);
-  const child = spawn(cmd[0], cmd.slice(1), {
+  const {useFork, ...rest} = opts;
+  debug("%sing: '%s'", useFork ? 'fork' : 'spawn', cmd.join(' '));
+  debugSilly('with options: %O', rest);
+  const child = (useFork ? fork : spawn)(cmd[0], cmd.slice(1), {
     stdio: 'inherit',
-    ...opts,
+    ...rest,
     env: {
       ...process.env,
-      ...opts.env,
+      ...rest.env,
     },
   });
   children.push(child);

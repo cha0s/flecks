@@ -3,10 +3,10 @@ import {join} from 'path';
 
 import {expect} from 'chai';
 
-import {createApplicationAt, build} from './build/build';
+import {createApplication, build} from './build/build';
 
 it('builds for development', async () => {
-  const path = await createApplicationAt('development');
+  const path = await createApplication();
   await build(path, {args: ['-d']});
   let artifact;
   try {

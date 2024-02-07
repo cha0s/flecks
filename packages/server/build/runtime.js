@@ -1,13 +1,9 @@
-const {externals} = require('@flecks/build/src/server');
-
-const D = require('@flecks/core/build/debug');
-
-const debug = D('@flecks/server/build/runtime');
+const {join} = require('path');
 
 const {version} = require('../package.json');
 
-module.exports = async (config, env, argv, flecks) => {
-  const runtimePath = await flecks.resolver.resolve('@flecks/server/runtime');
+async function runtimeModule(compilation, flecks) {
+  const {compiler} = compilation;
   // Inject flecks configuration.
   const paths = Object.keys(flecks.flecks);
   const resolvedPaths = (await Promise.all(
@@ -15,8 +11,18 @@ module.exports = async (config, env, argv, flecks) => {
   ))
     .filter(([, resolved]) => resolved)
     .map(([path]) => path);
+  const ymlPath = join(flecks.root, 'build', 'flecks.yml');
   const runtime = {
-    config: JSON.stringify(flecks.config),
+    /* eslint-disable indent */
+    bootstrappedConfig: JSON.stringify(flecks.invoke('@flecks/core.config')),
+    config: (`
+      dealiasedConfig(${
+        'production' === compiler.options.mode
+          ? JSON.stringify(flecks.originalConfig)
+          : `require('${ymlPath}').default`
+      })
+    `),
+    /* eslint-enable indent */
     loadFlecks: [
       'async () => (',
       '  Object.fromEntries(',
@@ -48,11 +54,23 @@ module.exports = async (config, env, argv, flecks) => {
       .map(([key, value]) => `"${key}": ${value}`).join(', ')
   }}`;
   const source = [
+    `const {dealiasedConfig} = {${flecks.constructor.dealiasedConfig.toString()}};`,
     "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
     `module.exports = (async () => (${runtimeString}))();`,
   ];
   // HMR.
   source.push('if (module.hot) {');
+  source.push(`  module.hot.accept('${ymlPath}', async () => {`);
+  source.push(`    const M = require('${ymlPath}').default;`);
+  source.push('    try {');
+  source.push(`      global.flecks.invokeSequential('@flecks/core.hmr', '${ymlPath}', M);`);
+  source.push('    }');
+  source.push('    catch (error) {');
+  // eslint-disable-next-line no-template-curly-in-string
+  source.push('      console.error(`flecks.reload() failed: ${error.message}`);');
+  source.push('      module.hot.invalidate();');
+  source.push('    }');
+  source.push('  });');
   // Keep HMR junk out of our output path.
   source.push('  const {glob} = require("glob");');
   source.push('  const {join} = require("path");');
@@ -61,7 +79,7 @@ module.exports = async (config, env, argv, flecks) => {
   source.push('  module.hot.addStatusHandler(async (status) => {');
   source.push('    if ("idle" === status) {');
   source.push('      const disposing = await glob(');
-  source.push(`        join('${config.output.path}', \`*\${previousHash}.hot-update.*\`),`);
+  source.push(`        join('${compiler.options.output.path}', \`*\${previousHash}.hot-update.*\`),`);
   source.push('      );');
   source.push('      await Promise.all(disposing.map((filename) => unlink(filename)));');
   source.push('      previousHash = __webpack_hash__;');
@@ -83,43 +101,8 @@ module.exports = async (config, env, argv, flecks) => {
     source.push('  });');
   });
   source.push('}');
-  // Create runtime.
-  config.module.rules.push(
-    {
-      test: runtimePath,
-      use: [
-        {
-          loader: runtimePath,
-          options: {
-            source: source.join('\n'),
-          },
-        },
-      ],
-    },
-  );
-  const allowlist = [
-    '@flecks/server/entry',
-    '@flecks/server/runtime',
-    /^@babel\/runtime\/helpers\/esm/,
-  ];
-  config.resolve.alias['@flecks/server/runtime$'] = runtimePath;
-  Object.entries(flecks.resolver.aliases).forEach(([path, request]) => {
-    debug('server runtime de-externalized %s, alias: %s', path, request);
-    allowlist.push(new RegExp(`^${path}`));
-  });
-  // Stubs.
-  flecks.stubs.forEach((stub) => {
-    config.resolve.alias[stub] = false;
-  });
-  await flecks.runtimeCompiler('server', config, env, argv);
-  // Rewrite to signals for HMR.
-  if ('production' !== argv.mode) {
-    allowlist.push(/^webpack\/hot\/signal/);
-  }
-  // Externalize the rest.
-  config.externals = await externals({
-    additionalModuleDirs: flecks.resolver.modules,
-    allowlist,
-    importType: 'commonjs',
-  });
-};
+  // Create asset.
+  return source.join('\n');
+}
+
+exports.runtimeModule = runtimeModule;

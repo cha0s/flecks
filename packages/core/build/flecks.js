@@ -74,13 +74,13 @@ class Flecks {
    * @param {object} runtime.flecks fleck modules.
    */
   constructor({
+    bootstrappedConfig = {},
     config = {},
     flecks = {},
   } = {}) {
-    const emptyConfigForAllFlecks = Object.fromEntries(
-      Object.keys(flecks).map((path) => [path, {}]),
-    );
-    this.config = {...emptyConfigForAllFlecks, ...config};
+    this.bootstrappedConfig = JSON.parse(JSON.stringify(bootstrappedConfig));
+    this.originalConfig = JSON.parse(JSON.stringify(config));
+    this.config = {};
     const entries = Object.entries(flecks);
     this.constructor.debugSilly('paths: %O', entries.map(([fleck]) => fleck));
     for (let i = 0; i < entries.length; i++) {
@@ -100,8 +100,9 @@ class Flecks {
    */
   configureFleckDefaults(fleck) {
     this.config[fleck] = {
+      ...this.bootstrappedConfig[fleck] || {},
       ...this.invokeFleck('@flecks/core.config', fleck),
-      ...this.config[fleck],
+      ...this.originalConfig[fleck],
     };
   }
 
@@ -111,7 +112,7 @@ class Flecks {
    * @protected
    */
   configureFlecksDefaults() {
-    const flecks = this.flecksImplementing('@flecks/core.config');
+    const flecks = Object.keys(this.flecks);
     for (let i = 0; i < flecks.length; i++) {
       this.configureFleckDefaults(flecks[i]);
     }

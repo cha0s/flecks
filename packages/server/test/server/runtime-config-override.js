@@ -3,10 +3,10 @@ import {join} from 'path';
 
 import {expect} from 'chai';
 
-import {build, createApplicationAt, serverActions} from './build/build';
+import {build, createApplication, serverActions} from './build/build';
 
 it('propagates bootstrap config', async () => {
-  const path = await createApplicationAt('runtime-config-override');
+  const path = await createApplication();
   await writeFile(
     join(path, 'build', 'flecks.yml'),
     `

@@ -52,17 +52,26 @@ export async function listen() {
   await mkdir(dirname(path), {recursive: true});
   const server = createServer();
   server.listen(path);
-  return {
-    connected: new Promise((resolve, reject) => {
+  server.waitForSocket = () => (
+    new Promise((resolve, reject) => {
       server.on('error', reject);
       server.on('connection', (socket) => {
         resolve(new SocketWrapper(socket));
       });
-    }),
+    })
+  );
+  return {
     listening: new Promise((resolve, reject) => {
       server.on('error', reject);
       server.on('listening', resolve);
     }),
     path,
+    socketServer: server,
   };
+}
+
+export async function socketListener() {
+  const {listening, path: socketPath, socketServer} = await listen();
+  await listening;
+  return {socketServer, socketPath};
 }

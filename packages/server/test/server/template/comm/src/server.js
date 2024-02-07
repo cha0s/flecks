@@ -6,6 +6,11 @@ const {
 } = process.env;
 
 export const hooks = {
+  '@flecks/core.reload': (fleck, config) => {
+    if ('comm' === fleck && 'fail' === config.foo) {
+      throw new Error();
+    }
+  },
   '@flecks/core.hmr': async (path, M, flecks) => {
     if (!flecks.socket) {
       return;

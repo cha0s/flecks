@@ -197,7 +197,15 @@ module.exports = class Build extends Flecks {
     return this.resolver.resolve(join(fleck, 'build', config));
   }
 
-  async runtimeCompiler(runtime, config) {
+  async runtimeCompiler(runtime, config, env, argv) {
+    if ('production' !== argv.mode) {
+      config.module.rules.push(
+        {
+          test: /\.ya?ml$/,
+          use: 'yaml-loader',
+        },
+      );
+    }
     // Compile?
     const compiled = this.roots.filter(([path, request]) => path !== request);
     if (compiled.length > 0) {

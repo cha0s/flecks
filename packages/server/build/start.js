@@ -19,7 +19,7 @@ class StartServerPlugin {
     ['exit', 'SIGINT', 'SIGTERM']
       .forEach((event) => {
         process.on(event, () => {
-          this.worker.kill('exit' === event ? 'SIGKILL' : event);
+          this.worker?.kill('exit' === event ? 'SIGKILL' : event);
         });
       });
   }
@@ -102,7 +102,7 @@ class StartServerPlugin {
         if (this.worker.exitedAfterDisconnect) {
           // eslint-disable-next-line no-console
           console.error('[HMR] Restarting application...');
-          this.worker = cluster.fork(env);
+          process.send('restart');
         }
       });
     }

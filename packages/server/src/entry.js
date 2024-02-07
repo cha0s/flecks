@@ -6,7 +6,6 @@ import {join} from 'path';
 import {D, Flecks} from '@flecks/core';
 
 (async () => {
-  // eslint-disable-next-line import/no-extraneous-dependencies
   const runtime = await import('@flecks/server/runtime');
   const {loadFlecks, version} = runtime;
   // eslint-disable-next-line no-console
@@ -33,7 +32,7 @@ import {D, Flecks} from '@flecks/core';
 })();
 
 if (module.hot) {
-  module.hot.accept('./runtime', () => {
+  module.hot.accept('@flecks/server/runtime', () => {
     if (cluster.isWorker) {
       cluster.worker.disconnect();
       const error = new Error('Restart requested!');

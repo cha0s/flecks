@@ -52,6 +52,7 @@ module.exports = async (config, env, argv, flecks) => {
     .map(([path]) => path);
   const source = [
     'module.exports = (update) => (async () => ({',
+    `  bootstrappedConfig: ${JSON.stringify(buildFlecks.invoke('@flecks/core.config'))},`,
     "  config: window[Symbol.for('@flecks/web.config')],",
     '  flecks: Object.fromEntries(await Promise.all([',
     ...resolvedPaths

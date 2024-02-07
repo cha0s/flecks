@@ -4,7 +4,11 @@ const {
   readFile,
   writeFile,
 } = require('fs/promises');
-const {join} = require('path');
+const {
+  dirname,
+  join,
+  resolve,
+} = require('path');
 
 const {parseAsync} = require('@babel/core');
 const {default: generate} = require('@babel/generator');
@@ -22,7 +26,10 @@ const {
   lockFile,
   spawnWith,
 } = require('@flecks/core/src/server');
+const chokidar = require('chokidar');
 const {glob} = require('glob');
+const {load: loadYml} = require('js-yaml');
+const {paperwork} = require('precinct');
 const {rimraf} = require('rimraf');
 
 const addPathsToYml = require('./add-paths-to-yml');
@@ -55,6 +62,39 @@ function stringLiteralSinglequote(value) {
     ...stringLiteral(value),
     extra: {rawValue: value, raw: `'${value}'`},
   };
+}
+
+const dependencies = {};
+
+async function gatherDependencies(request, resolver) {
+  const resolved = await resolver.resolve(request);
+  if (!resolved || dependencies[resolved]) {
+    return;
+  }
+  try {
+    const localDeps = paperwork(resolved);
+    dependencies[resolved] = true;
+    await Promise.all(
+      localDeps.map(
+        async (dependency) => {
+          const resolvedDependency = await resolver.resolve(
+            resolve(dirname(resolved), dependency),
+          );
+          return resolvedDependency && gatherDependencies(resolvedDependency, resolver);
+        },
+      ),
+    );
+  }
+  // eslint-disable-next-line no-empty
+  catch (error) {}
+}
+
+async function rootsDependencies(roots, resolver) {
+  return Promise.all(
+    roots.map(([request]) => (
+      gatherDependencies(join(request, 'build', 'flecks.bootstrap.js'), resolver)
+    )),
+  );
 }
 
 exports.commands = (program, flecks) => {
@@ -176,7 +216,12 @@ exports.commands = (program, flecks) => {
           production,
           watch,
         } = opts;
-        debug('Building...', opts);
+        if (watch) {
+          debug('Watching...', opts);
+        }
+        else {
+          debug('Building...', opts);
+        }
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
           await binaryPath('webpack'),
@@ -184,16 +229,70 @@ exports.commands = (program, flecks) => {
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
         ];
-        return spawnWith(
-          cmd,
-          {
-            env: {
-              FLECKS_CORE_IS_PRODUCTION: production,
-              ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
-              ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
+        let webpack;
+        const spawnWebpack = () => {
+          webpack = spawnWith(
+            cmd,
+            {
+              env: {
+                FLECKS_BUILD_IS_PRODUCTION: production,
+                ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
+                ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
+              },
+              useFork: true,
             },
-          },
-        );
+          );
+          webpack.on('message', (message) => {
+            if ('restart' === message) {
+              webpack.kill();
+              spawnWebpack();
+            }
+          });
+        };
+        spawnWebpack();
+        if (watch) {
+          await rootsDependencies(flecks.roots, flecks.resolver);
+          const watched = Object.keys(dependencies);
+          watched.push(
+            ...await Promise.all(
+              flecks.roots.map(([, request]) => flecks.resolver.resolve(join(request, 'package.json'))),
+            ),
+          );
+          watched.push(join(FLECKS_CORE_ROOT, 'build/flecks.yml'));
+          const watcher = chokidar.watch(watched, {
+            awaitWriteFinish: {
+              stabilityThreshold: 50,
+              pollInterval: 5,
+            },
+          });
+          await new Promise((resolve, reject) => {
+            watcher.on('error', reject);
+            watcher.on('ready', resolve);
+          });
+          const configPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
+          const initialConfig = loadYml(await readFile(configPath));
+          watcher.on('all', async (event, path) => {
+            let respawn = false;
+            if (configPath === path) {
+              const config = loadYml(await readFile(configPath));
+              if (
+                JSON.stringify(Object.keys(initialConfig).sort())
+                !== JSON.stringify(Object.keys(config).sort())
+              ) {
+                debug('Config keys changed');
+                respawn = true;
+              }
+            }
+            else {
+              respawn = true;
+            }
+            if (respawn) {
+              debug('Respawning...');
+              webpack.kill();
+              spawnWebpack();
+            }
+          });
+        }
       },
     };
   }

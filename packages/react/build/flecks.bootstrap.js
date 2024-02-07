@@ -3,10 +3,10 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const plugins = [];
 
 const {
-  FLECKS_CORE_IS_PRODUCTION,
+  FLECKS_BUILD_IS_PRODUCTION,
 } = process.env;
 
-if ('true' !== FLECKS_CORE_IS_PRODUCTION) {
+if ('true' !== FLECKS_BUILD_IS_PRODUCTION) {
   plugins.push('react-refresh/babel');
 }
 

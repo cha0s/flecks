@@ -4,6 +4,7 @@ import {join} from 'path';
 import {rimraf} from '@flecks/build/server';
 import {binaryPath, processCode, spawnWith} from '@flecks/core/server';
 
+import id from './id';
 import {listen} from './listen';
 
 const {
@@ -13,12 +14,18 @@ const {
 export const applications = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'server');
 export const template = join(FLECKS_CORE_ROOT, 'test', 'server', 'template');
 
-export async function createApplicationAt(path) {
-  await rimraf(join(applications, path));
-  await mkdir(join(applications, path), {recursive: true});
-  const qualified = join(applications, path, process.pid.toString());
-  await cp(template, qualified, {recursive: true});
-  return qualified;
+export async function createApplication() {
+  const path = join(applications, await id());
+  await rimraf(path);
+  await mkdir(path, {recursive: true});
+  await cp(template, path, {recursive: true});
+  // sheeeeesh
+  process.prependListener('message', async (message) => {
+    if ('__workerpool-terminate__' === message) {
+      rimraf.sync(path);
+    }
+  });
+  return path;
 }
 
 export async function buildChild(path, {args = [], opts = {}} = {}) {
@@ -27,7 +34,7 @@ export async function buildChild(path, {args = [], opts = {}} = {}) {
     {
       ...opts,
       env: {
-        FLECKS_ENV__flecks_server__stats: '{"all": false}',
+        FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
         FLECKS_ENV__flecks_server__start: 0,
         FLECKS_CORE_ROOT: path,
         ...opts.env,
@@ -41,7 +48,7 @@ export async function build(path, {args = [], opts = {}} = {}) {
 }
 
 export async function serverActions(path, actions) {
-  const {connected, listening, path: socketPath} = await listen();
+  const {listening, path: socketPath, socketServer} = await listen();
   await listening;
   const server = spawnWith(
     ['node', join(path, 'dist', 'server')],
@@ -53,7 +60,7 @@ export async function serverActions(path, actions) {
   );
   const [code, results] = await Promise.all([
     processCode(server),
-    connected.then(async (socket) => {
+    socketServer.waitForSocket().then(async (socket) => {
       const results = [];
       await actions.reduce(
         (p, action) => (

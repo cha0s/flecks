@@ -3,10 +3,15 @@ const {delimiter, join} = require('path');
 const {
   banner,
   defaultConfig,
+  externals,
   webpack,
 } = require('@flecks/build/src/server');
 
-const runtime = require('./runtime');
+const D = require('@flecks/core/build/debug');
+
+const debug = D('@flecks/server/build');
+
+const {runtimeModule} = require('./runtime');
 const startServer = require('./start');
 
 const {
@@ -66,7 +71,53 @@ module.exports = async (env, argv, flecks) => {
       }),
     );
   }
-  // Build the server runtime.
-  await runtime(config, env, argv, flecks);
+  // Create runtime.
+  const runtimePath = await flecks.resolver.resolve('@flecks/server/runtime');
+  config.module.rules.push(
+    {
+      test: runtimePath,
+      use: [
+        {
+          loader: runtimePath,
+          options: {
+            source: await runtimeModule(
+              {
+                compiler: {
+                  options: {
+                    mode: argv.mode, output: {path: config.output.path},
+                  },
+                },
+              },
+              flecks,
+            ),
+          },
+        },
+      ],
+    },
+  );
+  const allowlist = [
+    '@flecks/server/entry',
+    '@flecks/server/runtime',
+    /^@babel\/runtime\/helpers\/esm/,
+  ];
+  Object.entries(flecks.resolver.aliases).forEach(([path, request]) => {
+    debug('server runtime de-externalized %s, alias: %s', path, request);
+    allowlist.push(new RegExp(`^${path}`));
+  });
+  // Stubs.
+  flecks.stubs.forEach((stub) => {
+    config.resolve.alias[stub] = false;
+  });
+  await flecks.runtimeCompiler('server', config, env, argv);
+  // Rewrite to signals for HMR.
+  if ('production' !== argv.mode) {
+    allowlist.push(/^webpack\/hot\/signal/);
+  }
+  // Externalize the rest.
+  config.externals = await externals({
+    additionalModuleDirs: flecks.resolver.modules,
+    allowlist,
+    importType: 'commonjs',
+  });
   return config;
 };
