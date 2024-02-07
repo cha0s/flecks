@@ -30,7 +30,7 @@ export async function createApplication() {
 
 export async function buildChild(path, {args = [], opts = {}} = {}) {
   return spawnWith(
-    [await binaryPath('flecks'), 'build', ...args],
+    [await binaryPath('flecks', '@flecks/build'), 'build', ...args],
     {
       ...opts,
       env: {

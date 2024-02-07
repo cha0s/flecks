@@ -1,21 +1,37 @@
-const {exec, fork, spawn} = require('child_process');
+const {fork, spawn} = require('child_process');
+const {
+  access,
+  constants: {X_OK},
+  realpath,
+} = require('fs/promises');
+const {dirname, join, sep} = require('path');
 
 const D = require('../../build/debug');
 
 const debug = D('@flecks/core/server');
 const debugSilly = debug.extend('silly');
 
-exports.binaryPath = (binary) => (
-  new Promise((resolve, reject) => {
-    exec(`npx which ${binary}`, (error, stdout) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(stdout.trim());
-    });
-  })
-);
+const {
+  FLECKS_CORE_ROOT = process.cwd(),
+} = process.env;
+
+exports.binaryPath = async (binary, root = FLECKS_CORE_ROOT) => {
+  // eslint-disable-next-line no-eval
+  const resolved = dirname(await realpath(eval('require').resolve(join(root, 'package.json'))));
+  const parts = resolved.split(sep);
+  while (parts.length > 0) {
+    const path = parts.concat(join('node_modules', '.bin', binary)).join(sep);
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await access(path, X_OK);
+      return path;
+    }
+    catch (error) {
+      parts.pop();
+    }
+  }
+  throw new Error(`Binary '${binary}' not found! (root: ${root})`);
+};
 
 exports.processCode = (child) => new Promise((resolve, reject) => {
   child.on('error', reject);

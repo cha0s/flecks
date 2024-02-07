@@ -224,7 +224,7 @@ exports.commands = (program, flecks) => {
         }
         const webpackConfig = await flecks.resolveBuildConfig('fleckspack.config.js');
         const cmd = [
-          await binaryPath('webpack'),
+          await binaryPath('webpack', '@flecks/build'),
           ...((watch || hot) ? ['watch'] : []),
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
@@ -310,7 +310,7 @@ exports.commands = (program, flecks) => {
           .map((pkg) => join(process.cwd(), pkg))
           .map(async (cwd) => {
             const cmd = [
-              await binaryPath('eslint'),
+              await binaryPath('eslint', '@flecks/build'),
               '--config', await flecks.resolveBuildConfig('eslint.config.js'),
               '.',
             ];

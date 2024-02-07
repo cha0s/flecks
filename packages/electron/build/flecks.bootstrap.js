@@ -1,4 +1,12 @@
-const {join} = require('path');
+const {
+  basename,
+  dirname,
+  extname,
+  join,
+  relative,
+} = require('path');
+
+const {binaryPath} = require('@flecks/core/src/server');
 
 exports.hooks = {
   '@flecks/core.config': () => ({
@@ -25,16 +33,24 @@ exports.hooks = {
      */
     url: undefined,
   }),
-  '@flecks/build.config.alter': (configs) => {
-    const {server: config} = configs;
-    if (config) {
-      const plugin = config.plugins.find(({pluginName}) => pluginName === 'StartServerPlugin');
-      // Extremely hackish, c'est la vie.
+  '@flecks/build.config.alter': async (configs) => {
+    const electronPath = await binaryPath('electron', '@flecks/electron');
+    const {server} = configs;
+    if (server) {
+      const plugin = server.plugins.find(({pluginName}) => pluginName === 'StartServerPlugin');
       if (plugin) {
+        const relativePath = relative(server.output.path, electronPath);
         const {exec} = plugin.options;
         plugin.options.exec = (compilation) => {
-          plugin.options.args = [join(config.output.path, compilation.getPath(exec))];
-          return join('..', '..', 'node_modules', '.bin', 'electron');
+          const assetPath = compilation.getPath(exec);
+          const trimmed = join(dirname(assetPath), basename(assetPath, extname(assetPath)));
+          plugin.options.args = [
+            join(
+              server.output.path,
+              `${trimmed}.mjs`,
+            ),
+          ];
+          return relativePath;
         };
       }
     }

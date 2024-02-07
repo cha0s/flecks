@@ -3,7 +3,7 @@ const {join} = require('path');
 
 const Build = require('@flecks/build/build/build');
 const {regexFromExtensions} = require('@flecks/build/src/server');
-const {spawnWith} = require('@flecks/core/src/server');
+const {binaryPath, spawnWith} = require('@flecks/core/src/server');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {
@@ -161,14 +161,12 @@ exports.hooks = {
       return;
     }
     // Bail if the build isn't watching.
-    if (!process.argv.find((arg) => '--watch' === arg)) {
+    if (!process.argv.find((arg) => 'watch' === arg)) {
       return;
     }
     // Otherwise, spawn `webpack-dev-server` (WDS).
     const cmd = [
-      // `npx` doesn't propagate signals!
-      // 'npx', 'webpack',
-      join(FLECKS_CORE_ROOT, 'node_modules', '.bin', 'webpack'),
+      await binaryPath('webpack', '@flecks/build'),
       'serve',
       '--mode', 'development',
       '--hot',
