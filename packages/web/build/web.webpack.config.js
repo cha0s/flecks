@@ -80,8 +80,7 @@ module.exports = async (env, argv, flecks) => {
     entries
       .map(async ([name, mainsConfig]) => {
         const {entry: entryPoint, ...htmlTemplateConfig} = mainsConfig;
-        // @todo source maps working?
-        entry[name] = ['source-map-support/register', entryPoint];
+        entry[name] = [entryPoint];
         plugins.push(new HtmlWebpackPlugin({
           appMountId: flecks.interpolate(appMountId),
           base: flecks.interpolate(base),
