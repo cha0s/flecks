@@ -8,7 +8,7 @@ exports.hooks = {
         fallback: server.resolve.fallback,
       });
       const stubs = JSON.stringify(flecks.stubs);
-      if ('{}' !== resolver || '[]' !== stubs) {
+      if ('{"alias":{},"fallback":{}}' !== resolver || '[]' !== stubs) {
         server.plugins.push(
           banner({
             // `require()` magic.
