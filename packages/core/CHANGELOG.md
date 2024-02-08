@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.2](https://github.com/cha0s/flecks/compare/core-v4.0.0...core-v4.0.2) (2024-02-08)
+
+
+### Miscellaneous Chores
+
+* gosh golly gee ([f6cd41c](https://github.com/cha0s/flecks/commit/f6cd41c477c34e906a35f4e76cd74b06d121b510))
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/core-v3.2.1...core-v4.0.0) (2024-02-08)
 
 
