@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/cha0s/flecks/compare/build-v4.0.0...build-v4.0.1) (2024-02-08)
+
+
+### Miscellaneous Chores
+
+* provenance ([59b2410](https://github.com/cha0s/flecks/commit/59b2410abdc7c34348dd79f93d53dc0a29f2a64a))
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/build-v3.2.4...build-v4.0.0) (2024-02-08)
 
 

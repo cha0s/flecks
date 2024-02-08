@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @flecks/build bumped from ^4.0.0 to ^4.0.1
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/fleck-v3.2.4...fleck-v4.0.0) (2024-02-08)
 
 

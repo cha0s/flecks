@@ -1,6 +1,6 @@
 {
   "name": "@flecks/server",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -26,7 +26,7 @@
     "@flecks/core": "^4.0.0"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.0",
-    "@flecks/fleck": "^4.0.0"
+    "@flecks/build": "^4.0.1",
+    "@flecks/fleck": "^4.0.1"
   }
 }
