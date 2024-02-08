@@ -24,5 +24,6 @@
     "packages/socket": {},
     "packages/web": {}
   },
-  "plugins": ["node-workspace"]
+  "plugins": ["node-workspace"],
+  "release-as": "4.0.0"
 }
