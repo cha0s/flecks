@@ -13,6 +13,7 @@ it('propagates bootstrap config', async () => {
   exports.hooks = {
     '@flecks/core.config': () => ({
       foo: 'bar',
+      blah: {one: 2, three: 4},
     }),
   };
   `;
@@ -24,14 +25,17 @@ it('propagates bootstrap config', async () => {
       '@flecks/core': {}
       '@flecks/server': {}
       'comm:./comm': {}
-      'server-only:./server-only': {}
+      'server-only:./server-only': {foo: 'baz'}
     `,
   );
   await build(path, {args: ['-d']});
-  const {results: [{payload: foo}]} = await serverActions(path, [
+  const {results: [{payload: foo}, {payload: blah}]} = await serverActions(path, [
     {type: 'config.get', payload: 'server-only.foo'},
+    {type: 'config.get', payload: 'server-only.blah'},
     {type: 'exit'},
   ]);
   expect(foo)
-    .to.equal('bar');
+    .to.equal('baz');
+  expect(blah)
+    .to.deep.equal({one: 2, three: 4});
 });

@@ -100,7 +100,7 @@ class Flecks {
    */
   configureFleckDefaults(fleck) {
     this.config[fleck] = {
-      ...this.bootstrappedConfig[fleck] || {},
+      ...this.bootstrappedConfig[fleck],
       ...this.invokeFleck('@flecks/core.config', fleck),
       ...this.originalConfig[fleck],
     };
@@ -116,10 +116,15 @@ class Flecks {
     for (let i = 0; i < flecks.length; i++) {
       this.configureFleckDefaults(flecks[i]);
     }
-    this.config = {
-      ...this.bootstrappedConfig,
-      ...this.config,
-    };
+    // Make sure bootstrapped config gets propagated.
+    [].concat([this.bootstrappedConfig, this.originalConfig].map(Object.keys)).flat()
+      .forEach((path) => {
+        this.config[path] = {
+          ...this.bootstrappedConfig[path],
+          ...this.originalConfig[path],
+          ...this.config[path],
+        };
+      });
   }
 
   /**
