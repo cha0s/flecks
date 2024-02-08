@@ -1,5 +1,4 @@
 {
-  "bootstrap-sha": "64e1d179c7eef82ea58b6622975bf8df78ba291e",
   "packages": {
     "packages/build": {},
     "packages/core": {},

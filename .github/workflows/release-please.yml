@@ -34,11 +34,9 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - if: ${{steps.release.outputs.releases_created}}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
           npm ci
           npm run build
-
-      - if: ${{steps.release.outputs.releases_created}}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: npm run publish
+          npm run publish
