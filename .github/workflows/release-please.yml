@@ -1,0 +1,42 @@
+on:
+  push:
+    branches:
+      - master
+
+name: release-please
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+
+    steps:
+
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: release
+        with:
+          token: ${{secrets.FLECKS_GITHUB_TOKEN}}
+          command: manifest
+
+      - if: ${{steps.release.outputs.releases_created}}
+        uses: actions/checkout@v2
+
+      - if: ${{steps.release.outputs.releases_created}}
+        uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          node-version: 18
+          registry-url: "https://registry.npmjs.org"
+
+      - if: ${{steps.release.outputs.releases_created}}
+        run: |
+          npm ci
+          npm run build
+
+      - if: ${{steps.release.outputs.releases_created}}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: npm run publish

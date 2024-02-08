@@ -1,0 +1,28 @@
+{
+  "bootstrap-sha": "64e1d179c7eef82ea58b6622975bf8df78ba291e",
+  "packages": {
+    "packages/build": {},
+    "packages/core": {},
+    "packages/create-app": {},
+    "packages/create-fleck": {},
+    "packages/db": {},
+    "packages/docker": {},
+    "packages/dox": {},
+    "packages/electron": {},
+    "packages/fleck": {},
+    "packages/passport": {},
+    "packages/passport-local": {},
+    "packages/passport-local-react": {},
+    "packages/passport-react": {},
+    "packages/react": {},
+    "packages/react-redux": {},
+    "packages/redis": {},
+    "packages/redux": {},
+    "packages/repl": {},
+    "packages/server": {},
+    "packages/session": {},
+    "packages/socket": {},
+    "packages/web": {}
+  },
+  "plugins": ["node-workspace"]
+}
