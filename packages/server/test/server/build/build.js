@@ -39,6 +39,7 @@ export async function buildChild(path, {args = [], opts = {}} = {}) {
         FLECKS_CORE_ROOT: path,
         ...opts.env,
       },
+      stdio: 'ignore',
     },
   );
 }
@@ -56,6 +57,7 @@ export async function serverActions(path, actions) {
       env: {
         FLECKS_SERVER_TEST_SOCKET: socketPath,
       },
+      stdio: 'ignore',
     },
   );
   const [code, results] = await Promise.all([

@@ -33,6 +33,7 @@ module.exports = (program, flecks) => {
     ].join('\n'),
     action: async (only, opts) => {
       const {
+        production,
         timeout,
         watch,
       } = opts;
@@ -59,7 +60,7 @@ module.exports = (program, flecks) => {
       // Remove the previous test.
       await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
-      await build.action('test', opts);
+      await build.action('test', {production, stdio: 'ignore', watch});
       debug('Testing...', opts);
       // eslint-disable-next-line no-constant-condition
       while (true) {

@@ -215,6 +215,7 @@ exports.commands = (program, flecks) => {
           hot,
           production,
           watch,
+          ...rest
         } = opts;
         if (watch) {
           debug('Watching...', opts);
@@ -236,6 +237,7 @@ exports.commands = (program, flecks) => {
             ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
           },
           useFork: true,
+          ...rest,
         };
         if (!watch) {
           return spawnWith(cmd, options);
