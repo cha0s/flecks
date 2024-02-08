@@ -17,9 +17,6 @@
     "publish": "node build/publish",
     "test": "node build/tasks -- test -t 300000"
   },
-  "devDependencies": {
-    "husky": "^9.0.7"
-  },
   "workspaces": [
     "packages/*"
   ]
