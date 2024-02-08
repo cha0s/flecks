@@ -20,6 +20,8 @@ jobs:
         with:
           token: ${{secrets.FLECKS_GITHUB_TOKEN}}
           command: manifest
+          config-file: build/release-please-config.json
+          manifest-file: build/.release-please-manifest.json
 
       - if: ${{steps.release.outputs.releases_created}}
         uses: actions/checkout@v2
