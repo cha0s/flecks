@@ -229,70 +229,80 @@ exports.commands = (program, flecks) => {
           '--config', webpackConfig,
           '--mode', (production && !hot) ? 'production' : 'development',
         ];
+        const options = {
+          env: {
+            FLECKS_BUILD_IS_PRODUCTION: production,
+            ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
+            ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
+          },
+          useFork: true,
+        };
+        if (!watch) {
+          return spawnWith(cmd, options);
+        }
+        await rootsDependencies(flecks.roots, flecks.resolver);
+        const watched = Object.keys(dependencies);
+        watched.push(
+          ...await Promise.all(
+            flecks.roots.map(([, request]) => flecks.resolver.resolve(join(request, 'package.json'))),
+          ),
+        );
+        watched.push(join(FLECKS_CORE_ROOT, 'build/flecks.yml'));
+        const watcher = chokidar.watch(watched, {
+          awaitWriteFinish: {
+            stabilityThreshold: 50,
+            pollInterval: 5,
+          },
+        });
         let webpack;
         const spawnWebpack = () => {
-          webpack = spawnWith(
-            cmd,
-            {
-              env: {
-                FLECKS_BUILD_IS_PRODUCTION: production,
-                ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
-                ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
-              },
-              useFork: true,
-            },
-          );
+          webpack = spawnWith(cmd, options);
           webpack.on('message', (message) => {
-            if ('restart' === message) {
-              webpack.kill();
-              spawnWebpack();
+            switch (message) {
+              case 'kill':
+                debug('killing...');
+                webpack.kill();
+                watcher.close();
+                break;
+              case 'restart':
+                debug('restarting webpack...');
+                webpack.kill();
+                spawnWebpack();
+                break;
+              default:
             }
           });
         };
         spawnWebpack();
-        if (watch) {
-          await rootsDependencies(flecks.roots, flecks.resolver);
-          const watched = Object.keys(dependencies);
-          watched.push(
-            ...await Promise.all(
-              flecks.roots.map(([, request]) => flecks.resolver.resolve(join(request, 'package.json'))),
-            ),
-          );
-          watched.push(join(FLECKS_CORE_ROOT, 'build/flecks.yml'));
-          const watcher = chokidar.watch(watched, {
-            awaitWriteFinish: {
-              stabilityThreshold: 50,
-              pollInterval: 5,
-            },
-          });
-          await new Promise((resolve, reject) => {
-            watcher.on('error', reject);
-            watcher.on('ready', resolve);
-          });
-          const configPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
-          const initialConfig = loadYml(await readFile(configPath));
-          watcher.on('all', async (event, path) => {
-            let respawn = false;
-            if (configPath === path) {
-              const config = loadYml(await readFile(configPath));
-              if (
-                JSON.stringify(Object.keys(initialConfig).sort())
-                !== JSON.stringify(Object.keys(config).sort())
-              ) {
-                debug('Config keys changed');
-                respawn = true;
-              }
-            }
-            else {
+        await new Promise((resolve, reject) => {
+          watcher.on('error', reject);
+          watcher.on('ready', resolve);
+        });
+        const configPath = join(FLECKS_CORE_ROOT, 'build', 'flecks.yml');
+        const initialConfig = loadYml(await readFile(configPath));
+        watcher.on('all', async (event, path) => {
+          let respawn = false;
+          if (configPath === path) {
+            const config = loadYml(await readFile(configPath));
+            if (
+              JSON.stringify(Object.keys(initialConfig).sort())
+              !== JSON.stringify(Object.keys(config).sort())
+            ) {
+              debug('Config keys changed');
               respawn = true;
             }
-            if (respawn) {
-              debug('Respawning...');
-              webpack.kill();
-              spawnWebpack();
-            }
-          });
-        }
+          }
+          else {
+            respawn = true;
+          }
+          if (respawn) {
+            debug('restarting webpack...');
+            webpack.kill();
+            spawnWebpack();
+          }
+        });
+        // Persist...
+        return new Promise(() => {});
       },
     };
   }
