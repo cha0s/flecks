@@ -1,0 +1,8 @@
+[submodule "website"]
+	path = website
+	url = git@github.com:cha0s/flecks.git
+	branch = website
+[submodule "dox"]
+	path = dox
+	url = git@github.com:cha0s/flecks.git
+	branch = gh-pages
