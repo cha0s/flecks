@@ -64,8 +64,8 @@ comes up (e.g. the browser loads the page).
 ```javascript title="packages/say-hello/src/index.js"
 export const hooks = {
   // highlight-start
-  '@flecks/web/client.up': async () => {
-    window.document.body.append('hello world');
+  '@flecks/web/client.up': async (container) => {
+    container.append('hello world');
   },
   // highlight-end
   '@flecks/server.up': async (flecks) => {

@@ -176,10 +176,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 export const hooks = {
-  '@flecks/web/client.up': async (flecks) => {
-    // appMountId defaults to 'root', by the way.
-    const {appMountId} = flecks.get('@flecks/web');
-    const container = window.document.getElementById(appMountId);
+  '@flecks/web/client.up': async (container) => {
     // Render the root we create with react-dom
     createRoot(container).render(
       // What to render though..?
@@ -216,9 +213,7 @@ We'll implement a hook: `@illustration/react.roots` that will allow other flecks
 React root components. We'll then collect and render them all.
 
 ```js title="packages/react/src/client.js"
-  '@flecks/web/client.up': async (flecks) => {
-    const {appMountId} = flecks.get('@flecks/web');
-    const container = window.document.getElementById(appMountId);
+  '@flecks/web/client.up': async (container, flecks) => {
     // highlight-start
     const results = flecks.invoke('@illustration/react.roots');
     // highlight-end
@@ -273,9 +268,7 @@ import {createRoot} from 'react-dom/client';
 export {React};
 
 export const hooks = {
-  '@flecks/web/client.up': async (flecks) => {
-    const {appMountId} = flecks.get('@flecks/web');
-    const container = window.document.getElementById(appMountId);
+  '@flecks/web/client.up': async (container, flecks) => {
     const results = flecks.invoke('@illustration/react.roots');
     // By default `invoke` returns a map: {[fleckPath]: result}
     // So, we'll map it into a flat list of components and use the fleck path as the key:
