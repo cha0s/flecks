@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/cha0s/flecks/compare/core-v3.2.1...core-v4.0.0) (2024-02-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump to 4.0.0 already!
+
+### Features
+
+* bump to 4.0.0 already! ([9365e2d](https://github.com/cha0s/flecks/commit/9365e2de5b709d80e70bb31d224dc5f9bed052bd))
+* config reloading ([47aed47](https://github.com/cha0s/flecks/commit/47aed47b5e1f718769380d078d8ab1a25ec4b9c8))
+
+
+### Bug Fixes
+
+* bootstrap config propagation ([9a0a028](https://github.com/cha0s/flecks/commit/9a0a028d63e0c7a44201d6cdd7818b9455eed51c))
+* bootstrap propagation ([f9bd7fe](https://github.com/cha0s/flecks/commit/f9bd7fefa64c3bcd51fc2974dad28d20952018b6))
+* test watching ([3eb76b0](https://github.com/cha0s/flecks/commit/3eb76b08e3401def4e1283dd17141297a4edb3ad))
+* why is npm so broken? ([f16cd6e](https://github.com/cha0s/flecks/commit/f16cd6e171ce500ca977b4c889a9573016ff1441))
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([854aaba](https://github.com/cha0s/flecks/commit/854aaba82b7db5f04ddc42e3532e2f8211b1d536))
+
 ## [3.2.1](https://github.com/cha0s/flecks/compare/v3.2.0...v3.2.1) (2024-02-01)
 
 **Note:** Version bump only for package @flecks/core
