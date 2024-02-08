@@ -8,7 +8,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const args = ['echo', 'npm', 'publish', '--provenance'];
+const args = ['npm', 'publish', '--provenance'];
 const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
 
 (async () => {
