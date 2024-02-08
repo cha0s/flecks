@@ -115,7 +115,7 @@ export const hooks = {
         throw new Error('Changes too volatile');
       }
     }
-  }
+  },
 
   /**
    * Invoked when the application is starting.
