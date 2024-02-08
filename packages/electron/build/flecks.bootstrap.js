@@ -1,10 +1,4 @@
-const {
-  basename,
-  dirname,
-  extname,
-  join,
-  relative,
-} = require('path');
+const {join, relative} = require('path');
 
 const {binaryPath} = require('@flecks/core/src/server');
 
@@ -42,14 +36,7 @@ exports.hooks = {
         const relativePath = relative(server.output.path, electronPath);
         const {exec} = plugin.options;
         plugin.options.exec = (compilation) => {
-          const assetPath = compilation.getPath(exec);
-          const trimmed = join(dirname(assetPath), basename(assetPath, extname(assetPath)));
-          plugin.options.args = [
-            join(
-              server.output.path,
-              `${trimmed}.mjs`,
-            ),
-          ];
+          plugin.options.args = [join(server.output.path, compilation.getPath(exec))];
           return relativePath;
         };
       }
