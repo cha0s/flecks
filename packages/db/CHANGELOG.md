@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/cha0s/flecks/compare/db-v3.2.4...db-v4.0.0) (2024-02-08)
+
+
+### Bug Fixes
+
+* container propagation ([9fa214f](https://github.com/cha0s/flecks/commit/9fa214fb82b83e1c3a06772b7d7a16dfa5e06f84))
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([854aaba](https://github.com/cha0s/flecks/commit/854aaba82b7db5f04ddc42e3532e2f8211b1d536))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^3.2.1 to ^4.0.0
+  * devDependencies
+    * @flecks/build bumped from ^3.2.4 to ^4.0.0
+    * @flecks/fleck bumped from ^3.2.4 to ^4.0.0
+
 ## [3.2.4](https://github.com/cha0s/flecks/compare/v3.2.3...v3.2.4) (2024-02-03)
 
 **Note:** Version bump only for package @flecks/db

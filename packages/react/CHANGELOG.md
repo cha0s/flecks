@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/cha0s/flecks/compare/react-v3.2.4...react-v4.0.0) (2024-02-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **web:** pass container to `@flecks/web/client.up`
+
+### Features
+
+* config reloading ([47aed47](https://github.com/cha0s/flecks/commit/47aed47b5e1f718769380d078d8ab1a25ec4b9c8))
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([854aaba](https://github.com/cha0s/flecks/commit/854aaba82b7db5f04ddc42e3532e2f8211b1d536))
+
+
+### Code Refactoring
+
+* **web:** pass container to `@flecks/web/client.up` ([1083b41](https://github.com/cha0s/flecks/commit/1083b41a90bd1d3b9bcea9de373a0a3af0b79a6a)), closes [#9](https://github.com/cha0s/flecks/issues/9)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^3.2.1 to ^4.0.0
+    * @flecks/web bumped from ^3.2.4 to ^4.0.0
+  * devDependencies
+    * @flecks/build bumped from ^3.2.4 to ^4.0.0
+    * @flecks/fleck bumped from ^3.2.4 to ^4.0.0
+
 ## [3.2.4](https://github.com/cha0s/flecks/compare/v3.2.3...v3.2.4) (2024-02-03)
 
 

@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/cha0s/flecks/compare/server-v3.2.4...server-v4.0.0) (2024-02-08)
+
+
+### Features
+
+* config reloading ([47aed47](https://github.com/cha0s/flecks/commit/47aed47b5e1f718769380d078d8ab1a25ec4b9c8))
+
+
+### Bug Fixes
+
+* bootstrap config propagation ([9a0a028](https://github.com/cha0s/flecks/commit/9a0a028d63e0c7a44201d6cdd7818b9455eed51c))
+* bootstrap propagation ([f9bd7fe](https://github.com/cha0s/flecks/commit/f9bd7fefa64c3bcd51fc2974dad28d20952018b6))
+* derp ([e4ca855](https://github.com/cha0s/flecks/commit/e4ca85545811e6e60fb854897835ba3aa5f770fb))
+* spawning ([3f7f257](https://github.com/cha0s/flecks/commit/3f7f2573d8eb3e5ad6fe27b162b1abaec3738f67))
+* why is npm so broken? ([f16cd6e](https://github.com/cha0s/flecks/commit/f16cd6e171ce500ca977b4c889a9573016ff1441))
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([854aaba](https://github.com/cha0s/flecks/commit/854aaba82b7db5f04ddc42e3532e2f8211b1d536))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^3.2.1 to ^4.0.0
+  * devDependencies
+    * @flecks/build bumped from ^3.2.4 to ^4.0.0
+    * @flecks/fleck bumped from ^3.2.4 to ^4.0.0
+
 ## [3.2.4](https://github.com/cha0s/flecks/compare/v3.2.3...v3.2.4) (2024-02-03)
 
 **Note:** Version bump only for package @flecks/server
