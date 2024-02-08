@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/passport-local bumped from ^4.0.0 to ^4.0.1
+    * @flecks/passport-react bumped from ^4.0.0 to ^4.0.1
+    * @flecks/react bumped from ^4.0.0 to ^4.0.1
+  * devDependencies
+    * @flecks/build bumped from ^4.0.0 to ^4.0.1
+    * @flecks/fleck bumped from ^4.0.0 to ^4.0.1
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/passport-local-react-v3.2.4...passport-local-react-v4.0.0) (2024-02-08)
 
 

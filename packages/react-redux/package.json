@@ -1,6 +1,6 @@
 {
   "name": "@flecks/react-redux",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -25,12 +25,12 @@
   ],
   "dependencies": {
     "@flecks/core": "^4.0.0",
-    "@flecks/react": "^4.0.0",
-    "@flecks/redux": "^4.0.0",
+    "@flecks/react": "^4.0.1",
+    "@flecks/redux": "^4.0.1",
     "react-redux": "^7.2.2"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.0",
-    "@flecks/fleck": "^4.0.0"
+    "@flecks/build": "^4.0.1",
+    "@flecks/fleck": "^4.0.1"
   }
 }

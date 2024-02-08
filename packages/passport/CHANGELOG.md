@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/db bumped from ^4.0.0 to ^4.0.1
+    * @flecks/redux bumped from ^4.0.0 to ^4.0.1
+    * @flecks/session bumped from ^4.0.0 to ^4.0.1
+  * devDependencies
+    * @flecks/build bumped from ^4.0.0 to ^4.0.1
+    * @flecks/fleck bumped from ^4.0.0 to ^4.0.1
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/passport-v3.2.4...passport-v4.0.0) (2024-02-08)
 
 
