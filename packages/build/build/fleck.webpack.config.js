@@ -36,7 +36,8 @@ const resolveValidModulePath = (source) => (path) => {
 
 module.exports = async (env, argv, flecks) => {
   const config = await configFn(env, argv, flecks);
-  config.externals = await externals();
+  const {name} = require(join(FLECKS_CORE_ROOT, 'package.json'));
+  config.externals = await externals({allowlist: [new RegExp(`^${name}`)]});
   config.output.path = join(FLECKS_CORE_ROOT, 'dist', 'fleck');
   config.plugins.push(
     new CopyPlugin({
