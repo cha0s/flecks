@@ -110,6 +110,21 @@ const shrinkwrapsAndPublish = async (creator) => {
   await processCode(spawnWith(args, {cwd: dist}));
 };
 
+// npm can be slow...
+const waitForPkgToPublish = (pkg) => (
+  new Promise(async (resolve) => {
+    if (await run(`npm view ${pkg}@${localVersions[pkg]}`)) {
+      resolve();
+    }
+    const handle = setInterval(async () => {
+      if (await run(`npm view ${pkg}@${localVersions[pkg]}`)) {
+        clearInterval(handle);
+        resolve();
+      }
+    }, 5000);
+  })
+);
+
 (async () => {
   await concurrent(
     (await Promise.all(workspaces.map((path) => glob(join(FLECKS_CORE_ROOT, path))))).flat(),
@@ -138,6 +153,7 @@ const shrinkwrapsAndPublish = async (creator) => {
   // Pack dependencies.
   await mkdir(packCache, {recursive: true});
   const dependencies = ['build', 'core', 'fleck', 'server'];
+  await Promise.all(dependencies.map((pkg) => waitForPkgToPublish(`@flecks/${pkg}`)));
   await Promise.all(dependencies.map(packPkg));
   if (bumpedVersions['@flecks/create-fleck']) {
     await shrinkwrapsAndPublish('create-fleck');
@@ -145,6 +161,7 @@ const shrinkwrapsAndPublish = async (creator) => {
   if (bumpedVersions['@flecks/create-app']) {
     // Needs packed create-fleck for package lock.
     await packPkg('create-fleck');
+    await waitForPkgToPublish('@flecks/create-fleck');
     await shrinkwrapsAndPublish('create-app');
   }
 })();

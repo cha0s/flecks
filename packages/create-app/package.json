@@ -19,7 +19,7 @@
     "access": "public"
   },
   "bin": {
-    "create-app": "./build/cli.js"
+    "create-app": "build/cli.js"
   },
   "files": [
     "npm-shrinkwrap.json",

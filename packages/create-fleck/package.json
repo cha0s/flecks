@@ -19,7 +19,7 @@
     "access": "public"
   },
   "bin": {
-    "create-fleck": "./build/cli.js"
+    "create-fleck": "build/cli.js"
   },
   "files": [
     "npm-shrinkwrap.json",
