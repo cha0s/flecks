@@ -132,7 +132,7 @@ const shrinkwrapsAndPublish = async (creator) => {
     },
   );
   // No creators? Bail.
-  if (!bumpedVersions['@flecks/create-app'] && !bumpedVersions['@flecks/create-app']) {
+  if (!bumpedVersions['@flecks/create-app'] && !bumpedVersions['@flecks/create-fleck']) {
     return;
   }
   // Pack dependencies.
