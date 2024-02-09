@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.4](https://github.com/cha0s/flecks/compare/core-v4.0.3...core-v4.0.4) (2024-02-09)
+
+
+### Bug Fixes
+
+* the chicken or the egg? ([0ee17c6](https://github.com/cha0s/flecks/commit/0ee17c6fda59ef76c3a7cd8994f1aed285ba8d5d))
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/core-v4.0.2...core-v4.0.3) (2024-02-09)
 
 
