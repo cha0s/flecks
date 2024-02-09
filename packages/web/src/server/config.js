@@ -1,3 +1,4 @@
+import {Buffer} from 'buffer';
 import {Transform} from 'stream';
 
 const {
@@ -14,26 +15,42 @@ class InlineConfig extends Transform {
 
   constructor(flecks, req) {
     super();
+    this.buffers = [];
     this.flecks = flecks;
     this.req = req;
   }
 
   // eslint-disable-next-line no-underscore-dangle
-  async _transform(chunk, encoding, done) {
-    const string = chunk.toString('utf8');
+  async _flush(done) {
+    const string = Buffer.concat(this.buffers).toString();
     const {appMountId} = this.flecks.get('@flecks/web');
-    const rendered = string.replaceAll(
-      '<body>',
-      [
+    const hideAttributes = 'production' === NODE_ENV ? 'data-flecks="ignore"' : '';
+    this.push(
+      string.replaceAll(
         '<body>',
-        `<div id="${appMountId}-container">`,
-        `<script${'production' === NODE_ENV ? 'data-flecks="ignore"' : ''}>window.document.querySelector('#${appMountId}-container').style.display = 'none'</script>`,
-        `<script data-flecks="ignore">${await configSource(this.flecks, this.req)}</script>`,
-        `<div id="${appMountId}"></div>`,
-        '</div>',
-      ].join(''),
+        /* eslint-disable indent */
+        [
+          '<body>',
+            `<div id="${appMountId}-container">`,
+              `<script${hideAttributes}>`,
+                `window.document.querySelector('#${appMountId}-container').style.display = 'none'`,
+              '</script>',
+              '<script data-flecks="ignore">',
+                await configSource(this.flecks, this.req),
+              '</script>',
+              `<div id="${appMountId}"></div>`,
+            '</div>',
+        ].join(''),
+        /* eslint-enable indent */
+      ),
     );
-    this.push(rendered);
+    this.buffers = [];
+    done();
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  _transform(chunk, encoding, done) {
+    this.buffers.push(chunk);
     done();
   }
 

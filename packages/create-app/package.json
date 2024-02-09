@@ -22,14 +22,13 @@
     "create-app": "./build/cli.js"
   },
   "files": [
+    "npm-shrinkwrap.json",
     "server.js",
     "template"
   ],
   "dependencies": {
     "@flecks/core": "^4.0.2",
     "commander": "11.1.0",
-    "js-yaml": "4.1.0",
-    "minimatch": "^5.0.1",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {

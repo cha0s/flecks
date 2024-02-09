@@ -1,18 +1,16 @@
 #!/usr/bin/env node
 
+const {stat} = require('fs/promises');
 const {join} = require('path');
 
+const {move} = require('@flecks/core/build/move');
 const {
   build,
   install,
-  transform,
-} = require('@flecks/core/server');
+  YamlStream,
+} = require('@flecks/core/src/server');
 const {program} = require('commander');
-const {dump: dumpYml, load: loadYml} = require('js-yaml');
 const validate = require('validate-npm-package-name');
-
-// const build = require('./build');
-const {move, testDestination} = require('./move');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -32,22 +30,23 @@ const {
       }
       const destination = join(FLECKS_CORE_ROOT, app);
       const name = app.startsWith('@') ? app : `@${app}/monorepo`;
-      if (!await testDestination(destination)) {
+      try {
+        await stat(destination);
         const error = new Error(
           `@flecks/create-app: destination '${destination} already exists: aborting`,
         );
         error.code = 129;
         throw error;
       }
+      // eslint-disable-next-line no-empty
+      catch (error) {}
       const fileTree = await move(name, join(__dirname, '..', 'template'));
       fileTree.pipe(
         'build/flecks.yml',
-        transform((chunk, encoding, done, stream) => {
-          const yml = loadYml(chunk);
-          yml['@flecks/core'].id = app;
-          stream.push(dumpYml(yml, {forceQuotes: true, sortKeys: true}));
-          done();
-        }),
+        new YamlStream(
+          (yml) => ({...yml, '@flecks/core': {id: app}}),
+          {dump: {forceQuotes: true, sortKeys: true}},
+        ),
       );
       // Write the tree.
       await fileTree.writeTo(destination);

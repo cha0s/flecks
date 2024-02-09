@@ -1,9 +1,11 @@
 const {createReadStream, createWriteStream} = require('fs');
 const {mkdir, stat} = require('fs/promises');
 
-const {glob, JsonStream} = require('@flecks/core/server');
+const {glob} = require('glob');
 const minimatch = require('minimatch');
 const {dirname, join} = require('path');
+
+const {JsonStream} = require('./stream');
 
 module.exports = class FileTree {
 
@@ -17,6 +19,12 @@ module.exports = class FileTree {
 
   addFile(path, stream) {
     this.files[path] = stream;
+  }
+
+  delete(path) {
+    if (this.files[path]) {
+      delete this.files[path];
+    }
   }
 
   glob(glob) {
@@ -39,6 +47,13 @@ module.exports = class FileTree {
           {},
         ),
     );
+  }
+
+  move(from, to) {
+    if (this.files[from]) {
+      this.files[to] = this.files[from];
+      this.delete(from);
+    }
   }
 
   pipe(path, stream) {

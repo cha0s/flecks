@@ -19,20 +19,19 @@ const {
   isStringLiteral,
   stringLiteral,
 } = require('@babel/types');
+const addPathsToYml = require('@flecks/core/build/add-paths-to-yml');
 const D = require('@flecks/core/build/debug');
 const {
   add,
   binaryPath,
+  loadYml,
   lockFile,
   spawnWith,
 } = require('@flecks/core/src/server');
 const chokidar = require('chokidar');
 const {glob} = require('glob');
-const {load: loadYml} = require('js-yaml');
 const {paperwork} = require('precinct');
 const {rimraf} = require('rimraf');
-
-const addPathsToYml = require('./add-paths-to-yml');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
@@ -236,6 +235,7 @@ exports.commands = (program, flecks) => {
             ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
             ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
           },
+          // @todo This kills the pnpm. Let's use a real IPC channel.
           useFork: true,
           ...rest,
         };

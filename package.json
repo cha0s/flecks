@@ -7,17 +7,20 @@
     "url": "git+https://github.com/cha0s/flecks.git"
   },
   "scripts": {
-    "build": "node build/tasks build",
+    "build": "node build/tasks npm run build",
     "ci": "act -j verify",
     "dox:bump": "npm run dox:gh-pages && cd dox && git add . && git commit -m $(git -C .. rev-parse HEAD) && git push origin gh-pages",
     "dox:gh-pages": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --out-dir ../dox-tmp && cd .. && rm -rf dox/* && mv dox-tmp/* dox && rmdir dox-tmp",
     "dox:serve": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --no-minify --out-dir ../dox-tmp && node_modules/.bin/docusaurus serve --dir ../dox-tmp",
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus",
-    "lint": "node build/tasks lint",
-    "publish": "node build/publish",
-    "test": "node build/tasks -- test -t 300000"
+    "lint": "node build/tasks npm run lint",
+    "publish": "node build/publish --provenance",
+    "test": "node build/tasks npm run -- test -t 300000"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@npmcli/arborist": "^7.3.1"
+  }
 }

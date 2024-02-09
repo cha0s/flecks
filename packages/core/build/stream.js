@@ -1,57 +1,70 @@
 // eslint-disable-next-line max-classes-per-file
+const {dump: dumpYml, load: loadYml} = require('js-yaml');
 const JsonParse = require('jsonparse');
 const {Transform} = require('stream');
 
 exports.JsonStream = class JsonStream extends Transform {
 
-  constructor() {
+  constructor(decorator) {
     super();
-    const self = this;
-    this.done = undefined;
     this.parser = new JsonParse();
+    const self = this;
     this.parser.onValue = function onValue(O) {
       if (0 === this.stack.length) {
-        self.push(JSON.stringify(O));
-        self.done();
+        self.transformed = JSON.stringify(decorator(O));
       }
     };
+    this.transformed = undefined;
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  _flush(done) {
+    this.push(this.transformed);
+    done();
   }
 
   // eslint-disable-next-line no-underscore-dangle
   _transform(chunk, encoding, done) {
-    this.done = done;
     this.parser.write(chunk);
-  }
-
-};
-
-exports.JsonStream.PrettyPrint = class extends Transform {
-
-  constructor(indent = 2) {
-    super();
-    this.indent = indent;
-  }
-
-  // eslint-disable-next-line no-underscore-dangle
-  async _transform(chunk, encoding, done) {
-    this.push(JSON.stringify(JSON.parse(chunk), null, this.indent));
     done();
   }
 
 };
 
-exports.transform = (fn, opts = {}) => {
-  class EasyTransform extends Transform {
+exports.JsonStream.PrettyPrint = class extends exports.JsonStream {
 
-    constructor() {
-      super(opts);
-    }
-
-    // eslint-disable-next-line no-underscore-dangle, class-methods-use-this
-    _transform(chunk, encoding, done) {
-      fn(chunk, encoding, done, this);
-    }
-
+  constructor(decorator, indent = 2) {
+    super(decorator);
+    const self = this;
+    this.parser.onValue = function onValue(O) {
+      if (0 === this.stack.length) {
+        self.transformed = JSON.stringify(O, null, indent);
+      }
+    };
   }
-  return new EasyTransform();
+
+};
+
+exports.YamlStream = class YamlStream extends Transform {
+
+  constructor(decorator, options = {dump: {}, load: {}}) {
+    super();
+    this.buffers = [];
+    this.decorator = decorator;
+    this.options = options;
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  _flush(done) {
+    const yml = loadYml(Buffer.concat(this.buffers).toString(), this.options.load);
+    this.push(dumpYml(this.decorator(yml), this.options.dump));
+    done();
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  _transform(chunk, encoding, done) {
+    this.buffers.push(chunk);
+    done();
+  }
+
 };

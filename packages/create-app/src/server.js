@@ -1,1 +1,5 @@
-export {default as validate} from 'validate-npm-package-name';
+/* eslint-disable global-require */
+
+module.exports = {
+  validate: require('validate-npm-package-name'),
+};

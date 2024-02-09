@@ -22,15 +22,15 @@
     "create-fleck": "./build/cli.js"
   },
   "files": [
+    "npm-shrinkwrap.json",
     "template"
   ],
   "dependencies": {
-    "@flecks/build": "^4.0.2",
     "@flecks/core": "^4.0.2",
-    "@flecks/create-app": "^4.0.2",
     "commander": "11.1.0"
   },
   "devDependencies": {
+    "@flecks/build": "^4.0.2",
     "@flecks/fleck": "^4.0.2"
   }
 }
