@@ -1,6 +1,6 @@
 {
   "name": "@flecks/redis",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -23,14 +23,14 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.0.4",
+    "@flecks/core": "^4.0.5",
     "@socket.io/redis-adapter": "7.1.0",
     "connect-redis": "^5.0.0",
     "express-session": "^1.17.1",
     "redis": "4.0.3"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.4",
-    "@flecks/fleck": "^4.0.4"
+    "@flecks/build": "^4.0.5",
+    "@flecks/fleck": "^4.0.5"
   }
 }
