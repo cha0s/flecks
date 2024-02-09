@@ -19,6 +19,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.1 to ^4.0.2
     * @flecks/fleck bumped from ^4.0.1 to ^4.0.2
 
+## [4.0.3](https://github.com/cha0s/flecks/compare/redis-v4.0.2...redis-v4.0.3) (2024-02-09)
+
+
+### Miscellaneous Chores
+
+* release-please ([c4ef597](https://github.com/cha0s/flecks/commit/c4ef597be720041602354118103eed21e8fe0e91))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.0.2 to ^4.0.3
+  * devDependencies
+    * @flecks/build bumped from ^4.0.2 to ^4.0.3
+    * @flecks/fleck bumped from ^4.0.2 to ^4.0.3
+
 ## [4.0.0](https://github.com/cha0s/flecks/compare/redis-v3.2.4...redis-v4.0.0) (2024-02-08)
 
 
