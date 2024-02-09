@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.5](https://github.com/cha0s/flecks/compare/core-v4.0.4...core-v4.0.5) (2024-02-09)
+
+
+### Bug Fixes
+
+* slow npm ([8aca988](https://github.com/cha0s/flecks/commit/8aca988ae397bfdba0822f5ceb10eba50eaca74d))
+
 ## [4.0.4](https://github.com/cha0s/flecks/compare/core-v4.0.3...core-v4.0.4) (2024-02-09)
 
 

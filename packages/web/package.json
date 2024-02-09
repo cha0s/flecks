@@ -1,6 +1,6 @@
 {
   "name": "@flecks/web",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -29,7 +29,7 @@
   "dependencies": {
     "@babel/parser": "^7.17.0",
     "@babel/types": "^7.17.0",
-    "@flecks/core": "^4.0.4",
+    "@flecks/core": "^4.0.5",
     "@webpack-cli/serve": "^2.0.5",
     "add-asset-html-webpack-plugin": "^6.0.0",
     "assert": "^2.1.0",
@@ -61,7 +61,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.4",
-    "@flecks/fleck": "^4.0.4"
+    "@flecks/build": "^4.0.5",
+    "@flecks/fleck": "^4.0.5"
   }
 }
