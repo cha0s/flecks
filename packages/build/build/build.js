@@ -186,15 +186,24 @@ module.exports = class Build extends Flecks {
     }
     const rootConfig = await this.resolver.resolve(join(this.root, 'build', config));
     if (rootConfig) {
+      debugSilly("resolved '%s' to '%s'", config, rootConfig);
       return rootConfig;
     }
     if (override) {
       const overrideConfig = await this.resolver.resolve(join(override, 'build', config));
       if (overrideConfig) {
+        debugSilly("resolved '%s' to '%s'", config, overrideConfig);
         return overrideConfig;
       }
     }
-    return this.resolver.resolve(join(fleck, 'build', config));
+    const fleckConfig = await this.resolver.resolve(join(fleck, 'build', config));
+    if (fleckConfig) {
+      debugSilly("resolved '%s' to '%s'", config, fleckConfig);
+    }
+    else {
+      throw new Error(`couldn't resolve '${config}'`);
+    }
+    return fleckConfig;
   }
 
   async runtimeCompiler(runtime, config, env, argv) {
