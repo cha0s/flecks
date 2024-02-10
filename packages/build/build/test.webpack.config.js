@@ -22,12 +22,12 @@ module.exports = async (env, argv, flecks) => {
   config.output.chunkFormat = false;
   config.output.path = join(FLECKS_CORE_ROOT, 'dist', 'test');
   const testPaths = [];
-  if (!FLECKS_CORE_TEST_PLATFORMS) {
-    testPaths.push(...await glob(join(tests, '*.js')));
-  }
   const platforms = FLECKS_CORE_TEST_PLATFORMS
     ? JSON.parse(FLECKS_CORE_TEST_PLATFORMS)
-    : flecks.platforms;
+    : [...new Set(['default', ...flecks.platforms])];
+  if (platforms.includes('default')) {
+    testPaths.push(...await glob(join(tests, '*.js')));
+  }
   testPaths.push(
     ...(await Promise.all(platforms.map((platform) => glob(join(tests, platform, '*.js')))))
       .flat(),
