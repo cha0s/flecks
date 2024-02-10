@@ -230,14 +230,15 @@ exports.commands = (program, flecks) => {
           '--mode', (production && !hot) ? 'production' : 'development',
         ];
         const options = {
+          // @todo This kills the pnpm. Let's use a real IPC channel.
+          useFork: true,
+          ...rest,
           env: {
             FLECKS_BUILD_IS_PRODUCTION: production,
             ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
             ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
+            ...rest.env,
           },
-          // @todo This kills the pnpm. Let's use a real IPC channel.
-          useFork: true,
-          ...rest,
         };
         if (!watch) {
           return spawnWith(cmd, options);
