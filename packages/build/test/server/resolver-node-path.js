@@ -1,10 +1,9 @@
-import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
-import {createWorkspace} from '@flecks/core/build/testing';
-import {expect} from 'chai';
-
 import Resolver from '@flecks/build/build/resolver';
+import {createWorkspace} from '@flecks/core/build/testing';
+import {writeFile} from '@flecks/core/server';
+import {expect} from 'chai';
 
 it('uses NODE_PATH when resolving', async () => {
   const workspace = await createWorkspace();

@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch: {}
+
+jobs:
+  lint:
+    uses: ./.github/workflows/node.yml
+    with:
+      run: npm run lint
+  test:
+    uses: ./.github/workflows/node.yml
+    with:
+      run: npm run -- test -p 360000
+  build:
+    uses: ./.github/workflows/node.yml
+    with:
+      run: npm run build

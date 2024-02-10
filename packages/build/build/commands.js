@@ -2,7 +2,6 @@ const {
   access,
   constants: {R_OK, W_OK},
   readFile,
-  writeFile,
 } = require('fs/promises');
 const {
   dirname,
@@ -27,6 +26,7 @@ const {
   loadYml,
   lockFile,
   spawnWith,
+  writeFile,
 } = require('@flecks/core/src/server');
 const chokidar = require('chokidar');
 const {glob} = require('glob');

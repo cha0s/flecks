@@ -7,18 +7,6 @@ on:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
-      if: ${{ vars.NPM_CI_REGISTRY }}
-    - run: npm ci
-    - run: npm run -- test -t 120000 -p e2e
+    uses: ./.github/workflows/node.yml
+    with:
+      run: npm run -- test -t 360000 -p e2e

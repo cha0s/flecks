@@ -1,7 +1,7 @@
-import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
 import {heavySetup} from '@flecks/core/build/testing';
+import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
 import {buildChild, createApplication} from './build/build';

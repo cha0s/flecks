@@ -1,7 +1,7 @@
 import addPathsToYml from '@flecks/core/build/add-paths-to-yml';
-import {loadYml} from '@flecks/core/server';
+import {loadYml, writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
-import {readFile, writeFile} from 'fs/promises';
+import {readFile} from 'fs/promises';
 
 it('can add paths to YML', async () => {
   await writeFile(

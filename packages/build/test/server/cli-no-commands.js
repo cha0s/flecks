@@ -1,4 +1,3 @@
-import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
 import {createWorkspace} from '@flecks/core/build/testing';
@@ -7,6 +6,7 @@ import {
   pipesink,
   processCode,
   spawnWith,
+  writeFile,
 } from '@flecks/core/server';
 import {expect} from 'chai';
 

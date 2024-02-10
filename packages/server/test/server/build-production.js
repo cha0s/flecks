@@ -16,8 +16,6 @@ before(heavySetup(async () => {
     artifact = true;
   }
   catch (error) {
-    // intermittent failure...
-    console.error(error); // eslint-disable-line no-console
     artifact = false;
   }
 }));

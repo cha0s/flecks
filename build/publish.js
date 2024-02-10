@@ -2,13 +2,14 @@ const {Buffer} = require('buffer');
 const {exec} = require('child_process');
 const {createHash} = require('crypto');
 const {createReadStream} = require('fs');
-const {cp, mkdir, writeFile} = require('fs/promises');
+const {cp, mkdir} = require('fs/promises');
 const {join} = require('path');
 
 const {
   processCode,
   run,
   spawnWith,
+  writeFile,
 } = require('@flecks/core/src/server');
 const Arborist = require('@npmcli/arborist');
 const {glob} = require('glob');
