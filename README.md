@@ -1,4 +1,5 @@
-![CI](https://github.com/cha0s/flecks/actions/workflows/verify.yml/badge.svg)
+![CI](https://github.com/cha0s/flecks/actions/workflows/ci.yml/badge.svg)
+![End-to-end tests](https://github.com/cha0s/flecks/actions/workflows/e2e.yml/badge.svg)
 
 # Flecks
 
