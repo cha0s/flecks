@@ -33,13 +33,16 @@ const {
       try {
         await stat(destination);
         const error = new Error(
-          `@flecks/create-app: destination '${destination} already exists: aborting`,
+          `@flecks/create-app: destination '${destination}' already exists: aborting`,
         );
-        error.code = 129;
+        error.code = 1;
         throw error;
       }
-      // eslint-disable-next-line no-empty
-      catch (error) {}
+      catch (error) {
+        if ('ENOENT' !== error.code) {
+          throw error;
+        }
+      }
       const fileTree = await move(name, join(__dirname, '..', 'template'));
       fileTree.pipe(
         'build/flecks.yml',
@@ -50,12 +53,17 @@ const {
       );
       // Write the tree.
       await fileTree.writeTo(destination);
-      await install({cwd: destination, packageManager});
-      await build({cwd: destination, packageManager});
+      if (0 !== await install({cwd: destination, packageManager})) {
+        throw new Error('installation failed');
+      }
+      if (0 !== await build({cwd: destination, packageManager})) {
+        throw new Error('build failed');
+      }
     }
     catch (error) {
       // eslint-disable-next-line no-console
-      console.error(error);
+      console.error('creation failed:', error);
+      process.exitCode = 1;
     }
   });
   await program.parseAsync(process.argv);

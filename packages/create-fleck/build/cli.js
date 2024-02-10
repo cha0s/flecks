@@ -92,6 +92,7 @@ const {
     catch (error) {
       // eslint-disable-next-line no-console
       console.error('creation failed:', error);
+      process.exitCode = 1;
     }
   });
   await program.parseAsync(process.argv);
