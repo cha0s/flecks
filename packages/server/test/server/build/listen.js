@@ -3,7 +3,7 @@ import {createServer} from 'net';
 import {tmpdir} from 'os';
 import {dirname, join} from 'path';
 
-import id from './id';
+import {id} from '@flecks/core/build/testing';
 
 class SocketWrapper {
 

@@ -7,6 +7,7 @@ module.exports = {
   glob: require('glob').glob,
   loadYml,
   ...require('../../build/stream'),
+  ...require('./fs'),
   ...require('./package-manager'),
   ...require('./process'),
 };

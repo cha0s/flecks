@@ -2,12 +2,14 @@ const {Buffer} = require('buffer');
 const {exec} = require('child_process');
 const {createHash} = require('crypto');
 const {createReadStream} = require('fs');
-const {cp, mkdir, writeFile} = require('fs/promises');
+const {cp, mkdir} = require('fs/promises');
 const {join} = require('path');
 
 const {
   processCode,
+  run,
   spawnWith,
+  writeFile,
 } = require('@flecks/core/src/server');
 const Arborist = require('@npmcli/arborist');
 const {glob} = require('glob');
@@ -24,18 +26,6 @@ const creators = ['create-app', 'create-fleck'];
 const localVersions = {};
 const packCache = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'publish');
 const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
-
-const run = (cmd) => (
-  new Promise((resolve) => {
-    exec(cmd, (error, stdout) => {
-      if (error) {
-        resolve(undefined)
-        return;
-      }
-      resolve(stdout.trim());
-    });
-  })
-);
 
 // Get integrity sums for creator dependencies.
 const packPkg = async (pkg) => {

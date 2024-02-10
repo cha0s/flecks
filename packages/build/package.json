@@ -4,12 +4,10 @@
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --config ./build/build.webpack.config.js --mode production",
+    "build": "flecks build",
     "clean": "rm -rf dist node_modules yarn.lock",
-    "lint": "eslint --config ./build/eslint.config.js .",
-    "postversion": "npm run build",
-    "test": "webpack --config ./build/build.test.webpack.config.js --mode production && mocha --colors --parallel ./dist/test/*.js ./dist/test/server/*.js",
-    "test:watch": "webpack watch --config ./build/build.test.webpack.config.js --mode development & mocha --colors --parallel --watch --watch-files ./dist/test/*.js ./dist/test/server/*.js"
+    "lint": "flecks lint",
+    "test": "flecks test"
   },
   "repository": {
     "type": "git",

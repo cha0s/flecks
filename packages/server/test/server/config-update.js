@@ -1,13 +1,17 @@
-import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
+import {heavySetup} from '@flecks/core/build/testing';
+import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
 import {build, createApplication} from './build/build';
 import {socketListener} from './build/listen';
 
-it('updates config', async () => {
-  const path = await createApplication();
+let path;
+let socket;
+
+before(heavySetup(async () => {
+  path = await createApplication();
   const {socketPath, socketServer} = await socketListener();
   build(
     path,
@@ -21,7 +25,10 @@ it('updates config', async () => {
       },
     },
   );
-  const socket = await socketServer.waitForSocket();
+  socket = await socketServer.waitForSocket();
+}));
+
+it('updates config', async () => {
   expect((await socket.send({type: 'config.get', payload: '@flecks/core.id'})).payload)
     .to.equal('flecks');
   await writeFile(

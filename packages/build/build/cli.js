@@ -34,7 +34,7 @@ const program = new Command();
 program
   .enablePositionalOptions()
   .name('flecks')
-  .usage('[command] [...]');
+  .usage('<command> [...]');
 // Bootstrap.
 (async () => {
   debugSilly('bootstrapping flecks...');
@@ -43,6 +43,9 @@ program
   // Register commands.
   const commands = await flecks.invokeMergeUniqueAsync('@flecks/build.commands', program);
   const keys = Object.keys(commands).sort();
+  if (0 === keys.length) {
+    program.error('No flecks commands defined! You probably forgot to install packages in this project.');
+  }
   for (let i = 0; i < keys.length; ++i) {
     const {
       action,
@@ -63,5 +66,5 @@ program
     cmd.action(forwardProcessCode(action));
   }
   // Parse commandline.
-  program.parse(process.argv);
+  await program.parseAsync(process.argv);
 })();

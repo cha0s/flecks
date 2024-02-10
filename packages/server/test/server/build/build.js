@@ -1,45 +1,36 @@
-import {cp, mkdir} from 'fs/promises';
+import {cp} from 'fs/promises';
 import {join} from 'path';
 
-import {rimraf} from '@flecks/build/server';
+import {createWorkspace} from '@flecks/core/build/testing';
 import {binaryPath, processCode, spawnWith} from '@flecks/core/server';
 
-import id from './id';
 import {listen} from './listen';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-export const applications = join(FLECKS_CORE_ROOT, 'node_modules', '.cache', '@flecks', 'server');
 export const template = join(FLECKS_CORE_ROOT, 'test', 'server', 'template');
 
 export async function createApplication() {
-  const path = join(applications, await id());
-  await rimraf(path);
-  await mkdir(path, {recursive: true});
-  await cp(template, path, {recursive: true});
-  // sheeeeesh
-  process.prependListener('message', async (message) => {
-    if ('__workerpool-terminate__' === message) {
-      rimraf.sync(path);
-    }
-  });
-  return path;
+  const workspace = await createWorkspace();
+  await cp(template, workspace, {recursive: true});
+  return workspace;
 }
 
 export async function buildChild(path, {args = [], opts = {}} = {}) {
   return spawnWith(
     [await binaryPath('flecks', '@flecks/build'), 'build', ...args],
     {
+      stdio: 'ignore',
       ...opts,
       env: {
         FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
         FLECKS_ENV__flecks_server__start: 0,
         FLECKS_CORE_ROOT: path,
+        NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
         ...opts.env,
       },
-      stdio: 'ignore',
     },
   );
 }
@@ -56,6 +47,7 @@ export async function serverActions(path, actions) {
     {
       env: {
         FLECKS_SERVER_TEST_SOCKET: socketPath,
+        NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
       },
       stdio: 'ignore',
     },

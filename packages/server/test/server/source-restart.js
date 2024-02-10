@@ -1,13 +1,17 @@
-import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
+import {heavySetup} from '@flecks/core/build/testing';
+import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
 import {buildChild, createApplication} from './build/build';
 import {socketListener} from './build/listen';
 
-it('restarts when root sources change', async () => {
-  const path = await createApplication();
+let path;
+let socket;
+
+before(heavySetup(async () => {
+  path = await createApplication();
   const {socketPath, socketServer} = await socketListener();
   await buildChild(
     path,
@@ -21,7 +25,10 @@ it('restarts when root sources change', async () => {
       },
     },
   );
-  const socket = await socketServer.waitForSocket();
+  socket = await socketServer.waitForSocket();
+}));
+
+it('restarts when root sources change', async () => {
   let restarted;
   const whatHappened = Promise.race([
     socket.waitForHmr()

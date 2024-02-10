@@ -1,10 +1,11 @@
-import {mkdir, writeFile} from 'fs/promises';
+import {mkdir} from 'fs/promises';
 import {join} from 'path';
 
 import {expect} from 'chai';
 
 import explicate from '@flecks/build/build/explicate';
 import Resolver from '@flecks/build/build/resolver';
+import {writeFile} from '@flecks/core/server';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

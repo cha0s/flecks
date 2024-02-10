@@ -1,7 +1,8 @@
 // eslint-disable-next-line max-classes-per-file
+const {Buffer} = require('buffer');
 const {dump: dumpYml, load: loadYml} = require('js-yaml');
 const JsonParse = require('jsonparse');
-const {Transform} = require('stream');
+const {Transform, Writable} = require('stream');
 
 exports.JsonStream = class JsonStream extends Transform {
 
@@ -43,6 +44,33 @@ exports.JsonStream.PrettyPrint = class extends exports.JsonStream {
     };
   }
 
+};
+
+exports.pipesink = (streamsOrStream) => {
+  const streams = Array.isArray(streamsOrStream) ? streamsOrStream : [streamsOrStream];
+  class Sink extends Writable {
+
+    constructor() {
+      super();
+      this.buffers = [];
+    }
+
+    // eslint-disable-next-line no-underscore-dangle
+    _write(chunk, encoding, done) {
+      this.buffers.push(chunk);
+      done();
+    }
+
+  }
+  const sink = new Sink();
+  const final = streams.reduce((output, input) => input.pipe(output));
+  return new Promise((resolve, reject) => {
+    final.pipe(sink);
+    final.on('error', reject);
+    final.on('end', () => {
+      resolve(Buffer.concat(sink.buffers));
+    });
+  });
 };
 
 exports.YamlStream = class YamlStream extends Transform {

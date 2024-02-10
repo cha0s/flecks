@@ -1,0 +1,12 @@
+name: End-to-end tests
+
+on:
+  schedule:
+    - cron: '20 4 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  e2e:
+    uses: ./.github/workflows/node.yml
+    with:
+      run: npm run -- test -t 360000 -p e2e

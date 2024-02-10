@@ -25,7 +25,7 @@ exports.build = async ({cwd, packageManager = exports.inferPackageManager()}) =>
       break;
     default:
   }
-  return args && processCode(spawnWith(args, {cwd}));
+  return args && processCode(spawnWith(args, {cwd, env: {FLECKS_CORE_ROOT: cwd}}));
 };
 
 exports.add = async ({dev, packageManager = exports.inferPackageManager(), packages}) => {

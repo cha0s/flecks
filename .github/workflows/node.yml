@@ -1,14 +1,14 @@
-name: CI
+name: Continuous Integration
 
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-  workflow_dispatch: {}
+  workflow_call:
+    inputs:
+      run:
+        required: true
+        type: string
 
 jobs:
-  verify:
+  node:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,7 +20,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ${{ vars.NPM_CI_FLAGS }} ci
-    - run: npm run lint
-    - run: npm run test
-    - run: npm run build
+    - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+      if: ${{ vars.NPM_CI_REGISTRY }}
+    - run: |
+        npm ci
+        ${{ inputs.run }}

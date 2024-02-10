@@ -22,9 +22,11 @@ module.exports = (program, flecks) => {
     ],
     options: [
       program.createOption('-d, --no-production', 'dev build'),
+      program.createOption('-p, --platform [platforms...]', 'platforms to test')
+        .default(['default', 'server']),
       program.createOption('-t, --timeout <ms>', 'timeout').default(2000),
-      program.createOption('-w, --watch', 'watch for changes'),
       program.createOption('-v, --verbose', 'verbose output'),
+      program.createOption('-w, --watch', 'watch for changes'),
     ],
     description: [
       'Run tests.',
@@ -33,21 +35,29 @@ module.exports = (program, flecks) => {
     ].join('\n'),
     action: async (only, opts) => {
       const {
+        platform: platforms,
         production,
         timeout,
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
-      const tests = await glob(join(FLECKS_CORE_ROOT, 'test', '*.js'));
-      const serverTests = await glob(join(FLECKS_CORE_ROOT, 'test', 'server', '*.js'));
-      let files = []
-        .concat(tests, serverTests)
-        .map((path) => relative(FLECKS_CORE_ROOT, path));
+      let files = [];
+      if (platforms.includes('default')) {
+        files.push(...await glob(join(FLECKS_CORE_ROOT, 'test', '*.js')));
+      }
+      await Promise.all(
+        platforms
+          .filter((platform) => 'default' !== platform)
+          .map(async (platform) => {
+            files.push(...await glob(join(FLECKS_CORE_ROOT, 'test', platform, '*.js')));
+          }),
+      );
       if (0 === files.length) {
         // eslint-disable-next-line no-console
         console.log('No tests found.');
         return undefined;
       }
+      files = files.map((path) => relative(FLECKS_CORE_ROOT, path));
       if (only) {
         if (files.includes(only)) {
           files = [only];
@@ -60,7 +70,15 @@ module.exports = (program, flecks) => {
       // Remove the previous test.
       await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
-      await build.action('test', {production, stdio: 'ignore', watch});
+      await build.action(
+        'test',
+        {
+          env: {FLECKS_CORE_TEST_PLATFORMS: JSON.stringify(platforms)},
+          production,
+          stdio: 'ignore',
+          watch,
+        },
+      );
       debug('Testing...', opts);
       // eslint-disable-next-line no-constant-condition
       while (true) {

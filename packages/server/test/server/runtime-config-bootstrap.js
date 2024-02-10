@@ -1,12 +1,16 @@
-import {mkdir, writeFile} from 'fs/promises';
+import {mkdir} from 'fs/promises';
 import {join} from 'path';
 
+import {heavySetup} from '@flecks/core/build/testing';
+import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
 import {build, createApplication, serverActions} from './build/build';
 
-it('propagates bootstrap config', async () => {
-  const path = await createApplication();
+let path;
+
+before(heavySetup(async () => {
+  path = await createApplication();
   await mkdir(join(path, 'server-only', 'build'), {recursive: true});
   await writeFile(join(path, 'server-only', 'package.json'), '{}');
   const config = `
@@ -29,6 +33,9 @@ it('propagates bootstrap config', async () => {
     `,
   );
   await build(path, {args: ['-d']});
+}));
+
+it('propagates bootstrap config', async () => {
   const {results: [{payload: foo}, {payload: blah}]} = await serverActions(path, [
     {type: 'config.get', payload: 'server-only.foo'},
     {type: 'config.get', payload: 'server-only.blah'},

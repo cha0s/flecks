@@ -1,7 +1,9 @@
-const {readFile, writeFile} = require('fs/promises');
+const {readFile} = require('fs/promises');
 const {join} = require('path');
 
 const {dump: dumpYml, load: loadYml} = require('js-yaml');
+
+const {writeFile} = require('../src/server/fs');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),

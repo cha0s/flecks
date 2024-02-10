@@ -1,4 +1,4 @@
-const {join} = require('path');
+const {delimiter, join} = require('path');
 
 const D = require('@flecks/core/build/debug');
 const {CachedInputFileSystem, ResolverFactory} = require('enhanced-resolve');
@@ -28,6 +28,14 @@ module.exports = class Resolver {
       root = FLECKS_CORE_ROOT,
       ...rest
     } = options;
+    const {NODE_PATH} = process.env;
+    if (NODE_PATH) {
+      NODE_PATH.split(delimiter).forEach((path) => {
+        if (!modules.includes(path)) {
+          modules.push(path);
+        }
+      });
+    }
     this.resolver = ResolverFactory.createResolver({
       conditionNames: ['node'],
       extensions: ['.js', '.json', '.node'],

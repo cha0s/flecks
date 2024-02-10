@@ -12,6 +12,7 @@ const configFn = require('./common.webpack.config');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  FLECKS_CORE_TEST_PLATFORMS,
 } = process.env;
 
 const tests = join(FLECKS_CORE_ROOT, 'test');
@@ -20,9 +21,13 @@ module.exports = async (env, argv, flecks) => {
   const config = await configFn(env, argv, flecks);
   config.output.chunkFormat = false;
   config.output.path = join(FLECKS_CORE_ROOT, 'dist', 'test');
-  // Test entry.
-  const testPaths = await glob(join(tests, '*.js'));
-  const {platforms} = flecks;
+  const testPaths = [];
+  const platforms = FLECKS_CORE_TEST_PLATFORMS
+    ? JSON.parse(FLECKS_CORE_TEST_PLATFORMS)
+    : [...new Set(['default', ...flecks.platforms])];
+  if (platforms.includes('default')) {
+    testPaths.push(...await glob(join(tests, '*.js')));
+  }
   testPaths.push(
     ...(await Promise.all(platforms.map((platform) => glob(join(tests, platform, '*.js')))))
       .flat(),
