@@ -18,5 +18,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ${{ vars.NPM_CI_FLAGS }} ci
-    - run: npm run -- test -p e2e
+    - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+      if: ${{ vars.NPM_CI_REGISTRY }}
+    - run: npm ci
+    - run: npm run -- test -t 120000 -p e2e

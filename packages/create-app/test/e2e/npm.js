@@ -13,7 +13,10 @@ it('generates a working application with npm', async () => {
   const child = spawnWith(
     [join(FLECKS_CORE_ROOT, 'build', 'cli.js'), 'test-application'],
     {
-      env: {FLECKS_CORE_ROOT: workspace},
+      env: {
+        FLECKS_CORE_ROOT: workspace,
+        PATCH_PACKAGE_INTEGRATION_TEST: 1,
+      },
       stdio: 'ignore',
     },
   );

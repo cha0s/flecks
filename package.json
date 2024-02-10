@@ -15,7 +15,7 @@
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus",
     "lint": "node build/tasks npm run lint",
     "publish": "node build/publish --provenance",
-    "test": "node build/tasks npm run -- test -t 300000"
+    "test": "node build/tasks npm run -- test"
   },
   "workspaces": [
     "packages/*"

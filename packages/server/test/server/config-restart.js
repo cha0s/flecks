@@ -1,14 +1,20 @@
 import {writeFile} from 'fs/promises';
 import {join} from 'path';
 
+import {heavySetup} from '@flecks/core/build/testing';
 import {expect} from 'chai';
 
 import {buildChild, createApplication} from './build/build';
 import {socketListener} from './build/listen';
 
-it('restarts when config keys change', async () => {
-  const path = await createApplication();
-  const {socketPath, socketServer} = await socketListener();
+let path;
+let listener;
+let socket;
+
+before(heavySetup(async () => {
+  path = await createApplication();
+  listener = await socketListener();
+  const {socketPath, socketServer} = listener;
   await buildChild(
     path,
     {
@@ -21,7 +27,11 @@ it('restarts when config keys change', async () => {
       },
     },
   );
-  const socket = await socketServer.waitForSocket();
+  socket = await socketServer.waitForSocket();
+}));
+
+async function restart() {
+  this.timeout(0);
   let restarted;
   const whatHappened = Promise.race([
     socket.waitForHmr()
@@ -50,10 +60,15 @@ it('restarts when config keys change', async () => {
   expect(restarted)
     .to.be.true;
   let config;
-  await socketServer.waitForSocket()
+  const before = Date.now();
+  await listener.socketServer.waitForSocket()
     .then(async (socket) => {
       ({payload: config} = await socket.send({type: 'config.get', payload: '@flecks/repl/server'}));
     });
+  // Had to rebuild...
+  this.timeout(2000 + (Date.now() - before));
   expect(config)
     .to.not.be.undefined;
-});
+}
+
+it('restarts when config keys change', restart);

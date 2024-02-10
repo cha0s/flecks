@@ -1,4 +1,4 @@
-const {fork, spawn} = require('child_process');
+const {exec, fork, spawn} = require('child_process');
 const {
   access,
   constants: {X_OK},
@@ -40,6 +40,22 @@ exports.processCode = (child) => new Promise((resolve, reject) => {
     resolve(code);
   });
 });
+
+exports.run = (cmd, {suppressError = true} = {}) => (
+  new Promise((resolve) => {
+    exec(cmd, (error, stdout) => {
+      if (error) {
+        if (!suppressError) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+        resolve(undefined);
+        return;
+      }
+      resolve(stdout.trim());
+    });
+  })
+);
 
 const children = [];
 

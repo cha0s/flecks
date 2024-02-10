@@ -13,7 +13,6 @@ export function id() {
 
 export async function createWorkspace() {
   const workspace = join(tmpdir(), '@flecks', 'core', 'testing', await id());
-  await rimraf(workspace);
   await mkdir(workspace, {recursive: true});
   // sheeeeesh
   process.prependListener('message', async (message) => {
@@ -22,4 +21,11 @@ export async function createWorkspace() {
     }
   });
   return workspace;
+}
+
+export function heavySetup(fn) {
+  return function heavySetup() {
+    this.timeout(0);
+    return fn();
+  };
 }
