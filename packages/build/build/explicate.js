@@ -53,7 +53,9 @@ module.exports = async function explicate(
           resolver.addAlias(join(submodules, 'webpack'), join(resolver.root, 'node_modules', 'webpack'));
           // Runtime NODE_PATH hacking.
           const {env} = process;
-          env.NODE_PATH = (env.NODE_PATH || '') + delimiter + submodules;
+          const nodePaths = env.NODE_PATH ? env.NODE_PATH.split(delimiter) : [];
+          nodePaths.push(submodules);
+          env.NODE_PATH = nodePaths.join(delimiter);
           // eslint-disable-next-line no-underscore-dangle
           Module._initPaths();
         }
