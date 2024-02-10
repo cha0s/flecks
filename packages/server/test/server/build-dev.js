@@ -14,6 +14,9 @@ it('builds for development', async () => {
     artifact = true;
   }
   catch (error) {
+    // intermittent failure...
+    // eslint-disable-next-line no-console
+    console.error(error);
     artifact = false;
   }
   expect(artifact)
