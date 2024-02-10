@@ -4,7 +4,6 @@
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
-    "postversion": "npm run build",
     "test": "flecks test"
   },
   "files": [

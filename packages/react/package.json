@@ -7,7 +7,6 @@
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
-    "postversion": "npm run build",
     "postinstall": "node src/fake-context.js",
     "test": "flecks test"
   },
