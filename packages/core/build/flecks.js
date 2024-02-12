@@ -933,11 +933,15 @@ class Flecks {
           }
           if (raw) {
             const decorated = await this.checkAndDecorateRawGathered(hook, raw, check);
-            this.constructor.debug('updating gathered %s from %s...', hook, fleck);
-            this.constructor.debugSilly('%O', decorated);
+            this.constructor.debug(
+              'updating gathered %s from %s with %O',
+              hook,
+              fleck,
+              Object.keys(decorated),
+            );
             const entries = Object.entries(decorated);
             entries.forEach(([type, Class]) => {
-              const {[type]: {[idProperty]: id}} = gathered;
+              const {id} = Class;
               const Subclass = wrapGathered(Class, id, idProperty, type, typeProperty);
               // eslint-disable-next-line no-multi-assign
               gathered[type] = Subclass;
