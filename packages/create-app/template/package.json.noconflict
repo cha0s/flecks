@@ -17,5 +17,8 @@
     "@flecks/build": "^4.0.0",
     "@flecks/create-fleck": "^4.0.0",
     "patch-package": "^8.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
