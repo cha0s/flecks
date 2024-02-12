@@ -31,7 +31,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      max-parallel: ${{ vars.CI_PARALLEL || 256 }}
       matrix:
         node-version: [16.x, 18.x, 20.x]
     steps:
