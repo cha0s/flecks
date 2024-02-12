@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.0](https://github.com/cha0s/flecks/compare/core-v4.0.5...core-v4.1.0) (2024-02-12)
+
+
+### Features
+
+* pipesink ([e6c2d49](https://github.com/cha0s/flecks/commit/e6c2d490086fb5be37378150b1e8e717441a23a9))
+
 ## [4.0.5](https://github.com/cha0s/flecks/compare/core-v4.0.4...core-v4.0.5) (2024-02-09)
 
 

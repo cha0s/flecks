@@ -31,6 +31,24 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.3 to ^4.0.4
     * @flecks/fleck bumped from ^4.0.3 to ^4.0.4
 
+## [4.0.6](https://github.com/cha0s/flecks/compare/create-fleck-v4.0.5...create-fleck-v4.0.6) (2024-02-12)
+
+
+### Bug Fixes
+
+* failure handling ([855999b](https://github.com/cha0s/flecks/commit/855999b3a13d838ce00c8bdd1ff2342c3bd7bdeb))
+* npm workspace support ([43af885](https://github.com/cha0s/flecks/commit/43af885b6d7a3d32a766e2f3b66827b1538f3bd9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.0.5 to ^4.1.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.5 to ^4.0.6
+    * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
+
 ## [4.0.5](https://github.com/cha0s/flecks/compare/create-fleck-v4.0.4...create-fleck-v4.0.5) (2024-02-09)
 
 

@@ -21,6 +21,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/core bumped from ^4.0.4 to ^4.0.5
 
+## [4.0.6](https://github.com/cha0s/flecks/compare/build-v4.0.5...build-v4.0.6) (2024-02-12)
+
+
+### Bug Fixes
+
+* build watching ([60e286d](https://github.com/cha0s/flecks/commit/60e286d8d5beb502c8ccabf8e3ab849ea4b0cff9))
+* default tests ([8798073](https://github.com/cha0s/flecks/commit/8798073a0064fa2b422ebf088721600b02c648cb))
+* handle more failure cases ([61f258e](https://github.com/cha0s/flecks/commit/61f258e41447360c86dc7eb52c527fbe54aa52ab))
+* use NODE_PATH for resolution ([7b0f9f8](https://github.com/cha0s/flecks/commit/7b0f9f87feabca0c98ae4e4c499749cd18ba202b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.0.5 to ^4.1.0
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/build-v4.0.2...build-v4.0.3) (2024-02-09)
 
 

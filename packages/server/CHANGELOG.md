@@ -37,6 +37,25 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.4 to ^4.0.5
     * @flecks/fleck bumped from ^4.0.4 to ^4.0.5
 
+## [4.0.6](https://github.com/cha0s/flecks/compare/server-v4.0.5...server-v4.0.6) (2024-02-12)
+
+
+### Bug Fixes
+
+* handle failure ([28c1e0d](https://github.com/cha0s/flecks/commit/28c1e0da0ea9251f207f4c20bcbbc3b69cd7cff4))
+* use NODE_PATH for resolution ([7b0f9f8](https://github.com/cha0s/flecks/commit/7b0f9f87feabca0c98ae4e4c499749cd18ba202b))
+* worker.kill should do less ([cf0b780](https://github.com/cha0s/flecks/commit/cf0b780182613bdad87556ecc6d84cee659f46f3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.0.5 to ^4.1.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.5 to ^4.0.6
+    * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/server-v4.0.2...server-v4.0.3) (2024-02-09)
 
 
