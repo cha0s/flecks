@@ -1,6 +1,7 @@
 const {join, relative} = require('path');
+const {PassThrough} = require('stream');
 
-const {processCode, spawnWith} = require('@flecks/core/src/server');
+const {pipesink, processCode, spawnWith} = require('@flecks/core/src/server');
 const {glob} = require('glob');
 
 const concurrent = require('./concurrent');
@@ -16,9 +17,19 @@ const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
   process.exitCode = await concurrent(
     (await Promise.all(workspaces.map((path) => glob(join(FLECKS_CORE_ROOT, path))))).flat(),
     async (cwd) => {
-      console.log(`::group::{${relative(FLECKS_CORE_ROOT, cwd)}}`);
-      const code = await processCode(spawnWith(args, {cwd}));
-      console.log(`::endgroup::{${relative(FLECKS_CORE_ROOT, cwd)}}`);
+      const child = spawnWith(
+        args,
+        {
+          cwd,
+          stdio: 'pipe',
+        },
+      );
+      const stdio = new PassThrough();
+      const buffer = pipesink(child.stderr.pipe(child.stdout.pipe(stdio)));
+      const code = await processCode(child);
+      console.log(`::group::{${relative(join(FLECKS_CORE_ROOT, 'packages'), cwd)}}`);
+      process.stdout.write(await buffer);
+      console.log('::endgroup::');
       return code;
     },
   );
