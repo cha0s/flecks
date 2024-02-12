@@ -64,7 +64,7 @@ const {
           scope = inferredScope;
         }
       }
-      const local = basename(path || root);
+      const local = basename(path || dirname(npm_package_json));
       const name = scope ? `${scope}/${local}` : local;
       const fileTree = await move(name, join(__dirname, '..', 'template'));
       if (inheritVersion && rootJson?.version) {
