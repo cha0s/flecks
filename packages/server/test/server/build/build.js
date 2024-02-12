@@ -72,10 +72,13 @@ export async function startServer({
       },
     },
   );
+  server.on('exit', async () => {
+    socketServer.close();
+  });
   if (failOnErrorCode) {
     const stderr = pipesink(server.stderr);
     server.on('exit', async (code) => {
-      if (0 !== code) {
+      if (!server.done && 0 !== code) {
         const buffer = await stderr;
         if (!process.stderr.write(buffer)) {
           await new Promise((resolve, reject) => {
@@ -116,7 +119,9 @@ export function withServer(task, options) {
       );
       return results;
     };
-    return task({server, socket});
+    await task({server, socket});
+    server.child.done = true;
+    server.child.kill();
   };
 }
 
