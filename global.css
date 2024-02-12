@@ -64,3 +64,11 @@ ul.headless.tabs > li[aria-selected="true"]:hover {
     background-position: 10.5em;
   }
 }
+
+.theme-code-block-highlighted-line[class] {
+  background-color: rgb(255, 253, 105);
+}
+
+[data-theme="dark"] .theme-code-block-highlighted-line[class] {
+  background-color: rgb(70, 69, 3);
+}
