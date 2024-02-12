@@ -1,6 +1,6 @@
 {
   "name": "@flecks/repl",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -21,12 +21,12 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.0.5",
+    "@flecks/core": "^4.1.0",
     "command-exists": "^1.2.9",
     "debug": "4.3.1"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.5",
-    "@flecks/fleck": "^4.0.5"
+    "@flecks/build": "^4.0.6",
+    "@flecks/fleck": "^4.0.6"
   }
 }
