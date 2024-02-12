@@ -14,24 +14,14 @@ using the CLI:
 
 <Execute cmd="flecks add @flecks/web" />
 
-:::tip[Really, a command just to add a fleck?]
+:::danger[Fast and dynamic]
 
-<Install headless pkg="@flecks/web">
-  Yep! This is only for your convenience however, as it is equivalent to doing:
-</Install>
-
-and then adding:
-
-```
-'@flecks/web': {}
-```
-
-to your `build/flecks.yml`; that's all it does!
+If your application was still running when you added that fleck, you will see the application
+automatically restart!
 
 :::
 
-
-Now, if you run:
+Otherwise, if you run:
 
 <Run headless cmd="start" />
 
@@ -75,22 +65,26 @@ export const hooks = {
 };
 ```
 
-Now, restart your application and refresh your website. Glorious, isn't it?
+:::danger[And another one]
+
+Just like before, saving that file will automatically reload your webpage and show you the message
+immediately!
+
+:::
+
+
+Glorious, isn't it?
 
 ![An image of our simple hello world application running inside a Chromium browser window](./flecks-web.png)
 
 ## Everything so far... plus Electron!
 
-<Execute cmd="flecks add -d @flecks/electron">
-  Let's add another core fleck. flecks ships with a core fleck `@flecks/electron`. This runs your
-  application inside of an instance of [Electron](https://www.electronjs.org/). You'll add the fleck:
-</Execute>
+Let's add another core fleck. flecks ships with a core fleck `@flecks/electron`. This runs your
+application inside of an instance of [Electron](https://www.electronjs.org/). You'll add the fleck:
 
-Finally,
+<Execute headless cmd="flecks add -d @flecks/electron" />
 
-<Run headless cmd="start" />
-
-and you will see something like this:
+You will almost immediately see something like this:
 
 ![An image of our simple hello world application running inside an Electron window](./flecks-electron.png)
 
@@ -103,3 +97,5 @@ We used the `-d` option with `flecks add` to add `@flecks/electron` to
 since it's only needed for development.
 
 :::
+
+Next, we'll go over some of the nuts and bolts of how your application is built.

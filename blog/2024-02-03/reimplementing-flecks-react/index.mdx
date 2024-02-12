@@ -46,21 +46,20 @@ cd illustration
 
 We'll create two flecks, one called `react`:
 
-<Create headless type="fleck" pkg="react" />
+<Create headless type="fleck" pkg="packages/react" />
 
 and one called `component`:
 
-<Create headless type="fleck" pkg="component" />
+<Create headless type="fleck" pkg="packages/component" />
 
 A quick look at `build/flecks.yml` shows:
 
 ```yml
-'@flecks/build': {}
 '@flecks/core':
   id: illustration
 '@flecks/server': {}
-'@illustration/component:./packages/component': {}
-'@illustration/react:./packages/react': {}
+'@illustration/component': {}
+'@illustration/react': {}
 ```
 
 ## Do stuff with React
@@ -91,19 +90,8 @@ Start your application:
 Uh, oh! We got an error:
 
 ```
-Module not found: Error: Can't resolve './component'
-
-      no extension
-        [...]/illustration/packages/component/src/component doesn't exist
-      .mjs
-        [...]/illustration/packages/component/src/component.mjs doesn't exist
-      .js
-        [...]/illustration/packages/component/src/component.js doesn't exist
-      .json
-        [...]/illustration/packages/component/src/component.json doesn't exist
-      .wasm
-        [...]/illustration/packages/component/src/component.wasm doesn't exist
-
+ERROR in ./packages/component/src/index.js 1:0-36
+Module not found: Error: Can't resolve './component' in '...'
 ```
 
 We can see that `jsx` wasn't one of the extensions that got searched! This is because of flecks's
@@ -123,6 +111,11 @@ are invoked.
 
 :::
 
+We'll use `@babel/preset-react`, so let's move into `@illustration/react` and add it to our
+dependencies:
+
+<Install headless pkg="@babel/preset-react" />
+
 Let's modify `@illustration/react/build/flecks.bootstrap.js` like so:
 
 ```js
@@ -136,16 +129,8 @@ exports.hooks = {
 };
 ```
 
-We're using `@babel/preset-react` now, so let's move into `@illustration/react` and add it to our
-dependencies:
-
-<Install headless pkg="@babel/preset-react" />
-
-Start your application again:
-
-<Run headless cmd="start" />
-
-Everything comes up right! Only thing is, we don't actually have a web server yet!
+The server automatically restarts and everything comes up correct! Only thing is, we don't
+actually have a web server yet!
 
 ## Web integration
 
@@ -165,6 +150,9 @@ Add `@flecks/web` to the dependencies in `@illustration/react/build/flecks.boots
 // highlight-next-line
 exports.dependencies = ['@flecks/web'];
 ```
+
+The server automatically restarts and starts listening as a web server! It will only serve a
+white page for now.
 
 ### Client implementation
 
@@ -198,9 +186,8 @@ you are in the **runtime** phase.
 
 Now, restart your application:
 
-<Run headless cmd="start" />
-
-You'll see that we're now getting the `rendered` message in the console.
+The server automatically restarts yet again. You'll see that we're now getting the `rendered`
+message in the console.
 
 ### What are we doing here exactly?
 
@@ -231,7 +218,8 @@ React root components. We'll then collect and render them all.
   },
 ```
 
-Refreshing the page shows `rendered roots: Object {  }` in the console. Getting closer!
+The page automatically refreshes itself and shows `rendered roots: Object {  }` in the console.
+Getting closer!
 
 Let's go back over to `@illustration/component/src/index.js` and implement **our** hook:
 
@@ -245,7 +233,7 @@ export const hooks = {
 // highlight-end
 ```
 
-Refresh one more time and you will see:
+Refresh the page and you will see:
 
 ```
 rendered roots:  Object { "@illustration/component": Component() }
@@ -294,20 +282,21 @@ function Component() {
 export default Component;
 ```
 
-Now refresh the page and you will see exactly what you expect!
+The page updates automatically: you will see exactly what you expect!
 
 ## For real this time
 
 Other aspects like HMR will be left as an exercise for the reader. Or... you could just use
 `@flecks/react`! You really should do that and save yourself the trouble. Back in our application's
-`build/flecks.yml` let's remove our half-baked React implementation:
+`build/flecks.yml` let's remove our half-baked React implementation from the build manifest:
 
 ```yml
-'@flecks/build': {}
 '@flecks/core':
   id: illustration
 '@flecks/server': {}
-'@illustration/component:./packages/component': {}
+'@illustration/component': {}
+// highlight-next-line
+# '@illustration/react': {}
 ```
 
 Move into `@illustration/component` and **add `@flecks/react` using the flecks CLI**:
@@ -394,7 +383,5 @@ The entire reason flecks exists is to minimize duplicated effort.
 :::
 
 ### Enjoy
-
-<Run headless cmd="start" />
 
 Now all that's left is to **have fun**!

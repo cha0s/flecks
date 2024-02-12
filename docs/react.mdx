@@ -11,25 +11,24 @@ import Run from '@site/helpers/run';
 
 ## Getting started
 
-<Create type="app" pkg="react-test">
-  Let's create a little app to demonstrate how to use [React](https://react.dev/) in flecks:
-</Create>
+Let's create a little app to demonstrate how to use [React](https://react.dev/) in flecks:
+
+<Create headless type="app" pkg="react-test" />
 
 ```
 cd react-test
 ```
 
-<Create headless type="fleck" pkg="root">
-  We'll also create a little fleck to hold our root component:
-</Create>
+We'll also create a little fleck to hold our root component:
+<Create headless type="fleck" pkg="root" />
 
-<Execute headless cmd="flecks add @flecks/react">
-  We'll add the `react` fleck to our new fleck:
+We'll add the `react` fleck to our new fleck:
 
-  ```
-  cd packages/root
-  ```
-</Execute>
+```
+cd packages/root
+```
+
+<Execute headless cmd="flecks add @flecks/react" />
 
 :::tip
 
@@ -75,9 +74,9 @@ Using `@flecks/react` makes sure your components are all using the same instance
 
 ### Go check it out
 
-<Run headless cmd="start">
-  Start your application:
-</Run>
+Start your application:
+
+<Run headless cmd="start" />
 
 Visit your website in your browser and you will see the hello world message!
 
@@ -88,7 +87,6 @@ is because **Server-Side Rendering (SSR) is enabled by default**! If you don't w
 `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@flecks/build': {}
 '@flecks/core':
   id: react-test
 // highlight-start

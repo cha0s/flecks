@@ -19,6 +19,9 @@ ul.headless.tabs > li {
   padding-top: 0;
 }
 ul.headless.tabs > li[aria-selected="false"] {
+  opacity: 0.2;
+}
+[data-theme="dark"] ul.headless.tabs > li[aria-selected="false"] {
   opacity: 0.1;
 }
 ul.headless.tabs > li[aria-selected="false"]:hover {
@@ -66,9 +69,9 @@ ul.headless.tabs > li[aria-selected="true"]:hover {
 }
 
 .theme-code-block-highlighted-line[class] {
-  background-color: rgb(255, 253, 105);
+  background-color: rgb(251, 250, 161);
 }
 
 [data-theme="dark"] .theme-code-block-highlighted-line[class] {
-  background-color: rgb(70, 69, 3);
+  background-color: rgb(66, 65, 38);
 }

@@ -12,8 +12,8 @@ export default {
         'installation',
         'configuration',
         'creating-a-fleck',
-        'building-your-application',
         'adding-flecks',
+        'building-your-application',
       ],
     },
     {

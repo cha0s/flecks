@@ -24,7 +24,6 @@ Arguments:
 
 Options:
   -d, --dev-dependency            add to dev dependencies
-  -pm,--package-manager <binary>  package manager binary (choices: "npm", "bun", "pnpm", "yarn")
   -h, --help                      display help for command
 ```
 
@@ -53,7 +52,6 @@ Usage: flecks clean [options]
 Remove node_modules, lock file, and build artifacts.
 
 Options:
-  -pm,--package-manager <binary>  package manager binary (choices: "npm", "bun", "pnpm", "yarn")
   -h, --help                      display help for command
 ```
 
@@ -101,17 +99,22 @@ Options:
 ### `test`
 
 ```
-Usage: flecks test [options]
+Usage: flecks test [options] [only]
 
 Run tests.
 
-Options:
-  -d, --no-production  dev build
-  -w, --watch          watch for changes
-  -v, --verbose        verbose output
-  -h, --help           display help for command
-
 The options are passed along to the `build` command.
+
+Arguments:
+  only                           only run a specific test
+
+Options:
+  -d, --no-production            dev build
+  -p, --platform [platforms...]  platforms to test (default: ["default","server"])
+  -t, --timeout <ms>             timeout (default: 2000)
+  -v, --verbose                  verbose output
+  -w, --watch                    watch for changes
+  -h, --help                     display help for command
 ```
 
 ## Your commands
@@ -126,7 +129,7 @@ run through the process.
   First, create an application:
 </Create>
 
-<Create headless type="fleck" pkg="fortune">
+<Create headless type="fleck" pkg="packages/fortune">
   Move into the new project and create a fleck:
 </Create>
 

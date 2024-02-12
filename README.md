@@ -5,13 +5,13 @@ This website is built using [Docusaurus](https://docusaurus.io/), a modern stati
 ### Installation
 
 ```
-(cd website && yarn)
+(cd website && npm ci)
 ```
 
 ### Local Development
 
 ```
-yarn dox start
+npm run dox start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
@@ -19,5 +19,5 @@ This command starts a local development server and opens up a browser window. Mo
 ### Build
 
 ```
-yarn dox build
+npm run dox build
 ```

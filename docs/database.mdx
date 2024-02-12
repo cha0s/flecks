@@ -18,7 +18,7 @@ database servers.
 
 We'll start from scratch as an example. Create a new flecks application:
 
-<Create pkg="db_test" type="app" />
+<Create pkg="db-test" type="app" />
 
 Now in your new application directory, add `@flecks/db`:
 
@@ -36,7 +36,7 @@ You will see lines like the following in the logs:
   @flecks/db/server/connection synchronized +2ms
 ```
 
-By default, flecks will connect to an in-memory SQLite database to get you started instantly.
+By default, flecks will connect to an **in-memory** SQLite database to get you started instantly.
 
 ## Your models
 
@@ -50,7 +50,7 @@ Let's create a fleck that makes a model so we can get a feel for how it works.
 
 First, create a fleck in your application:
 
-<Create pkg="content" type="fleck" />
+<Create pkg="packages/content" type="fleck" />
 
 Now, let's hop into `packages/content/src/index.js` and add a hook implementation:
 
@@ -59,6 +59,7 @@ export const hooks = {
   '@flecks/db.models': (flecks) => {
     const {Model, Types} = flecks.fleck('@flecks/db/server');
     class Content extends Model {
+
       static get attributes() {
         return {
           text: {
@@ -67,7 +68,8 @@ export const hooks = {
           },
         };
       }
-    };
+
+    }
     return {
       Content,
     };
@@ -75,11 +77,7 @@ export const hooks = {
 };
 ```
 
-Now,
-
-<Run headless cmd="start" />
-
-You will see that line looks different:
+Save the file and the server will immediately restart. You will see that line looks different now:
 
 ```
   @flecks/core/flecks gathered '@flecks/db.models': [ 'Content' ] +0ms
@@ -93,7 +91,6 @@ Let's add one more model and create an association between them:
 export const hooks = {
   '@flecks/db.models': (flecks) => {
     const {Model, Types} = flecks.fleck('@flecks/db/server');
-
     class Content extends Model {
 
       static get attributes() {
@@ -109,8 +106,7 @@ export const hooks = {
         this.hasMany(Tag);
       }
 
-    };
-
+    }
     class Tag extends Model {
 
       static get attributes() {
@@ -126,7 +122,7 @@ export const hooks = {
         this.belongsTo(Content);
       }
 
-    };
+    }
     return {
       Content,
       Tag,
@@ -135,22 +131,18 @@ export const hooks = {
 };
 ```
 
+This time our line in the logs looks like:
+
+```
+  @flecks/core/flecks updating gathered @flecks/db.models from @db-test/content with [ 'Content', 'Tag' ] +5ms
+```
+
 :::tip[Ess-Cue-Ell-ize]
 
 `@flecks/db` uses [Sequelize](https://sequelize.org/) under the hood. You can dive into
 [their documentation](https://sequelize.org/docs/v6/getting-started/) to learn even more.
 
 :::
-
-If you were to
-
-<Run headless cmd="start" />
-
-You would see the line:
-
-```
-  @flecks/core/flecks gathered '@flecks/db.models': [ 'Content', 'Tag' ] +0ms
-```
 
 ## Providing models with `Flecks.provide()`
 
@@ -214,8 +206,18 @@ import {Flecks} from '@flecks/core';
 
 export const hooks = {
   '@flecks/db.models': Flecks.provide(require.context('./models')),
-}
+};
 ```
+
+:::warning[This kills the webpack]
+
+If your application has been running and smoothly updating with all the changes, it will be killed
+once you add that `require.context` line when it tries to reload. This is a limitation of webpack.
+
+You'll need to restart your application. When webpack errors out, flecks will not automatically
+restart your application to prevent an infinite failure loop.
+
+:::
 
 We're passing the path to our models directory to `require.context` which is then passed to
 `Flecks.provide`. This is completely equivalent to our original code, but now we can add more
@@ -243,9 +245,11 @@ export const hooks = {
       const {Content, Tag} = flecks.db.Models;
       console.log(
         'There were',
-        await Content.count(), 'pieces of content',
+        await Content.count(),
+        'pieces of content',
         'and',
-        await Tag.count(), 'tags.',
+        await Tag.count(),
+        'tags.',
       );
     },
     {after: '@flecks/db/server'},
@@ -257,10 +261,6 @@ export const hooks = {
 
 We use [`Flecks.priority`](./ordering#fleckspriority) so that the database comes up before we try to use it.
 
-Now, another
-
-<Run headless cmd="start" />
-
 You will find this line in the output:
 
 ```
@@ -270,41 +270,43 @@ There were 0 pieces of content and 0 tags.
 Not very interesting. Let's add some, but only if there aren't any yet:
 
 ```javascript title="packages/content/src/index.js"
+import {Flecks} from '@flecks/core';
+
 export const hooks = {
   '@flecks/server.up': async (flecks) => {
     const {Content, Tag} = flecks.db.Models;
     console.log(
       'There were',
-      await Content.count(), 'pieces of content',
+      await Content.count(),
+      'pieces of content',
       'and',
-      await Tag.count(), 'tags.',
+      await Tag.count(),
+      'tags.',
     );
     // highlight-start
     if (0 === await Content.count()) {
       await Content.create(
         {text: 'lorem ipsum', Tags: [{value: 'cool'}, {value: 'trending'}]},
-        {include: [Tag]}
+        {include: [Tag]},
       );
       await Content.create(
         {text: 'blah blah', Tags: [{value: 'awesome'}]},
-        {include: [Tag]}
+        {include: [Tag]},
       );
     }
     console.log(
       'There are',
-      await Content.count(), 'pieces of content',
+      await Content.count(),
+      'pieces of content',
       'and',
-      await Tag.count(), 'tags.',
+      await Tag.count(),
+      'tags.',
     );
     // highlight-end
   },
   '@flecks/db.models': Flecks.provide(require.context('./models')),
 };
 ```
-
-Another
-
-<Run headless cmd="start" />
 
 You will see:
 
@@ -317,7 +319,7 @@ Great!
 
 ## Persistence
 
-You'll notice that if you run it again, it will always say
+You'll might that if you stop the server and start it again, it will always say:
 
 ```
 There were 0 pieces of content and 0 tags.
@@ -326,17 +328,16 @@ There are 2 pieces of content and 3 tags.
 
 What's up with that? Remember in the beginning:
 
-> By default, flecks will connect to an in-memory SQLite database to get you started instantly.
+> By default, flecks will connect to an **in-memory** SQLite database to get you started instantly.
 
 This means that the database will only persist as long as the life of your application. When you
 restart it, you'll get a fresh new database every time. It was **quick to get started** developing,
 but this isn't very helpful for any real purpose. Let's make a change to our `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@db_test/content:./packages/content': {}
-'@flecks/build': {}
+'@db-test/content:./packages/content': {}
 '@flecks/core':
-  id: db_test
+  id: db-test
 // highlight-start
 '@flecks/db':
   database: './persistent.sql'
@@ -344,11 +345,7 @@ but this isn't very helpful for any real purpose. Let's make a change to our `bu
 '@flecks/server': {}
 ```
 
-Once again,
-
-<Run headless cmd="start" />
-
-You'll see our old familiar message:
+Kill and restart your application and you'll see our old familiar message:
 
 ```
 There were 0 pieces of content and 0 tags.
@@ -368,29 +365,11 @@ A persistent database!
 ## Containerization
 
 Sure, our database is persistent... kinda. That `persistent.sql` file is a bit of a kludge and
-isn't much of a long-term (or production) solution. Let's remove it:
+isn't much of a long-term (or production) solution.
 
-```
-rm persistent.sql
-```
-
-Our small-core philosophy means that you don't pay for spinning up a database by default. However,
-it's trivial to accomplish a *"real"* database connection if you have Docker installed on your
-machine.
-
-<details>
-  <summary>How do I know if I have Docker running on my machine?</summary>
-
-  A decent way to test if your machine is ready to continue with this guide is to run the following
-  command:
-
-  `docker run -e POSTGRES_PASSWORD=password postgres`
-
-  if the command appears to spin up a database, you're in good shape!
-
-  If not, follow the [Docker installation documentation](https://docs.docker.com/engine/install/)
-  before proceeding.
-</details>
+flecks's small-core philosophy means that you don't pay for spinning up a database by default.
+However, it's trivial to accomplish a *"real"* database connection if you have Docker installed
+on your machine.
 
 Let's add another fleck to our project:
 
@@ -399,10 +378,9 @@ Let's add another fleck to our project:
 Configure `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@db_test/content:./packages/content': {}
-'@flecks/build': {}
+'@db-test/content:./packages/content': {}
 '@flecks/core':
-  id: db_test
+  id: db-test
 // highlight-start
 '@flecks/db':
   database: db
@@ -420,9 +398,7 @@ Add `pg` to connect to postgres:
 
 Now,
 
-<Run headless cmd="start" />
-
-You will see some new lines in the logs:
+Start your application and you will see some new lines in the logs:
 
 ```
   @flecks/docker/container creating datadir '/tmp/flecks/flecks/docker/sequelize' +0ms
@@ -441,10 +417,7 @@ There are 2 tags.
 ```
 
 because we just created a new postgres database from scratch just then! Kill the application and
-
-<Run headless cmd="start" />
-
-You will see what you expect:
+restart and you will see what you expect:
 
 ```
 There were 2 tags.
@@ -458,9 +431,9 @@ Awesome, we have a connection to a real postgres database!
 Sure, spinning up a database like magic is spiffy for development, but you probably want to be a
 little less freewheeling on your production server.
 
-<Run headless cmd="build">
-  Build the application we've built so far:
-</Run>
+Build the application we've written so far:
+
+<Run headless cmd="build" />
 
 Then, take a look in the `dist/server` directory. You'll see a file there called
 `docker-compose.yml`. `@flecks/docker` automatically emits this file when you build your
@@ -469,16 +442,16 @@ application for production to make container orchestration easier. Let's take a 
 ```yml title="dist/server/docker-compose.yml"
 version: '3'
 services:
-  db_test_app:
+  db-test_app:
     build:
-      context: ..
+      context: ../..
       dockerfile: dist/server/Dockerfile
     environment:
-      FLECKS_ENV__flecks_docker_server__enabled: 'false'
+      FLECKS_ENV__flecks_docker__enabled: 'false'
       // highlight-next-line
       FLECKS_ENV__flecks_db__host: sequelize
     volumes:
-      - ../node_modules:/var/www/node_modules
+      - ../../node_modules:/var/www/node_modules
   // highlight-start
   sequelize:
     image: postgres
@@ -496,7 +469,7 @@ You can run (after you [install Docker Compose](https://docs.docker.com/compose/
 necessary):
 
 ```
-docker-compose -f dist/server/docker-compose.yml up
+docker-compose -f dist/server/docker-compose.yml up --build
 ```
 
 This demonstrates that your application is now being orchestrated by Docker Compose and is

@@ -9,14 +9,72 @@ import Run from '@site/helpers/run';
 `@flecks/create-fleck` sets up an environment that makes building, testing, and distributing
 your flecks easy.
 
+## Mixins
+
+## Bootstrap
+
+Your fleck may implement a `build/flecks.bootstrap.js` script. If one exists, it will be loaded as
+a bootstrap fleck during the bootstrap phase. **This includes the boostrap phase that occurs when
+the fleck itself is compiled**.
+
+:::warning[Less nice things]
+
+The bootstrap fleck is **executed by Node.JS as-is as CommonJS** and is not subject to any
+compilation or preprocessing. You must use e.g.
+
+```js
+exports.hooks = {};
+```
+
+and not
+
+```js
+const exports hooks = {};
+```
+
+:::
+
+In addition to exporting `hooks`, a bootstrap fleck may also export:
+
+### Dependencies
+
+```js
+exports.dependencies = ['@some/fleck'];
+```
+
+Dependent flecks will automatically be added to the build manifest when this fleck is present.
+
+:::tip[Fostering dependency]
+
+If you run `flecks add @some/fleck` in your fleck root, `@some/fleck` will be added to your
+`package.json` and your `exports.dependencies` will be automatically updated to include
+`@some/fleck`.
+
+:::
+
+### Stubs
+
+Some code isn't careful when it comes to things like accessing `window`. flecks can stub out
+problem modules on any platform:
+
+```js
+exports.stubs = {
+  server: ['@pixi'],
+};
+```
+
+This is effectively the Node.JS `require()` version of
+[Webpack's `{'alias': false}` functionality](https://webpack.js.org/configuration/resolve/#resolvealias).
+
 ## `package.json` and entry points
 
 flecks automatically uses the `files` key in your `package.json` to determine the
 [entry points](https://webpack.js.org/concepts/entry-points/) of your fleck. Entry points are
 automatically discovered from the **`src`** directory of your fleck.
 
-Think of your `files` key as a sort of `exports`, but for your files. If your `package.json`'s
-`files` key looks like this:
+Think of your `files` key as a form of
+[Subpath exports](https://nodejs.org/api/packages.html#subpath-exports) with less hassle. If your
+`package.json`'s `files` key looks like this:
 
 ```json
   "files": [
@@ -27,15 +85,13 @@ Think of your `files` key as a sort of `exports`, but for your files. If your `p
 ```
 
 Other code could `import` any of those paths (e.g. `@your/fleck/client`, `@your/fleck`,
-`@your/fleck/something-else`).
-
-You may have a structure like `src/client/index.js` and the entry point discovery would still
-work as expected above.
+`@your/fleck/something-else`), while the actual paths would be, respectively,
+`@your/fleck/src/client`, `@your/fleck/src`, `@your/fleck/src/something-else`. Smooth!
 
 ### Who cares? Everything works without it!
 
-Who cares about exporting, though? I created a fleck and everything Just Works™. This
-seems like extra busywork for no reason!
+Who cares about `files` or exporting or whatever? I created a fleck and everything Just Works™.
+This seems like extra busywork for no reason!
 
 :::tip[Sharing is caring]
 
@@ -74,7 +130,8 @@ other fleck to process `package.json` when building a fleck.
 For instance, `@flecks/web` implements this hook. `@flecks/web` will automatically output
 CSS, fonts, and other frontend assets to the `assets` directory in your build output. If any of
 these frontend assets exist, `@flecks/web` will automatically add the `assets` directory to the
-`files` key of your built `package.json`. You don't have to think about it!
+`files` key of your built `package.json`. You nor anyone using your fleck will have to think about
+it!
 
 :::
 
@@ -82,9 +139,6 @@ these frontend assets exist, `@flecks/web` will automatically add the `assets` d
 
 What this means is that when we publish a fleck we don't publish the root directory, **we publish
 the `dist` output directory**.
-
-The same applies when [symlinking your fleck](./building-your-application#symlinks) in an
-application.
 
 :::
 
@@ -104,8 +158,8 @@ module.exports = async (env, argv, flecks) => {
 };
 ```
 
-You don't actually have to extend the configuration like that, you could return your own! That's
-just an illustration of how you can override the defaults.
+You don't actually have to extend the configuration like that, you could return a new
+configuration entirely! That's just an illustration of how you can override the defaults.
 
 That being said, the defaults (including the automatic entry point stuff above and so much more)
 will absolutely make your life easier.
@@ -148,9 +202,9 @@ We intentionally made an error so we can see what a failed test looks like.
 
 :::
 
-<Run cmd="test">
-  If we run the following command **from within `packages/example`**:
-</Run>
+If we run the following command **from within `packages/example`**:
+
+<Run headless cmd="test" />
 
 We would see the following output:
 
@@ -182,10 +236,8 @@ it('can add two to a number', () => {
 });
 ```
 
-
-<Run cmd="test">
-  and try again:
-</Run>
+Try again:
+<Run headless cmd="test" />
 
 ```
   ✓ can add two to a number
@@ -195,78 +247,8 @@ it('can add two to a number', () => {
 
 Everything's good!
 
-### Platform-specificity
-
-flecks also allows you to write tests that only target a specific platform. Let's add web support
-and then write a test that only runs for the client:
-
-<Execute cmd="flecks add @flecks/web" />
-
-Now, let's add a test. We add a client test by adding a `client` directory to our `test`
-directory and putting tests there:
-
-```javascript title="packages/example/test/client/add3.js"
-import {expect} from 'chai';
-
-const {add3} = require('@testing/unit');
-
-it('can add three to a number', () => {
-  // highlight-next-line
-  expect(add3(2)).to.equal(6);
-});
-```
-
-:::note
-
-We intentionally made a mistake again to show a test failure.
-
-:::
-
-#### Check it
-
-Start your application, visit your website in the browser, and you will see:
-
-![A screenshot of a browser showing the test runner page with our test failing](./flecks-test-client-failed.png)
-
-The test is failing! That's what we expected.
-
-Now, edit your client test to fix it:
-
-```javascript title="packages/unit/test/client/add3.js"
-import {expect} from 'chai';
-
-const {add3} = require('@testing/unit');
-
-it('can add three to a number', () => {
-  // highlight-next-line
-  expect(add3(2)).to.equal(5);
-});
-```
-
-Save the file. If you still have your application running, go look at the page. You'll notice that
-**it updated automatically** to look like:
-
-![A screenshot of a browser showing the test runner page with our test passing](./flecks-test-client-passed.png)
-
-Awesome, everything passes!
-
-:::info[Sanity check]
-
-<Run cmd="test">
-  If you run **from your `packages/example` directory**:
-</Run>
-
-You will see that only one test was run:
-
-```
-  ✓ can add two to a number
-
-  1 passing (3ms)
-```
-
-That's correct; we only run client tests on the client.
-
-:::
+The test task has more options like `-w` that support test watching and automatic running on
+change. For an exhaustive list of options, see [the CLI documentation](./cli#test)
 
 ## Linting
 

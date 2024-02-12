@@ -7,26 +7,29 @@ import Create from '@site/helpers/create';
 import Run from '@site/helpers/run';
 
 If you are following along from the previous getting started
-[configuration page](./configuration), you have an application with 3 flecks:
+[configuration page](./configuration), you have an application with 2 flecks:
 
-- `@flecks/build`
 - `@flecks/core`
 - `@flecks/server`
 
 <details>
-  <summary>About that "3 flecks" thing...</summary>
+  <summary>About that "2 flecks" thing...</summary>
 
-  Actually, your server application has **5 flecks** at this point:
+  Actually, your server application has **6 flecks** at this point:
 
   - `@flecks/build`
   - `@flecks/build/server`
   - `@flecks/core`
   - `@flecks/core/server`
   - `@flecks/server`
+  - `@flecks/server/server`
 
   flecks will load the `[...]/server` fleck under any fleck that is loaded on the server. This is
   also the case when using `@flecks/web` which will automatically load `[...]/client` flecks
   which are only loaded in the browser.
+
+  flecks can also [load dependencies](./building-your-application#dependencies). This is why your
+  application includes `@flecks/build`: it's marked as a dependency by `@flecks/server`.
 
 </details>
 
@@ -48,41 +51,20 @@ This isn't any hard requirement, it's only a suggestion.
 
 ### Create the fleck
 
-<Create type="fleck" pkg="say-hello">
-  Let's create our little fleck:
-</Create>
+Let's create our little fleck:
+
+<Create type="fleck" pkg="packages/say-hello"/>
 
 After some output, you'll find your new fleck at `packages/say-hello`. Let's inspect our
 `build/flecks.yml`:
 
 ```yml title="build/flecks.yml"
-'@flecks/build': {}
 '@flecks/core':
   id: 'hello-world'
 '@flecks/server': {}
 // highlight-next-line
-'@hello-world/say-hello:./packages/say-hello': {}
+'@hello-world/say-hello': {}
 ```
-
-### Aliasing for the win
-
-Notice there's a colon separating the path for this one. This is because this is an aliased fleck.
-The part before the colon is the alias and the part after is the path to the package.
-
-By the way, your other application code can import using the alias (e.g.
-`require('@hello-world/say-hello');`)
-[as if it were a package](https://webpack.js.org/configuration/resolve/#resolvealias).
-
-<details>
-  <summary>Wait, my modules don't have to be in <code>node_modules</code>?</summary>
-
-  Nope! When you're developing applications, it can be real nice to
-  just pull in local source "packages".
-
-  That being said, sharing your packages on npm is a cool thing to do, so be rad and share your
-  awesome flecks with the rest of us!
-
-</details>
 
 ### Your first hook implementation
 
@@ -97,9 +79,9 @@ export const hooks = {
 };
 ```
 
-<Run cmd="start">
-  Now, restart your application:
-</Run>
+Now, restart your application:
+
+<Run headless cmd="start"/>
 
 You will be greeted by a line in the output:
 
@@ -124,7 +106,24 @@ export const hooks = {
 };
 ```
 
-This time, you will see:
+:::danger[That's hot]
+
+Save that file and notice that the server restarted automatically! There are some juicy hints
+in the logs:
+
+```terminal
+HMR failed for fleck: @flecks/server.up implementation changed!
+[HMR] Cannot apply update.
+[HMR] Restart requested!
+[HMR] You need to restart the application!
+[HMR] Restarting application...
+```
+
+*It knows.*
+
+:::
+
+After which comes the expected line:
 
 ```terminal
   hello server: ID hello-world
@@ -137,4 +136,4 @@ This time, you will see:
 
 :::
 
-Next, we'll go over some of the nuts and bolts of how your application is built.
+Next, let's add and interact with some of the flecks shipped by default.
