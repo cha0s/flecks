@@ -125,13 +125,13 @@ run through the process.
 
 ### Implement <code>@flecks/build&#8203;.commands</code>
 
-<Create type="app" pkg="cli_test">
-  First, create an application:
-</Create>
+First, create an application:
 
-<Create headless type="fleck" pkg="packages/fortune">
-  Move into the new project and create a fleck:
-</Create>
+<Create headless type="app" pkg="cli_test" />
+
+Move into the new project and create a fleck:
+
+<Create headless type="fleck" pkg="packages/fortune" />
 
 We're going to be creating a fortune teller command that will tell you when you will find love.
 :heart_eyes:
@@ -164,9 +164,9 @@ export const hooks = {
 
 ### Inspect and invoke your command
 
-<Execute cmd="flecks --help">
-  Now, invoke flecks like so:
-</Execute>
+Now, invoke flecks like so:
+
+<Execute headless cmd="flecks --help" />
 
 You will see among the commands listed:
 
@@ -174,9 +174,9 @@ You will see among the commands listed:
   fortune [options]         find your true love
 ```
 
-<Execute headless cmd="flecks fortune --help">
-  Run the command with the `--help` option:
-</Execute>
+Run the command with the `--help` option:
+
+<Execute headless cmd="flecks fortune --help" />
 
 You will see this output:
 
@@ -189,9 +189,9 @@ Options:
   -n, --be-nice  be nice
 ```
 
-<Execute headless cmd="flecks fortune --be-nice">
-  Let's try it!
-</Execute>
+Let's try it!
+
+<Execute headless cmd="flecks fortune --be-nice" />
 
 You will see something like:
 
@@ -199,9 +199,9 @@ You will see something like:
 It will be 11 days until you meet your true love!
 ```
 
-<Execute headless cmd="flecks fortune">
-  How about without our option:
-</Execute>
+How about without our option:
+
+<Execute headless cmd="flecks fortune" />
 
 You will see something like:
 
@@ -245,9 +245,9 @@ export const hooks = {
 
 Notice that we added the argument to... the arguments.
 
-<Execute cmd="flecks fortune --be-nice">
-  Try it again:
-</Execute>
+Try it again:
+
+<Execute cmd="flecks fortune --be-nice" />
 
 You will see e.g.:
 
@@ -255,10 +255,10 @@ You will see e.g.:
 Hey, person. It will be 7 days until you meet your true love!
 ```
 
-<Execute headless cmd="flecks fortune cha0s">
-  That's because we set the default name to `'person'` in the code above. Let's try passing in a
-  name:
-</Execute>
+That's because we set the default name to `'person'` in the code above. Let's try passing in a
+name:
+
+<Execute headless cmd="flecks fortune cha0s" />
 
 Now the output looks like:
 
