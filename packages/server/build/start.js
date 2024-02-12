@@ -96,7 +96,7 @@ class StartServerPlugin {
     });
     this.worker = cluster.fork(env);
     this.worker.on('exit', (code) => {
-      if (killOnExit) {
+      if (killOnExit && !this.worker.exitedAfterDisconnect) {
         process.send({type: 'kill', payload: code});
         process.exit(code);
       }
