@@ -119,9 +119,18 @@ export function withServer(task, options) {
       );
       return results;
     };
-    await task({server, socket});
+    let taskError;
+    try {
+      await task({server, socket});
+    }
+    catch (error) {
+      taskError = error;
+    }
     server.child.done = true;
     server.child.kill();
+    if (taskError) {
+      throw taskError;
+    }
   };
 }
 
