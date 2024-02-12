@@ -2,13 +2,13 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "FLECKS_ENV__flecks_server__start=0 npm run build:only",
+    "build": "FLECKS_ENV__flecks_server__start=0 npm run -- build:only",
     "build:only": "flecks build",
-    "debug": "DEBUG=@flecks/* npm run dev",
+    "debug": "DEBUG=@flecks/* npm run -- dev",
     "dev": "npm run -- build:only -dh",
     "postinstall": "patch-package",
     "repl": "npx flecks repl --rlwrap",
-    "start": "DEBUG=@flecks/*,-*:silly npm run dev"
+    "start": "DEBUG=@flecks/*,-*:silly npm run -- dev"
   },
   "dependencies": {
     "@flecks/server": "^4.0.0"
