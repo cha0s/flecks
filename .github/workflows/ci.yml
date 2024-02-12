@@ -28,7 +28,7 @@ jobs:
           npm ci
           npm run build
 
-  ci:
+  test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
