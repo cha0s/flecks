@@ -68,9 +68,16 @@ module.exports = async (config, env, argv, flecks) => {
   source.push('if (module.hot) {');
   resolvedPaths.forEach((path) => {
     source.push(`  module.hot.accept('${path}', async () => {`);
-    source.push(`    const updatedFleck = require('${path}');`);
-    source.push(`    window.flecks.refresh('${path}', updatedFleck);`);
-    source.push(`    window.flecks.invoke('@flecks/core.hmr', '${path}', updatedFleck);`);
+    source.push(`    const M = require('${path}')`);
+    source.push('    try {');
+    source.push(`      global.flecks.invokeSequential('@flecks/core.hmr', '${path}', M);`);
+    source.push(`      global.flecks.refresh('${path}', M);`);
+    source.push('    }');
+    source.push('    catch (error) {');
+    // eslint-disable-next-line no-template-curly-in-string
+    source.push('      console.error(`HMR failed for fleck: ${error.message}`);');
+    source.push('      module.hot.invalidate();');
+    source.push('    }');
     source.push('  });');
   });
   source.push('}');

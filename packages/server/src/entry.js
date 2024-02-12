@@ -31,6 +31,7 @@ import {D, Flecks} from '@flecks/core';
 
 if (module.hot) {
   module.hot.accept('@flecks/server/runtime', () => {
+    module.hot.invalidate();
     if (cluster.isWorker) {
       cluster.worker.disconnect();
       const error = new Error('Restart requested!');

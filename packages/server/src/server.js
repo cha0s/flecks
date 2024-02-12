@@ -7,6 +7,23 @@ const {
 } = process.env;
 
 export const hooks = {
+  '@flecks/core.hmr': (path, M, flecks) => {
+    if (
+      flecks.fleckImplementation(path, '@flecks/server.up')
+      || M.hooks?.['@flecks/server.up']) {
+      if (
+        flecks.fleckImplementation(path, '@flecks/server.up')?.toString()
+        !== M.hooks?.['@flecks/server.up']?.toString()
+      ) {
+        if (cluster.isWorker) {
+          cluster.worker.disconnect();
+          const error = new Error('@flecks/server.up implementation changed!');
+          error.stack = '';
+          throw error;
+        }
+      }
+    }
+  },
   '@flecks/server.up': (flecks) => {
     if (!FLECKS_SERVER_TEST_SOCKET || 'test' !== NODE_ENV) {
       return;

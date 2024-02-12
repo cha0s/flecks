@@ -68,3 +68,9 @@ const {version} = require('@flecks/web/package.json');
     console.error(error);
   }
 })();
+
+if (module.hot) {
+  module.hot.accept('@flecks/web/runtime', () => {
+    module.hot.invalidate();
+  });
+}
