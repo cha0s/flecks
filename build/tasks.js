@@ -27,7 +27,7 @@ const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
       const stdio = new PassThrough();
       const buffer = pipesink(child.stderr.pipe(child.stdout.pipe(stdio)));
       const code = await processCode(child);
-      console.log(`::group::{${relative(join(FLECKS_CORE_ROOT, 'packages'), cwd)}}`);
+      console.log(`::group::@flecks/${relative(join(FLECKS_CORE_ROOT, 'packages'), cwd)}`);
       process.stdout.write(await buffer);
       console.log('::endgroup::');
       return code;
