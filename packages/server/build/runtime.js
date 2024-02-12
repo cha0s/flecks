@@ -16,11 +16,13 @@ async function runtimeModule(compilation, flecks) {
     /* eslint-disable indent */
     bootstrappedConfig: JSON.stringify(flecks.invoke('@flecks/core.config')),
     config: (`
-      dealiasedConfig(${
-        'production' === compiler.options.mode
-          ? JSON.stringify(flecks.originalConfig)
-          : `require('${ymlPath}').default`
-      })
+      Flecks.environmentConfiguration(
+        Flecks.dealiasedConfig(${
+          'production' === compiler.options.mode
+            ? JSON.stringify(flecks.originalConfig)
+            : `require('${ymlPath}').default`
+        })
+      )
     `),
     /* eslint-enable indent */
     loadFlecks: [
@@ -54,7 +56,7 @@ async function runtimeModule(compilation, flecks) {
       .map(([key, value]) => `"${key}": ${value}`).join(', ')
   }}`;
   const source = [
-    `const {dealiasedConfig} = {${flecks.constructor.dealiasedConfig.toString()}};`,
+    "const {Flecks} = require('@flecks/core');",
     "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
     `module.exports = (async () => (${runtimeString}))();`,
   ];

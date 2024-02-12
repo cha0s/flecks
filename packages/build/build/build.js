@@ -86,40 +86,6 @@ module.exports = class Build extends Flecks {
     await this.invokeSequentialAsync('@flecks/build.config.alter', config, env, argv);
   }
 
-  static environmentalize(path) {
-    return path
-      // - `@flecks/core` -> `flecks_core`
-      .replace(/[^a-zA-Z0-9]/g, '_')
-      .replace(/_*(.*)_*/, '$1');
-  }
-
-  static environmentConfiguration(config) {
-    const keys = Object.keys(process.env);
-    Object.keys(config)
-      .sort((l, r) => (l < r ? 1 : -1))
-      .forEach((fleck) => {
-        const prefix = `FLECKS_ENV__${this.environmentalize(fleck)}`;
-        keys
-          .filter((key) => key.startsWith(`${prefix}__`))
-          .map((key) => {
-            debug('reading environment from %s...', key);
-            return [key.slice(prefix.length + 2), process.env[key]];
-          })
-          .map(([subkey, value]) => [subkey.split('_'), value])
-          .forEach(([path, jsonOrString]) => {
-            try {
-              Flecks.set(config, [fleck, ...path], JSON.parse(jsonOrString));
-              debug('read (%s) as JSON', jsonOrString);
-            }
-            catch (error) {
-              Flecks.set(config, [fleck, ...path], jsonOrString);
-              debug('read (%s) as string', jsonOrString);
-            }
-          });
-      });
-    return config;
-  }
-
   static async from(
     {
       config: configParameter,

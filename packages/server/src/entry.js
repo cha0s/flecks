@@ -7,7 +7,7 @@ import {D, Flecks} from '@flecks/core';
 
 (async () => {
   const runtime = await import('@flecks/server/runtime');
-  const {loadFlecks, version} = runtime;
+  const {config, loadFlecks, version} = runtime;
   // eslint-disable-next-line no-console
   console.log(`flecks server v${version}`);
   try {
@@ -20,7 +20,11 @@ import {D, Flecks} from '@flecks/core';
   }
   const debug = D('@flecks/server/entry');
   debug('starting server...');
-  global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
+  global.flecks = await Flecks.from({
+    ...runtime,
+    config: Flecks.environmentConfiguration(config),
+    flecks: await loadFlecks(),
+  });
   await global.flecks.invokeSequentialAsync('@flecks/server.up');
   debug('up!');
 })();
