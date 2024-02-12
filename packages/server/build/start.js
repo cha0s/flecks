@@ -30,7 +30,10 @@ class StartServerPlugin {
     compiler.hooks.afterEmit.tapPromise(pluginName, async (compilation) => {
       if (this.worker && this.worker.isConnected()) {
         if (signal) {
-          this.worker.kill(true === signal ? 'SIGUSR2' : signal);
+          process.kill(
+            this.worker.process.pid,
+            true === signal ? 'SIGUSR2' : signal,
+          );
           return undefined;
         }
         const promise = new Promise((resolve) => {
