@@ -46,8 +46,7 @@ exports.JsonStream.PrettyPrint = class extends exports.JsonStream {
 
 };
 
-exports.pipesink = (streamsOrStream) => {
-  const streams = Array.isArray(streamsOrStream) ? streamsOrStream : [streamsOrStream];
+exports.pipesink = (stream) => {
   class Sink extends Writable {
 
     constructor() {
@@ -63,11 +62,10 @@ exports.pipesink = (streamsOrStream) => {
 
   }
   const sink = new Sink();
-  const final = streams.reduce((output, input) => input.pipe(output));
   return new Promise((resolve, reject) => {
-    final.pipe(sink);
-    final.on('error', reject);
-    final.on('end', () => {
+    stream.pipe(sink);
+    stream.on('error', reject);
+    stream.on('end', () => {
       resolve(Buffer.concat(sink.buffers));
     });
   });
