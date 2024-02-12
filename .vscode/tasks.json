@@ -6,7 +6,7 @@
     {
       "label": "Start Docusaurus server",
       "type": "shell",
-      "command": "yarn dox start --no-open",
+      "command": "npm run dox start --no-open",
       "problemMatcher": {
         "pattern": {
           "regexp": "^Error",

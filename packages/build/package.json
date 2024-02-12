@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "flecks build",
-    "clean": "rm -rf dist node_modules yarn.lock",
+    "clean": "flecks clean",
     "lint": "flecks lint",
     "test": "flecks test"
   },

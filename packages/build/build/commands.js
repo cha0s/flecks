@@ -104,8 +104,6 @@ exports.commands = (program, flecks) => {
       ],
       options: [
         program.createOption('-d, --dev-dependency', 'add to dev dependencies'),
-        program.createOption('-pm,--package-manager <binary>', 'package manager binary')
-          .choices(['npm', 'bun', 'pnpm', 'yarn']),
       ],
       description: 'Add flecks to your application.',
       action: async (packages, {devDependency, packageManager}) => {
@@ -181,10 +179,6 @@ exports.commands = (program, flecks) => {
     },
     clean: {
       description: 'Remove node_modules, lock file, and build artifacts.',
-      options: [
-        program.createOption('-pm,--package-manager <binary>', 'package manager binary')
-          .choices(['npm', 'bun', 'pnpm', 'yarn']),
-      ],
       action: async ({packageManager}) => {
         await Promise.all([
           rimraf(join(FLECKS_CORE_ROOT, 'dist')),

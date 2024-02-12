@@ -18,10 +18,6 @@ const {
 
 (async () => {
   program.argument('<app>', 'name of the app to create');
-  program.addOption(
-    program.createOption('-pm,--package-manager <binary>', 'package manager binary')
-      .choices(['npm', 'bun', 'pnpm', 'yarn']),
-  );
   program.action(async (app, {packageManager}) => {
     try {
       const {errors} = validate(app);
