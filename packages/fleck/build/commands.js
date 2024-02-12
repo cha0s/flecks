@@ -1,10 +1,10 @@
 const {access} = require('fs/promises');
-const {join, relative} = require('path');
+const {join} = require('path');
 
 const {commands: coreCommands} = require('@flecks/build/build/commands');
 const {rimraf} = require('@flecks/build/src/server');
 const {D} = require('@flecks/core/src');
-const {glob} = require('@flecks/core/src/server');
+const {glob, pipesink, processCode} = require('@flecks/core/src/server');
 const Mocha = require('mocha');
 const {watchParallelRun} = require('mocha/lib/cli/watch-run');
 
@@ -12,6 +12,7 @@ const debug = D('@flecks/build.commands');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  TERM,
 } = process.env;
 
 module.exports = (program, flecks) => {
@@ -41,47 +42,36 @@ module.exports = (program, flecks) => {
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
-      let files = [];
-      if (platforms.includes('default')) {
-        files.push(...await glob(join(FLECKS_CORE_ROOT, 'test', '*.js')));
-      }
-      await Promise.all(
-        platforms
-          .filter((platform) => 'default' !== platform)
-          .map(async (platform) => {
-            files.push(...await glob(join(FLECKS_CORE_ROOT, 'test', platform, '*.js')));
-          }),
-      );
-      if (0 === files.length) {
-        // eslint-disable-next-line no-console
-        console.log('No tests found.');
-        return undefined;
-      }
-      files = files.map((path) => relative(FLECKS_CORE_ROOT, path));
-      if (only) {
-        if (files.includes(only)) {
-          files = [only];
-        }
-        else {
-          throw new Error(`Test '${only}' does not exist!`);
-        }
-      }
-      files = files.map((file) => join('dist', file));
-      // Remove the previous test.
+      // Remove the previous test(s).
       await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
-      await build.action(
+      const child = await build.action(
         'test',
         {
-          env: {FLECKS_CORE_TEST_PLATFORMS: JSON.stringify(platforms)},
+          env: {
+            FLECKS_CORE_TEST_PLATFORMS: JSON.stringify(platforms),
+            FORCE_COLOR: 'dumb' !== TERM,
+          },
           production,
-          stdio: 'ignore',
+          stdio: watch ? 'inherit' : 'pipe',
           watch,
         },
       );
+      if (!watch) {
+        const stdout = pipesink(child.stdout);
+        if (0 !== await processCode(child)) {
+          const buffer = await stdout;
+          if (!process.stdout.write(buffer)) {
+            await new Promise((resolve, reject) => {
+              process.stdout.on('error', reject);
+              process.stdout.on('drain', resolve);
+            });
+          }
+          program.error('\nbuilding tests failed!\n');
+        }
+      }
       debug('Testing...', opts);
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
+      while (watch) {
         try {
           // eslint-disable-next-line no-await-in-loop
           await access(join(FLECKS_CORE_ROOT, 'dist', 'test'));
@@ -92,6 +82,19 @@ module.exports = (program, flecks) => {
           await new Promise((resolve) => {
             setTimeout(resolve, 50);
           });
+        }
+      }
+      let files = await glob(join(FLECKS_CORE_ROOT, 'dist', 'test', '**', '*.js'));
+      if (0 === files.length) {
+        return undefined;
+      }
+      if (only) {
+        const index = files.indexOf(join(FLECKS_CORE_ROOT, 'dist', only));
+        if (-1 !== index) {
+          files = [files[index]];
+        }
+        else {
+          throw new Error(`Test '${only}' does not exist!`);
         }
       }
       // Magic.

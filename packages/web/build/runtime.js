@@ -1,20 +1,18 @@
-const {access, readFile} = require('fs/promises');
+const {access} = require('fs/promises');
 const {
   basename,
-  dirname,
   extname,
   join,
 } = require('path');
 
 const Build = require('@flecks/build/build/build');
-const {glob} = require('@flecks/core/server');
 
 module.exports = async (config, env, argv, flecks) => {
   const buildFlecks = await Build.from({
     config: flecks.realiasedConfig,
     platforms: ['client', '!server'],
   });
-  const {resolver, flecks: webFlecks} = buildFlecks;
+  const {flecks: webFlecks} = buildFlecks;
   const paths = Object.keys(webFlecks)
     .filter((fleck) => !['@flecks/server'].includes(fleck));
   const styles = (
@@ -44,7 +42,6 @@ module.exports = async (config, env, argv, flecks) => {
   )
     .filter((filename) => !!filename);
   const runtime = await flecks.resolver.resolve(join('@flecks/web/runtime'));
-  const isProduction = 'production' === argv.mode;
   const resolvedPaths = (await Promise.all(
     paths.map(async (path) => [path, await flecks.resolver.resolve(path)]),
   ))
@@ -98,56 +95,4 @@ module.exports = async (config, env, argv, flecks) => {
   await buildFlecks.runtimeCompiler('web', config, env, argv);
   // Styles.
   config.entry.index.push(...styles);
-  // Tests.
-  if (!isProduction) {
-    const testEntries = (await Promise.all(
-      buildFlecks.roots
-        .map(async ([root, request]) => {
-          const tests = [];
-          const resolved = dirname(
-            await buildFlecks.resolver.resolve(join(request, 'package.json')),
-          );
-          const rootTests = await glob(join(resolved, 'test', '*.js'));
-          tests.push(...rootTests.map((test) => test.replace(resolved, root)));
-          const platformTests = await Promise.all(
-            buildFlecks.platforms.map((platform) => (
-              glob(join(resolved, 'test', platform, '*.js'))
-            )),
-          );
-          tests.push(...platformTests.flat().map((test) => test.replace(resolved, root)));
-          return [root, tests];
-        }),
-    ))
-      .filter(([, tests]) => tests.length > 0);
-    const tests = await resolver.resolve(
-      join('@flecks/web', 'server', 'build', 'tests'),
-    );
-    const testsSource = (await readFile(tests)).toString();
-    config.module.rules.push({
-      test: tests,
-      use: [
-        {
-          loader: runtime,
-          options: {
-            source: testsSource.replace(
-              "  await import('@flecks/web/tests');",
-              testEntries
-                .map(([root, tests]) => (
-                  [
-                    `  describe('${root}', () => {`,
-                    `    ${tests.map((test) => `require('${test}');`).join('\n    ')}`,
-                    '  });',
-                  ].join('\n')
-                )).join('\n\n'),
-            ),
-          },
-        },
-      ],
-    });
-    // Fix a little derp in mocha 10.2.0.
-    config.module.rules.push({
-      test: /mocha\/mocha\.js$/,
-      use: await flecks.resolver.resolve('@flecks/web/build/fix-mocha-critical-dependency'),
-    });
-  }
 };

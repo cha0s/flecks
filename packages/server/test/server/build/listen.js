@@ -33,12 +33,12 @@ class SocketWrapper {
     });
   }
 
-  async waitForHmr() {
+  async waitForAction(type) {
     return new Promise((resolve, reject) => {
       this.socket.on('error', reject);
       this.socket.on('data', (data) => {
         const action = JSON.parse(data.toString());
-        if ('hmr' === action.type) {
+        if (action.type === type) {
           resolve(action);
         }
       });
@@ -47,31 +47,39 @@ class SocketWrapper {
 
 }
 
-export async function listen() {
+export async function socketListener() {
   const path = join(tmpdir(), 'flecks', 'ci', await id());
   await mkdir(dirname(path), {recursive: true});
   const server = createServer();
   server.listen(path);
-  server.waitForSocket = () => (
+  server.waitForSocket = ({task, timeout = 30000} = {}) => (
     new Promise((resolve, reject) => {
-      server.on('error', reject);
+      let previousTimeout;
+      const start = Date.now();
+      if (task) {
+        previousTimeout = task.timeout();
+        task.timeout(0);
+      }
+      const handle = setTimeout(() => {
+        reject(new Error('timeout waiting for IPC connection'));
+      }, timeout);
+      const finish = () => {
+        clearTimeout(handle);
+        task?.timeout(previousTimeout + (Date.now() - start));
+      };
+      server.on('error', (error) => {
+        finish();
+        reject(error);
+      });
       server.on('connection', (socket) => {
+        finish();
         resolve(new SocketWrapper(socket));
       });
     })
   );
-  return {
-    listening: new Promise((resolve, reject) => {
-      server.on('error', reject);
-      server.on('listening', resolve);
-    }),
-    path,
-    socketServer: server,
-  };
-}
-
-export async function socketListener() {
-  const {listening, path: socketPath, socketServer} = await listen();
-  await listening;
-  return {socketServer, socketPath};
+  await new Promise((resolve, reject) => {
+    server.on('error', reject);
+    server.on('listening', resolve);
+  });
+  return {socketServer: server, socketPath: path};
 }

@@ -92,15 +92,17 @@ class StartServerPlugin {
       ...(inspectPort && {inspectPort}),
     });
     this.worker = cluster.fork(env);
+    this.worker.on('exit', (code) => {
+      if (killOnExit) {
+        process.send({type: 'kill', payload: code});
+        process.exit(code);
+      }
+    });
     this.worker.on('disconnect', () => {
       if (this.worker.exitedAfterDisconnect) {
         // eslint-disable-next-line no-console
         console.error('[HMR] Restarting application...');
-        process.send('restart');
-      }
-      else if (killOnExit) {
-        process.send('kill');
-        process.exit(0);
+        process.send({type: 'restart'});
       }
     });
     return new Promise((resolve, reject) => {

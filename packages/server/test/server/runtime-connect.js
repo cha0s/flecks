@@ -1,19 +1,16 @@
-import {heavySetup} from '@flecks/core/build/testing';
+import {processCode} from '@flecks/core/src/server';
 import {expect} from 'chai';
 
-import {build, createApplication, serverActions} from './build/build';
+import {withServer} from './build/build';
 
-let path;
-
-before(heavySetup(async () => {
-  path = await createApplication();
-  await build(path, {args: ['-d']});
-}));
-
-it('connects', async () => {
-  const {code} = await serverActions(path, [
-    {type: 'exit', payload: 42},
-  ]);
-  expect(code)
-    .to.equal(42);
-});
+it('connects', withServer(
+  async ({server}) => {
+    const code = processCode(server.child);
+    await server.actions([
+      {type: 'exit', payload: 42},
+    ]);
+    expect(await code)
+      .to.equal(42);
+  },
+  {failOnErrorCode: false},
+));

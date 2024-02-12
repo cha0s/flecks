@@ -18,6 +18,7 @@
     "access": "public"
   },
   "files": [
+    "client.js",
     "entry.js",
     "index.js",
     "runtime.js",
@@ -29,11 +30,13 @@
     "@babel/parser": "^7.17.0",
     "@babel/types": "^7.17.0",
     "@flecks/core": "^4.0.5",
+    "@flecks/server": "^4.0.5",
     "@webpack-cli/serve": "^2.0.5",
     "add-asset-html-webpack-plugin": "^6.0.0",
     "assert": "^2.1.0",
     "autoprefixer": "^10.4.17",
     "before-build-webpack": "^0.2.13",
+    "body-parser": "^1.20.2",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "clean-webpack-plugin": "4.0.0",
@@ -42,8 +45,8 @@
     "express": "^4.17.1",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
-    "husky": "^9.0.7",
     "http-proxy": "^1.17.0",
+    "husky": "^9.0.7",
     "mini-css-extract-plugin": "^2.7.6",
     "mocha": "^10.2.0",
     "null-loader": "^4.0.1",
@@ -61,6 +64,7 @@
   },
   "devDependencies": {
     "@flecks/build": "^4.0.5",
-    "@flecks/fleck": "^4.0.5"
+    "@flecks/fleck": "^4.0.5",
+    "puppeteer": "^22.0.0"
   }
 }

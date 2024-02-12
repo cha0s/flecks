@@ -261,11 +261,12 @@ exports.commands = (program, flecks) => {
         const spawnWebpack = () => {
           webpack = spawnWith(cmd, options);
           webpack.on('message', (message) => {
-            switch (message) {
+            switch (message.type) {
               case 'kill':
                 debug('killing...');
                 webpack.kill();
                 watcher.close();
+                process.exitCode = message.payload;
                 break;
               case 'restart':
                 debug('restarting webpack...');

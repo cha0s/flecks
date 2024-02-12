@@ -20,15 +20,9 @@ import {D, Flecks} from '@flecks/core';
   }
   const debug = D('@flecks/server/entry');
   debug('starting server...');
-  try {
-    global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
-    await global.flecks.invokeSequentialAsync('@flecks/server.up');
-    debug('up!');
-  }
-  catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
+  global.flecks = await Flecks.from({...runtime, flecks: await loadFlecks()});
+  await global.flecks.invokeSequentialAsync('@flecks/server.up');
+  debug('up!');
 })();
 
 if (module.hot) {

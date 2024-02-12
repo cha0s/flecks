@@ -15,6 +15,7 @@ const WaitForManifestPlugin = require('./wait-for-manifest');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  NODE_ENV,
 } = process.env;
 
 module.exports = async (env, argv, flecks) => {
@@ -70,12 +71,6 @@ module.exports = async (env, argv, flecks) => {
       entry: '@flecks/web/server/build/entry',
     }],
   ];
-  if (!isProduction) {
-    entries.push(['tests', {
-      entry: '@flecks/web/server/build/tests',
-      title: 'Testbed',
-    }]);
-  }
   await Promise.all(
     entries
       .map(async ([name, mainsConfig]) => {
@@ -195,6 +190,7 @@ module.exports = async (env, argv, flecks) => {
     },
     optimization: {
       minimize: isProduction,
+      nodeEnv: NODE_ENV,
       runtimeChunk: 'single',
       splitChunks: {
         cacheGroups: {

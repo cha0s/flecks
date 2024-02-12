@@ -8,15 +8,58 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  lint:
-    uses: ./.github/workflows/node.yml
-    with:
-      run: npm run lint
-  test:
-    uses: ./.github/workflows/node.yml
-    with:
-      run: npm run -- test -p 360000
+
   build:
-    uses: ./.github/workflows/node.yml
-    with:
-      run: npm run build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm ci
+          npm run build
+
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: ${{ vars.CI_PARALLEL || 256 }}
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2
+      - uses: browser-actions/setup-chrome@latest
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm ci
+          npm run -- test -t 360000
+          npm run -- test -t 360000 -p e2e
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm ci
+          npm run lint
+

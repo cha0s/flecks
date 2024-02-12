@@ -41,6 +41,7 @@ module.exports = async (flecks) => ({
         'test/**/*.js',
       ],
       rules: {
+        'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
         'brace-style': 'off',
         'class-methods-use-this': 'off',
         'import/no-extraneous-dependencies': 'off',

@@ -3,6 +3,7 @@ import {createServer, ServerResponse} from 'http';
 import {join} from 'path';
 
 import {D} from '@flecks/core';
+import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -31,6 +32,8 @@ export const createHttpServer = async (flecks) => {
   const httpServer = createServer(app);
   httpServer.app = app;
   flecks.web.server = httpServer;
+  // Body parser.
+  app.use(bodyParser.json());
   // Compression.                                         heheh
   app.use(compression({level: 'production' === NODE_ENV ? 6 : 9}));
   // Socket connection.

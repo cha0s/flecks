@@ -19,7 +19,8 @@
   },
   "files": [
     "entry.js",
-    "runtime.js"
+    "runtime.js",
+    "server.js"
   ],
   "dependencies": {
     "@flecks/core": "^4.0.5"

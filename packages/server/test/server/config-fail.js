@@ -1,38 +1,15 @@
 import {join} from 'path';
 
-import {heavySetup} from '@flecks/core/build/testing';
 import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
-import {build, createApplication} from './build/build';
-import {socketListener} from './build/listen';
+import {withServer} from './build/build';
 
-let path;
-let socket;
-
-before(heavySetup(async () => {
-  path = await createApplication();
-  const {socketPath, socketServer} = await socketListener();
-  build(
-    path,
-    {
-      args: ['-h'],
-      opts: {
-        env: {
-          FLECKS_ENV__flecks_server__start: true,
-          FLECKS_SERVER_TEST_SOCKET: socketPath,
-        },
-      },
-    },
-  );
-  socket = await socketServer.waitForSocket();
-}));
-
-it('updates config', async () => {
+it('allows updates to fail', withServer(async ({server, socket}) => {
   expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
     .to.equal('bar');
   await writeFile(
-    join(path, 'build', 'flecks.yml'),
+    join(server.path, 'build', 'flecks.yml'),
     `
       '@flecks/build': {}
       '@flecks/core': {}
@@ -40,12 +17,12 @@ it('updates config', async () => {
       'comm:./comm': {foo: 'baz'}
     `,
   );
-  await socket.waitForHmr();
+  await socket.waitForAction('hmr');
   expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
     .to.equal('baz');
   let restarted;
   const whatHappened = Promise.race([
-    socket.waitForHmr()
+    socket.waitForAction('hmr')
       .then(() => {
         restarted = false;
       })
@@ -58,7 +35,7 @@ it('updates config', async () => {
     }),
   ]);
   await writeFile(
-    join(path, 'build', 'flecks.yml'),
+    join(server.path, 'build', 'flecks.yml'),
     `
       '@flecks/build': {}
       '@flecks/core': {}
@@ -69,4 +46,4 @@ it('updates config', async () => {
   await whatHappened;
   expect(restarted)
     .to.be.true;
-});
+}));
