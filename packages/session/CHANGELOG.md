@@ -46,6 +46,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.5 to ^4.0.6
     * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.0 to ^4.1.1
+  * devDependencies
+    * @flecks/build bumped from ^4.0.6 to ^4.0.7
+    * @flecks/fleck bumped from ^4.0.6 to ^4.0.7
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/session-v4.0.2...session-v4.0.3) (2024-02-09)
 
 

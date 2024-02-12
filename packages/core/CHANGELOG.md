@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](https://github.com/cha0s/flecks/compare/core-v4.1.0...core-v4.1.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* gathering ([62cee34](https://github.com/cha0s/flecks/commit/62cee3484c9ea5d0d54abedd6f1e39c3288a4be4))
+* runtime environment config ([4d55e55](https://github.com/cha0s/flecks/commit/4d55e5524c73ca1e31067499385e0a206d6bd319))
+
 ## [4.1.0](https://github.com/cha0s/flecks/compare/core-v4.0.5...core-v4.1.0) (2024-02-12)
 
 

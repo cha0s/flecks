@@ -1,6 +1,6 @@
 {
   "name": "@flecks/socket",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -23,8 +23,8 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.1.0",
-    "@flecks/react": "^4.0.6",
+    "@flecks/core": "^4.1.1",
+    "@flecks/react": "^4.0.7",
     "msgpack-lite": "^0.1.26",
     "proxy-addr": "^2.0.6",
     "schemapack": "^1.4.2",
@@ -32,7 +32,7 @@
     "socket.io-client": "^4.1.2"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.6",
-    "@flecks/fleck": "^4.0.6"
+    "@flecks/build": "^4.0.7",
+    "@flecks/fleck": "^4.0.7"
   }
 }
