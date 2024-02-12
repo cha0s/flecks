@@ -49,8 +49,8 @@ jobs:
         if: ${{ vars.NPM_CI_REGISTRY }}
       - run: |
           npm ci
-          npm run -- test -t 360000
-          npm run -- test -t 360000 -p e2e
+          npm run -- test -t 30000
+          npm run -- test -t 30000 -p e2e
 
   lint:
     runs-on: ubuntu-latest
