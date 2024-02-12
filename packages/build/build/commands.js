@@ -237,6 +237,12 @@ exports.commands = (program, flecks) => {
         if (!watch) {
           return spawnWith(cmd, options);
         }
+        try {
+          await access(join(FLECKS_CORE_ROOT, 'build/flecks.yml'));
+        }
+        catch (error) {
+          return spawnWith(cmd, options);
+        }
         await rootsDependencies(flecks.roots, flecks.resolver);
         const watched = Object.keys(dependencies);
         watched.push(
