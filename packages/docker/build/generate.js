@@ -25,14 +25,14 @@ exports.generateComposeConfig = async (flecks) => {
   const services = {
     [appServiceName]: {
       build: {
-        context: '..',
+        context: '../..',
         dockerfile: 'dist/server/Dockerfile',
       },
       environment: {
-        FLECKS_ENV__flecks_docker_server__enabled: 'false',
+        FLECKS_ENV__flecks_docker__enabled: 'false',
       },
       volumes: [
-        '../node_modules:/var/www/node_modules',
+        '../../node_modules:/var/www/node_modules',
       ],
     },
   };
