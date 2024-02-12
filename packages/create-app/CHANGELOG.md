@@ -28,6 +28,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.3 to ^4.0.4
     * @flecks/fleck bumped from ^4.0.3 to ^4.0.4
 
+## [4.0.8](https://github.com/cha0s/flecks/compare/create-app-v4.0.7...create-app-v4.0.8) (2024-02-12)
+
+
+### Bug Fixes
+
+* add default worksapces pattern ([12120a9](https://github.com/cha0s/flecks/commit/12120a9a43c0cd135a1e8676fb21dba87d59d2fd))
+
 ## [4.0.7](https://github.com/cha0s/flecks/compare/create-app-v4.0.6...create-app-v4.0.7) (2024-02-12)
 
 
