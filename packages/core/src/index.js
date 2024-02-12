@@ -17,7 +17,14 @@ module.exports = {
       if (path !== join(FLECKS_CORE_ROOT, 'build', 'flecks.yml')) {
         return;
       }
-      Object.entries(flecks.constructor.dealiasedConfig(config))
+      const dealiasedConfig = flecks.constructor.dealiasedConfig(config);
+      if (
+        JSON.stringify(Object.keys(flecks.originalConfig).sort())
+        !== JSON.stringify(Object.keys(dealiasedConfig).sort())
+      ) {
+        throw new Error('build manifest keys changed!');
+      }
+      Object.entries(dealiasedConfig)
         .forEach(([fleck, value]) => {
           if (JSON.stringify(flecks.originalConfig[fleck]) !== JSON.stringify(value)) {
             const fleckList = flecks.flecksImplementing('@flecks/core.reload');
