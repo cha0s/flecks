@@ -8,10 +8,8 @@
   },
   "scripts": {
     "build": "node build/tasks npm run -- build",
-    "dox:bump": "npm run dox:gh-pages && cd dox && git add . && git commit -m $(git -C .. rev-parse HEAD) && git push origin gh-pages",
-    "dox:gh-pages": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --out-dir ../dox-tmp && cd .. && rm -rf dox/* && mv dox-tmp/* dox && rmdir dox-tmp",
-    "dox:serve": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus build --no-minify --out-dir ../dox-tmp && node_modules/.bin/docusaurus serve --dir ../dox-tmp",
-    "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus node_modules/.bin/docusaurus",
+    "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus",
+    "gh-pages": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus build && cd .. && rm -rf gh-pages/* && mv website/build/* gh-pages && rm -rf website/build && cd gh-pages && git add . && git commit -m $(git -C ../website rev-parse HEAD) && git push origin gh-pages",
     "lint": "node build/tasks npm run -- lint",
     "publish": "node build/publish --provenance",
     "test": "node build/tasks npm run -- test",

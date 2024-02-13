@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [website]
+  workflow_dispatch: {}
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          repository: cha0s/flecks
+          token: ${{ secrets.GH_PAT }}
+      - run: npx dox:gh-pages
