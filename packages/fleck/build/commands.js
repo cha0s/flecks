@@ -42,6 +42,14 @@ module.exports = (program, flecks) => {
         watch,
       } = opts;
       const {build} = coreCommands(program, flecks);
+      // Check for work.
+      const [env, argv] = [{}, {mode: production ? 'production' : 'development'}];
+      const filename = await flecks.resolveBuildConfig('test.webpack.config.js', '@flecks/build');
+      const config = {test: await require(filename)(env, argv, flecks)};
+      await flecks.configureBuilds(config, env, argv);
+      if (!config.entry) {
+        return undefined;
+      }
       // Remove the previous test(s).
       await rimraf(join(FLECKS_CORE_ROOT, 'dist', 'test'));
       // Kick off building the test and wait for the file to exist.
