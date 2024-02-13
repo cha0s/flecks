@@ -17,6 +17,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          repository: cha0s/flecks
           token: ${{ secrets.GH_PAT }}
-      - run: npm run gh-pages
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm ci
+          npm run gh-pages
