@@ -19,4 +19,4 @@ jobs:
           submodules: true
           repository: cha0s/flecks
           token: ${{ secrets.GH_PAT }}
-      - run: npx dox:gh-pages
+      - run: npm run gh-pages
