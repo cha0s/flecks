@@ -8,6 +8,7 @@ import {withServer} from './build/build';
 it('allows updates to fail', withServer(async ({server, socket}) => {
   expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
     .to.equal('bar');
+  const hmr = socket.waitForAction('hmr');
   await writeFile(
     join(server.path, 'build', 'flecks.yml'),
     `
@@ -17,7 +18,7 @@ it('allows updates to fail', withServer(async ({server, socket}) => {
       'comm:./comm': {foo: 'baz'}
     `,
   );
-  await socket.waitForAction('hmr');
+  await hmr;
   expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
     .to.equal('baz');
   let restarted;
