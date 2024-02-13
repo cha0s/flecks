@@ -14,7 +14,7 @@
     "lint": "node build/tasks npm run -- lint",
     "publish": "node build/publish --provenance",
     "test": "node build/tasks npm run -- test",
-    "verify": "act workflow_dispatch"
+    "verify": "act -j test --matrix node-version:20.x"
   },
   "workspaces": [
     "packages/*"
