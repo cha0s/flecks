@@ -65,8 +65,8 @@ jobs:
       - run: npm ci
         if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
       - run: |
-          npm run -- test -t 120000
-          npm run -- test -t 120000 -p e2e
+          npm run -- test -t 120000 & npm run -- test -t 120000 -p e2e
+          wait
 
   lint:
     runs-on: ubuntu-latest
