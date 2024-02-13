@@ -1,0 +1,45 @@
+name: Website
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+concurrency:
+  group: website
+  cancel-in-progress: true
+
+jobs:
+
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: actions/checkout@v4
+        with:
+          path: website
+          ref: website
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ hashFiles('package-lock.json', 'website/package-lock.json') }}
+      - run: |
+          npm install --omit=dev
+          cd website
+          npm install
+      - uses: actions/checkout@v4
+        with:
+          path: gh-pages
+          ref: gh-pages
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm run dox:build
+      - run: |
+          git config --global user.email "git@cha0s.io"
+          git config --global user.name "cha0s"
+          npm run gh-pages || true
