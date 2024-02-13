@@ -534,6 +534,21 @@ class Flecks {
   }
 
   /**
+   * Check whether an updated module changed its hook implementation.
+   *
+   * @param {*} fleck The fleck implementing the hook.
+   * @param {*} hook The hook.
+   * @param {*} M The updated module.
+   * @returns {boolean}
+   */
+  implementationChanged(fleck, hook, M) {
+    return (
+      (this.fleckImplementation(fleck, hook) || M.hooks?.[hook])
+      && this.fleckImplementation(fleck, hook)?.toString() !== M.hooks?.[hook]?.toString()
+    );
+  }
+
+  /**
    * Interpolate a string with flecks configuration values.
    * @param {string} string
    * @returns The interpolated string.
