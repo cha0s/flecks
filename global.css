@@ -68,10 +68,11 @@ ul.headless.tabs > li[aria-selected="true"]:hover {
   }
 }
 
+
 .theme-code-block-highlighted-line[class] {
-  background-color: rgb(251, 250, 161);
+  background-color: rgb(66, 65, 38);
 }
 
-[data-theme="dark"] .theme-code-block-highlighted-line[class] {
-  background-color: rgb(66, 65, 38);
+[data-theme="light"] .theme-code-block-highlighted-line[class] {
+  background-color: rgb(251, 250, 161);
 }
