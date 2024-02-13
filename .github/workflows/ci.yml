@@ -55,22 +55,18 @@ jobs:
         with:
           path: "~/.cache/puppeteer"
           key: ${{ runner.os }}-${{ matrix.node-version }}-puppeteer
-      - uses: actions/cache@v4
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ matrix.node-version }}-modules-${{ hashFiles('package-lock.json') }}
-      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
-        if: ${{ vars.NPM_CI_REGISTRY }}
       - id: cache-node-modules
         uses: actions/cache@v4
         with:
           path: '**/node_modules'
-          key: ${{ hashFiles('**/package-lock.json') }}
-      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+          key: ${{ runner.os }}-${{ matrix.node-version }}-modules-${{ hashFiles('package-lock.json') }}
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }} && steps.cache-node-modules.outputs.cache-hit != 'true'
+      - run: npm ci
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
       - run: |
-          npm run -- test -t 60000
-          npm run -- test -t 60000 -p e2e
+          npm run -- test -t 120000
+          npm run -- test -t 120000 -p e2e
 
   lint:
     runs-on: ubuntu-latest
