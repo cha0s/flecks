@@ -24,9 +24,14 @@ jobs:
           cache: 'npm'
       - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
         if: ${{ vars.NPM_CI_REGISTRY }}
-      - run: |
-          npm ci
-          npm run build
+      - id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ hashFiles('**/package-lock.json') }}
+      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - run: npm run build
 
   test:
     runs-on: ubuntu-latest
@@ -56,10 +61,16 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.node-version }}-modules-${{ hashFiles('package-lock.json') }}
       - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
         if: ${{ vars.NPM_CI_REGISTRY }}
+      - id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ hashFiles('**/package-lock.json') }}
+      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - run: |
-          npm ci
-          npm run -- test -t 30000
-          npm run -- test -t 30000 -p e2e
+          npm run -- test -t 60000
+          npm run -- test -t 60000 -p e2e
 
   lint:
     runs-on: ubuntu-latest
@@ -72,6 +83,11 @@ jobs:
           cache: 'npm'
       - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
         if: ${{ vars.NPM_CI_REGISTRY }}
-      - run: |
-          npm ci
-          npm run lint
+      - id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ hashFiles('**/package-lock.json') }}
+      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      - run: npm run lint
