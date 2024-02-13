@@ -46,11 +46,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: "~/.cache/puppeteer"
           key: ${{ runner.os }}-${{ matrix.node-version }}-puppeteer
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ matrix.node-version }}-modules-${{ hashFiles('package-lock.json') }}
