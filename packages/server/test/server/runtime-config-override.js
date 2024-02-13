@@ -5,7 +5,7 @@ import {expect} from 'chai';
 
 import {withServer} from './build/build';
 
-it('propagates bootstrap config', withServer(
+it('propagates override config', withServer(
   async ({server}) => {
     const [{payload: id}, {payload: foo}] = await server.actions([
       {type: 'config.get', payload: '@flecks/core.id'},
