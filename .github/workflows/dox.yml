@@ -31,6 +31,6 @@ jobs:
           node-version: 20.x
           cache: 'npm'
       - run: |
-          npm ci
+          npm ci --production
           cd website && npm ci && cd ..
           npm run gh-pages
