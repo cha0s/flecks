@@ -21,7 +21,6 @@ jobs:
           ref: website
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}
           path: gh-pages
           ref: gh-pages
       - name: Use Node.js ${{ matrix.node-version }}
