@@ -2,7 +2,7 @@ name: Website
 
 on:
   push:
-    branches: [website]
+    branches: [master]
   workflow_dispatch: {}
 
 concurrency:
