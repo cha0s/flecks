@@ -13,7 +13,22 @@ concurrency:
 
 jobs:
 
-  ci:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm run build
+          npm ci
+
+  test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: ${{ vars.CI_PARALLEL || 256 }}
@@ -43,7 +58,20 @@ jobs:
         if: ${{ vars.NPM_CI_REGISTRY }}
       - run: |
           npm ci
-          npm run lint
-          npm run build
           npm run -- test -t 30000
           npm run -- test -t 30000 -p e2e
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      - run: npm config set registry ${{ vars.NPM_CI_REGISTRY }}
+        if: ${{ vars.NPM_CI_REGISTRY }}
+      - run: |
+          npm ci
+          npm run lint
