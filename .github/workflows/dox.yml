@@ -27,8 +27,8 @@ jobs:
           npm ci
       - uses: actions/cache@v2
         with:
-          path: 'website/node_modules/.cache'
-          key: build-cache
+          path: '**/node_modules'
+          key: ${{ hashFiles('package-lock.json', 'website/package-lock.json') }}
       - uses: actions/checkout@v4
         with:
           path: gh-pages
