@@ -68,6 +68,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.6 to ^4.0.7
     * @flecks/fleck bumped from ^4.0.6 to ^4.0.7
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+    * @flecks/react bumped from ^4.0.7 to ^4.0.8
+    * @flecks/redux bumped from ^4.0.7 to ^4.0.8
+  * devDependencies
+    * @flecks/build bumped from ^4.0.7 to ^4.1.0
+    * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/react-redux-v4.0.2...react-redux-v4.0.3) (2024-02-09)
 
 

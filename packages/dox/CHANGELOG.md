@@ -55,6 +55,24 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.6 to ^4.0.7
     * @flecks/fleck bumped from ^4.0.6 to ^4.0.7
 
+## [4.0.8](https://github.com/cha0s/flecks/compare/dox-v4.0.7...dox-v4.0.8) (2024-02-14)
+
+
+### Bug Fixes
+
+* should have marked previous as fix ([323aa4e](https://github.com/cha0s/flecks/commit/323aa4e443384ae55a7c7e889489a27e695c4d03))
+* visitor and tests ([696c0c8](https://github.com/cha0s/flecks/commit/696c0c885ad1ee7c2046475562405c5bfd81012c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.7 to ^4.1.0
+    * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/dox-v4.0.2...dox-v4.0.3) (2024-02-09)
 
 

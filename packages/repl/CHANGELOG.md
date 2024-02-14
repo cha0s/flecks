@@ -55,6 +55,28 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.6 to ^4.0.7
     * @flecks/fleck bumped from ^4.0.6 to ^4.0.7
 
+## [4.1.0](https://github.com/cha0s/flecks/compare/repl-v4.0.7...repl-v4.1.0) (2024-02-14)
+
+
+### Features
+
+* require.context in bootstrap scripts ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Bug Fixes
+
+* test running ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.7 to ^4.1.0
+    * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/repl-v4.0.2...repl-v4.0.3) (2024-02-09)
 
 
