@@ -7,13 +7,13 @@
     "url": "git+https://github.com/cha0s/flecks.git"
   },
   "scripts": {
-    "build": "node build/tasks npm run -- build",
+    "build": "FORCE_COLOR=1 node build/tasks npm run -- build",
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus",
     "dox:build": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus build && cd .. && rm -rf gh-pages/* && mv website/build/* gh-pages && rm -rf website/build",
     "gh-pages": "cd gh-pages && git add . && git commit -m $(git -C ../website rev-parse HEAD) && git push origin gh-pages",
-    "lint": "node build/tasks npm run -- lint",
+    "lint": "FORCE_COLOR=1 node build/tasks npm run -- lint",
     "publish": "node build/publish --provenance",
-    "test": "MOCHA_COLORS=1 node build/tasks npm run -- test",
+    "test": "FORCE_COLOR=1 MOCHA_COLORS=1 node build/tasks npm run -- test",
     "verify": "act -j test --matrix node-version:20.x"
   },
   "workspaces": [
