@@ -1,5 +1,11 @@
 const {readFile} = require('fs/promises');
-const {dirname, join, relative} = require('path');
+const {
+  basename,
+  dirname,
+  extname,
+  join,
+  relative,
+} = require('path');
 
 const {transformAsync} = require('@babel/core');
 const {default: traverse} = require('@babel/traverse');
@@ -8,6 +14,7 @@ const {glob} = require('@flecks/core/src/server');
 const {
   buildFileVisitor,
   configVisitor,
+  hookBaseVisitor,
   hookImplementationVisitor,
   hookInvocationVisitor,
   hookSpecificationVisitor,
@@ -19,10 +26,11 @@ exports.parseCode = async (code, options = {}) => {
   return ast;
 };
 
-exports.parseNormalSource = async (path, source, root, options) => {
+exports.parseNormalSource = async (path, source, root, request, options) => {
   const ast = await exports.parseCode(source, options);
   const buildFiles = [];
   const configs = [];
+  const hookBases = [];
   const hookImplementations = [];
   const hookInvocations = [];
   const todos = [];
@@ -36,6 +44,24 @@ exports.parseNormalSource = async (path, source, root, options) => {
       defaultValue: source.slice(start, end),
       description,
       key,
+    });
+  }));
+  traverse(ast, hookBaseVisitor((args) => {
+    const subpath = join(dirname(path), args[0].value);
+    const prefix = join(request, subpath);
+    const implementationSources = glob.sync(
+      join(prefix, '**'),
+      {nodir: true},
+    );
+    implementationSources.forEach((implementationSource) => {
+      const filename = relative(prefix, implementationSource);
+      const hook = join(dirname(filename), basename(filename, extname(filename)));
+      hookImplementations.push({
+        column: 1,
+        filename: join(root, subpath, filename),
+        hook,
+        line: 1,
+      });
     });
   }));
   traverse(ast, hookImplementationVisitor((hookImplementation) => {
@@ -73,6 +99,7 @@ exports.parseNormalSource = async (path, source, root, options) => {
   return {
     buildFiles,
     config: configs,
+    hookBases,
     hookImplementations,
     hookInvocations,
     todos,
@@ -94,11 +121,11 @@ exports.parseHookSpecificationSource = async (path, source, options) => {
   };
 };
 
-exports.parseSource = async (path, source, root, options) => {
+exports.parseSource = async (path, source, root, request, options) => {
   if (path.match(/build\/flecks\.hooks\.js$/)) {
     return exports.parseHookSpecificationSource(path, source, options);
   }
-  return exports.parseNormalSource(path, source, root, options);
+  return exports.parseNormalSource(path, source, root, request, options);
 };
 
 exports.parseFleckRoot = async (root, request, options) => (
@@ -110,7 +137,7 @@ exports.parseFleckRoot = async (root, request, options) => (
       .map((filename) => [relative(request, filename), filename])
       .map(async ([path, filename]) => {
         const buffer = await readFile(filename);
-        return [path, await exports.parseSource(path, buffer.toString('utf8'), root, options)];
+        return [path, await exports.parseSource(path, buffer.toString('utf8'), root, request, options)];
       }),
   )
 );

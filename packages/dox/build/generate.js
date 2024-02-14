@@ -304,10 +304,10 @@ exports.generateJson = async function generate(flecks) {
               }
               r.config[fleck] = config;
             }
-            hookImplementations.forEach(({column, hook, line}) => {
+            hookImplementations.forEach(({column, filename, hook, line}) => {
               ensureHook(hook);
               r.hooks[hook].implementations.push({
-                filename: [join(root, path), line, column].join(':'),
+                filename: filename || [join(root, path), line, column].join(':'),
               });
             });
             hookInvocations.forEach(({

@@ -11,6 +11,7 @@ const {
   isBlockStatement,
   isReturnStatement,
   isFunction,
+  isCallExpression,
 } = require('@babel/types');
 const {parse: parseComment} = require('comment-parser');
 
@@ -22,6 +23,52 @@ function visitProperties(properties, fn) {
     }
   });
 }
+
+exports.hookBaseVisitor = (fn) => ({
+  // exports.hooks = Flecks.hooks(require.context(...))
+  AssignmentExpression(path) {
+    const {left, right} = path.node;
+    if (isMemberExpression(left)) {
+      if (isIdentifier(left.object) && 'exports' === left.object.name) {
+        if (isIdentifier(left.property) && 'hooks' === left.property.name) {
+          if (isCallExpression(right)) {
+            if (isMemberExpression(right.callee)) {
+              if (
+                isIdentifier(right.callee.object) && 'Flecks' === right.callee.object.name
+                && isIdentifier(right.callee.property) && 'hooks' === right.callee.property.name
+              ) {
+                if (isCallExpression(right.arguments[0])) {
+                  if (
+                    isIdentifier(right.arguments[0].callee.object)
+                    && 'require' === right.arguments[0].callee.object.name
+                    && isIdentifier(right.arguments[0].callee.property)
+                    && 'context' === right.arguments[0].callee.property.name
+                  ) {
+                    fn(right.arguments[0].arguments);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  // export const hooks = Flecks.hooks(...)
+  ExportNamedDeclaration(path) {
+    const {declaration} = path.node;
+    if (isVariableDeclaration(declaration)) {
+      const {declarations} = declaration;
+      declarations.forEach((declarator) => {
+        if ('hooks' === declarator.id.name) {
+          if (isObjectExpression(declarator.init)) {
+            visitProperties(declarator.init.properties, fn);
+          }
+        }
+      });
+    }
+  },
+});
 
 exports.hookImplementationVisitor = (fn) => ({
   // exports.hooks = {...}
