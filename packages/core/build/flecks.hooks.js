@@ -75,6 +75,20 @@ export const hooks = {
   },
 
   /**
+   * Invoked when a hook is HMR'd. Throw to abort hot reload and restart application.
+   * Must be synchronous.
+   *
+   * @param {string} hook The hook that was updated.
+   * @param {string} path The path of the fleck implementing the updated hook.
+   * @invokeSequential
+   */
+  '@flecks/core.hmr.hook': (hook, path) => {
+    if ('@my/fleck.some.hook' === hook) {
+      throw new Error('hook too volatile, restart!');
+    }
+  },
+
+  /**
    * Invoked when flecks is building a fleck dependency graph.
    * @param {Digraph} graph The dependency graph.
    * @param {string} hook The hook; e.g. `@flecks/server.up`.
