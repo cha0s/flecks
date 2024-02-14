@@ -30,7 +30,6 @@ exports.parseNormalSource = async (path, source, root, request, options) => {
   const ast = await exports.parseCode(source, options);
   const buildFiles = [];
   const configs = [];
-  const hookBases = [];
   const hookImplementations = [];
   const hookInvocations = [];
   const todos = [];
@@ -99,7 +98,6 @@ exports.parseNormalSource = async (path, source, root, request, options) => {
   return {
     buildFiles,
     config: configs,
-    hookBases,
     hookImplementations,
     hookInvocations,
     todos,
