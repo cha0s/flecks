@@ -38,6 +38,7 @@ jobs:
     strategy:
       max-parallel: ${{ vars.CI_PARALLEL || 256 }}
       matrix:
+        test-platforms: ['-p default -p server', '-p e2e']
         node-version: [16.x, 18.x, 20.x]
     steps:
       - uses: actions/checkout@v4
@@ -64,9 +65,7 @@ jobs:
         if: ${{ vars.NPM_CI_REGISTRY && steps.cache-node-modules.outputs.cache-hit != 'true' }}
       - run: npm ci
         if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
-      - run: |
-          npm run -- test -t 120000 & npm run -- test -t 120000 -p e2e
-          wait
+      - run: npm run -- test -t 120000 ${{ matrix.test-platforms }}
 
   lint:
     runs-on: ubuntu-latest
