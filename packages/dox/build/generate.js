@@ -304,7 +304,12 @@ exports.generateJson = async function generate(flecks) {
               }
               r.config[fleck] = config;
             }
-            hookImplementations.forEach(({column, filename, hook, line}) => {
+            hookImplementations.forEach(({
+              column,
+              filename,
+              hook,
+              line,
+            }) => {
               ensureHook(hook);
               r.hooks[hook].implementations.push({
                 filename: filename || [join(root, path), line, column].join(':'),
