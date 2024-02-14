@@ -47,7 +47,7 @@ module.exports = (program, flecks) => {
       const filename = await flecks.resolveBuildConfig('test.webpack.config.js', '@flecks/build');
       const config = {test: await require(filename)(env, argv, flecks)};
       await flecks.configureBuilds(config, env, argv);
-      if (!config.entry) {
+      if (!config.test.entry) {
         return undefined;
       }
       // Remove the previous test(s).
