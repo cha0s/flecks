@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {promisify} from 'util';
 
 import {compose, D, EventEmitter} from '@flecks/core';

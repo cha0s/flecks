@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const {inspect: {defaultOptions}} = require('util');
 
 defaultOptions.breakLength = 160;

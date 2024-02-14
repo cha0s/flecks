@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-classes-per-file
+// eslint-disable-next-line max-classes-per-file, import/no-extraneous-dependencies
 const {Buffer} = require('buffer');
 const {dump: dumpYml, load: loadYml} = require('js-yaml');
 const JsonParse = require('jsonparse');
