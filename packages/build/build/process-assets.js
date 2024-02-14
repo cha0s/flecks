@@ -39,7 +39,7 @@ exports.processFleckAssets = async (assets, compilation, jsonCallback) => {
   const {RawSource} = compilation.compiler.webpack.sources;
   const packageJson = assets['package.json'];
   const json = JSON.parse(packageJson.source().toString());
-  const {files} = json;
+  const {files = []} = json;
   // Add defaults.
   files.push('build');
   // Add source if it exists.
@@ -56,7 +56,7 @@ exports.processFleckAssets = async (assets, compilation, jsonCallback) => {
     await jsonCallback(json, compilation);
   }
   // Add any sourcemaps.
-  json.files = json.files
+  json.files = files
     .map((filename) => {
       const maybeWithMap = [filename];
       if (compilation.assets[`${filename}.map`]) {
