@@ -67,10 +67,9 @@ module.exports = async (config, env, argv, flecks) => {
   // HMrequire.
   source.push('if (module.hot) {');
   resolvedPaths.forEach((path) => {
-    source.push(`  module.hot.accept('${path}', async () => {`);
+    source.push(`  module.hot.accept('${path}', () => {`);
     source.push(`    const M = require('${path}')`);
     source.push('    try {');
-    source.push(`      global.flecks.invokeSequential('@flecks/core.hmr', '${path}', M);`);
     source.push(`      global.flecks.refresh('${path}', M);`);
     source.push('    }');
     source.push('    catch (error) {');

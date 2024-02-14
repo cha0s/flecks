@@ -964,6 +964,8 @@ class Flecks {
    */
   refresh(fleck, M) {
     this.constructor.debug('refreshing %s...', fleck);
+    // Notify about fleck updates.
+    this.invokeSequential('@flecks/core.hmr', fleck, M);
     // Notify about hook implementation updates.
     const previousM = this.fleck(fleck);
     [...new Set([

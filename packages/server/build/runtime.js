@@ -33,7 +33,22 @@ async function runtimeModule(compilation, flecks) {
       ...resolvedPaths.map((path) => [
         '        (async () => {',
         '          try {',
-        `            return ['${path}', await import('${path}')];`,
+        `            const M = await import('${path}');`,
+        '            if (module.hot) {',
+        // Hooks for each fleck.
+        `              module.hot.accept('${path}', async () => {`,
+        `                const M = require('${path}')`,
+        '                try {',
+        `                  global.flecks.refresh('${path}', M);`,
+        '                }',
+        '                catch (error) {',
+        // eslint-disable-next-line no-template-curly-in-string
+        '                  console.error(`HMR failed for fleck: ${error.message}`);',
+        '                  module.hot.invalidate();',
+        '                }',
+        '              });',
+        `              return ['${path}', M];`,
+        '            }',
         '          }',
         '          catch (error) {',
         '            if (!error.message.startsWith("Cannot find module")) {',
@@ -51,58 +66,43 @@ async function runtimeModule(compilation, flecks) {
     version: JSON.stringify(version),
     ...await flecks.invokeAsync('@flecks/server.runtime'),
   };
-  const runtimeString = `{${
+  const renderedRuntime = `{${
     Object.entries(runtime)
       .map(([key, value]) => `"${key}": ${value}`).join(', ')
   }}`;
   const source = [
     "const {Flecks} = require('@flecks/core');",
     "process.env.FLECKS_CORE_BUILD_TARGET = 'server';",
-    `module.exports = (async () => (${runtimeString}))();`,
-  ];
-  // HMR.
-  source.push('if (module.hot) {');
-  source.push(`  module.hot.accept('${ymlPath}', async () => {`);
-  source.push(`    const M = require('${ymlPath}').default;`);
-  source.push('    try {');
-  source.push(`      global.flecks.invokeSequential('@flecks/core.hmr', '${ymlPath}', M);`);
-  source.push('    }');
-  source.push('    catch (error) {');
-  // eslint-disable-next-line no-template-curly-in-string
-  source.push('      console.error(`flecks.reload() failed: ${error.message}`);');
-  source.push('      module.hot.invalidate();');
-  source.push('    }');
-  source.push('  });');
-  // Keep HMR junk out of our output path.
-  source.push('  const {glob} = require("glob");');
-  source.push('  const {join} = require("path");');
-  source.push('  const {unlink} = require("fs/promises");');
-  source.push('  let previousHash = __webpack_hash__;');
-  source.push('  module.hot.addStatusHandler(async (status) => {');
-  source.push('    if ("idle" === status) {');
-  source.push('      const disposing = await glob(');
-  source.push(`        join('${compiler.options.output.path}', \`*\${previousHash}.hot-update.*\`),`);
-  source.push('      );');
-  source.push('      await Promise.all(disposing.map((filename) => unlink(filename)));');
-  source.push('      previousHash = __webpack_hash__;');
-  source.push('    }');
-  source.push('  });');
-  // Hooks for each fleck.
-  resolvedPaths.forEach((path) => {
-    source.push(`  module.hot.accept('${path}', async () => {`);
-    source.push(`    const M = require('${path}')`);
-    source.push('    try {');
-    source.push(`      global.flecks.invokeSequential('@flecks/core.hmr', '${path}', M);`);
-    source.push(`      global.flecks.refresh('${path}', M);`);
-    source.push('    }');
-    source.push('    catch (error) {');
+    `module.exports = (async () => (${renderedRuntime}))();`,
+    // HMR.
+    'if (module.hot) {',
+    `  module.hot.accept('${ymlPath}', () => {`,
+    `    const M = require('${ymlPath}').default;`,
+    '    try {',
+    `      global.flecks.invokeSequential('@flecks/core.hmr', '${ymlPath}', M);`,
+    '    }',
+    '    catch (error) {',
     // eslint-disable-next-line no-template-curly-in-string
-    source.push('      console.error(`HMR failed for fleck: ${error.message}`);');
-    source.push('      module.hot.invalidate();');
-    source.push('    }');
-    source.push('  });');
-  });
-  source.push('}');
+    '      console.error(`flecks.reload() failed: ${error.message}`);',
+    '      module.hot.invalidate();',
+    '    }',
+    '  });',
+    // Keep HMR junk out of our output path.
+    '  const {glob} = require("glob");',
+    '  const {join} = require("path");',
+    '  const {unlink} = require("fs/promises");',
+    '  let previousHash = __webpack_hash__;',
+    '  module.hot.addStatusHandler(async (status) => {',
+    '    if ("idle" === status) {',
+    '      const disposing = await glob(',
+    `        join('${compiler.options.output.path}', \`*\${previousHash}.hot-update.*\`),`,
+    '      );',
+    '      await Promise.all(disposing.map((filename) => unlink(filename)));',
+    '      previousHash = __webpack_hash__;',
+    '    }',
+    '  });',
+    '}',
+  ];
   // Create asset.
   return source.join('\n');
 }
