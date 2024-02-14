@@ -4,6 +4,8 @@ const {
   dirname,
   extname,
   join,
+  resolve,
+  sep,
 } = require('path');
 
 const get = require('lodash.get');
@@ -125,6 +127,46 @@ class Flecks {
           ...this.config[path],
         };
       });
+  }
+
+  static context(
+    directory,
+    useSubdirectories = true,
+    regExp = /^\.\/.*$/,
+  ) {
+    // eslint-disable-next-line no-eval
+    const R = eval('require');
+    if (!R) {
+      throw new Error('Flecks.context is only meant as an escape hatch for bootstrap scripts.');
+    }
+    const caller = dirname(R('callsites')()[1].getFileName());
+    const {glob} = R('glob');
+    const filenames = glob.sync(
+      useSubdirectories ? '**/*' : '*',
+      {cwd: resolve(caller, directory), nodir: true},
+    );
+    const map = {};
+    filenames.forEach((filename) => {
+      const normalized = ['.', '/'].some((char) => filename.startsWith(char))
+        ? filename
+        : `.${sep}${filename}`;
+      if (normalized.match(regExp)) {
+        map[normalized] = filename;
+        map[normalized.slice(0, normalized.lastIndexOf('.'))] = filename;
+      }
+    });
+    const resolver = (key) => map[key];
+    const context = (request) => {
+      if (!resolver(request)) {
+        throw new Error(`Cannot find module '${request}'`);
+      }
+      return R(join(caller, directory, request));
+    };
+    const qualified = join(caller, directory);
+    context.id = `${qualified} sync${useSubdirectories ? ' recursive' : ''} ${regExp.source}`;
+    context.keys = () => Object.keys(map);
+    context.resolve = resolver;
+    return context;
   }
 
   /**
@@ -533,18 +575,32 @@ class Flecks {
     return get(this.config, path, defaultValue);
   }
 
-  /**
-   * Check whether an updated module changed its hook implementation.
-   *
-   * @param {*} fleck The fleck implementing the hook.
-   * @param {*} hook The hook.
-   * @param {*} M The updated module.
-   * @returns {boolean}
-   */
-  implementationChanged(fleck, hook, M) {
-    return (
-      (this.fleckImplementation(fleck, hook) || M.hooks?.[hook])
-      && this.fleckImplementation(fleck, hook)?.toString() !== M.hooks?.[hook]?.toString()
+  static hooks(context) {
+    const implementations = {};
+    context.keys()
+      .forEach((key) => {
+        const id = context.resolve(key);
+        if (!implementations[id]) {
+          implementations[id] = [];
+        }
+        implementations[id].push(key);
+      });
+    return Object.fromEntries(
+      Object.entries(implementations)
+        .map(([, keys]) => {
+          // Shortest is the one without extension.
+          const key = keys.reduce((l, r) => (r.length < l.length ? r : l));
+          const trimmed = key.startsWith('./') ? key.slice(2) : key;
+          const M = context(key);
+          if (!M.hook) {
+            const hasDefault = !!M.default;
+            throw new Error([
+              `'${context.id}${key}' must have implementation at named export 'hook'!`,
+              ...(hasDefault ? ['Did you default export the implementation?'] : []),
+            ].join(' '));
+          }
+          return [trimmed, context(key).hook];
+        }),
     );
   }
 
@@ -908,6 +964,18 @@ class Flecks {
    */
   refresh(fleck, M) {
     this.constructor.debug('refreshing %s...', fleck);
+    // Notify about hook implementation updates.
+    const previousM = this.fleck(fleck);
+    [...new Set([
+      ...(Object.keys(previousM.hooks) || []),
+      ...(Object.keys(M.hooks) || []),
+    ])]
+      .forEach((hook) => {
+        if (previousM.hooks?.[hook] !== M.hooks?.[hook]) {
+          debug("HMR update for hook '%s' implemented by '%s'", hook, fleck);
+          this.invokeSequential('@flecks/core.hmr.hook', hook, fleck);
+        }
+      });
     // Remove old hook implementations.
     this.unregisterFleckHooks(fleck);
     // Replace the fleck.

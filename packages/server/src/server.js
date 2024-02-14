@@ -7,8 +7,8 @@ const {
 } = process.env;
 
 export const hooks = {
-  '@flecks/core.hmr': (path, M, flecks) => {
-    if (flecks.implementationChanged(path, '@flecks/server.up', M)) {
+  '@flecks/core.hmr.hook': (hook) => {
+    if ('@flecks/server.up' === hook) {
       if (cluster.isWorker) {
         cluster.worker.disconnect();
         const error = new Error('@flecks/server.up implementation changed!');
