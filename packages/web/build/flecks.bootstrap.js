@@ -14,6 +14,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  FLECKS_CORE_TEST_PLATFORMS,
 } = process.env;
 
 const tests = join(FLECKS_CORE_ROOT, 'test');
@@ -36,14 +37,20 @@ exports.hooks = {
       case 'test': {
         finalLoader = {loader: MiniCssExtractPlugin.loader};
         config.plugins.push(new MiniCssExtractPlugin({filename: 'assets/[name].css'}));
-        (await glob(join(tests, 'client', '*.js')))
-          .forEach((path) => {
-            const entry = relative(tests, path);
-            config.entry[join(dirname(entry), basename(entry, extname(entry)))] = [
-              'source-map-support/register',
-              path,
-            ];
-          });
+        if (
+          FLECKS_CORE_TEST_PLATFORMS
+            ? JSON.parse(FLECKS_CORE_TEST_PLATFORMS).includes('client')
+            : true
+        ) {
+          (await glob(join(tests, 'client', '*.js')))
+            .forEach((path) => {
+              const entry = relative(tests, path);
+              config.entry[join(dirname(entry), basename(entry, extname(entry)))] = [
+                'source-map-support/register',
+                path,
+              ];
+            });
+        }
         break;
       }
       case 'web': {

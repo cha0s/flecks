@@ -1,9 +1,9 @@
 const {access} = require('fs/promises');
 const {join} = require('path');
 
-const {commands: coreCommands} = require('@flecks/build/build/commands');
+const {hook: coreCommands} = require('@flecks/build/build/hooks/@flecks/build.commands');
 const {rimraf} = require('@flecks/build/src/server');
-const {D} = require('@flecks/core/src');
+const D = require('@flecks/core/build/debug');
 const {glob, pipesink, processCode} = require('@flecks/core/src/server');
 const Mocha = require('mocha');
 const {watchParallelRun} = require('mocha/lib/cli/watch-run');
@@ -23,8 +23,7 @@ module.exports = (program, flecks) => {
     ],
     options: [
       program.createOption('-d, --no-production', 'dev build'),
-      program.createOption('-p, --platform [platforms...]', 'platforms to test')
-        .default(['default', 'server']),
+      program.createOption('-p, --platform [platforms...]', 'platforms to test'),
       program.createOption('-t, --timeout <ms>', 'timeout').default(2000),
       program.createOption('-v, --verbose', 'verbose output'),
       program.createOption('-w, --watch', 'watch for changes'),
@@ -44,6 +43,9 @@ module.exports = (program, flecks) => {
       const {build} = coreCommands(program, flecks);
       // Check for work.
       const [env, argv] = [{}, {mode: production ? 'production' : 'development'}];
+      if (platforms) {
+        process.env.FLECKS_CORE_TEST_PLATFORMS = JSON.stringify(platforms);
+      }
       const filename = await flecks.resolveBuildConfig('test.webpack.config.js', '@flecks/build');
       const config = {test: await require(filename)(env, argv, flecks)};
       await flecks.configureBuilds(config, env, argv);
@@ -57,7 +59,7 @@ module.exports = (program, flecks) => {
         'test',
         {
           env: {
-            FLECKS_CORE_TEST_PLATFORMS: JSON.stringify(platforms),
+            FLECKS_CORE_TEST_PLATFORMS: platforms && JSON.stringify(platforms),
             FORCE_COLOR: 'dumb' !== TERM,
           },
           production,

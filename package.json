@@ -13,13 +13,14 @@
     "gh-pages": "cd gh-pages && git add . && git commit -m $(git -C ../website rev-parse HEAD) && git push origin gh-pages",
     "lint": "node build/tasks npm run -- lint",
     "publish": "node build/publish --provenance",
-    "test": "node build/tasks npm run -- test",
+    "test": "MOCHA_COLORS=1 node build/tasks npm run -- test",
     "verify": "act -j test --matrix node-version:20.x"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "@npmcli/arborist": "^7.3.1"
+    "@npmcli/arborist": "^7.3.1",
+    "chalk": "^4.1.2"
   }
 }

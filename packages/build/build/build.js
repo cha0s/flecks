@@ -1,3 +1,16 @@
+const {addHook} = require('pirates');
+// Hack in `require.context`.
+addHook(
+  (code) => (
+    code.replaceAll('require.context', "require('@flecks/core/build/flecks').Flecks.context")
+  ),
+  {
+    exts: ['.js'],
+    ignoreNodeModules: false,
+    matcher: (request) => request.match(/flecks\.bootstrap\.js$/),
+  },
+);
+
 const {join} = require('path');
 
 const D = require('@flecks/core/build/debug');

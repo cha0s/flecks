@@ -1,4 +1,4 @@
-import Model from '../../../src/model';
+import Model from '@flecks/db/server/model';
 
 export const hooks = {
   '@flecks/db.models': () => ({

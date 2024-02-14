@@ -96,7 +96,7 @@ async function rootsDependencies(roots, resolver) {
   );
 }
 
-exports.commands = (program, flecks) => {
+exports.hook = (program, flecks) => {
   const commands = {
     add: {
       args: [

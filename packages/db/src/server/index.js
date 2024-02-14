@@ -1,9 +1,5 @@
 import {Flecks} from '@flecks/core';
 
-import containers from '../build/containers';
-import {createDatabaseConnection} from './connection';
-import register from './register';
-
 export {
   DataTypes as Types,
   Op,
@@ -13,22 +9,7 @@ export {
 
 export {default as Model} from './model';
 
-export {createDatabaseConnection};
-
-export const hooks = {
-  '@flecks/core.hmr.gathered': (gathered, hook, flecks) => {
-    if ('@flecks/db.models' === hook) {
-      register(gathered, flecks.db.sequelize);
-    }
-  },
-  '@flecks/docker.containers': containers,
-  '@flecks/server.up': Flecks.priority(
-    async (flecks) => {
-      flecks.db.sequelize = await createDatabaseConnection(flecks);
-    },
-    {after: '@flecks/docker/server'},
-  ),
-};
+export const hooks = Flecks.hooks(require.context('./hooks'));
 
 export const mixin = (Flecks) => class FlecksWithDb extends Flecks {
 
