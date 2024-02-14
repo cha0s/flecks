@@ -49,6 +49,33 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * devDependencies
     * @flecks/build bumped from ^4.0.6 to ^4.0.7
 
+## [4.1.0](https://github.com/cha0s/flecks/compare/fleck-v4.0.7...fleck-v4.1.0) (2024-02-14)
+
+
+### Features
+
+* require.context in bootstrap scripts ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Bug Fixes
+
+* nop'd literally everything ([ffe634d](https://github.com/cha0s/flecks/commit/ffe634dce8b6955b8ed9412d0eddd4aca095746d))
+* test running ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Performance Improvements
+
+* quick nop ([307bec8](https://github.com/cha0s/flecks/commit/307bec869e7626b36ec3680523c8d2aced79100d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.7 to ^4.1.0
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/fleck-v4.0.2...fleck-v4.0.3) (2024-02-09)
 
 

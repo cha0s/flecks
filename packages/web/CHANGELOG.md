@@ -47,6 +47,30 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.5 to ^4.0.6
     * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
 
+## [4.1.0](https://github.com/cha0s/flecks/compare/web-v4.0.7...web-v4.1.0) (2024-02-14)
+
+
+### Features
+
+* hook provision through context ([f3e85ee](https://github.com/cha0s/flecks/commit/f3e85ee8fb3c64209bd25e18590bc2017508de93))
+* require.context in bootstrap scripts ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Bug Fixes
+
+* test running ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+    * @flecks/server bumped from ^4.0.7 to ^4.1.0
+  * devDependencies
+    * @flecks/build bumped from ^4.0.7 to ^4.1.0
+    * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
+
 ## [4.0.7](https://github.com/cha0s/flecks/compare/web-v4.0.6...web-v4.0.7) (2024-02-12)
 
 

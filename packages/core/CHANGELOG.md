@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.0](https://github.com/cha0s/flecks/compare/core-v4.1.1...core-v4.2.0) (2024-02-14)
+
+
+### Features
+
+* hook provision through context ([f3e85ee](https://github.com/cha0s/flecks/commit/f3e85ee8fb3c64209bd25e18590bc2017508de93))
+* require.context in bootstrap scripts ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Bug Fixes
+
+* test running ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
 ## [4.1.1](https://github.com/cha0s/flecks/compare/core-v4.1.0...core-v4.1.1) (2024-02-12)
 
 

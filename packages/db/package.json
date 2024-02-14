@@ -1,6 +1,6 @@
 {
   "name": "@flecks/db",
-  "version": "4.0.7",
+  "version": "4.1.0",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -22,12 +22,12 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.1.1",
+    "@flecks/core": "^4.2.0",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "@flecks/build": "^4.0.7",
-    "@flecks/fleck": "^4.0.7"
+    "@flecks/build": "^4.1.0",
+    "@flecks/fleck": "^4.1.0"
   }
 }

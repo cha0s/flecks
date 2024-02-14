@@ -21,6 +21,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/core bumped from ^4.0.4 to ^4.0.5
 
+## [4.1.0](https://github.com/cha0s/flecks/compare/build-v4.0.7...build-v4.1.0) (2024-02-14)
+
+
+### Features
+
+* require.context in bootstrap scripts ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Bug Fixes
+
+* eslint resolver priority ([20191e0](https://github.com/cha0s/flecks/commit/20191e08fa9709f00d7aecde23538bfad0cc59b0))
+* null check ([a2fe3b2](https://github.com/cha0s/flecks/commit/a2fe3b2852e177423af455b90fce837a224e0c5c))
+* test running ([66b4a95](https://github.com/cha0s/flecks/commit/66b4a95cf012972372213144a3e155d4244d64c0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.1.1 to ^4.2.0
+
 ## [4.0.7](https://github.com/cha0s/flecks/compare/build-v4.0.6...build-v4.0.7) (2024-02-12)
 
 
