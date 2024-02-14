@@ -75,6 +75,7 @@ module.exports = async (flecks) => ({
   },
   settings: {
     'import/resolver': {
+      webpack: {},
       node: {},
     },
     react: {
