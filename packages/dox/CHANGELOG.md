@@ -64,6 +64,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+## [4.0.10](https://github.com/cha0s/flecks/compare/dox-v4.0.9...dox-v4.0.10) (2024-02-15)
+
+
+### Bug Fixes
+
+* doc parsing for split hooks ([6db7deb](https://github.com/cha0s/flecks/commit/6db7deb44d94c500c9c47bc2dde6fc42672d4bcb))
+
 ## [4.0.8](https://github.com/cha0s/flecks/compare/dox-v4.0.7...dox-v4.0.8) (2024-02-14)
 
 
