@@ -22,7 +22,7 @@ module.exports = async (flecks) => ({
     'build/flecks.hooks.js',
     // Internal.
     ...!FLECKS_BUILD_TESTING_LINT
-      ? ['test/server/lint/fail.js']
+      ? ['test/lint/fail.js']
       : [],
   ],
   overrides: [

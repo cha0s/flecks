@@ -1,7 +1,7 @@
 import {processCode} from '@flecks/core/src/server';
 import {expect} from 'chai';
 
-import {withServer} from './build/build';
+import {withServer} from './helpers/with-server';
 
 it('connects', withServer(
   async ({server}) => {

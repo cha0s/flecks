@@ -4,7 +4,7 @@ import {expect} from 'chai';
 it('can lint', async () => {
   expect(
     await processCode(await spawnWith(
-      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/server/lint/fine.js'],
+      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/lint/fine.js'],
       {
         env: {
           FLECKS_BUILD_ESLINT_NO_CACHE: true,
@@ -19,7 +19,7 @@ it('can lint', async () => {
 it('can fail to lint', async () => {
   expect(
     await processCode(await spawnWith(
-      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/server/lint/fail.js'],
+      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/lint/fail.js'],
       {
         env: {
           FLECKS_BUILD_ESLINT_NO_CACHE: true,
@@ -35,12 +35,12 @@ it('can fail to lint', async () => {
 it('can override lint', async () => {
   expect(
     await processCode(await spawnWith(
-      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/server/lint/fine.js'],
+      ['npx', 'eslint', '--config', 'build/eslint.config.js', 'test/lint/fine.js'],
       {
         env: {
           FLECKS_BUILD_ESLINT_NO_CACHE: true,
           FLECKS_BUILD_TESTING_LINT: true,
-          FLECKS_CORE_ROOT: 'test/server/lint/root',
+          FLECKS_CORE_ROOT: 'test/lint/root',
         },
         stdio: 'ignore',
       },

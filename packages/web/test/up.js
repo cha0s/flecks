@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {withWeb} from '../helpers/with-web';
+import {withWeb} from './helpers/with-web';
 
 let report;
 

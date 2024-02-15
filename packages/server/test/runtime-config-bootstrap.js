@@ -4,7 +4,7 @@ import {join} from 'path';
 import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
-import {withServer} from './build/build';
+import {withServer} from './helpers/with-server';
 
 it('propagates bootstrap config', withServer(
   async ({server}) => {

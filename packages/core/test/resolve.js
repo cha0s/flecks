@@ -10,7 +10,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const root = join(FLECKS_CORE_ROOT, 'test', 'server', 'resolve');
+const root = join(FLECKS_CORE_ROOT, 'test', 'resolve');
 
 it('can resolve inexact', async () => {
   const clear = resolve({

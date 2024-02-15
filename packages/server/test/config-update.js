@@ -3,7 +3,7 @@ import {join} from 'path';
 import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
-import {withServer} from './build/build';
+import {withServer} from './helpers/with-server';
 
 it('updates config', withServer(async ({server, socket}) => {
   expect((await socket.send({type: 'config.get', payload: '@flecks/core.id'})).payload)

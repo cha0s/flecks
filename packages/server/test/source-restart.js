@@ -3,7 +3,7 @@ import {join} from 'path';
 import {writeFile} from '@flecks/core/server';
 import {expect} from 'chai';
 
-import {withServer} from './build/build';
+import {withServer} from './helpers/with-server';
 
 it('restarts when root sources change', withServer(async ({server, socket}) => {
   let restarted;

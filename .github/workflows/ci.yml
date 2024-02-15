@@ -38,7 +38,7 @@ jobs:
     strategy:
       max-parallel: ${{ vars.CI_PARALLEL || 256 }}
       matrix:
-        test-platforms: ['-p default -p server', '-p e2e']
+        test-platforms: ['', '-s e2e']
         node-version: [16.x, 18.x, 20.x]
     steps:
       - uses: actions/checkout@v4

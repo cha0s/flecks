@@ -1,4 +1,4 @@
-import Packet from '../../../src/packet/packet';
+import Packet from '@flecks/socket/packet/packet';
 
 export const hooks = {
   '@flecks/socket.packets': () => ({

@@ -1,15 +1,14 @@
 import {Flecks} from '@flecks/core';
 import {expect} from 'chai';
 
-it('automatically gathers models', async () => {
+it('automatically gathers packets', async () => {
   const flecks = await Flecks.from({
     flecks: {
       '@flecks/core': await import('@flecks/core'),
-      '@flecks/db': await import('../../src'),
-      '@flecks/db/server': await import('../../src/server'),
+      '@flecks/socket': await import('@flecks/socket'),
       '@test/thing': await import('./thing'),
     },
   });
-  expect(flecks.db.Models.Foo)
+  expect(flecks.socket.Packets.Foo)
     .to.not.be.undefined;
 });

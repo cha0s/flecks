@@ -10,15 +10,15 @@ const {
 
 it('can resolve', async () => {
   const resolver = new Resolver();
-  expect(await resolver.resolve('./test/server/resolve'))
-    .to.equal(join(FLECKS_CORE_ROOT, 'test', 'server', 'resolve.js'));
+  expect(await resolver.resolve('./test/resolve'))
+    .to.equal(join(FLECKS_CORE_ROOT, 'test', 'resolve.js'));
 });
 
 it('can create aliases at runtime', async () => {
   const resolver = new Resolver();
-  expect(await resolver.resolve('./test/server/foobar'))
+  expect(await resolver.resolve('./test/foobar'))
     .to.be.undefined;
-  resolver.addAlias('./test/server/foobar', './test/server/resolve');
-  expect(await resolver.resolve('./test/server/foobar'))
+  resolver.addAlias('./test/foobar', './test/resolve');
+  expect(await resolver.resolve('./test/foobar'))
     .to.not.be.undefined;
 });

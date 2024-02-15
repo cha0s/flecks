@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {withServer} from './build/build';
+import {withServer} from './helpers/with-server';
 
 it('propagates runtime config', withServer(async ({server}) => {
   const [{payload: foo}] = await server.actions([

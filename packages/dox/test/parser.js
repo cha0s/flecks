@@ -84,6 +84,6 @@ it('parses todos', async () => {
 });
 
 it('parses a root', async () => {
-  expect(await parseFleckRoot('@test/server', './test/server/root'))
+  expect(await parseFleckRoot('@test/server', './test/root'))
     .to.deep.equal(verifiedRoot);
 });

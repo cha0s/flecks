@@ -11,7 +11,7 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
 } = process.env;
 
-const root = join(FLECKS_CORE_ROOT, 'test', 'server', 'explicate');
+const root = join(FLECKS_CORE_ROOT, 'test', 'explicate');
 
 function createExplication(paths, platforms) {
   const resolver = new Resolver({

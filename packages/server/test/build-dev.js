@@ -4,13 +4,14 @@ import {join} from 'path';
 import {heavySetup} from '@flecks/core/build/testing';
 import {expect} from 'chai';
 
-import {createApplication, build} from './build/build';
+import {build} from './helpers/build';
+import {createApplication} from './helpers/create-application';
 
 let artifact;
 
 before(heavySetup(async () => {
   const path = await createApplication();
-  await build(path);
+  await build(path, {args: ['-d']});
   try {
     await access(join(path, 'dist', 'server', 'index.js'));
     artifact = true;
@@ -20,7 +21,7 @@ before(heavySetup(async () => {
   }
 }));
 
-it('builds for production', async () => {
+it('builds for development', async () => {
   expect(artifact)
     .to.be.true;
 });

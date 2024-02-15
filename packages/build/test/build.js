@@ -9,7 +9,7 @@ const {
 const Build = __non_webpack_require__(join(FLECKS_CORE_ROOT, 'build', 'build'));
 const loadConfig = __non_webpack_require__(join(FLECKS_CORE_ROOT, 'build', 'load-config'));
 
-const buildRoot = join(FLECKS_CORE_ROOT, 'test', 'server', 'build', 'root');
+const buildRoot = join(FLECKS_CORE_ROOT, 'test', 'root');
 
 it('defaults config', async () => {
   expect(await loadConfig(FLECKS_CORE_ROOT))

@@ -12,7 +12,7 @@ const configFn = require('./common.webpack.config');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
-  FLECKS_CORE_TEST_PLATFORMS,
+  FLECKS_CORE_TEST_SUBDIRECTORIES,
 } = process.env;
 
 const tests = join(FLECKS_CORE_ROOT, 'test');
@@ -22,14 +22,13 @@ module.exports = async (env, argv, flecks) => {
   config.output.chunkFormat = false;
   config.output.path = join(FLECKS_CORE_ROOT, 'dist', 'test');
   const testPaths = [];
-  const platforms = FLECKS_CORE_TEST_PLATFORMS
-    ? JSON.parse(FLECKS_CORE_TEST_PLATFORMS)
-    : [...new Set(['default', ...flecks.platforms])];
-  if (platforms.includes('default')) {
-    testPaths.push(...await glob(join(tests, '*.js')));
-  }
+  const subdirectories = JSON.parse(FLECKS_CORE_TEST_SUBDIRECTORIES);
   testPaths.push(
-    ...(await Promise.all(platforms.map((platform) => glob(join(tests, platform, '*.js')))))
+    ...(await Promise.all(
+      subdirectories
+        .filter((subdirectory) => 'default' !== subdirectory)
+        .map((subdirectory) => glob(join(tests, subdirectory, '*.js'))),
+    ))
       .flat(),
   );
   if (testPaths.length > 0) {
