@@ -4,10 +4,11 @@ const plugins = [];
 
 const {
   FLECKS_BUILD_IS_PRODUCTION,
+  NODE_ENV,
 } = process.env;
 
 if ('true' !== FLECKS_BUILD_IS_PRODUCTION) {
-  plugins.push('react-refresh/babel');
+  plugins.push(['react-refresh/babel', {skipEnvCheck: 'test' === NODE_ENV}]);
 }
 
 exports.dependencies = ['@flecks/web'];
