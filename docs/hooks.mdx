@@ -19,6 +19,57 @@ export const hooks = {
 };
 ```
 
+### An even better way to hook
+
+You may also implement hooks using `Flecks.hooks` and `require.context`.
+
+If you are implementing many hooks in a single file, things can start to get cluttered. There is a
+better way to structure your hooks:
+
+```js
+export const hooks = Flecks.hooks(require.context('./hooks'));
+```
+
+Supposing you implemented the above in `index.js` and had a file structure like so:
+
+```
+src
+├─ index.js
+└─ hooks/
+   └─ @flecks/
+      └─ core.starting.js
+```
+
+and the content of `core.starting.js` was as follows:
+
+```js
+export const hook = () => {
+  console.log('hello, gorgeous');
+};
+```
+
+The result would be **exactly equivalent** to the `hooks` object definition above.
+
+For a real example of this, see the flecks source for examples
+[here](https://github.com/cha0s/flecks/tree/master/packages/server/build/hooks/%40flecks) or
+[here](https://github.com/cha0s/flecks/tree/master/packages/server/src/server/hooks/%40flecks).
+
+**You may even use `require.context` for your hooks within `flecks.bootstrap.js`**! Even though
+it's a CommonJS environment, [pirates](https://github.com/danez/pirates) is used for that little
+bit of magic. (If that scares you, don't worry &mdash; it's only during the build process.)
+Ergonomics matter!
+
+:::info[Coming in hot (and correct)]
+
+Some hooks (e.g. `@flecks/server.up`) are tracked by watching `@flecks/core.hmr.hook` and will
+restart the application when any implementations are changed.
+
+If you structure your hooks using `Flecks.hooks`, **HMR will only refresh the hooks that
+changed**. If you export a simple object, **all hooks will appear to change on any change**. This
+may lead to more restarts than necessary for a given change.
+
+:::
+
 ## Invoking your hooks
 
 Hooks may be invoked using different invocation methods which may affect the order of invocation
@@ -230,6 +281,7 @@ export const hooks = {
    *
    * @param {number} ding The dinger.
    * @param {string} dong The donger.
+   * @returns {boolean} Whether the ding was donged.
    *
    * @invoke Async
    */
