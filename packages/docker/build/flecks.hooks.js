@@ -23,7 +23,7 @@ export const hooks = {
    *
    * @param {string} dockerfile The content of the Dockerfile.
    *
-   * @returns The new content of the Dockerfile.
+   * @returns {string} The new content of the Dockerfile.
    * @invoke ComposedAsync
    */
   '@flecks/docker.Dockerfile': (dockerfile) => (

@@ -109,6 +109,7 @@ exports.generateDocusaurusHookPage = (hooks) => {
         example,
         invoke,
         params,
+        returns,
       } = specification || {
         params: [],
       };
@@ -141,6 +142,14 @@ exports.generateDocusaurusHookPage = (hooks) => {
           source.push(`<p>${description.trim()}</p>`);
           source.push('');
         });
+        source.push('');
+      }
+      if (returns) {
+        const {description, type} = returns;
+        source.push(`### Returns \`${type}\``);
+        source.push('');
+        source.push(`<p>${description.trim()}</p>`);
+        source.push('');
         source.push('');
       }
       if (implementations.length > 0 || invocations.length > 0) {

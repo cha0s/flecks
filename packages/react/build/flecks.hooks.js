@@ -5,11 +5,11 @@ export const hooks = {
    * Note: `req` will be only be defined when server-side rendering.
    * @param {http.ClientRequest} req The HTTP request object.
    * @invoke SequentialAsync
+   * @returns {[ReactContextProvider<Props>, Props]} An array where the first element is a React
+   * context provider and the second element is the `props` passed to the context provider.
    */
   '@flecks/react.providers': (req) => {
-    // Generally it makes more sense to separate client and server concerns using platform
-    // naming conventions, but this is just a small contrived example.
-    return req ? serverSideProvider(req) : clientSideProvider();
+    return req ? serverSideProvider(req) : [SomeContext.Provider, {value: 'whatever'}];
   },
   /**
    * Define root-level React components that are mounted as siblings on `#main`.
