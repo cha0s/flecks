@@ -65,6 +65,6 @@
   "devDependencies": {
     "@flecks/build": "^4.1.0",
     "@flecks/fleck": "^4.1.0",
-    "puppeteer": "^22.0.0"
+    "@flecks/headless": "^4.0.0"
   }
 }

@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {withWeb} from './helpers/with-web';
+import {withWeb} from '@flecks/headless/test/helpers/with-web';
 
 let report;
 
@@ -11,13 +11,15 @@ const options = {
 };
 
 it('brings a client up', withWeb(
-  async function test({
+  async ({
     browser,
     page,
     response,
-  }) {
+  }) => {
     expect(response)
       .to.not.be.null;
+    expect(response.ok())
+      .to.be.true;
     const {
       payload: {
         config,

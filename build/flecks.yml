@@ -14,6 +14,7 @@
       - '($1#L$2)'
 '@flecks/electron': {}
 '@flecks/fleck': {}
+'@flecks/headless': {}
 '@flecks/passport': {}
 '@flecks/passport-local': {}
 '@flecks/passport-local-react': {}

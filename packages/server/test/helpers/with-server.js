@@ -21,7 +21,7 @@ export function withServer(task, options) {
     };
     let taskError;
     try {
-      await task({server, socket});
+      await task({server, socket, task: this});
     }
     catch (error) {
       taskError = error;

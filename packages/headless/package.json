@@ -1,0 +1,19 @@
+{
+  "name": "@flecks/headless",
+  "version": "4.0.0",
+  "scripts": {
+    "build": "flecks build",
+    "clean": "flecks clean",
+    "lint": "flecks lint",
+    "test": "flecks test"
+  },
+  "files": [],
+  "dependencies": {
+    "@flecks/core": "^4.0.0"
+  },
+  "devDependencies": {
+    "@flecks/build": "^4.0.0",
+    "@flecks/fleck": "^4.0.0",
+    "puppeteer": "^22.0.0"
+  }
+}

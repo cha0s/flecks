@@ -1,6 +1,22 @@
 import puppeteer from 'puppeteer';
 
-export async function connectBrowser(url, options = {}) {
+export async function createBrowser(options = {}) {
+  let previousTimeout;
+  const start = Date.now();
+  if (options.task) {
+    previousTimeout = options.task.timeout();
+    options.task.timeout(0);
+  }
+  const browser = await puppeteer.launch({
+    // For CI.
+    args: ['--no-sandbox'],
+  });
+  const page = await browser.newPage();
+  options.task?.timeout(previousTimeout + (Date.now() - start));
+  return {browser, page};
+}
+
+export async function connectPage(page, url, options = {}) {
   let previousTimeout;
   const start = Date.now();
   if (options.task) {
@@ -8,11 +24,6 @@ export async function connectBrowser(url, options = {}) {
     options.task.timeout(0);
   }
   const {timeout = 30000} = options;
-  const browser = await puppeteer.launch({
-    // For CI.
-    args: ['--no-sandbox'],
-  });
-  const page = await browser.newPage();
   let response;
   const handle = setTimeout(() => {
     throw new Error(`timed out trying to connect browser to '${url}'!`);
@@ -34,5 +45,5 @@ export async function connectBrowser(url, options = {}) {
   /* eslint-enable no-await-in-loop */
   clearTimeout(handle);
   options.task?.timeout(previousTimeout + (Date.now() - start));
-  return {browser, page, response};
+  return response;
 }
