@@ -6,7 +6,7 @@
     "build:only": "flecks build",
     "debug": "DEBUG=@flecks/* npm run -- dev",
     "dev": "npm run -- build:only -dh",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package || true",
     "repl": "npx flecks repl --rlwrap",
     "start": "DEBUG=@flecks/*,-*:silly npm run -- dev"
   },
