@@ -19,7 +19,8 @@ export const hook = (flecks) => {
   flecks.server.socket = socket;
   socket.on('connect', () => {
     socket.on('data', (data) => {
-      const {meta, payload, type} = JSON.parse(data);
+      const action = JSON.parse(data);
+      const {meta, payload, type} = action;
       switch (type) {
         case 'config.get':
           socket.write(JSON.stringify({
@@ -32,6 +33,8 @@ export const hook = (flecks) => {
           process.exit(payload);
           break;
         default:
+          flecks.invoke('@flecks/server.test.socket', action, socket);
+          break;
       }
     });
   });
