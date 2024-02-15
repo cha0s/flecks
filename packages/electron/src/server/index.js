@@ -37,8 +37,7 @@ export const hooks = {
     await createWindow(flecks);
   },
   '@flecks/electron/server.window': async (win, flecks) => {
-    const {public: $$public} = flecks.get('@flecks/web');
-    const {installExtensions, url = `http://${$$public}`} = flecks.get('@flecks/electron');
+    const {installExtensions, url} = flecks.get('@flecks/electron');
     if (installExtensions) {
       const installer = __non_webpack_require__('electron-devtools-installer');
       const {default: installExtension} = installer;
@@ -48,7 +47,17 @@ export const hooks = {
           .flat(),
       ]);
     }
-    await win.loadURL(url);
+    let realUrl = url;
+    if (!realUrl) {
+      realUrl = `http://${flecks.web.public}`;
+      while (!flecks.web.server) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => {
+          setTimeout(resolve, 50);
+        });
+      }
+    }
+    await win.loadURL(realUrl);
   },
   '@flecks/repl.context': (flecks) => ({
     electron: {

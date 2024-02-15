@@ -22,19 +22,16 @@ module.exports = async (env, argv, flecks) => {
   const {
     appMountId,
     base,
-    devHost,
-    devPort,
     devStats,
     meta,
     icon,
-    port,
     title,
   } = flecks.get('@flecks/web');
   const isProduction = 'production' === argv.mode;
   const plugins = [
     // Environment.
-    new webpack.EnvironmentPlugin({
-      FLECKS_CORE_BUILD_TARGET: 'web',
+    new webpack.DefinePlugin({
+      'process.env.FLECKS_CORE_BUILD_TARGET': "'web'",
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
@@ -168,8 +165,6 @@ module.exports = async (env, argv, flecks) => {
         disableDotRule: true,
       },
       hot: false,
-      host: devHost,
-      port: devPort || (port + 1),
     },
     devtool: 'source-map',
     entry,

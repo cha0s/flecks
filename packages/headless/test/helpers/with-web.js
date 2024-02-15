@@ -5,7 +5,17 @@ import {createBrowser, connectPage} from './connect';
 export function withWeb(task, options) {
   return async function withWeb() {
     const optionsWithTask = {...options, task: this};
-    const server = await startServer(optionsWithTask);
+    const server = await startServer({
+      ...optionsWithTask,
+      opts: {
+        ...optionsWithTask.opts,
+        env: {
+          ...optionsWithTask.opts?.env,
+          FLECKS_ENV__flecks_web__port: '0',
+          FLECKS_ENV__flecks_web__devPort: '0',
+        },
+      },
+    });
     const socket = await server.waitForSocket(optionsWithTask);
     if (options.beforeConnect) {
       await options.beforeConnect({server, socket});
@@ -13,7 +23,7 @@ export function withWeb(task, options) {
     const start = Date.now();
     const previousTimeout = this.timeout();
     this.timeout(0);
-    const {payload: config} = await socket.send({type: 'config.get', payload: '@flecks/web'});
+    const {payload} = await socket.send({type: 'web.public'});
     this.timeout(previousTimeout + (Date.now() - start));
     const {browser, page} = await createBrowser(optionsWithTask);
     if (options.beforePage) {
@@ -24,7 +34,7 @@ export function withWeb(task, options) {
         socket,
       });
     }
-    const response = await connectPage(page, `http://${config.public}`, optionsWithTask);
+    const response = await connectPage(page, `http://${payload}`, optionsWithTask);
     let taskError;
     try {
       await task({

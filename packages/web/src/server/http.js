@@ -1,8 +1,10 @@
 import {createReadStream} from 'fs';
 import {createServer, ServerResponse} from 'http';
 import {join} from 'path';
+import {PassThrough, Transform} from 'stream';
 
 import {D} from '@flecks/core';
+import {binaryPath, spawnWith} from '@flecks/core/server';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
@@ -10,7 +12,9 @@ import httpProxy from 'http-proxy';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  FLECKS_WEB_DEV_SERVER,
   NODE_ENV,
+  TERM,
 } = process.env;
 
 const debug = D('@flecks/web/server/http');
@@ -20,18 +24,15 @@ const deliverHtmlStream = async (stream, flecks, req, res) => {
 };
 
 export const createHttpServer = async (flecks) => {
-  const {trust} = flecks.get('@flecks/web');
   const {
-    devHost,
-    devPort,
-    host,
+    public: publicConfig,
     port,
+    trust,
   } = flecks.get('@flecks/web');
   const app = express();
   app.set('trust proxy', trust);
   const httpServer = createServer(app);
   httpServer.app = app;
-  flecks.web.server = httpServer;
   // Body parser.
   app.use(bodyParser.json());
   // Compression.                                         heheh
@@ -43,25 +44,121 @@ export const createHttpServer = async (flecks) => {
   const routes = (await Promise.all(flecks.invokeFlat('@flecks/web.routes'))).flat();
   debug('routes: %O', routes);
   routes.forEach(({method, path, middleware}) => app[method](path, routeMiddleware, middleware));
+  const {host} = flecks.web;
+  await new Promise((resolve, reject) => {
+    const args = [port];
+    if (host) {
+      args.push(host);
+    }
+    args.push(async (error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      await flecks.invokeSequentialAsync('@flecks/web/server.up', httpServer);
+      const actualPort = 0 === port ? httpServer.address().port : port;
+      debug(
+        'HTTP server up @ %s!',
+        [host, actualPort].filter((e) => !!e).join(':'),
+      );
+      if ('undefined' === typeof publicConfig) {
+        flecks.web.public = [host, actualPort].join(':');
+      }
+      resolve();
+    });
+    debug('httpServer.listen(...%O)', args.slice(0, -1));
+    httpServer.listen(...args);
+  });
   // In development mode, create a proxy to the webpack-dev-server.
   if ('production' !== NODE_ENV) {
+    const {
+      devHost,
+      devPort,
+    } = flecks.get('@flecks/web');
+    const wdsHost = devHost || host;
+    let wdsPort;
+    if (0 === devPort) {
+      wdsPort = 0;
+    }
+    else if (devPort) {
+      wdsPort = devPort;
+    }
+    else {
+      wdsPort = httpServer.address().port + 1;
+    }
+    if (FLECKS_WEB_DEV_SERVER) {
+      // Otherwise, spawn `webpack-dev-server` (WDS).
+      const cmd = [
+        await binaryPath('webpack', '@flecks/build'),
+        'serve',
+        '--mode', 'development',
+        '--hot',
+        '--host', wdsHost,
+        '--port', wdsPort,
+        '--config', FLECKS_WEB_DEV_SERVER,
+      ];
+      const wds = spawnWith(
+        cmd,
+        {
+          env: {
+            DEBUG_COLORS: 'dumb' !== TERM,
+            FLECKS_CORE_BUILD_LIST: 'web',
+            FORCE_COLOR: 'dumb' !== TERM,
+          },
+          stdio: 0 === wdsPort ? 'pipe' : 'inherit',
+        },
+      );
+      if (0 === wdsPort) {
+        class ParsePort extends Transform {
+
+          constructor() {
+            super();
+            let resolve;
+            let reject;
+            this.port = new Promise((res, rej) => {
+              resolve = res;
+              reject = rej;
+            });
+            this.resolve = resolve;
+            this.on('error', reject);
+          }
+
+          // eslint-disable-next-line no-underscore-dangle, class-methods-use-this
+          _transform(chunk, encoding, done) {
+            this.push(chunk);
+            const matches = chunk.toString().match(/http:\/\/.*\//g);
+            if (!matches) {
+              done();
+              return;
+            }
+            const [port] = matches
+              .slice(0, 1)
+              .map((match) => new URL(match))
+              .map(({port}) => port);
+            done();
+            this.resolve(port);
+          }
+
+        }
+        const parsePort = new ParsePort();
+        const stderr = new PassThrough();
+        wds.stderr.pipe(parsePort).pipe(stderr);
+        stderr.pipe(process.stderr);
+        wds.stdout.pipe(process.stdout);
+        wdsPort = await parsePort.port;
+        parsePort.unpipe(stderr);
+        stderr.unpipe(process.stderr);
+        wds.stderr.pipe(process.stderr);
+      }
+    }
     const proxy = httpProxy.createProxyServer({
       secure: false,
-      target: `http://${devHost}:${devPort || (port + 1)}`,
+      target: `http://${wdsHost}:${wdsPort}`,
     });
     proxy.on('proxyRes', async (proxyRes, req, res) => {
       res.statusCode = proxyRes.statusCode;
       // HTML.
       if (proxyRes.headers['content-type']?.match('text/html')) {
-        // Tests bypass middleware and stream processing.
-        const {pathname} = new URL(req.url, 'https://example.org/');
-        if ('/tests.html' === pathname) {
-          if (!res.headersSent) {
-            res.setHeader('Content-Type', proxyRes.headers['content-type']);
-          }
-          proxyRes.pipe(res);
-          return;
-        }
         routeMiddleware(req, res, (error) => {
           if (error) {
             // eslint-disable-next-line no-console
@@ -127,23 +224,7 @@ export const createHttpServer = async (flecks) => {
       }
     });
   }
-  return new Promise((resolve, reject) => {
-    const args = [port];
-    if (host) {
-      args.push(host);
-    }
-    args.push(async (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      await flecks.invokeSequentialAsync('@flecks/web/server.up', httpServer);
-      debug('HTTP server up @ %s!', [host, port].filter((e) => !!e).join(':'));
-      resolve();
-    });
-    debug('httpServer.listen(...%O)', args.slice(0, -1));
-    httpServer.listen(...args);
-  });
+  flecks.web.server = httpServer;
 };
 
 export const destroyHttpServer = (httpServer) => {

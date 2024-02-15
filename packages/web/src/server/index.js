@@ -32,7 +32,27 @@ export const hooks = {
     return routes;
   },
   '@flecks/web/server.stream.html': inlineConfig,
-  '@flecks/server.up': (flecks) => createHttpServer(flecks),
+  '@flecks/server.test.socket': async (action, socket, flecks) => {
+    while (!flecks.web.server) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => {
+        setTimeout(resolve, 50);
+      });
+    }
+    const {meta, type} = action;
+    switch (type) {
+      case 'web.public':
+        socket.write(JSON.stringify({
+          meta,
+          payload: flecks.web.public,
+        }));
+        break;
+      default:
+    }
+  },
+  '@flecks/server.up': async (flecks) => {
+    await createHttpServer(flecks);
+  },
 };
 
 export const mixin = (Flecks) => class FlecksWithWeb extends Flecks {
@@ -40,7 +60,17 @@ export const mixin = (Flecks) => class FlecksWithWeb extends Flecks {
   constructor(runtime) {
     super(runtime);
     if (!this.web) {
-      this.web = {config: runtime['@flecks/web'], server: undefined};
+      const {
+        host = 'production' === NODE_ENV ? '0.0.0.0' : 'localhost',
+        port,
+        public: httpPublic,
+      } = runtime.config['@flecks/web'];
+      this.web = {
+        config: runtime['@flecks/web'],
+        host,
+        public: httpPublic || [host, port].join(':'),
+        server: undefined,
+      };
     }
   }
 
