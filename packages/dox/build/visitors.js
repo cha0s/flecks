@@ -258,7 +258,7 @@ exports.hookSpecificationVisitor = (fn) => (
         .map(({name}) => (name ? `invoke${name}` : 'invoke'));
       const [returns] = tags
         .filter(({tag}) => 'returns' === tag)
-        .map(({description, name, type}) => ({description: `${name} ${description}`, type}));
+        .map(({description, name, type}) => ({description: `${name} ${description}`.trim(), type}));
       fn({
         hook: key.value,
         description: description.trim(),
