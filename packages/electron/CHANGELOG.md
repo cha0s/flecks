@@ -64,6 +64,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.7 to ^4.1.0
     * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
 
+## [4.0.9](https://github.com/cha0s/flecks/compare/electron-v4.0.8...electron-v4.0.9) (2024-02-15)
+
+
+### Bug Fixes
+
+* dynamic web ports ([1b13374](https://github.com/cha0s/flecks/commit/1b13374b10f32fff1e5f3fb027d3962b7eb7a4f6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.0 to ^4.2.1
+  * devDependencies
+    * @flecks/build bumped from ^4.1.0 to ^4.1.1
+    * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/electron-v4.0.2...electron-v4.0.3) (2024-02-09)
 
 
