@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "FORCE_COLOR=1 node build/tasks npm run -- build",
-    "ci": "act -W .github/workflows/ci.yml --matrix node-version:20.x",
+    "ci": "act -W .github/workflows/ci.yml",
     "dox": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus",
     "dox:build": "flecks dox docusaurus && cd website && DOCUSAURUS_GENERATED_FILES_DIR_NAME=node_modules/.cache/docusaurus npx docusaurus build && cd .. && rm -rf gh-pages/* && mv website/build/* gh-pages && rm -rf website/build",
     "gh-pages": "cd gh-pages && git add . && git commit -m $(git -C ../website rev-parse HEAD) && git push origin gh-pages",
