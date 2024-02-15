@@ -1,0 +1,4 @@
+'@flecks/core': {}
+'@flecks/server': {}
+'@flecks/react': {}
+'test:./test': {}
