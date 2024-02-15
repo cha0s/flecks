@@ -16,14 +16,32 @@ export function withWeb(task, options) {
     const {payload: config} = await socket.send({type: 'config.get', payload: '@flecks/web'});
     this.timeout(previousTimeout + (Date.now() - start));
     const {browser, page} = await createBrowser(optionsWithTask);
+    if (options.beforePage) {
+      await options.beforePage({
+        browser,
+        page,
+        server,
+        socket,
+      });
+    }
     const response = await connectPage(page, `http://${config.public}`, optionsWithTask);
-    return task({
-      browser,
-      page,
-      response,
-      server,
-      socket,
-      task: this,
-    });
+    let taskError;
+    try {
+      await task({
+        browser,
+        page,
+        response,
+        server,
+        socket,
+        task: this,
+      });
+    }
+    catch (error) {
+      taskError = error;
+    }
+    await browser.close();
+    if (taskError) {
+      throw taskError;
+    }
   };
 }

@@ -12,7 +12,6 @@ const options = {
 
 it('brings a client up', withWeb(
   async ({
-    browser,
     page,
     response,
   }) => {
@@ -37,7 +36,6 @@ it('brings a client up', withWeb(
       .to.deep.equal({why: 'hello there'});
     expect(request)
       .to.equal('testing-value-value');
-    await browser.close();
   },
   options,
 ));
