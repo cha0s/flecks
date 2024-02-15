@@ -277,12 +277,13 @@ class Flecks {
   /**
    * Override configuration through environment variables.
    *
+   * @param {string[]} flecks The fleck paths.
    * @param {Object} config The configuration to override.
    * @returns {Object}
    */
-  static environmentConfiguration(config) {
+  static environmentConfiguration(flecks, config) {
     const keys = Object.keys(process.env);
-    Object.keys(config)
+    flecks
       .sort((l, r) => (l < r ? 1 : -1))
       .forEach((fleck) => {
         const prefix = `FLECKS_ENV__${this.environmentalize(fleck)}`;

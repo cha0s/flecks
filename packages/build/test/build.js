@@ -33,10 +33,13 @@ it('configures from environment', async () => {
   env.FLECKS_ENV__one__foo = '{"boo": 2}';
   env.FLECKS_ENV__two__bar = 'yo';
   expect(
-    Build.environmentConfiguration({
-      one: {foo: {boo: 1}},
-      two: {bar: 'hi'},
-    }),
+    Build.environmentConfiguration(
+      ['one', 'two'],
+      {
+        one: {foo: {boo: 1}},
+        two: {bar: 'hi'},
+      },
+    ),
   )
     .to.deep.equal({
       one: {foo: {boo: 2}},

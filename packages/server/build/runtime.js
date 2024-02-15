@@ -17,11 +17,12 @@ async function runtimeModule(compilation, flecks) {
     bootstrappedConfig: JSON.stringify(flecks.invoke('@flecks/core.config')),
     config: (`
       Flecks.environmentConfiguration(
+        ${JSON.stringify(paths)},
         Flecks.dealiasedConfig(${
           'production' === compiler.options.mode
             ? JSON.stringify(flecks.originalConfig)
             : `require('${ymlPath}').default`
-        })
+        }),
       )
     `),
     /* eslint-enable indent */

@@ -20,10 +20,11 @@ import {D, Flecks} from '@flecks/core';
   }
   const debug = D('@flecks/server/entry');
   debug('starting server...');
+  const flecks = await loadFlecks();
   global.flecks = await Flecks.from({
     ...runtime,
-    config: Flecks.environmentConfiguration(config),
-    flecks: await loadFlecks(),
+    config: Flecks.environmentConfiguration(Object.keys(flecks), config),
+    flecks,
   });
   await global.flecks.invokeSequentialAsync('@flecks/server.up');
   debug('up!');

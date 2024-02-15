@@ -75,6 +75,7 @@ module.exports = class Build extends Flecks {
     });
     const runtime = {
       config: this.environmentConfiguration(
+        paths,
         Object.fromEntries(paths.map((path) => [path, dealiasedConfig[path] || {}])),
       ),
       flecks: Object.fromEntries(paths.map((path) => [
