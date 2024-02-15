@@ -1,6 +1,6 @@
 {
   "name": "@flecks/passport-local-react",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -21,13 +21,13 @@
     "index.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.2.0",
-    "@flecks/passport-local": "^4.0.8",
-    "@flecks/passport-react": "^4.0.8",
-    "@flecks/react": "^4.0.8"
+    "@flecks/core": "^4.2.1",
+    "@flecks/passport-local": "^4.0.9",
+    "@flecks/passport-react": "^4.0.9",
+    "@flecks/react": "^4.0.9"
   },
   "devDependencies": {
-    "@flecks/build": "^4.1.0",
-    "@flecks/fleck": "^4.1.0"
+    "@flecks/build": "^4.1.1",
+    "@flecks/fleck": "^4.1.1"
   }
 }

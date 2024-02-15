@@ -1,6 +1,6 @@
 {
   "name": "@flecks/create-fleck",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -25,11 +25,11 @@
     "template"
   ],
   "dependencies": {
-    "@flecks/core": "^4.2.0",
+    "@flecks/core": "^4.2.1",
     "commander": "11.1.0"
   },
   "devDependencies": {
-    "@flecks/build": "^4.1.0",
-    "@flecks/fleck": "^4.1.0"
+    "@flecks/build": "^4.1.1",
+    "@flecks/fleck": "^4.1.1"
   }
 }
