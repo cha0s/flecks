@@ -1,12 +1,9 @@
 import {D, Flecks} from '@flecks/core';
 
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-const {version} = require('@flecks/web/package.json');
-
 (async () => {
-  // eslint-disable-next-line no-console
-  console.log(`flecks client v${version} loading runtime...`);
   const config = window[Symbol.for('@flecks/web.config')];
+  // eslint-disable-next-line no-console
+  console.log(`flecks client v${config['@flecks/web'].version} loading runtime...`);
   const debug = D((config['@flecks/core'] && config['@flecks/core'].id) || 'flecks');
   class Progress {
 
