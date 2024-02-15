@@ -116,6 +116,7 @@ export async function startServer({
   opts = {},
   path: request,
   task,
+  template,
 } = {}) {
   let previousTimeout;
   const start = Date.now();
@@ -124,7 +125,7 @@ export async function startServer({
     task.timeout(0);
   }
   const {socketPath, socketServer} = await socketListener();
-  const path = request || await createApplication();
+  const path = request || await createApplication(template);
   if (beforeBuild) {
     await beforeBuild({path, task});
   }
