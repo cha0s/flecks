@@ -13,8 +13,11 @@ const {glob} = require('@flecks/core/src/server');
 
 const {
   buildFileVisitor,
+  buildFileVisitorRaw,
   configVisitor,
+  configVisitorRaw,
   hookBaseVisitor,
+  hookExportVisitor,
   hookImplementationVisitor,
   hookInvocationVisitor,
   hookSpecificationVisitor,
@@ -104,7 +107,7 @@ exports.parseNormalSource = async (path, source, root, request, options) => {
   };
 };
 
-exports.parseHookSpecificationSource = async (path, source, options) => {
+exports.parseHookSpecificationSource = async (source, options) => {
   const ast = await exports.parseCode(source, options);
   const hookSpecifications = [];
   traverse(ast, hookSpecificationVisitor((hookSpecification) => {
@@ -119,9 +122,36 @@ exports.parseHookSpecificationSource = async (path, source, options) => {
   };
 };
 
+exports.parseHookExportSource = async (source, options, fn) => {
+  traverse(await exports.parseCode(source, options), hookExportVisitor(fn));
+};
+
 exports.parseSource = async (path, source, root, request, options) => {
   if (path.match(/build\/flecks\.hooks\.js$/)) {
-    return exports.parseHookSpecificationSource(path, source, options);
+    return exports.parseHookSpecificationSource(source, options);
+  }
+  if (path.match(/@flecks\/build\.files(?:\.[^.]+)*/)) {
+    const buildFiles = [];
+    exports.parseHookExportSource(source, options, (node) => {
+      buildFileVisitorRaw(node, (buildFile) => {
+        buildFiles.push(buildFile);
+      });
+    });
+    return {buildFiles};
+  }
+  if (path.match(/@flecks\/core\.config(?:\.[^.]+)*/)) {
+    const configs = [];
+    exports.parseHookExportSource(source, options, (node) => {
+      configVisitorRaw(node, (config) => {
+        const {description, key, location: {start: {index: start}, end: {index: end}}} = config;
+        configs.push({
+          defaultValue: source.slice(start, end),
+          description,
+          key,
+        });
+      });
+    });
+    return {config: configs};
   }
   return exports.parseNormalSource(path, source, root, request, options);
 };

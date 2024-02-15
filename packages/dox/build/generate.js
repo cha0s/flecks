@@ -306,7 +306,10 @@ exports.generateJson = async function generate(flecks) {
             })));
             if (config.length > 0) {
               let fleck = root;
-              if ('build/flecks.bootstrap.js' !== path) {
+              if (path.match(/@flecks\/core\.config(?:\.[^.]+)*/)) {
+                fleck = join(root, path).split('/').slice(0, -4).join('/');
+              }
+              else if ('build/flecks.bootstrap.js' !== path) {
                 fleck = join(fleck, path.startsWith('src') ? path.slice(4) : path);
                 fleck = join(dirname(fleck), basename(fleck, extname(fleck)));
                 fleck = fleck.endsWith('/index') ? fleck.slice(0, -6) : fleck;

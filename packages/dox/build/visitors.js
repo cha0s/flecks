@@ -13,6 +13,7 @@ const {
   isFunction,
   isCallExpression,
 } = require('@babel/types');
+const {Flecks} = require('@flecks/core/build/flecks');
 const {parse: parseComment} = require('comment-parser');
 
 function visitProperties(properties, fn) {
@@ -124,62 +125,70 @@ function functionResultVisitor(value, fn) {
   }
 }
 
+exports.buildFileVisitorRaw = (node, fn) => {
+  if (isArrayExpression(node)) {
+    node.elements
+      .map((element) => {
+        let filename;
+        if (isStringLiteral(element)) {
+          filename = element.value;
+        }
+        if (!filename) {
+          return undefined;
+        }
+        return {
+          filename,
+          description: (
+            (element.leadingComments?.length > 0)
+              ? element.leadingComments.pop().value.split('\n')
+                .map((line) => line.trim())
+                .map((line) => line.replace(/^\*/, ''))
+                .map((line) => line.trim())
+                .join('\n')
+                .trim()
+              : undefined
+          ),
+        };
+      })
+      .filter((buildFile) => buildFile)
+      .forEach(fn);
+  }
+};
+
 exports.buildFileVisitor = (fn) => exports.hookVisitor('@flecks/build.files')(
   (property) => {
     functionResultVisitor(property.value, (node) => {
-      if (isArrayExpression(node)) {
-        node.elements
-          .map((element) => {
-            let filename;
-            if (isStringLiteral(element)) {
-              filename = element.value;
-            }
-            if (!filename) {
-              return undefined;
-            }
-            return {
-              filename,
-              description: (
-                (element.leadingComments?.length > 0)
-                  ? element.leadingComments.pop().value.split('\n')
-                    .map((line) => line.trim())
-                    .map((line) => line.replace(/^\*/, ''))
-                    .map((line) => line.trim())
-                    .join('\n')
-                    .trim()
-                  : undefined
-              ),
-            };
-          })
-          .filter((buildFile) => buildFile)
-          .forEach(fn);
-      }
+      exports.buildFileVisitorRaw(node, fn);
     });
   },
 );
 
+exports.configVisitorRaw = (node, fn) => {
+  if (isObjectExpression(node)) {
+    node.properties.forEach((property) => {
+      if (isIdentifier(property.key) || isStringLiteral(property.key)) {
+        fn({
+          key: property.key.name || property.key.value,
+          description: (property.leadingComments?.length > 0)
+            ? property.leadingComments.pop().value.split('\n')
+              .map((line) => line.trim())
+              .map((line) => line.replace(/^\*/, ''))
+              .map((line) => line.trim())
+              .filter((line) => !!line)
+              .join(' ')
+              .trim()
+            : undefined,
+          location: property.value.loc,
+        });
+      }
+    });
+  }
+};
+
 exports.configVisitor = (fn) => exports.hookVisitor('@flecks/core.config')(
   (property) => {
     functionResultVisitor(property.value, (node) => {
-      if (isObjectExpression(node)) {
-        node.properties.forEach((property) => {
-          if (isIdentifier(property.key) || isStringLiteral(property.key)) {
-            fn({
-              key: property.key.name || property.key.value,
-              description: (property.leadingComments?.length > 0)
-                ? property.leadingComments.pop().value.split('\n')
-                  .map((line) => line.trim())
-                  .map((line) => line.replace(/^\*/, ''))
-                  .map((line) => line.trim())
-                  .filter((line) => !!line)
-                  .join(' ')
-                  .trim()
-                : undefined,
-              location: property.value.loc,
-            });
-          }
-        });
-      }
+      exports.configVisitorRaw(node, fn);
     });
   },
 );
@@ -290,6 +299,33 @@ exports.todoVisitor = (fn) => ({
           });
         }
       });
+    }
+  },
+});
+
+exports.hookExportVisitor = (fn) => ({
+  AssignmentExpression(path) {
+    const {left, right} = path.node;
+    if (isMemberExpression(left)) {
+      if (isIdentifier(left.object) && 'exports' === left.object.name) {
+        if (isIdentifier(left.property) && 'hook' === left.property.name) {
+          if (isFunction(right)) {
+            functionResultVisitor(right, fn);
+          }
+        }
+      }
+    }
+  },
+  ExportNamedDeclaration(path) {
+    if (isVariableDeclaration(path.node.declaration)) {
+      if ('hook' === Flecks.get(path, 'node.declaration.declarations[0].id.name')) {
+        if (isFunction(path.node.declaration.declarations[0].id.init)) {
+          functionResultVisitor(path.node.declaration.declarations[0].id.init, fn);
+        }
+      }
+    }
+    if (isFunction(path.node.declaration)) {
+      functionResultVisitor(path.node.declaration, fn);
     }
   },
 });
