@@ -76,6 +76,7 @@ module.exports = async (flecks) => ({
   settings: {
     'import/resolver': {
       webpack: {},
+      // @todo Extraneous?
       node: {},
     },
     react: {
