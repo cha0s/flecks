@@ -9,10 +9,13 @@ const concurrent = require('./concurrent');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  FLECKS_CI_SHOW_SUCCESS,
 } = process.env;
 
 const args = process.argv.slice(2);
 const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
+
+const showSuccess = !!FLECKS_CI_SHOW_SUCCESS;
 
 (async () => {
   process.exitCode = await concurrent(
@@ -28,13 +31,20 @@ const {workspaces} = require(join(FLECKS_CORE_ROOT, 'package.json'));
       const stdio = new PassThrough();
       const buffer = pipesink(child.stderr.pipe(child.stdout.pipe(stdio)));
       const code = await processCode(child);
-      console.log(
-        `::group::@flecks/${
+      if (!showSuccess && 0 === code) {
+        console.log(`@flecks/${
           chalk.blue(relative(join(FLECKS_CORE_ROOT, 'packages'), cwd))
-        } ${0 === code ? chalk.green('passed') : chalk.red('failed')}`,
-      );
-      process.stdout.write(await buffer);
-      console.log('::endgroup::\n');
+        } ${chalk.green('passed')}\n`);
+      }
+      else {
+        console.log(
+          `::group::@flecks/${
+            chalk.blue(relative(join(FLECKS_CORE_ROOT, 'packages'), cwd))
+          } ${0 === code ? chalk.green('passed') : chalk.red('failed')}`,
+        );
+        process.stdout.write(await buffer);
+        console.log('::endgroup::\n');
+      }
       return code;
     },
   );

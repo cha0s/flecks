@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [bleeding, master]
   pull_request:
     branches: [master]
   workflow_dispatch: {}
@@ -31,7 +31,7 @@ jobs:
           key: ${{ hashFiles('**/package-lock.json') }}
       - if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
         run: npm ci
-      - run: npm run build
+      - run: FLECKS_CI_SHOW_SUCCESS=1 npm run build
 
   test:
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
         if: ${{ vars.NPM_CI_REGISTRY && steps.cache-node-modules.outputs.cache-hit != 'true' }}
       - run: npm ci
         if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
-      - run: npm run -- test -t 120000 ${{ matrix.test-platforms }}
+      - run: FLECKS_CI_SHOW_SUCCESS=1 npm run -- test -t 120000 ${{ matrix.test-platforms }}
 
   lint:
     runs-on: ubuntu-latest
@@ -85,4 +85,4 @@ jobs:
           key: ${{ hashFiles('**/package-lock.json') }}
       - if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
         run: npm ci
-      - run: npm run lint
+      - run: FLECKS_CI_SHOW_SUCCESS=1 npm run lint
