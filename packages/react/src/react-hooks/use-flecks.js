@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import {FlecksContext} from '@flecks/react/client';
+import FlecksContext from '@flecks/react/context';
 import {useContext, useEffect, useState} from 'react';
 
 export default () => {
