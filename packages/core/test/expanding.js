@@ -12,7 +12,7 @@ it('includes all by default', async () => {
       two: {hooks: {'one.test': () => {}}},
     },
   });
-  expect(flecks.expandedFlecks('one.test'))
+  expect(flecks.flecksImplementing('one.test'))
     .to.deep.equal(['one', 'two']);
 });
 
@@ -28,7 +28,7 @@ it('respects elision', async () => {
       four: {hooks: {'one.test': () => {}}},
     },
   });
-  const expanded = flecks.expandedFlecks('one.test');
+  const expanded = flecks.flecksImplementing('one.test');
   expect(expanded.shift())
     .to.equal('two');
   expect(expanded.pop())
@@ -49,7 +49,7 @@ it('detects yet allows suspicious hook ordering', async () => {
   Flecks.debug = (message) => {
     suspected = message.includes('Suspicious ordering specification');
   };
-  expect(flecks.expandedFlecks('one.test'))
+  expect(flecks.flecksImplementing('one.test'))
     .to.deep.equal(['one', 'two']);
   expect(suspected)
     .to.be.true;
@@ -62,6 +62,6 @@ it('throws on cyclic dependency', async () => {
       two: {hooks: {'one.test': Flecks.priority(() => {}, {before: 'one'})}},
     },
   });
-  expect(() => flecks.expandedFlecks('one.test'))
+  expect(() => flecks.flecksImplementing('one.test'))
     .to.throw(/Illegal ordering specification/);
 });

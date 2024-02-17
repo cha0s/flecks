@@ -62,9 +62,9 @@ class Flecks {
 
   config = {};
 
-  $$expandedFlecksCache = {};
-
   flecks = {};
+
+  $$flecksImplementingCache = {};
 
   $$gathered = {};
 
@@ -254,7 +254,7 @@ class Flecks {
    * Destroy this instance.
    */
   destroy() {
-    this.$$expandedFlecksCache = {};
+    this.$$flecksImplementingCache = {};
     this.config = {};
     this.$$gathered = {};
     this.hooks = {};
@@ -314,9 +314,9 @@ class Flecks {
    * @param {string} hook
    * @returns {string[]} The expanded list of flecks.
    */
-  expandedFlecks(hook) {
-    if (this.$$expandedFlecksCache[hook]) {
-      return [...this.$$expandedFlecksCache[hook]];
+  flecksImplementing(hook) {
+    if (this.$$flecksImplementingCache[hook]) {
+      return [...this.$$flecksImplementingCache[hook]];
     }
     const flecks = this.lookupFlecks(hook);
     let expanded = [];
@@ -338,7 +338,7 @@ class Flecks {
       expanded.splice(index, 1);
       // Expand elided flecks.
       const elided = [];
-      const implementing = this.flecksImplementing(hook);
+      const implementing = this.hooks[hook]?.map(({fleck}) => fleck) || [];
       for (let i = 0; i < implementing.length; ++i) {
         const fleck = implementing[i];
         if (!expanded.includes(fleck)) {
@@ -400,10 +400,10 @@ class Flecks {
       });
     }
     // Filter unimplemented.
-    this.$$expandedFlecksCache[hook] = expanded // eslint-disable-line no-return-assign
+    this.$$flecksImplementingCache[hook] = expanded // eslint-disable-line no-return-assign
       .filter((fleck) => this.fleckImplementation(fleck, hook));
     this.constructor.debugSilly("cached hook expansion for '%s': %O", hook, expanded);
-    return [...this.$$expandedFlecksCache[hook]];
+    return [...this.$$flecksImplementingCache[hook]];
   }
 
   /**
@@ -433,16 +433,6 @@ class Flecks {
       return undefined;
     }
     return found.fn;
-  }
-
-  /**
-   * Get a list of flecks implementing a hook.
-   *
-   * @param {string} hook
-   * @returns {string[]}
-   */
-  flecksImplementing(hook) {
-    return this.hooks[hook]?.map(({fleck}) => fleck) || [];
   }
 
   /**
@@ -662,8 +652,7 @@ class Flecks {
     if (!this.hooks[hook]) {
       return initial;
     }
-    const flecks = this.expandedFlecks(hook);
-    return flecks
+    return this.flecksImplementing(hook)
       .reduce((r, fleck) => this.invokeFleck(hook, fleck, r, ...args), initial);
   }
 
@@ -676,8 +665,7 @@ class Flecks {
     if (!this.hooks[hook]) {
       return arg;
     }
-    const flecks = this.expandedFlecks(hook);
-    return flecks
+    return this.flecksImplementing(hook)
       .reduce(async (r, fleck) => this.invokeFleck(hook, fleck, await r, ...args), arg);
   }
 
@@ -692,7 +680,8 @@ class Flecks {
     if (!this.hooks[hook]) {
       return [];
     }
-    return this.hooks[hook].map(({fleck}) => this.invokeFleck(hook, fleck, ...args));
+    return this.flecksImplementing(hook)
+      .map((fleck) => this.invokeFleck(hook, fleck, ...args));
   }
 
   /**
@@ -831,7 +820,7 @@ class Flecks {
       return [];
     }
     const results = [];
-    const flecks = this.expandedFlecks(hook);
+    const flecks = this.flecksImplementing(hook);
     while (flecks.length > 0) {
       const fleck = flecks.shift();
       results.push(this.invokeFleck(hook, fleck, ...args));
@@ -849,7 +838,7 @@ class Flecks {
       return [];
     }
     const results = [];
-    const flecks = this.expandedFlecks(hook);
+    const flecks = this.flecksImplementing(hook);
     while (flecks.length > 0) {
       const fleck = flecks.shift();
       // eslint-disable-next-line no-await-in-loop
@@ -888,7 +877,7 @@ class Flecks {
     if (!this.hooks[hook]) {
       return (...args) => args.pop()();
     }
-    const flecks = this.expandedFlecks(hook);
+    const flecks = this.flecksImplementing(hook);
     if (0 === flecks.length) {
       // No flecks, immediate dispatch.
       return (...args) => args.pop()();
