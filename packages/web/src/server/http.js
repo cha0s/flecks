@@ -5,7 +5,6 @@ import {PassThrough, Transform} from 'stream';
 
 import {D} from '@flecks/core';
 import {binaryPath, spawnWith} from '@flecks/core/server';
-import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -36,7 +35,7 @@ const deliverHtmlStream = async (stream, req, res, flecks) => {
     }
     catch (error) {
       if (error instanceof Abort) {
-        res.status(500).end();
+        res.status(res.statusCode || 500).end();
         return;
       }
       throw error;
@@ -52,11 +51,13 @@ export const createHttpServer = async (flecks) => {
     trust,
   } = flecks.get('@flecks/web');
   const app = express();
+  app.disable('x-powered-by');
   app.set('trust proxy', trust);
   const httpServer = createServer(app);
   httpServer.app = app;
   // Body parser.
-  app.use(bodyParser.json());
+  app.use(express.urlencoded({extended: true}));
+  app.use(express.json());
   // Compression.                                         heheh
   app.use(compression({level: 'production' === NODE_ENV ? 6 : 9}));
   // Socket connection.
@@ -81,7 +82,7 @@ export const createHttpServer = async (flecks) => {
       const actualPort = 0 === port ? httpServer.address().port : port;
       debug(
         'HTTP server up @ %s!',
-        [host, actualPort].filter((e) => !!e).join(':'),
+        new URL(`http://${[host, actualPort].filter((e) => !!e).join(':')}`),
       );
       if ('undefined' === typeof publicConfig) {
         flecks.web.public = [host, actualPort].join(':');
@@ -181,7 +182,7 @@ export const createHttpServer = async (flecks) => {
       res.statusCode = proxyRes.statusCode;
       // HTML.
       if (proxyRes.headers['content-type']?.match('text/html')) {
-        routeMiddleware(req, res, (error) => {
+        routeMiddleware(req, res, async (error) => {
           if (error) {
             // eslint-disable-next-line no-console
             console.error(error);
@@ -191,7 +192,14 @@ export const createHttpServer = async (flecks) => {
           if (!res.headersSent) {
             res.setHeader('Content-Type', proxyRes.headers['content-type']);
           }
-          deliverHtmlStream(proxyRes, req, res, flecks);
+          try {
+            await deliverHtmlStream(proxyRes, req, res, flecks);
+          }
+          catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(error);
+            res.status(error.code || 500).end(error.stack);
+          }
         });
       }
       // Any other assets.
@@ -233,7 +241,12 @@ export const createHttpServer = async (flecks) => {
       if (req.accepts('text/html')) {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
         const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', 'web', 'index.html'));
-        deliverHtmlStream(stream, req, res, flecks);
+        try {
+          await deliverHtmlStream(stream, req, res, flecks);
+        }
+        catch (error) {
+          res.status(500).end('Internal error');
+        }
       }
       else {
         res.status(400).end('Bad Request');
