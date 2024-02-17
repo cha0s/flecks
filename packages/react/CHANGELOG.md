@@ -82,6 +82,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+## [4.0.10](https://github.com/cha0s/flecks/compare/react-v4.0.9...react-v4.0.10) (2024-02-17)
+
+
+### Bug Fixes
+
+* allow request aborting ([f07af8f](https://github.com/cha0s/flecks/commit/f07af8fe6eb3d9503e8d649d3d93e95a0dba338a))
+* guard unpolyfilled react router stuff from node 16 ([e99fb0e](https://github.com/cha0s/flecks/commit/e99fb0edf8202ce9f970be0e00496425fc06d9ee))
+* hook splitting, naming, strict mode ([d2fabd9](https://github.com/cha0s/flecks/commit/d2fabd902d0d2e81f988dd517268ec572b20ab97))
+* modernize react router interface ([2f522e5](https://github.com/cha0s/flecks/commit/2f522e5152d2bcaa76bddb5ef936912d897a0e98))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.1 to ^4.2.2
+    * @flecks/web bumped from ^4.1.1 to ^4.1.2
+  * devDependencies
+    * @flecks/build bumped from ^4.1.1 to ^4.1.2
+    * @flecks/fleck bumped from ^4.1.1 to ^4.1.2
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/react-v4.0.2...react-v4.0.3) (2024-02-09)
 
 

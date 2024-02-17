@@ -82,6 +82,16 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.1 to ^4.2.2
+    * @flecks/passport bumped from ^4.0.9 to ^4.0.10
+  * devDependencies
+    * @flecks/build bumped from ^4.1.1 to ^4.1.2
+    * @flecks/fleck bumped from ^4.1.1 to ^4.1.2
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/passport-local-v4.0.2...passport-local-v4.0.3) (2024-02-09)
 
 
