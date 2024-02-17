@@ -1,5 +1,6 @@
 const {access} = require('fs/promises');
 const {join} = require('path');
+const {PassThrough} = require('stream');
 
 const {hook: coreCommands} = require('@flecks/build/build/hooks/@flecks/build.commands');
 const {rimraf} = require('@flecks/build/src/server');
@@ -58,6 +59,7 @@ module.exports = (program, flecks) => {
         'test',
         {
           env: {
+            DEBUG_COLORS: 'dumb' !== TERM,
             FORCE_COLOR: 'dumb' !== TERM,
           },
           production,
@@ -66,9 +68,9 @@ module.exports = (program, flecks) => {
         },
       );
       if (!watch) {
-        const stdout = pipesink(child.stdout);
+        const stdio = pipesink(child.stderr.pipe(child.stdout.pipe(new PassThrough())));
         if (0 !== await processCode(child)) {
-          const buffer = await stdout;
+          const buffer = await stdio;
           if (!process.stdout.write(buffer)) {
             await new Promise((resolve, reject) => {
               process.stdout.on('error', reject);

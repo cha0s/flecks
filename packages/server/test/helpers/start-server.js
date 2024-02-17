@@ -2,6 +2,7 @@ import {mkdir} from 'fs/promises';
 import {createServer} from 'net';
 import {tmpdir} from 'os';
 import {dirname, join} from 'path';
+import {PassThrough} from 'stream';
 
 import {id} from '@flecks/core/build/testing';
 import {
@@ -14,6 +15,7 @@ import {createApplication} from './create-application';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
+  TERM,
 } = process.env;
 
 class SocketWrapper {
@@ -135,10 +137,12 @@ export async function startServer({
       stdio: 'pipe',
       ...opts,
       env: {
+        DEBUG_COLORS: 'dumb' !== TERM,
         FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
         FLECKS_ENV__flecks_server__start: true,
         FLECKS_CORE_ROOT: path,
         FLECKS_SERVER_TEST_SOCKET: socketPath,
+        FORCE_COLOR: 'dumb' !== TERM,
         NODE_ENV: 'test',
         NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
         ...opts.env,
@@ -149,10 +153,10 @@ export async function startServer({
     socketServer.close();
   });
   if (failOnErrorCode) {
-    const stderr = pipesink(server.stderr);
+    const stdio = pipesink(server.stderr.pipe(server.stdout.pipe(new PassThrough())));
     server.on('exit', async (code) => {
       if (!server.done && 0 !== code) {
-        const buffer = await stderr;
+        const buffer = await stdio;
         if (!process.stderr.write(buffer)) {
           await new Promise((resolve, reject) => {
             process.stderr.on('error', reject);
