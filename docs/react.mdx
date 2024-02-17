@@ -106,6 +106,80 @@ Now if you visit the page with JavaScript disabled, you will get a white page.
 You'll notice that if you edit your component, the changes are immediately reflected on the page.
 This is because we have HMR support in our application!
 
+## Routing
+
+flecks provides `@flecks/react/router` which implements server and client routing using
+[React Router](https://reactrouter.com/en/main)'s `<RouterProvider>`.
+
+### Filetree routing
+
+It is possible to define your routes as a file structure. A helper is provided to build a routes
+object from your file structure:
+
+```js
+import {createRoutesFromContext} from '@flecks/react/router';
+
+export const hooks = {
+  '@flecks/react/router.routes': () => (
+    createRoutesFromContext(require.context('./routes'))
+  ),
+};
+```
+
+Supposing your `./routes` directory was structured as:
+
+```
+routes
+├─ index.jsx
+├─ [...catchall].jsx
+├─ -optional.jsx
+├─ -[optionalDynamic].jsx
+├─ about.jsx
+└─ team/
+   └─ [teamId]/
+      ├─ index.jsx
+      └─ edit.jsx
+```
+
+Your routes object would look like:
+
+```js
+[
+  {path: '/', ...},
+  {path: '*', ...},
+  {path: '/about', ...},
+  {path: '/optional?', ...},
+  {path: '/:optionalDynamic?', ...},
+  {
+    path: '/team', ...,
+    children: [
+      {
+        path: ':teamId', ...
+      },
+      {
+        path: ':teamId/edit', ...
+      },
+    ],
+  },
+]
+```
+
+Each route object has a `...` in the diagram above because each module is `import()`ed and the
+exports are mixed in to the Route. Route modules should probably at least
+`export function Component() { ... }`, but may export any of
+[the Route props](https://reactrouter.com/en/main/route/route).
+
+### Selecting the root
+
+There can only be one root of your router tree. Supposing you implemented
+`@flecks/react/router.routes` in your fleck called `@my/routes-root`, you would set the following
+configuration in `build.yml`:
+
+```yaml
+'@flecks/react/router':
+  root: '@my/routes-root'
+```
+
 ## Hooks
 
 ### `useFlecks()`
