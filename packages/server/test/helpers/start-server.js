@@ -164,9 +164,7 @@ export async function startServer({
             process.stderr.on('drain', resolve);
           });
         }
-        // eslint-disable-next-line no-console
-        console.error('\nserver process exited unexpectedly\n');
-        process.exit(code);
+        throw new Error('\nserver process exited unexpectedly\n');
       }
     });
   }
