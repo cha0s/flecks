@@ -10,9 +10,9 @@ export function withWeb(task, options) {
       opts: {
         ...optionsWithTask.opts,
         env: {
-          ...optionsWithTask.opts?.env,
           FLECKS_ENV__flecks_web__port: '0',
           FLECKS_ENV__flecks_web__devPort: '0',
+          ...optionsWithTask.opts?.env,
         },
       },
     });
@@ -34,7 +34,8 @@ export function withWeb(task, options) {
         socket,
       });
     }
-    const response = await connectPage(page, `http://${payload}`, optionsWithTask);
+    const {pagePath = '/'} = options;
+    const response = await connectPage(page, `http://${payload}${pagePath}`, optionsWithTask);
     let taskError;
     try {
       await task({
