@@ -420,6 +420,13 @@ class Flecks {
   /**
    * Get a fleck's implementation of a hook.
    *
+   * :::info
+   *
+   * The `flecks` instance is not automatically passed if you manually invoke this implementation
+   * and must be provided by you, the caller.
+   *
+   * :::
+   *
    * @param {*} fleck
    * @param {string} hook
    * @returns {boolean}
@@ -566,6 +573,11 @@ class Flecks {
     return get(this.config, path, defaultValue);
   }
 
+  /**
+   * Gather hooks from a require context.
+   * @param {webpack.Context} context The result from `require.context()`.
+   * @returns {Object} The hooks object.
+   */
   static hooks(context) {
     const implementations = {};
     context.keys()
@@ -581,7 +593,12 @@ class Flecks {
         .map(([, keys]) => {
           // Shortest is the one without extension.
           const key = keys.reduce((l, r) => (r.length < l.length ? r : l));
-          const trimmed = key.startsWith('./') ? key.slice(2) : key;
+          const hook = key.startsWith('./') ? key.slice(2) : key;
+          return [hook, key];
+        })
+        // Allow colocated files if they start with '_'.
+        .filter(([, key]) => !key.includes('/_'))
+        .map(([hook, key]) => {
           const M = context(key);
           if (!M.hook) {
             const hasDefault = !!M.default;
@@ -590,7 +607,7 @@ class Flecks {
               ...(hasDefault ? ['Did you default export the implementation?'] : []),
             ].join(' '));
           }
-          return [trimmed, context(key).hook];
+          return [hook, context(key).hook];
         }),
     );
   }
