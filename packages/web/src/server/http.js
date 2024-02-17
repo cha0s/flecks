@@ -41,6 +41,7 @@ const deliverHtmlStream = async (stream, req, res, flecks) => {
       throw error;
     }
   }
+  res.status(res.statusCode || stream.statusCode || 200);
   walk.pipe(res);
 };
 
@@ -193,6 +194,7 @@ export const createHttpServer = async (flecks) => {
             res.setHeader('Content-Type', proxyRes.headers['content-type']);
           }
           try {
+            res.statusCode = null;
             await deliverHtmlStream(proxyRes, req, res, flecks);
           }
           catch (error) {
@@ -242,6 +244,7 @@ export const createHttpServer = async (flecks) => {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
         const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', 'web', 'index.html'));
         try {
+          res.statusCode = null;
           await deliverHtmlStream(stream, req, res, flecks);
         }
         catch (error) {
