@@ -2,7 +2,7 @@ import {expect} from 'chai';
 
 import {withWeb} from '@flecks/headless/test/helpers/with-web';
 
-it('provides default routes', withWeb(
+it('provides default routes', 'undefined' !== typeof Headers && withWeb(
   async ({page, response}) => {
     expect(response)
       .to.not.be.null;
@@ -17,7 +17,7 @@ it('provides default routes', withWeb(
   },
 ));
 
-it('provides default routes with ssr', withWeb(
+it('provides default routes with ssr', 'undefined' !== typeof Headers && withWeb(
   async ({page, response}) => {
     expect(response)
       .to.not.be.null;

@@ -2,7 +2,7 @@ import {expect} from 'chai';
 
 import {withWeb} from '@flecks/headless/test/helpers/with-web';
 
-it('implements data router', withWeb(
+it('implements data router', 'undefined' !== typeof Headers && withWeb(
   async ({page, response}) => {
     expect(response)
       .to.not.be.null;
@@ -26,7 +26,7 @@ it('implements data router', withWeb(
   },
 ));
 
-it('implements data router with ssr', withWeb(
+it('implements data router with ssr', 'undefined' !== typeof Headers && withWeb(
   async ({page, response}) => {
     expect(response)
       .to.not.be.null;

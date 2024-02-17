@@ -2,7 +2,7 @@ import {expect} from 'chai';
 
 import {withWeb} from '@flecks/headless/test/helpers/with-web';
 
-it('allows custom routes', withWeb(
+it('allows custom routes', 'undefined' !== typeof Headers && withWeb(
   async ({page, response}) => {
     expect(response)
       .to.not.be.null;
