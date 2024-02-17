@@ -1,0 +1,7 @@
+'@flecks/core': {}
+'@flecks/server': {}
+'@flecks/react': {}
+'@flecks/react/router': {
+  root: 'test'
+}
+'test:./test': {}

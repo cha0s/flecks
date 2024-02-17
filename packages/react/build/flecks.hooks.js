@@ -33,5 +33,59 @@ export const hooks = {
     // You can also just:
     return Component;
   },
+  /**
+   * Provide routes for React Router.
+   *
+   * You can also build routes from a file structure using e.g.:
+   *
+   * ```js
+   * import {createRoutesFromContext} from '@flecks/react/router';
+   *
+   * export const hooks = {
+   *   '@flecks/react/router.routes': () => (
+   *     createRoutesFromContext(require.context('./routes'))
+   *   ),
+   * };
+   * ```
+   *
+   * See [the documentation page on routing](../react#routing) for more details.
+   *
+   * @returns {RouteObject[]} An array of React Router route objects.
+   */
+  '@flecks/react/router.routes': () => {
+    // You can also just return routes how React Router expects:
+    return [
+      {
+        path: '/',
+        Component: function Component() {
+          return <p>This is the root route</p>;
+        },
+      },
+      {
+        path: '/team',
+        children: [
+          {
+            path: ':teamId',
+            Component: function Component() {
+              const {teamId} = useParams();
+              return <p>This is team {teamId}.</p>;
+            },
+          },
+          {
+            index: true,
+            Component: function Component() {
+              return <p>This is the team overview.</p>;
+            },
+          },
+        ],
+      },
+      {
+        path: '/about',
+        Component: function Component() {
+          return <p>This is the about page</p>;
+        },
+      },
+    ];
+  }
 };
 
