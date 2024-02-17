@@ -4,12 +4,6 @@ import {withWeb} from '@flecks/headless/test/helpers/with-web';
 
 let report;
 
-const options = {
-  beforeConnect: ({socket}) => {
-    report = socket.waitForAction('report');
-  },
-};
-
 it('brings a client up', withWeb(
   async ({
     page,
@@ -37,5 +31,10 @@ it('brings a client up', withWeb(
     expect(request)
       .to.equal('testing-value-value');
   },
-  options,
+  {
+    beforeConnect: ({socket}) => {
+      report = socket.waitForAction('report');
+    },
+    template: 'templates/up',
+  },
 ));

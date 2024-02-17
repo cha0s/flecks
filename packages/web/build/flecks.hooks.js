@@ -49,11 +49,19 @@ export const hooks = {
   },
   /**
    * Define composition functions to run over the HTML stream prepared for the client.
+   *
    * @param {stream.Readable} stream The HTML stream.
    * @param {http.ClientRequest} req The HTTP request object.
+   * @param {http.ServerResponse} res The HTTP response object.
+   * @returns {stream.Duplex} The stream to pipe to the response.
    * @invoke ComposedAsync
    */
-  '@flecks/web/server.stream.html': (stream, req) => {
+  '@flecks/web/server.stream.html': (stream, req, res) => {
+    // You may call `req.abort()` to abort the request if you e.g. respond to it early:
+    if ('some-redirect-condition') {
+      res.redirect('/somewhere', 301);
+      req.abort();
+    }
     return stream.pipe(myTransformStream);
   },
   /**

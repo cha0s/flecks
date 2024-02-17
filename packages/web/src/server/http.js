@@ -10,6 +10,8 @@ import compression from 'compression';
 import express from 'express';
 import httpProxy from 'http-proxy';
 
+import {Abort} from './abort';
+
 const {
   FLECKS_CORE_ROOT = process.cwd(),
   FLECKS_WEB_DEV_SERVER,
@@ -19,8 +21,28 @@ const {
 
 const debug = D('@flecks/web/server/http');
 
-const deliverHtmlStream = async (stream, flecks, req, res) => {
-  (await flecks.invokeComposedAsync('@flecks/web/server.stream.html', stream, req)).pipe(res);
+const deliverHtmlStream = async (stream, req, res, flecks) => {
+  req.abort = () => {
+    throw new Abort();
+  };
+  let walk = stream;
+  const implementations = flecks.flecksImplementing('@flecks/web/server.stream.html');
+  for (let i = 0; i < implementations.length; ++i) {
+    const fleck = implementations[i];
+    const implementation = flecks.fleckImplementation(fleck, '@flecks/web/server.stream.html');
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      walk = await implementation(walk, req, res, flecks);
+    }
+    catch (error) {
+      if (error instanceof Abort) {
+        res.status(500).end();
+        return;
+      }
+      throw error;
+    }
+  }
+  walk.pipe(res);
 };
 
 export const createHttpServer = async (flecks) => {
@@ -169,7 +191,7 @@ export const createHttpServer = async (flecks) => {
           if (!res.headersSent) {
             res.setHeader('Content-Type', proxyRes.headers['content-type']);
           }
-          deliverHtmlStream(proxyRes, flecks, req, res);
+          deliverHtmlStream(proxyRes, req, res, flecks);
         });
       }
       // Any other assets.
@@ -211,7 +233,7 @@ export const createHttpServer = async (flecks) => {
       if (req.accepts('text/html')) {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
         const stream = createReadStream(join(FLECKS_CORE_ROOT, 'dist', 'web', 'index.html'));
-        deliverHtmlStream(stream, flecks, req, res);
+        deliverHtmlStream(stream, req, res, flecks);
       }
       else {
         res.status(400).end('Bad Request');
