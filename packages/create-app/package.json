@@ -1,6 +1,6 @@
 {
   "name": "@flecks/create-app",
-  "version": "4.0.10",
+  "version": "4.0.11",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -27,12 +27,12 @@
     "template"
   ],
   "dependencies": {
-    "@flecks/core": "^4.2.1",
+    "@flecks/core": "^4.2.2",
     "commander": "11.1.0",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "@flecks/build": "^4.1.1",
-    "@flecks/fleck": "^4.1.1"
+    "@flecks/build": "^4.1.2",
+    "@flecks/fleck": "^4.1.2"
   }
 }

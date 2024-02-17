@@ -64,6 +64,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.7 to ^4.1.0
     * @flecks/fleck bumped from ^4.0.7 to ^4.1.0
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.1 to ^4.2.2
+  * devDependencies
+    * @flecks/build bumped from ^4.1.1 to ^4.1.2
+    * @flecks/fleck bumped from ^4.1.1 to ^4.1.2
+
 ## [4.0.9](https://github.com/cha0s/flecks/compare/electron-v4.0.8...electron-v4.0.9) (2024-02-15)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.2](https://github.com/cha0s/flecks/compare/core-v4.2.1...core-v4.2.2) (2024-02-17)
+
+
+### Bug Fixes
+
+* all hooks are orderable ([e4a3a91](https://github.com/cha0s/flecks/commit/e4a3a912cd12422110eee1c910d0290211b92af0))
+* allow colocated hook sources ([85aa9d7](https://github.com/cha0s/flecks/commit/85aa9d78cad4d3449f447734f95ea74b6b59a1bf))
+
 ## [4.2.1](https://github.com/cha0s/flecks/compare/core-v4.2.0...core-v4.2.1) (2024-02-15)
 
 

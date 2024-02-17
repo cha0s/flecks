@@ -47,6 +47,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.5 to ^4.0.6
     * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
 
+## [4.1.2](https://github.com/cha0s/flecks/compare/web-v4.1.1...web-v4.1.2) (2024-02-17)
+
+
+### Bug Fixes
+
+* allow request aborting ([f07af8f](https://github.com/cha0s/flecks/commit/f07af8fe6eb3d9503e8d649d3d93e95a0dba338a))
+* status codes ([d03c72b](https://github.com/cha0s/flecks/commit/d03c72bc7576c6000a24b1ee6ee4e850ad703cc3))
+* streaming ([8ae2f59](https://github.com/cha0s/flecks/commit/8ae2f59e192d612a84bb760c3ffa37fd73388129))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.1 to ^4.2.2
+    * @flecks/server bumped from ^4.1.1 to ^4.1.2
+  * devDependencies
+    * @flecks/build bumped from ^4.1.1 to ^4.1.2
+    * @flecks/fleck bumped from ^4.1.1 to ^4.1.2
+
 ## [4.1.1](https://github.com/cha0s/flecks/compare/web-v4.1.0...web-v4.1.1) (2024-02-15)
 
 
