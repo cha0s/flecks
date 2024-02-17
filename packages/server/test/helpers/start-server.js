@@ -131,28 +131,29 @@ export async function startServer({
   if (beforeBuild) {
     await beforeBuild({path, task});
   }
+  const spawnOptions = {
+    stdio: 'pipe',
+    ...opts,
+    env: {
+      DEBUG_COLORS: 'dumb' !== TERM,
+      FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
+      FLECKS_ENV__flecks_server__start: true,
+      FLECKS_CORE_ROOT: path,
+      FLECKS_SERVER_TEST_SOCKET: socketPath,
+      FORCE_COLOR: 'dumb' !== TERM,
+      NODE_ENV: 'test',
+      NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
+      ...opts.env,
+    },
+  };
   const server = spawnWith(
     [await binaryPath('flecks', '@flecks/build'), 'build', ...args],
-    {
-      stdio: 'pipe',
-      ...opts,
-      env: {
-        DEBUG_COLORS: 'dumb' !== TERM,
-        FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
-        FLECKS_ENV__flecks_server__start: true,
-        FLECKS_CORE_ROOT: path,
-        FLECKS_SERVER_TEST_SOCKET: socketPath,
-        FORCE_COLOR: 'dumb' !== TERM,
-        NODE_ENV: 'test',
-        NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
-        ...opts.env,
-      },
-    },
+    spawnOptions,
   );
   server.on('exit', async () => {
     socketServer.close();
   });
-  if (failOnErrorCode) {
+  if (failOnErrorCode && 'pipe' === spawnOptions.stdio) {
     const stdio = pipesink(server.stderr.pipe(server.stdout.pipe(new PassThrough())));
     server.on('exit', async (code) => {
       if (!server.done && 0 !== code) {
