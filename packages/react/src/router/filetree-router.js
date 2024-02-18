@@ -40,6 +40,7 @@ export async function createRoutesFromFiletree({importer, paths, resolver}) {
         .slice(0, -1)
         .pop()
     ))
+    .sort((l, r) => (l < r ? -1 : 1))
     .forEach((path) => {
       let walk = children;
       const parts = ['/', ...resolve('/', path).split('/').slice(1)];
