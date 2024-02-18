@@ -46,6 +46,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+## [4.0.12](https://github.com/cha0s/flecks/compare/create-app-v4.0.11...create-app-v4.0.12) (2024-02-18)
+
+
+### Bug Fixes
+
+* router HMR ([5ba0aa2](https://github.com/cha0s/flecks/commit/5ba0aa21c065449bab99e94b390076cd6e83706f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+  * devDependencies
+    * @flecks/build bumped from ^4.1.2 to ^4.1.3
+    * @flecks/fleck bumped from ^4.1.2 to ^4.1.3
+
 ## [4.0.11](https://github.com/cha0s/flecks/compare/create-app-v4.0.10...create-app-v4.0.11) (2024-02-17)
 
 

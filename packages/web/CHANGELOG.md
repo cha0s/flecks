@@ -53,6 +53,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * devDependencies
     * @flecks/headless bumped from ^4.0.1 to ^4.0.2
 
+## [4.1.5](https://github.com/cha0s/flecks/compare/web-v4.1.4...web-v4.1.5) (2024-02-18)
+
+
+### Bug Fixes
+
+* @flecks/web/client.up hook check ([ea99829](https://github.com/cha0s/flecks/commit/ea998296854ae2a29aa4f0493c39e3adde653245))
+* attribute spacing ([7267b6d](https://github.com/cha0s/flecks/commit/7267b6da5df6180a67ed7751a33809e40abafc78))
+* self-externalization for build ([5a75b28](https://github.com/cha0s/flecks/commit/5a75b284713211cc98d3e7a247221ba5d47b09d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+    * @flecks/server bumped from ^4.1.2 to ^4.1.3
+  * devDependencies
+    * @flecks/build bumped from ^4.1.2 to ^4.1.3
+    * @flecks/fleck bumped from ^4.1.2 to ^4.1.3
+    * @flecks/headless bumped from ^4.0.2 to ^4.0.3
+
 ## [4.1.3](https://github.com/cha0s/flecks/compare/web-v4.1.2...web-v4.1.3) (2024-02-18)
 
 

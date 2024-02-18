@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.3](https://github.com/cha0s/flecks/compare/core-v4.2.2...core-v4.2.3) (2024-02-18)
+
+
+### Bug Fixes
+
+* prevent infinite loop ([1563f05](https://github.com/cha0s/flecks/commit/1563f055f39c991414bca5f91ea0941beb9768c2))
+
 ## [4.2.2](https://github.com/cha0s/flecks/compare/core-v4.2.1...core-v4.2.2) (2024-02-17)
 
 

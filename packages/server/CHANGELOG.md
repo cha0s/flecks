@@ -37,6 +37,24 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.4 to ^4.0.5
     * @flecks/fleck bumped from ^4.0.4 to ^4.0.5
 
+## [4.1.3](https://github.com/cha0s/flecks/compare/server-v4.1.2...server-v4.1.3) (2024-02-18)
+
+
+### Bug Fixes
+
+* alias ([460c7d6](https://github.com/cha0s/flecks/commit/460c7d61a894ae55bfa86bde76c3b752b1177ede))
+* checking nonexistent modules for server runtime ([da6a1d5](https://github.com/cha0s/flecks/commit/da6a1d530ca9396972d67754be0daae81316162f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+  * devDependencies
+    * @flecks/build bumped from ^4.1.2 to ^4.1.3
+    * @flecks/fleck bumped from ^4.1.2 to ^4.1.3
+
 ## [4.1.2](https://github.com/cha0s/flecks/compare/server-v4.1.1...server-v4.1.2) (2024-02-17)
 
 

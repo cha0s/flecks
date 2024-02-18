@@ -1,5 +1,14 @@
 # Changelog
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.0.0 to ^4.2.3
+  * devDependencies
+    * @flecks/build bumped from ^4.0.0 to ^4.1.3
+    * @flecks/fleck bumped from ^4.0.0 to ^4.1.3
+
 ## [4.0.2](https://github.com/cha0s/flecks/compare/headless-v4.0.1...headless-v4.0.2) (2024-02-18)
 
 
