@@ -1,4 +1,5 @@
 {
+  "commit-search-depth": 20,
   "packages": {
     "packages/build": {},
     "packages/core": {},
