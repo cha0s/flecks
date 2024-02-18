@@ -1,4 +1,4 @@
 '@flecks/build': {}
 '@flecks/core': {}
 '@flecks/server': {}
-'comm:./comm': {}
+'server-test:./server-test': {}

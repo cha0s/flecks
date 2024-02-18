@@ -37,7 +37,7 @@ it('propagates bootstrap config', withServer(
           '@flecks/build': {}
           '@flecks/core': {}
           '@flecks/server': {}
-          'comm:./comm': {}
+          'server-test:./server-test': {}
           'server-only:./server-only': {foo: 'baz'}
         `,
       );

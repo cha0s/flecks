@@ -20,7 +20,7 @@ it('restarts when root sources change', withServer(async ({server, socket}) => {
       });
     }),
   ]);
-  await writeFile(join(server.path, 'comm', 'package.json'), '{}');
+  await writeFile(join(server.path, 'server-test', 'package.json'), '{}');
   await whatHappened;
   expect(restarted)
     .to.be.true;

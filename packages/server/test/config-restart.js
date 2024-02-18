@@ -27,7 +27,7 @@ it('restarts when config keys change', withServer(async ({server, socket}) => {
       '@flecks/core': {}
       '@flecks/repl': {}
       '@flecks/server': {}
-      'comm:./comm': {}
+      'server-test:./server-test': {}
     `,
   );
   await whatHappened;

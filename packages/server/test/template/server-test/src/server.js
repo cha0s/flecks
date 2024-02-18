@@ -2,7 +2,7 @@ import {Flecks} from '@flecks/core';
 
 export const hooks = {
   '@flecks/core.reload': (fleck, config) => {
-    if ('comm' === fleck && 'fail' === config.foo) {
+    if ('server-test' === fleck && 'fail' === config.foo) {
       throw new Error();
     }
   },

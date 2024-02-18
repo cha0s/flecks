@@ -15,7 +15,7 @@ it('updates config', withServer(async ({server, socket}) => {
       '@flecks/build': {}
       '@flecks/core': {id: 'testing'}
       '@flecks/server': {}
-      'comm:./comm': {}
+      'server-test:./server-test': {}
     `,
   );
   await hmr;

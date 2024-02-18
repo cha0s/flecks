@@ -9,7 +9,7 @@ it('propagates override config', withServer(
   async ({server}) => {
     const [{payload: id}, {payload: foo}] = await server.actions([
       {type: 'config.get', payload: '@flecks/core.id'},
-      {type: 'config.get', payload: 'comm.foo'},
+      {type: 'config.get', payload: 'server-test.foo'},
       {type: 'exit'},
     ]);
     expect(id)
@@ -25,7 +25,7 @@ it('propagates override config', withServer(
           '@flecks/build': {}
           '@flecks/core': {id: 'testing'}
           '@flecks/server': {}
-          'comm:./comm': {foo: 'baz'}
+          'server-test:./server-test': {foo: 'baz'}
         `,
       );
     },

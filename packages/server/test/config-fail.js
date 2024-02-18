@@ -6,7 +6,7 @@ import {expect} from 'chai';
 import {withServer} from './helpers/with-server';
 
 it('allows updates to fail', withServer(async ({server, socket}) => {
-  expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
+  expect((await socket.send({type: 'config.get', payload: 'server-test.foo'})).payload)
     .to.equal('bar');
   const hmr = socket.waitForAction('hmr');
   await writeFile(
@@ -15,11 +15,11 @@ it('allows updates to fail', withServer(async ({server, socket}) => {
       '@flecks/build': {}
       '@flecks/core': {}
       '@flecks/server': {}
-      'comm:./comm': {foo: 'baz'}
+      'server-test:./server-test': {foo: 'baz'}
     `,
   );
   await hmr;
-  expect((await socket.send({type: 'config.get', payload: 'comm.foo'})).payload)
+  expect((await socket.send({type: 'config.get', payload: 'server-test.foo'})).payload)
     .to.equal('baz');
   let restarted;
   const whatHappened = Promise.race([
@@ -41,7 +41,7 @@ it('allows updates to fail', withServer(async ({server, socket}) => {
       '@flecks/build': {}
       '@flecks/core': {}
       '@flecks/server': {}
-      'comm:./comm': {foo: 'fail'}
+      'server-test:./server-test': {foo: 'fail'}
     `,
   );
   await whatHappened;
