@@ -52,7 +52,7 @@ async function runtimeModule(compilation, flecks) {
         `            return ['${path}', M];`,
         '          }',
         '          catch (error) {',
-        '            if (!error.message.startsWith("Cannot find module")) {',
+        `            if (!error.message.startsWith("Cannot find module '${path}'")) {`,
         '              throw error;',
         '            }',
         '          }',
