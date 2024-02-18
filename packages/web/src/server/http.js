@@ -74,11 +74,17 @@ export const createHttpServer = async (flecks) => {
     if (host) {
       args.push(host);
     }
-    args.push(async (error) => {
-      if (error) {
-        reject(error);
-        return;
+    const onError = (error) => {
+      if ('EADDRINUSE' === error.code) {
+        error.message = (
+          `HTTP server couldn't connect: '${[host, port].join(':')}' already in use!`
+        );
       }
+      reject(error);
+    };
+    httpServer.on('error', onError);
+    args.push(async () => {
+      httpServer.off('error', onError);
       await flecks.invokeSequentialAsync('@flecks/web/server.up', httpServer);
       const actualPort = 0 === port ? httpServer.address().port : port;
       debug(

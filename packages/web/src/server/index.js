@@ -8,6 +8,15 @@ const {
 export {configSource};
 
 export const hooks = {
+  '@flecks/core.starting': (flecks) => {
+    const {
+      host = 'production' === NODE_ENV ? '0.0.0.0' : 'localhost',
+      port,
+      public: httpPublic,
+    } = flecks.get('@flecks/web');
+    flecks.web.host = host;
+    flecks.web.public = httpPublic || [host, port].join(':');
+  },
   '@flecks/web.routes': (flecks) => {
     const routes = [
       {
@@ -60,15 +69,8 @@ export const mixin = (Flecks) => class FlecksWithWeb extends Flecks {
   constructor(runtime) {
     super(runtime);
     if (!this.web) {
-      const {
-        host = 'production' === NODE_ENV ? '0.0.0.0' : 'localhost',
-        port,
-        public: httpPublic,
-      } = runtime.config['@flecks/web'];
       this.web = {
         config: runtime['@flecks/web'],
-        host,
-        public: httpPublic || [host, port].join(':'),
         server: undefined,
       };
     }
