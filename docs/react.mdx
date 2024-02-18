@@ -111,6 +111,18 @@ This is because we have HMR support in our application!
 flecks provides `@flecks/react/router` which implements server and client routing using
 [React Router](https://reactrouter.com/en/main)'s `<RouterProvider>`.
 
+Just add it to `flecks.yml`:
+
+```yml title="build/flecks.yml"
+'@flecks/core':
+  id: react-test
+'@flecks/react': {}
+// highlight-next-line
+'@flecks/react/router': {}
+'@flecks/server': {}
+'@react-test/root:./packages/root/src': {}
+```
+
 ### Filetree routing
 
 It is possible to define your routes as a file structure. A helper is provided to build a routes
@@ -173,7 +185,7 @@ exports are mixed in to the Route. Route modules should probably at least
 
 There can only be one root of your router tree. Supposing you implemented
 `@flecks/react/router.routes` in your fleck called `@my/routes-root`, you would set the following
-configuration in `build.yml`:
+configuration in `build/flecks.yml` to use your fleck's routes as the root:
 
 ```yaml
 '@flecks/react/router':
