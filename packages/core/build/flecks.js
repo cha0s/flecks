@@ -467,7 +467,10 @@ class Flecks {
           }
         }
       });
-    this.invoke('@flecks/core.priority', graph, hook);
+    // Avoid re-entry.
+    if ('@flecks/core.priority' !== hook) {
+      this.invoke('@flecks/core.priority', graph, hook);
+    }
     return graph;
   }
 
