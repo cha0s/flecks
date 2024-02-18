@@ -1,11 +1,21 @@
 {
   "name": "@flecks/headless",
   "version": "4.0.1",
+  "author": "cha0s",
+  "license": "MIT",
   "scripts": {
     "build": "flecks build",
     "clean": "flecks clean",
     "lint": "flecks lint",
     "test": "flecks test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cha0s/flecks.git",
+    "directory": "packages/headless"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [],
   "dependencies": {
