@@ -94,6 +94,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/web bumped from ^4.1.3 to ^4.1.4
 
+## [4.0.13](https://github.com/cha0s/flecks/compare/react-v4.0.12...react-v4.0.13) (2024-02-18)
+
+
+### Bug Fixes
+
+* router HMR ([5ba0aa2](https://github.com/cha0s/flecks/commit/5ba0aa21c065449bab99e94b390076cd6e83706f))
+* self-externalization for build ([5a75b28](https://github.com/cha0s/flecks/commit/5a75b284713211cc98d3e7a247221ba5d47b09d1))
+* sort routes for determinism ([fe65cb8](https://github.com/cha0s/flecks/commit/fe65cb863bee9a6b369651c2fd8c241b6217a3bf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+    * @flecks/web bumped from ^4.1.4 to ^4.1.5
+  * devDependencies
+    * @flecks/build bumped from ^4.1.2 to ^4.1.3
+    * @flecks/fleck bumped from ^4.1.2 to ^4.1.3
+
 ## [4.0.10](https://github.com/cha0s/flecks/compare/react-v4.0.9...react-v4.0.10) (2024-02-17)
 
 

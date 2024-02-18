@@ -64,6 +64,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+  * devDependencies
+    * @flecks/build bumped from ^4.1.2 to ^4.1.3
+    * @flecks/fleck bumped from ^4.1.2 to ^4.1.3
+
 ## [4.0.10](https://github.com/cha0s/flecks/compare/dox-v4.0.9...dox-v4.0.10) (2024-02-17)
 
 

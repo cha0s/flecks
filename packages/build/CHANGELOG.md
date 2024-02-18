@@ -27,6 +27,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/core bumped from ^4.2.1 to ^4.2.2
 
+## [4.1.3](https://github.com/cha0s/flecks/compare/build-v4.1.2...build-v4.1.3) (2024-02-18)
+
+
+### Bug Fixes
+
+* router HMR ([5ba0aa2](https://github.com/cha0s/flecks/commit/5ba0aa21c065449bab99e94b390076cd6e83706f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.2 to ^4.2.3
+
 ## [4.1.1](https://github.com/cha0s/flecks/compare/build-v4.1.0...build-v4.1.1) (2024-02-15)
 
 
