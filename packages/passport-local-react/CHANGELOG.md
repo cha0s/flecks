@@ -117,6 +117,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/passport-react bumped from ^4.0.10 to ^4.0.11
     * @flecks/react bumped from ^4.0.10 to ^4.0.11
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/passport-react bumped from ^4.0.11 to ^4.0.12
+    * @flecks/react bumped from ^4.0.11 to ^4.0.12
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/passport-local-react-v4.0.2...passport-local-react-v4.0.3) (2024-02-09)
 
 

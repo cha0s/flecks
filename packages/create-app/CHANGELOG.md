@@ -46,6 +46,40 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+## [4.0.3](https://github.com/cha0s/flecks/compare/create-app-v4.0.11...create-app-v4.0.3) (2024-02-18)
+
+
+### Features
+
+* default packages directory ([2a48c4f](https://github.com/cha0s/flecks/commit/2a48c4f18fb732c07a52706100d06a30959110f3))
+* **fleck:** ProcessAssets ([84a30df](https://github.com/cha0s/flecks/commit/84a30df67ab0c8b5c34bb61657f6103775839e82))
+* package manager (and bun) ([16934d5](https://github.com/cha0s/flecks/commit/16934d55c93aef1fcb36ed47a2addc802ccf492d))
+* webpack 5 ([f039f7b](https://github.com/cha0s/flecks/commit/f039f7b8f69b3c8b9564714890b2fe2d4cd8a22d))
+
+
+### Bug Fixes
+
+* add default worksapces pattern ([12120a9](https://github.com/cha0s/flecks/commit/12120a9a43c0cd135a1e8676fb21dba87d59d2fd))
+* config ([e001c77](https://github.com/cha0s/flecks/commit/e001c771ee69a9c18bef54df0411fe90651b3aba))
+* creation apps ([9bfa481](https://github.com/cha0s/flecks/commit/9bfa481731f32a2a4404d9d6d87ada8f39b35c77))
+* creators ([c1eee58](https://github.com/cha0s/flecks/commit/c1eee58a41553941613bed6879ad70cf46260cb2))
+* failure handling ([855999b](https://github.com/cha0s/flecks/commit/855999b3a13d838ce00c8bdd1ff2342c3bd7bdeb))
+* lint ([675aaad](https://github.com/cha0s/flecks/commit/675aaadaedd539ebbef9ab0ace9e9ae8832d1e08))
+* lint config ([3826434](https://github.com/cha0s/flecks/commit/382643400efbdb2134dd585fdf3dc5764842237f))
+* make sure no patch-package still succeeds ([7a445b0](https://github.com/cha0s/flecks/commit/7a445b07f09846fe8bacee2dfb361eaa52e3acb9))
+* monorepo ([65e3afb](https://github.com/cha0s/flecks/commit/65e3afbcd04a55239da8bd67b4ee078adb13fb3f))
+* nested .noconflict ([7ed8688](https://github.com/cha0s/flecks/commit/7ed86886ea84d7e146df7955f32e0497e95901d4))
+* slow npm ([8aca988](https://github.com/cha0s/flecks/commit/8aca988ae397bfdba0822f5ceb10eba50eaca74d))
+* versioning ([f892113](https://github.com/cha0s/flecks/commit/f892113ca22e6c9fe9264462444f287c8687b6c1))
+* versions ([6abc4bc](https://github.com/cha0s/flecks/commit/6abc4bc01f837f5988a640a12ebcddfd4373fe18))
+* work around https://github.com/SimenB/add-asset-html-webpack-plugin/issues/373 ([82a86fd](https://github.com/cha0s/flecks/commit/82a86fd2411450002ead6ffab2e14b4b96649265))
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([854aaba](https://github.com/cha0s/flecks/commit/854aaba82b7db5f04ddc42e3532e2f8211b1d536))
+* release-please ([c4ef597](https://github.com/cha0s/flecks/commit/c4ef597be720041602354118103eed21e8fe0e91))
+
 ## [4.0.11](https://github.com/cha0s/flecks/compare/create-app-v4.0.10...create-app-v4.0.11) (2024-02-17)
 
 

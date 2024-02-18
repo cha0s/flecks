@@ -88,6 +88,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/web bumped from ^4.1.2 to ^4.1.3
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/web bumped from ^4.1.3 to ^4.1.4
+
 ## [4.0.10](https://github.com/cha0s/flecks/compare/react-v4.0.9...react-v4.0.10) (2024-02-17)
 
 
