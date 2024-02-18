@@ -47,6 +47,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.5 to ^4.0.6
     * @flecks/fleck bumped from ^4.0.5 to ^4.0.6
 
+## [4.1.3](https://github.com/cha0s/flecks/compare/web-v4.1.2...web-v4.1.3) (2024-02-18)
+
+
+### Bug Fixes
+
+* listening and web config ([96f23f0](https://github.com/cha0s/flecks/commit/96f23f07a1bf4b77423254870c2b7f334353907e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @flecks/headless bumped from ^4.0.0 to ^4.0.1
+
 ## [4.1.2](https://github.com/cha0s/flecks/compare/web-v4.1.1...web-v4.1.2) (2024-02-17)
 
 
