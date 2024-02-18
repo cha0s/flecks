@@ -1,6 +1,6 @@
 export const hooks = {
   '@flecks/core.hmr.hook': (hook) => {
-    if ('@flecks/web/client.up' !== hook) {
+    if ('@flecks/web/client.up' === hook) {
       throw new Error('@flecks/web/client.up implementation changed!');
     }
   },
