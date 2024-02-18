@@ -1,6 +1,6 @@
 {
   "name": "@flecks/web",
-  "version": "4.1.3",
+  "version": "4.1.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -64,6 +64,6 @@
   "devDependencies": {
     "@flecks/build": "^4.1.2",
     "@flecks/fleck": "^4.1.2",
-    "@flecks/headless": "^4.0.1"
+    "@flecks/headless": "^4.0.2"
   }
 }
