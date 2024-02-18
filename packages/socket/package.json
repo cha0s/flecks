@@ -1,6 +1,6 @@
 {
   "name": "@flecks/socket",
-  "version": "4.0.10",
+  "version": "4.0.11",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -24,7 +24,7 @@
   ],
   "dependencies": {
     "@flecks/core": "^4.2.2",
-    "@flecks/react": "^4.0.10",
+    "@flecks/react": "^4.0.11",
     "msgpack-lite": "^0.1.26",
     "proxy-addr": "^2.0.6",
     "schemapack": "^1.4.2",
