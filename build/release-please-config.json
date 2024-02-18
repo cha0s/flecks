@@ -1,4 +1,5 @@
 {
+  "bootstrap-sha": "e7353b8a9efda822b1dc1f8b1ea31ac24a718d2f",
   "packages": {
     "packages/build": {},
     "packages/core": {},
@@ -9,6 +10,7 @@
     "packages/dox": {},
     "packages/electron": {},
     "packages/fleck": {},
+    "packages/headless": {},
     "packages/passport": {},
     "packages/passport-local": {},
     "packages/passport-local-react": {},
