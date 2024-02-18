@@ -24,7 +24,7 @@ class InlineConfig extends Transform {
   async _flush(done) {
     const string = Buffer.concat(this.buffers).toString();
     const {appMountId} = this.flecks.get('@flecks/web');
-    const hideAttributes = 'production' === NODE_ENV ? 'data-flecks="ignore"' : '';
+    const hideAttributes = 'production' === NODE_ENV ? ' data-flecks="ignore"' : '';
     this.push(
       string.replaceAll(
         '<body>',
