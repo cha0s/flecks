@@ -5,8 +5,24 @@ import {
 } from 'react-router-dom';
 
 export const hooks = {
+  '@flecks/core.hmr.hook': (hook, fleck, flecks) => {
+    if ('@flecks/react/router.routes' === hook) {
+      // Routes got HMR'd.
+      flecks.reactRouter.invalidate();
+    }
+  },
+  '@flecks/core.reload': (fleck, config, flecks) => {
+    // Root changed in config.
+    if (
+      '@flecks/react/router' === fleck
+      && flecks.get('@flecks/react/router').root !== config.root
+    ) {
+      throw new Error('root changed');
+    }
+  },
   '@flecks/react.roots': async (req, res, flecks) => {
-    const {routes} = flecks.reactRouter;
+    const {root} = flecks.get('@flecks/react/router');
+    const routes = await flecks.invokeFleck('@flecks/react/router.routes', root);
     // Determine if any of the initial routes are lazy
     const lazyMatches = matchRoutes(routes, window.location)?.filter(({route}) => route.lazy);
     // Load the lazy matches and update the routes before creating the router
@@ -22,7 +38,30 @@ export const hooks = {
         }),
       );
     }
-    const router = createBrowserRouter(routes);
-    return [RouterProvider, {router}];
+    flecks.reactRouter.router = createBrowserRouter(routes);
+    return [RouterProvider, {router: flecks.reactRouter.router}];
   },
+};
+
+export const mixin = (Flecks) => class FlecksWithReactRouterClient extends Flecks {
+
+  constructor(runtime) {
+    super(runtime);
+    const flecks = this;
+    this.reactRouter = {
+      invalidate() {
+        const {root} = flecks.get('@flecks/react/router');
+        // Sorry.
+        setTimeout(() => {
+          Promise.resolve(flecks.invokeFleck('@flecks/react/router.routes', root))
+            .then((routes) => {
+              // eslint-disable-next-line no-underscore-dangle
+              this.router._internalSetRoutes(routes);
+            });
+        }, 20);
+      },
+      router: undefined,
+    };
+  }
+
 };

@@ -217,14 +217,15 @@ module.exports = class Build extends Flecks {
         },
       );
       // Our very own lil' chunk.
-      Flecks.set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
-        chunks: 'all',
-        enforce: true,
-        priority: 100,
-        test: new RegExp(`(?:${
-          include.map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')
-        })`),
-      });
+      // @todo this breaks context, investigate
+      // Flecks.set(config, 'optimization.splitChunks.cacheGroups.flecks-compiled', {
+      //   chunks: 'all',
+      //   enforce: true,
+      //   priority: 100,
+      //   test: new RegExp(`(?:${
+      //     include.map((path) => path.replace(/[\\/]/g, '[\\/]')).join('|')
+      //   })`),
+      // });
     }
     // Resolution.
     const {resolve, resolveLoader} = config;

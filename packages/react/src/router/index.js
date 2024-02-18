@@ -13,20 +13,7 @@ export const hooks = {
      */
     root: '@flecks/react/router',
   }),
-  '@flecks/core.starting': async (flecks) => {
-    const {root} = flecks.get('@flecks/react/router');
-    flecks.reactRouter.routes = await flecks.invokeFleck('@flecks/react/router.routes', root);
-  },
   '@flecks/web.config': (req, flecks) => ({
     root: flecks.get('@flecks/react/router').root,
   }),
-};
-
-export const mixin = (Flecks) => class FlecksWithReactRouterServer extends Flecks {
-
-  constructor(runtime) {
-    super(runtime);
-    this.reactRouter = {handler: undefined, routes: undefined};
-  }
-
 };

@@ -1,0 +1,62 @@
+diff --git a/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js b/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js
+index 3e66f1e..d1b1b14 100644
+--- a/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js
++++ b/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js
+@@ -224,26 +224,26 @@ function executeRuntime(moduleExports, moduleId, webpackHot, refreshOverlay, isT
+           data.prevData = getWebpackHotData(moduleExports);
+         }
+       );
+-      webpackHot.accept(
+-        /**
+-         * An error handler to allow self-recovering behaviours.
+-         * @param {Error} error An error occurred during evaluation of a module.
+-         * @returns {void}
+-         */
+-        function hotErrorHandler(error) {
+-          if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
+-            refreshOverlay.handleRuntimeError(error);
+-          }
++      // webpackHot.accept(
++      //   /**
++      //    * An error handler to allow self-recovering behaviours.
++      //    * @param {Error} error An error occurred during evaluation of a module.
++      //    * @returns {void}
++      //    */
++      //   function hotErrorHandler(error) {
++      //     if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
++      //       refreshOverlay.handleRuntimeError(error);
++      //     }
+ 
+-          if (typeof isTest !== 'undefined' && isTest) {
+-            if (window.onHotAcceptError) {
+-              window.onHotAcceptError(error.message);
+-            }
+-          }
++      //     if (typeof isTest !== 'undefined' && isTest) {
++      //       if (window.onHotAcceptError) {
++      //         window.onHotAcceptError(error.message);
++      //       }
++      //     }
+ 
+-          __webpack_require__.c[moduleId].hot.accept(hotErrorHandler);
+-        }
+-      );
++      //     __webpack_require__.c[moduleId].hot.accept(hotErrorHandler);
++      //   }
++      // );
+ 
+       if (isHotUpdate) {
+         if (
+diff --git a/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/utils/makeRefreshRuntimeModule.js b/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/utils/makeRefreshRuntimeModule.js
+index 4e25c4b..1cdac82 100644
+--- a/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/utils/makeRefreshRuntimeModule.js
++++ b/node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/utils/makeRefreshRuntimeModule.js
+@@ -32,7 +32,7 @@ function makeRefreshRuntimeModule(webpack) {
+               `${refreshGlobal}.setup(options.id);`,
+               'try {',
+               webpack.Template.indent(
+-                'originalFactory.call(this, moduleObject, moduleExports, webpackRequire);'
++                'originalFactory && originalFactory.call(this, moduleObject, moduleExports, webpackRequire);'
+               ),
+               '} finally {',
+               webpack.Template.indent([
