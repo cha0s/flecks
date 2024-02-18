@@ -1,6 +1,4 @@
 {
-  "bootstrap-sha": "96f23f07a1bf4b77423254870c2b7f334353907e",
-  "commit-search-depth": 5,
   "packages": {
     "packages/build": {},
     "packages/core": {},
