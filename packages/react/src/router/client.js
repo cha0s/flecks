@@ -4,6 +4,8 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
+import {performReactRefresh} from 'react-refresh/runtime';
+
 export const hooks = {
   '@flecks/core.hmr.hook': (hook, fleck, flecks) => {
     if ('@flecks/react/router.routes' === hook) {
@@ -48,17 +50,23 @@ export const mixin = (Flecks) => class FlecksWithReactRouterClient extends Fleck
   constructor(runtime) {
     super(runtime);
     const flecks = this;
+    let debounceRefresh;
     this.reactRouter = {
       invalidate() {
-        const {root} = flecks.get('@flecks/react/router');
+        if (debounceRefresh) {
+          return;
+        }
         // Sorry.
-        setTimeout(() => {
+        debounceRefresh = setTimeout(() => {
+          const {root} = flecks.get('@flecks/react/router');
           Promise.resolve(flecks.invokeFleck('@flecks/react/router.routes', root))
             .then((routes) => {
               // eslint-disable-next-line no-underscore-dangle
               this.router._internalSetRoutes(routes);
+              performReactRefresh();
+              debounceRefresh = undefined;
             });
-        }, 20);
+        }, 10);
       },
       router: undefined,
     };
