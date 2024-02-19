@@ -94,6 +94,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * dependencies
     * @flecks/web bumped from ^4.1.3 to ^4.1.4
 
+## [4.0.14](https://github.com/cha0s/flecks/compare/react-v4.0.13...react-v4.0.14) (2024-02-19)
+
+
+### Bug Fixes
+
+* React Refresh has trouble inferring router exports ([7113d4d](https://github.com/cha0s/flecks/commit/7113d4db53c183ce08f7527dd5b2d53d450f9d3e))
+
 ## [4.0.13](https://github.com/cha0s/flecks/compare/react-v4.0.12...react-v4.0.13) (2024-02-18)
 
 
