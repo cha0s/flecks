@@ -181,6 +181,9 @@ exports are mixed in to the Route. Route modules should probably at least
 `export function Component() { ... }`, but may export any of
 [the Route props](https://reactrouter.com/en/main/route/route).
 
+You may export a `default` export which will be used as the component. An explicit named
+`Component` export will take precedence.
+
 ### Selecting the root
 
 There can only be one root of your router tree. Supposing you implemented
