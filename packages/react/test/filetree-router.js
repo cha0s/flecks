@@ -5,7 +5,7 @@ import {createRoutesFromContext} from '@flecks/react/router';
 it('does not nest siblings', async () => {
   const routes = await createRoutesFromContext(require.context('./filetree/siblings'));
   expect(routes)
-    .to.deep.equal([{path: '/', name: 'index'}, {path: 'test', name: 'sibling'}]);
+    .to.deep.equal([{path: '/', name: 'index'}, {path: '/test', name: 'sibling'}]);
 });
 
 it('does nest siblings under parent', async () => {

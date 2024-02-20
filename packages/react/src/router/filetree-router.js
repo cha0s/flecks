@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {join, resolve} from 'path';
 
 import {register} from 'react-refresh/runtime';
 
@@ -83,8 +83,7 @@ export async function createRoutesFromFiletree({importer, paths, resolver}) {
           const last = parts[i + 1];
           // Non-index is a sibling, create if necessary.
           if ('index' !== last) {
-            const offset = '/' === parts[i] ? 1 : 0;
-            const nestedPath = segments.slice(i + offset).join('/');
+            const nestedPath = join(...segments.slice(i));
             route = walk.find(({path}) => nestedPath === path);
             if (!route) {
               route = {path: nestedPath};
