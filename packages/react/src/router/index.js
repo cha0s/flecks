@@ -1,6 +1,7 @@
 import {createRoutesFromFiletree, createRoutesFromContext} from './filetree-router';
 
 export * from 'react-router-dom';
+export * from 'redux-data-router';
 
 export {createRoutesFromFiletree, createRoutesFromContext};
 
