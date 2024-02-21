@@ -1,6 +1,9 @@
 const cluster = require('cluster');
 const {join} = require('path');
 
+const {prefixLines} = require('@flecks/core/build/stream');
+const chalk = require('chalk');
+
 class StartServerPlugin {
 
   pluginName = 'StartServerPlugin';
@@ -27,14 +30,19 @@ class StartServerPlugin {
   apply(compiler) {
     const {options: {exec, signal}, pluginName} = this;
     const logger = compiler.getInfrastructureLogger(pluginName);
+    let lastStartHadErrors = false;
     compiler.hooks.afterEmit.tapPromise(pluginName, async (compilation) => {
+      if (compilation.errors.length > 0) {
+        lastStartHadErrors = true;
+        return;
+      }
       if (this.worker && this.worker.isConnected()) {
-        if (signal) {
+        if (signal && !lastStartHadErrors) {
           process.kill(
             this.worker.process.pid,
             true === signal ? 'SIGUSR2' : signal,
           );
-          return undefined;
+          return;
         }
         const promise = new Promise((resolve) => {
           this.worker.on('disconnect', resolve);
@@ -42,6 +50,7 @@ class StartServerPlugin {
         this.worker.disconnect();
         await promise;
       }
+      lastStartHadErrors = false;
       let entryPoint;
       if (!exec) {
         entryPoint = compilation.getPath(Object.keys(compilation.assets)[0]);
@@ -55,7 +64,7 @@ class StartServerPlugin {
       else {
         entryPoint = exec(compilation);
       }
-      return this.startServer(join(compiler.options.output.path, entryPoint));
+      await this.startServer(join(compiler.options.output.path, entryPoint));
     });
     compiler.hooks.shouldEmit.tap(pluginName, (compilation) => {
       const entryPoints = Object.keys(compilation.assets);
@@ -92,9 +101,16 @@ class StartServerPlugin {
       exec,
       execArgv,
       args,
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       ...(inspectPort && {inspectPort}),
     });
-    this.worker = cluster.fork(env);
+    this.worker = cluster.fork({
+      ...env,
+    });
+    ['stdout', 'stderr'].forEach((stream) => {
+      prefixLines(this.worker.process[stream], chalk.blue('[SRV] '))
+        .pipe(process[stream]);
+    });
     this.worker.on('exit', (code) => {
       if (killOnExit && !this.worker.exitedAfterDisconnect) {
         process.send({type: 'kill', payload: code});

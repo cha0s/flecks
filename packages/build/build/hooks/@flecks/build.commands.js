@@ -20,6 +20,7 @@ const {
 } = require('@babel/types');
 const addPathsToYml = require('@flecks/core/build/add-paths-to-yml');
 const D = require('@flecks/core/build/debug');
+const {prefixLines} = require('@flecks/core/build/stream');
 const {
   add,
   binaryPath,
@@ -28,6 +29,7 @@ const {
   spawnWith,
   writeFile,
 } = require('@flecks/core/src/server');
+const chalk = require('chalk');
 const chokidar = require('chokidar');
 const {glob} = require('glob');
 const {paperwork} = require('precinct');
@@ -224,24 +226,43 @@ exports.hook = (program, flecks) => {
           '--mode', (production && !hot) ? 'production' : 'development',
         ];
         const options = {
-          // @todo This kills the pnpm. Let's use a real IPC channel.
-          useFork: true,
+          stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
           ...rest,
           env: {
+            DEBUG_COLORS: process.stdout.isTTY,
             FLECKS_BUILD_IS_PRODUCTION: production,
+            FORCE_COLOR: process.stdout.isTTY,
             ...(target ? {FLECKS_CORE_BUILD_LIST: target} : {}),
             ...(hot ? {FLECKS_ENV__flecks_server__hot: 'true'} : {}),
             ...rest.env,
           },
         };
+        const spawnWithPrefixedLines = (cmd, options) => {
+          const child = spawnWith(cmd, options);
+          if (
+            'pipe' === options.stdio
+            || (Array.isArray(options.stdio) && options.stdio[0] === 'pipe')
+          ) {
+            prefixLines(child.stdout, chalk.green('[📦] '))
+              .pipe(process.stdout);
+          }
+          if (
+            'pipe' === options.stdio
+            || (Array.isArray(options.stdio) && options.stdio[1] === 'pipe')
+          ) {
+            prefixLines(child.stderr, chalk.green('[📦] '))
+              .pipe(process.stderr);
+          }
+          return child;
+        };
         if (!watch) {
-          return spawnWith(cmd, options);
+          return spawnWithPrefixedLines(cmd, options);
         }
         try {
           await access(join(FLECKS_CORE_ROOT, 'build/flecks.yml'));
         }
         catch (error) {
-          return spawnWith(cmd, options);
+          return spawnWithPrefixedLines(cmd, options);
         }
         await rootsDependencies(flecks.roots, flecks.resolver);
         const watched = Object.keys(dependencies);
@@ -259,7 +280,7 @@ exports.hook = (program, flecks) => {
         });
         let webpack;
         const spawnWebpack = () => {
-          webpack = spawnWith(cmd, options);
+          webpack = spawnWithPrefixedLines(cmd, options);
           webpack.on('message', (message) => {
             switch (message.type) {
               case 'kill':

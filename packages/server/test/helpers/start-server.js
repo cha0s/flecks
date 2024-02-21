@@ -15,7 +15,6 @@ import {createApplication} from './create-application';
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
-  TERM,
 } = process.env;
 
 class SocketWrapper {
@@ -135,12 +134,10 @@ export async function startServer({
     stdio: 'pipe',
     ...opts,
     env: {
-      DEBUG_COLORS: 'dumb' !== TERM,
       FLECKS_ENV__flecks_server__stats: '{"preset": "none"}',
       FLECKS_ENV__flecks_server__start: true,
       FLECKS_CORE_ROOT: path,
       FLECKS_SERVER_TEST_SOCKET: socketPath,
-      FORCE_COLOR: 'dumb' !== TERM,
       NODE_ENV: 'test',
       NODE_PATH: join(FLECKS_CORE_ROOT, '..', '..', 'node_modules'),
       ...opts.env,

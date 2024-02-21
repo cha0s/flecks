@@ -66,6 +66,7 @@ module.exports = async (flecks) => ({
     'import/prefer-default-export': 'off',
     'jsx-a11y/control-has-associated-label': ['error', {assert: 'either'}],
     'jsx-a11y/label-has-associated-control': ['error', {assert: 'either'}],
+    'max-classes-per-file': ['error', {ignoreExpressions: true}],
     'no-param-reassign': ['error', {props: false}],
     'no-plusplus': 'off',
     'no-shadow': 'off',

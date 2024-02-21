@@ -20,7 +20,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@npmcli/arborist": "^7.3.1",
-    "chalk": "^4.1.2"
+    "@npmcli/arborist": "^7.3.1"
   }
 }

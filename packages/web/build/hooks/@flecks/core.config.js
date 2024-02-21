@@ -16,6 +16,10 @@ exports.hook = () => ({
    */
   devPort: 0,
   /**
+   * (webpack-dev-server) Set up a proxy to the dev server. Defaults to `false` in production.
+   */
+  devProxyWds: undefined,
+  /**
    * (webpack-dev-server) Webpack stats output.
    */
   devStats: {

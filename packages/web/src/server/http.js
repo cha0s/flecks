@@ -4,7 +4,8 @@ import {join} from 'path';
 import {PassThrough, Transform} from 'stream';
 
 import {D} from '@flecks/core';
-import {binaryPath, spawnWith} from '@flecks/core/server';
+import {binaryPath, prefixLines, spawnWith} from '@flecks/core/server';
+import chalk from 'chalk';
 import compression from 'compression';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -15,7 +16,6 @@ const {
   FLECKS_CORE_ROOT = process.cwd(),
   FLECKS_WEB_DEV_SERVER,
   NODE_ENV,
-  TERM,
 } = process.env;
 
 const debug = D('@flecks/web/server/http');
@@ -47,6 +47,7 @@ const deliverHtmlStream = async (stream, req, res, flecks) => {
 
 export const createHttpServer = async (flecks) => {
   const {
+    devProxyWds = 'production' !== NODE_ENV,
     public: publicConfig,
     port,
     trust,
@@ -56,6 +57,22 @@ export const createHttpServer = async (flecks) => {
   app.set('trust proxy', trust);
   const httpServer = createServer(app);
   httpServer.app = app;
+  // Hold requests until the server is up.
+  let markAsUp;
+  let waitingOnUp = new Promise((resolve) => {
+    markAsUp = () => {
+      waitingOnUp = undefined;
+      resolve();
+    };
+  });
+  app.use(async (req, res, next) => {
+    if (!waitingOnUp) {
+      next();
+      return;
+    }
+    await waitingOnUp;
+    next();
+  });
   // Body parser.
   app.use(express.urlencoded({extended: true}));
   app.use(express.json());
@@ -89,18 +106,18 @@ export const createHttpServer = async (flecks) => {
       const actualPort = 0 === port ? httpServer.address().port : port;
       debug(
         'HTTP server up @ %s!',
-        new URL(`http://${[host, actualPort].filter((e) => !!e).join(':')}`),
+        chalk.cyan(new URL(`http://${[host, actualPort].filter((e) => !!e).join(':')}`)),
       );
       if ('undefined' === typeof publicConfig) {
         flecks.web.public = [host, actualPort].join(':');
       }
       resolve();
     });
-    debug('httpServer.listen(...%O)', args.slice(0, -1));
+    debug('httpServer.listen(%s)', args.slice(0, -1).join(', '));
     httpServer.listen(...args);
   });
-  // In development mode, create a proxy to the webpack-dev-server.
-  if ('production' !== NODE_ENV) {
+  // Create a proxy to the webpack-dev-server.
+  if (devProxyWds) {
     const {
       devHost,
       devPort,
@@ -131,9 +148,7 @@ export const createHttpServer = async (flecks) => {
         cmd,
         {
           env: {
-            DEBUG_COLORS: 'dumb' !== TERM,
             FLECKS_CORE_BUILD_LIST: 'web',
-            FORCE_COLOR: 'dumb' !== TERM,
           },
           stdio: 0 === wdsPort ? 'pipe' : 'inherit',
         },
@@ -172,13 +187,16 @@ export const createHttpServer = async (flecks) => {
         }
         const parsePort = new ParsePort();
         const stderr = new PassThrough();
-        wds.stderr.pipe(parsePort).pipe(stderr);
+        prefixLines(wds.stderr.pipe(parsePort), chalk.yellow('[WDS] '))
+          .pipe(stderr);
         stderr.pipe(process.stderr);
-        wds.stdout.pipe(process.stdout);
+        prefixLines(wds.stdout, chalk.yellow('[WDS] '))
+          .pipe(process.stdout);
         wdsPort = await parsePort.port;
         parsePort.unpipe(stderr);
         stderr.unpipe(process.stderr);
-        wds.stderr.pipe(process.stderr);
+        prefixLines(wds.stderr, chalk.yellow('[WDS] '))
+          .pipe(process.stderr);
       }
     }
     const proxy = httpProxy.createProxyServer({
@@ -263,6 +281,7 @@ export const createHttpServer = async (flecks) => {
     });
   }
   flecks.web.server = httpServer;
+  markAsUp();
 };
 
 export const destroyHttpServer = (httpServer) => {

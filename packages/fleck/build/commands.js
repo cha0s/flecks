@@ -13,7 +13,6 @@ const debug = D('@flecks/build.commands');
 
 const {
   FLECKS_CORE_ROOT = process.cwd(),
-  TERM,
 } = process.env;
 
 module.exports = (program, flecks) => {
@@ -49,7 +48,7 @@ module.exports = (program, flecks) => {
       const filename = await flecks.resolveBuildConfig('test.webpack.config.js', '@flecks/build');
       const config = {test: await require(filename)(env, argv, flecks)};
       await flecks.configureBuilds(config, env, argv);
-      if (!config.test.entry) {
+      if (0 === Object.entries(config.test.entry).length) {
         return undefined;
       }
       // Remove the previous test(s).
@@ -59,8 +58,8 @@ module.exports = (program, flecks) => {
         'test',
         {
           env: {
-            DEBUG_COLORS: 'dumb' !== TERM,
-            FORCE_COLOR: 'dumb' !== TERM,
+            DEBUG_COLORS: process.stdout.isTTY,
+            FORCE_COLOR: process.stdout.isTTY,
           },
           production,
           stdio: watch ? 'inherit' : 'pipe',
