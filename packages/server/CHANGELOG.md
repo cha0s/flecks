@@ -37,6 +37,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.0.4 to ^4.0.5
     * @flecks/fleck bumped from ^4.0.4 to ^4.0.5
 
+## [4.1.4](https://github.com/cha0s/flecks/compare/server-v4.1.3...server-v4.1.4) (2024-02-21)
+
+
+### Bug Fixes
+
+* various nits with process lifetime and streaming ([e0ed998](https://github.com/cha0s/flecks/commit/e0ed998601f48a43c998a871a789c962953fdd6b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.3 to ^4.2.4
+  * devDependencies
+    * @flecks/build bumped from ^4.1.3 to ^4.1.4
+    * @flecks/fleck bumped from ^4.1.3 to ^4.1.4
+
 ## [4.1.3](https://github.com/cha0s/flecks/compare/server-v4.1.2...server-v4.1.3) (2024-02-18)
 
 

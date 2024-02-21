@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.4](https://github.com/cha0s/flecks/compare/core-v4.2.3...core-v4.2.4) (2024-02-21)
+
+
+### Bug Fixes
+
+* various nits with process lifetime and streaming ([e0ed998](https://github.com/cha0s/flecks/commit/e0ed998601f48a43c998a871a789c962953fdd6b))
+
 ## [4.2.3](https://github.com/cha0s/flecks/compare/core-v4.2.2...core-v4.2.3) (2024-02-18)
 
 

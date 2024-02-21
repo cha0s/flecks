@@ -162,6 +162,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/react bumped from ^4.0.14 to ^4.1.0
     * @flecks/react-redux bumped from ^4.0.14 to ^4.0.15
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.3 to ^4.2.4
+    * @flecks/passport bumped from ^4.0.11 to ^4.0.12
+    * @flecks/react bumped from ^4.1.0 to ^4.1.1
+    * @flecks/react-redux bumped from ^4.0.15 to ^4.0.16
+    * @flecks/web bumped from ^4.1.5 to ^4.1.6
+  * devDependencies
+    * @flecks/build bumped from ^4.1.3 to ^4.1.4
+    * @flecks/fleck bumped from ^4.1.3 to ^4.1.4
+
 ## [4.0.3](https://github.com/cha0s/flecks/compare/passport-react-v4.0.2...passport-react-v4.0.3) (2024-02-09)
 
 

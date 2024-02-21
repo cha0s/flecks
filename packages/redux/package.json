@@ -1,6 +1,6 @@
 {
   "name": "@flecks/redux",
-  "version": "4.0.11",
+  "version": "4.0.12",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -23,14 +23,14 @@
     "server.js"
   ],
   "dependencies": {
-    "@flecks/core": "^4.2.3",
+    "@flecks/core": "^4.2.4",
     "@reduxjs/toolkit": "^1.5.0",
     "debug": "^4.3.3",
     "lodash.throttle": "^4.1.1",
     "reduce-reducers": "^1.0.4"
   },
   "devDependencies": {
-    "@flecks/build": "^4.1.3",
-    "@flecks/fleck": "^4.1.3"
+    "@flecks/build": "^4.1.4",
+    "@flecks/fleck": "^4.1.4"
   }
 }
