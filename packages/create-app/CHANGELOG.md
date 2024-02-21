@@ -46,6 +46,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
     * @flecks/build bumped from ^4.1.0 to ^4.1.1
     * @flecks/fleck bumped from ^4.1.0 to ^4.1.1
 
+## [4.0.13](https://github.com/cha0s/flecks/compare/create-app-v4.0.12...create-app-v4.0.13) (2024-02-21)
+
+
+### Bug Fixes
+
+* patch ([8fed3a3](https://github.com/cha0s/flecks/commit/8fed3a3065b013b9e247d1a521d97ea839067d2a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @flecks/core bumped from ^4.2.3 to ^4.2.4
+  * devDependencies
+    * @flecks/build bumped from ^4.1.3 to ^4.1.4
+    * @flecks/fleck bumped from ^4.1.3 to ^4.1.4
+
 ## [4.0.12](https://github.com/cha0s/flecks/compare/create-app-v4.0.11...create-app-v4.0.12) (2024-02-18)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@flecks/fleck",
-  "version": "4.1.3",
+  "version": "4.1.4",
   "author": "cha0s",
   "license": "MIT",
   "scripts": {
@@ -20,13 +20,13 @@
   },
   "files": [],
   "dependencies": {
-    "@flecks/core": "^4.2.3",
+    "@flecks/core": "^4.2.4",
     "babel-merge": "^3.0.0",
     "debug": "^4.3.3",
     "mocha": "^10.2.0"
   },
   "devDependencies": {
-    "@flecks/build": "^4.1.3",
+    "@flecks/build": "^4.1.4",
     "chai": "4.2.0"
   }
 }
